@@ -1,0 +1,24 @@
+﻿body {
+
+}
+.wizard a {
+    background: #efefef;
+    display: inline-block;
+    margin-right: 5px;
+    min-width: 150px;
+    outline: none;
+    padding: 8px 31px 8px;
+    position: relative;
+    text-decoration: none;
+}
+.wizard .active {
+    background: #007ACC;
+    color: #fff;
+}
+.form-group.required .control-label:after {
+    color: #d00;
+    content: "*";
+    position: absolute;
+    margin-left: 4px;
+    top:7px;
+}

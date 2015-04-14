@@ -1,0 +1,19 @@
+﻿<div class="panel panel-primary">
+    <div class="panel-heading" style="font-size:large">
+        {{vm.title}}
+    </div>
+
+    <div class="panel-body">
+        <div class="wizard">
+            <a ui-sref=".info" ui-sref-active="active">Project Information</a>
+            <a ui-sref=".cooperator" ui-sref-active="active">Project Cooperators</a>
+            <a ui-sref=".data" ui-sref-active="active">Project Datum</a>
+            <a ui-sref=".contact" ui-sref-active="active">Project Contacts</a>
+            <a ui-sref=".publication" ui-sref-active="active">Project Publications</a>
+            <a ui-sref=".site" ui-sref-active="active">Project Sites</a>
+        </div>
+
+        <div ui-view></div>
+    </div>
+
+</div>
