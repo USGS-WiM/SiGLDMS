@@ -1,6 +1,8 @@
 ﻿<form class="form-horizontal" name="projectForm" novalidate>
     <fieldset>
         <legend>Project Information</legend>
+
+        <!-- Project Name -->
         <div class="form-group required" ng-class="{'has-error':projectForm.NAME.$invalid && projectForm.NAME.$dirty}">
             <label class="col-md-2 control-label req" for="inputNAME">Project Name</label>
             <div class="col-md-4">
@@ -11,19 +13,31 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="inputDESCRIPTION">Description</label>
-            <div class="col-md-10">
-                <textarea id="inputDESCRIPTION"
-                          type="text" rows="3"
-                          placeholder="Project Description"
-                          ng-model="Project.DESCRIPTION" />
+
+        <!-- Project Duration -->
+        <div class="form-group required" ng-class="{'has-error':projectForm.PROJ_DURATION_ID.$invalid && projectForm.PROJ_DURATION_ID.$dirty}">
+            <label class="col-md-2 control-label" for="inputPROJ_DURATION_ID">Project Duration</label>
+            <div class="col-md-10" ng-controller="ProjDurationCtrl">
+                <select id="inputPROJ_DURATION_ID" name="PROJ_DURATION_ID"
+                        ng-model="Project.PROJ_DURATION_ID"
+                        ng-options="d.PROJ_DURATION_ID as d.DURATION_VALUE for d in Durations"></select>
             </div>
         </div>
 
+        <!-- Project Status -->
+        <div class="form-group required" ng-class="{'has-error':projectForm.PROJ_STATUS_ID.$invalid && projectForm.PROJ_STATUS_ID.$dirty}">
+            <label class="col-md-2 control-label" for="inputPROJ_STATUS_ID">Project Status</label>
+            <div class="col-md-10" ng-controller="ProjStatusCtrl">
+                <select id="inputPROJ_STATUS_ID" name="PROJ_STATUS_ID"
+                        ng-model="Project.PROJ_STATUS_ID"
+                        ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in Stats"></select>
+            </div>
+        </div>
+
+        <!-- Project Start Date -->
         <div class="form-group" ng-controller="datePickrCtrl">
             <label class="col-md-2 control-label"
-                   for="inputSTART_DATE">Start Date</label>
+                   for="inputSTART_DATE">Project Start Date</label>
             <div class="col-md-4">
                 <div class="input-group">
                     <input class="form-control" id="inputSTART_DATE" name="sd"
@@ -40,8 +54,9 @@
 
         </div>
 
+        <!-- Project Completion Date -->
         <div class="form-group" ng-controller="datePickrCtrl">
-            <label class="col-md-2 control-label" for="inputEND_DATE">End Date</label>
+            <label class="col-md-2 control-label" for="inputEND_DATE">Project Completion Date</label>
             <div class="col-md-4">
                 <div class="input-group">
                     <input class="form-control" id="inputEND_DATE" name="ed"
@@ -56,15 +71,30 @@
                 </div>
             </div>
         </div>
-        
-        <!--<div class="form-group">
-            <label class="col-md-2 control-label" for="inputPROJDURATION_ID">Project Duration</label>
-            <div class="col-md-10">
-                <select id="inputPROJDURATION_ID"
-                        placeholder="" ng-model="Project.DESCRIPTION" />
+
+        <!-- Project Objectives -->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="inputPROJ_STATUS_ID">Project Status</label>
+            <div class="col-md-10" ng-controller="ProjStatusCtrl">
+                <select id="inputPROJ_STATUS_ID" name="PROJ_STATUS_ID"
+                        ng-model="Project.PROJ_STATUS_ID"
+                        ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in Stats"></select>
             </div>
         </div>
--->
+
+        <!-- Project Description -->
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="inputDESCRIPTION">Description</label>
+            <div class="col-md-10">
+                <textarea id="inputDESCRIPTION"
+                          type="text" rows="3"
+                          placeholder="Project Description"
+                          ng-model="Project.DESCRIPTION" />
+            </div>
+        </div>
+
+
+        <!--submit and cancel buttons-->
         <div class="form-group">
             <div class="col-md-4 col-md-offset-2">
                 <span>
@@ -83,5 +113,6 @@
                 </span>
             </div>
         </div>
+
     </fieldset>
 </form>

@@ -2,6 +2,13 @@
     "use strict"; 
     var app = angular.module('app', ['ngResource', 'ui.router', 'ui.mask', 'ui.bootstrap', 'laMPResource', 'siGLControllers']);
 
+    //app.filter('split', function () {
+    //    return function (input, splitChar, splitInd) {
+    //        //add bounds checking to insure index exists
+    //        return input.split(splitChar)[splitInd];
+    //    }
+    //});
+
     //app.config(function that defines the config code. 
     app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         function ($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -28,12 +35,24 @@
                     templateUrl: "app/project/projectDetailView.html",
                     controller: "ProjectDetailCtrl as vm",
                     resolve: {
-                        laMPResource: 'Projects', //dependency
-                        project: function (laMPResource, $stateParams) {
+                        Proj: 'Projects', //dependency for the project
+                        project: function (Proj, $stateParams) {
                             var projectId = $stateParams.id;
-                            return laMPResource.query(
+                            return Proj.query(
                                 { id: projectId }).$promise;
-                        }
+                        },
+                        projObj: 'ProjObjectives', //dependency for project objectives
+                        projObjectives: function (projObj, $stateParams) {
+                            var projID = $stateParams.id;
+                            return projObj.query(
+                                { id: projID }).$promise;
+                        },
+                        projKeys: 'ProjKeywords', //dependency for project keywords
+                        projKeywords: function (projKeys, $stateParams) {
+                            var projID = $stateParams.id;
+                            return projKeys.query(
+                                { id: projID }).$promise;
+                        },
                     }
                 })
 
