@@ -1,32 +1,32 @@
 ﻿<div class="panel panel-primary">
-    <div class="panel-heading" style="font-size:large">{{vm.title}}</div>
+    <div class="panel-heading" style="font-size:large">{{Title}}</div>
 
     <div class="panel-body">
         <div class="row">
             <div class="col-md-6">
                 <div class="row">
                     <div class="col-md-2">Name:</div>
-                    <div class="col-md-6">{{vm.project.NAME}}</div>
+                    <div class="col-md-6">{{Project.NAME}}</div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-2">Start Date:</div>
-                    <div class="col-md-6">{{vm.project.START_DATE | date}}</div>
+                    <div class="col-md-6">{{Project.START_DATE | date}}</div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-2">End Date:</div>
-                    <div class="col-md-6">{{vm.project.END_DATE | date}}</div>
+                    <div class="col-md-6">{{Project.END_DATE | date}}</div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-2">URL:</div>
-                    <div class="col-md-6">{{vm.project.URL}}</div>
+                    <div class="col-md-6">{{Project.URL}}</div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-2">Additional Info:</div>
-                    <div class="col-md-6">{{vm.project.ADDITIONAL_INFO}}</div>
+                    <div class="col-md-6">{{Project.ADDITIONAL_INFO}}</div>
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
             <i class="glyphicon glyphicon-chevron-left"></i>
             Back
         </a>
-        <a class="btn btn-primary" ui-sref="projectEdit.info({projectId: vm.project.PROJECT_ID})" style="width:80px;margin-left:10px">
+        <a class="btn btn-primary" ui-sref="projectEdit.info({projectId: Project.PROJECT_ID})" style="width:80px;margin-left:10px">
             Edit
         </a>
     </div>

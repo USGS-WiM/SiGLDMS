@@ -14,10 +14,10 @@
                 <tr ng-repeat="pr in projects">
                     <!--ng-show will download images initially, ng-if will not download unless clicked
         <td><img ng-if="vm.showImage" ng-src="pr.imageURL}}" style="width:6%" /></td>-->
-                    <td><a ui-sref="projectDetail({projectId: pr.PROJECT_ID})">{{pr.NAME}}</a></td>
+                    <td><a ui-sref="projectDetail({id: pr.PROJECT_ID})">{{pr.NAME}}</a></td>
                     <td>{{pr.START_DATE | date}}</td>
                     <td>{{pr.PROJECT_ID}}</td>
-                    <td><a class="btn btn-primary" ui-sref="projectEdit.info({projectId: pr.PROJECT_ID})">Edit</a></td>
+                    <td><a class="btn btn-primary" ui-sref="projectEdit.info({id: pr.PROJECT_ID})">Edit</a></td>
                 </tr>
             </tbody>
         </table>
