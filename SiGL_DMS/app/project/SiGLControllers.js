@@ -15,9 +15,29 @@ function projectListCtrl($scope, Projects) {
 //end projectListCtrl
 
 //projectDetailsCtrl
-siGLControllers.controller('ProjectDetailCtrl', ['$scope', 'project', '$state', ProjectDetailCtrl]);
-function ProjectDetailCtrl($scope, project, $state) {
+siGLControllers.controller('ProjectDetailCtrl', ['$scope', 'project', 'projObjectives', 'projKeywords', 'ProjDurations', 'ProjStats', '$state', ProjectDetailCtrl]);
+function ProjectDetailCtrl($scope, project, projObjectives, projKeywords, ProjDurations, ProjStats, $state) {
     $scope.Project = project;
+    //split Project.URL by '|'
+    if (($scope.Project.URL).indexOf('|') > -1) {
+        $scope.urls = ($scope.Project.URL).split("|");
+    } else {
+        $scope.urls = $scope.Project.URL;
+    }
+
+    //need to get Duration Name
+    ProjDurations.query({ id: project.PROJ_DURATION_ID }, function (data) {
+        $scope.ProjDuration = data.DURATION_VALUE;
+    });
+    //need to get Status Name
+    ProjStats.query({ id: project.PROJ_STATUS_ID }, function (data) {
+        $scope.ProjStat = data.STATUS_VALUE;
+    });
+    //need to get Objectives
+    $scope.ProjectObjectives = projObjectives;
+    //need to get keywords
+    $scope.ProjectKeywords = projKeywords;
+
     $scope.Title = "Project Detail: " + $scope.Project.NAME;
 
     //back button
@@ -32,7 +52,8 @@ function ProjectDetailCtrl($scope, project, $state) {
 
 //ProjectEditCtrl
 siGLControllers.controller('projectEditCtrl', ['$scope', 'project', '$state', projectEditCtrl]);
-function projectEditCtrl($scope, project, $state) {
+function projectEditCtrl($scope, project, $state, Projects) {
+    //store project
     $scope.Project = project;
     if (project && $scope.Project.PROJECT_ID) {
         $scope.title = "Edit: " + $scope.Project.NAME;
@@ -40,6 +61,11 @@ function projectEditCtrl($scope, project, $state) {
     else {
         $scope.title = "New Project";
     }
+    //get project objectives
+    //Projects.getProjObjectives({ id: project.PROJECT_ID }, function (data) {
+    //    $scope.ProjObjectives = data;
+    //});
+
     $scope.submit = function (isValid) {
         if (isValid) {
             $scope.Project.$save(function (data) {
@@ -69,3 +95,25 @@ function projectEditCtrl($scope, project, $state) {
     };
 }
 //end projectEditCtrl
+
+//ProjDurationCtrl
+siGLControllers.controller('ProjDurationCtrl', ['$scope', 'ProjDurations', ProjDurationCtrl]);
+function ProjDurationCtrl($scope, ProjDurations) {
+    //store dropdowns
+    ProjDurations.getAll(function (data) {
+        $scope.Durations = data
+    });
+
+}
+//end ProjDurationCtrl
+
+//ProjStatusCtrl
+siGLControllers.controller('ProjStatusCtrl', ['$scope', 'ProjStats', ProjStatusCtrl]);
+function ProjStatusCtrl($scope, ProjStats) {
+    //store dropdowns
+    ProjStats.getAll(function (data) {
+        $scope.Stats = data
+    });
+
+}
+//end ProjDurationCtrl
