@@ -24,15 +24,15 @@
 
                 //prject details page
                 .state("projectDetail", {
-                    url: "/project/:projectId",
+                    url: "/project/:id",
                     templateUrl: "app/project/projectDetailView.html",
-                    controller: "ProjectDetailCtr as vm",
+                    controller: "ProjectDetailCtrl as vm",
                     resolve: {
-                        laMPResource: 'laMPResource', //dependency
+                        laMPResource: 'Projects', //dependency
                         project: function (laMPResource, $stateParams) {
-                            var projectId = $stateParams.projectId;
-                            return laMPResource.Projects.query(
-                                { projectId: projectId }).$promise;
+                            var projectId = $stateParams.id;
+                            return laMPResource.query(
+                                { id: projectId }).$promise;
                         }
                     }
                 })
@@ -40,16 +40,16 @@
                 // project edit/create page
                 .state("projectEdit", {
                     abstract: true, //can't be directly activated, only nested states
-                    url: "/project/edit/:projectId",
+                    url: "/project/edit/:id",
                     templateUrl: "app/project/projectEditView.html",
                     controller: "projectEditCtrl as vm",
                     resolve: {
-                        laMPResource: "laMPResource",
-                        project: function (Projects, $stateParams) {
-                            var projectId = $stateParams.projectId;
+                        laMPResource: "Projects",
+                        project: function (laMPResource, $stateParams) {
+                            var projectId = $stateParams.id;
                             if (projectId > 0) {
-                                return Projects.query(
-                                    { projectId: projectId }).$promise;
+                                return laMPResource.query(
+                                    { id: projectId }).$promise;
                             }
                         }
                     }

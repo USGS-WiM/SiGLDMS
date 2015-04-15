@@ -6,7 +6,7 @@
             <div class="col-md-4">
                 <input class="form-control" id="inputNAME" name="NAME"
                        type="text" placeholder="Project Name"
-                       ng-model="vm.project.NAME" required />
+                       ng-model="Project.NAME" required />
                 <span class="help-block has-error" ng-show="projectForm.NAME.$invalid">Project Name is required.</span>
             </div>
         </div>
@@ -17,7 +17,7 @@
                 <textarea id="inputDESCRIPTION"
                           type="text" rows="3"
                           placeholder="Project Description"
-                          ng-model="vm.project.DESCRIPTION" />
+                          ng-model="Project.DESCRIPTION" />
             </div>
         </div>
 
@@ -29,7 +29,7 @@
                     <input class="form-control" id="inputSTART_DATE" name="sd"
                            type="text" datepicker-popup="{{format}}"
                            is-open="datepickrs.sd"
-                           ng-model="vm.project.START_DATE" />
+                           ng-model="Project.START_DATE" />
                     <span class="input-group-btn">
                         <button class="btn btn-default" ng-click="open($event, 'sd')">
                             <i class="glyphicon glyphicon-calendar" />
@@ -47,7 +47,7 @@
                     <input class="form-control" id="inputEND_DATE" name="ed"
                            type="text" datepicker-popup="{{format}}"
                            is-open="datepickrs.ed"
-                           ng-model="vm.project.END_DATE" />
+                           ng-model="Project.END_DATE" />
                     <span class="input-group-btn">
                         <button class="btn btn-default" ng-click="open($event, 'ed')">
                             <i class="glyphicon glyphicon-calendar" />
@@ -56,20 +56,28 @@
                 </div>
             </div>
         </div>
-
+        
+        <!--<div class="form-group">
+            <label class="col-md-2 control-label" for="inputPROJDURATION_ID">Project Duration</label>
+            <div class="col-md-10">
+                <select id="inputPROJDURATION_ID"
+                        placeholder="" ng-model="Project.DESCRIPTION" />
+            </div>
+        </div>
+-->
         <div class="form-group">
             <div class="col-md-4 col-md-offset-2">
                 <span>
                     <button class="btn btn-primary"
                             style="width:80px;margin-right:10px"
-                            ng-click="vm.submit(projectForm.$valid)">
+                            ng-click="submit(projectForm.$valid)">
                         Save
                     </button>
                 </span>
                 <span>
                     <button class="btn btn-default"
                             style="width:70px"
-                            ng-click="vm.cancel()">
+                            ng-click="cancel()">
                         Cancel
                     </button>
                 </span>
