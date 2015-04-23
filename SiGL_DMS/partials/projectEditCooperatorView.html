@@ -1,0 +1,49 @@
+﻿<form class="form-horizontal" name="projectCoopForm" novalidate>
+    <fieldset>
+        <legend>Organizations</legend>
+
+        <!-- Project Organizations -->
+        <div class="form-group" ng-if="ProjOrgs.length >= 1">
+            <table class="table">
+                <thead><tr><th></th><th>Name</th><th>Division</th><th>Section</th></tr></thead>>
+                <tbody>
+                    <tr ng-repeat="o in ProjOrgs">
+                        <td><button ng-click="delete(o)"><i class="glyphicon glyphicon-remove"></i></button></td>
+                        <td>{{o.NAME}}</td><td>{{o.DIVISION}}</td><td>{{o.SECTION}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- All Organization Select -->
+        <div class="form-group">
+            <label class="col-md-2 control-label">Organization</label>
+            <div class="col-md-10">
+                <select id="inputORGANIZATION_ID" name="ORGANIZATION"
+                        ng-model="aProject.PROJ_ORGANIZATION"
+                        ng-options="o.ORGANIZATION_ID as o.NAME for o in allOrganizations"></select>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-4 col-md-offset-2">
+                <span>
+                    <button class="btn btn-primary"
+                            style="width:80px;margin-right:10px"
+                            ng-click="submit(projectForm.$valid)">
+                        Save
+                    </button>
+                </span>
+                <span>
+                    <button class="btn btn-default"
+                            style="width:70px"
+                            ng-click="cancel()">
+                        Cancel
+                    </button>
+                </span>
+            </div>
+        </div>
+
+    </fieldset>
+</form>

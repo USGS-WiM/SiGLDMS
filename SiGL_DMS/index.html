@@ -1,72 +1,51 @@
 ﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" ng-app="app">
-<head lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" ng-app="app">
+<head>
     <title>SiGL DMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
     <!-- style sheets-->
     <link href="css/bootstrap_3.1.1.css" rel="stylesheet" />
     <link href="css/bootstrap-table.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
     <link href="css/toastr.css" rel="stylesheet" />
+    <link href="css/isteven-multi-select.css" rel="stylesheet" />
 
     <!--library scripts-->
-    <script src="Scripts/vendor/jquery-1.9.1.min.js"></script>
-    <script src="Scripts/vendor/angular.js"></script>
-    <script src="Scripts/vendor/angular-resource.js"></script>
-    <script src="Scripts/vendor/angular-ui-router.js"></script>
-    <script src="Scripts/vendor/angular-route.js"></script>
-    <script src="Scripts/vendor/angular-sanitize.js"></script>
-    <script src="Scripts/vendor/angular-cookies.js"></script>
-    <script src="Scripts/vendor/marked.js"></script>
-    <script src="Scripts/vendor/bootstrap.min.js"></script>
-    <script src="Scripts/vendor/bootstrap-table.js"></script>
-    <script src="Scripts/vendor/ui-utils.js"></script> <!--for data masking ui-mask="(999)-****"-->
-    <script src="Scripts/vendor/ui-bootstrap-tpls-0.11.0.js"></script> <!-- for date picker-->
-    <script src="Scripts/vendor/toastr.js"></script>
+    <script src="js/vendor/jquery-1.10.2.min.js"></script>
+    <script src="js/vendor/angular.min.js"></script>
+    <script src="js/vendor/angular-route.min.js"></script>
+    <script src="js/vendor/angular-resource.js"></script>
+    <script src="js/vendor/angular-cookies.js"></script>
+    <script src="js/vendor/angular-ui-router.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/vendor/angular-sanitize.js"></script> <!--not sure if needed-->
+    <script src="js/vendor/bootstrap-table.js"></script>
+    <script src="js/vendor/ui-utils.js"></script> <!--for data masking ui-mask="(999)-****"-->
+    <script src="js/vendor/ui-bootstrap-tpls-0.11.0.js"></script> <!-- for date picker-->
+    <script src="js/vendor/toastr.js"></script>
+    <script src="js/vendor/isteven-multi-select.js"></script>
 
     <!--application scripts-->
-    <script src="app/app.js"></script>
+    <script src="js/app.js"></script>
 
-    <!--Services
-    <script src="app/services/common.services.js"></script>-->
-    <script src="app/services/LaMPResource.js"></script>
-    <script src="app/services/LaMPResourceLookups.js"></script>
+    <!--Services-->
+    <script src="services/LaMPResource.js"></script>
+    <script src="js/businessServices.js"></script>
 
-    <!-- Project Controllers -->
-    <script src="app/project/SiGLControllers.js"></script>
-<!--    <script src="app/project/projectListCtrl.js"></script>
-    <script src="app/project/projectDetailCtrl.js"></script>
-    <script src="app/project/projectEditCtrl.js"></script>-->
-    <script src="app/datePickrCtrl.js"></script>
+    <!-- Controllers -->
+    <script src="js/SiGLControllers.js"></script>
+    <script src="js/datePickrCtrl.js"></script>
 
 </head>
 
 <body ng-app="app">
-    <nav class="navbar navbar-inverse">
-        <div class="container">
-            <a class="navbar-brand" ui-sref="home">Home</a>
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a ui-sref="projectList">Project List</a></li>
-                    <li>
-                        <a ui-sref="projectEdit.info({projectId:0})">
-                            <i class="glyphicon glyphicon-plus"></i>
-                            Add Project
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <div ng-include src="'partials/header.html'"></div>
+    <!--<div ng-include src="'partials/nav.html'"></div>-->
+    <br clear="all"/>
 
-    <div class="container">
+    <div class="container" style="margin-top:50px;">
         <div ui-view></div>
     </div>
 

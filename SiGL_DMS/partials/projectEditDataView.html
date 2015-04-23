@@ -1,0 +1,70 @@
+﻿<form class="form-horizontal" name="projectForm" novalidate>
+    <fieldset>
+        <legend>Data Sources</legend>
+
+        <div class="form-group" ng-if="ProjData.length > 0">
+            <table class="table">
+                <thead><tr><th></th><th></th><th></th><th></th></tr></thead>>
+                <tbody>
+                    <tr ng-repeat="d in ProjData">
+                        <td><button ng-click="delete(d)"><i class="glyphicon glyphicon-remove"></i></button></td>
+                        <td>{{d.DESCRIPTION}}</td>
+                        <td>{{d.HOST_NAME}}</td>
+                        <td>{{d.PORTAL_URL}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+        <hr />
+
+        <div>Add new data source</div>
+        <!-- Data Management System -->
+        <div class="form-group">
+            <label class="col-md-2 control-label req" for="inputDESCRIPTION">Data management system or data description:</label>
+            <div class="col-md-4">
+                <input class="form-control" id="inputDESCRIPTION" name="DESCRIPTION"
+                       type="text" placeholder=""
+                       ng-model="d.DESCRIPTION" required />
+            </div>
+        </div>
+
+        <!-- Data Hosting Entity -->
+        <div class="form-group">
+            <label class="col-md-2 control-label req" for="inputHOST_NAME">Data Hosting Entity:</label>
+            <div class="col-md-4">
+                <input class="form-control" id="inputHOST_NAME" name="HOST_NAME"
+                       type="text" placeholder=""
+                       ng-model="d.HOST_NAME" required />
+            </div>
+        </div>
+
+        <!-- Online Data Location -->
+        <div class="form-group">
+            <label class="col-md-2 control-label req" for="inputPORTAL_URL">Online Data Location:</label>
+            <div class="col-md-4">
+                <input class="form-control" id="inputPORTAL_URL" name="PORTAL_URL"
+                       type="text" placeholder=""
+                       ng-model="d.PORTAL_URL" required />
+            </div>
+        </div>
+
+        <!--submit button-->
+        <div class="form-group">
+            <div class="col-md-4 col-md-offset-2">
+                <span>
+                    <button class="btn btn-primary"
+                            style="width:80px;margin-right:10px"
+                            ng-click="submit(projectForm.$valid)">
+                        Save
+                    </button>
+                </span>
+                
+            </div>
+        </div>
+
+    </fieldset>
+</form>
