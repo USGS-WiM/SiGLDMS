@@ -1,0 +1,82 @@
+﻿<form class="form-horizontal" name="projectForm" novalidate>
+    <fieldset>
+        <legend>Contacts</legend>
+
+        <div class="form-group" ng-if="ProjContacts.length > 0">
+            <table class="table">
+                <thead><tr><th></th><th></th><th></th><th></th><th></th></tr></thead>>
+                <tbody>
+                    <tr ng-repeat="c in ProjContacts">
+                        <td><button ng-click="delete(c)"><i class="glyphicon glyphicon-remove"></i></button></td>
+                        <td>{{c.NAME}}</td>
+                        <td>{{c.ORGANIZATION_ID}}</td>
+                        <td>{{c.EMAIL}}</td>
+                        <td>{{c.PHONE}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+        <hr />
+
+        <div>Add new contact</div>
+        <!-- NAME -->
+        <div class="form-group">
+            <label class="col-md-2 control-label req" for="inputNAME">Name:</label>
+            <div class="col-md-4">
+                <input class="form-control" id="inputNAME" name="NAME"
+                       type="text" placeholder=""
+                       ng-model="c.NAME" required />
+            </div>
+        </div>
+
+        <!-- All Organization Select -->
+        <div class="form-group">
+            <label class="col-md-2 control-label">Organization:</label>
+            <div class="col-md-10">
+                <select id="inputORGANIZATION_ID" name="ORGANIZATION"
+                        ng-model="aProject.PROJ_ORGANIZATION"
+                        ng-options="o.ORGANIZATION_ID as o.NAME for o in allOrganizations"></select>
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+            <label class="col-md-2 control-label req" for="inputEMAIL">Email:</label>
+            <div class="col-md-4">
+                <input class="form-control" id="inputEMAIL" name="EMAIL"
+                       type="text" placeholder=""
+                       ng-model="c.EMAIL" required />
+            </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="form-group">
+            <label class="col-md-2 control-label req" for="inputPHONE">Phone:</label>
+            <div class="col-md-4">
+                <input class="form-control" id="inputPHONE" name="PHONE"
+                       type="text" placeholder=""
+                       ng-model="c.PHONE" required />
+            </div>
+        </div>
+
+
+        <!--submit button-->
+        <div class="form-group">
+            <div class="col-md-4 col-md-offset-2">
+                <span>
+                    <button class="btn btn-primary"
+                            style="width:80px;margin-right:10px"
+                            ng-click="submit(projectForm.$valid)">
+                        Save
+                    </button>
+                </span>
+
+            </div>
+        </div>
+
+    </fieldset>
+</form>

@@ -1,0 +1,70 @@
+﻿<form class="form-horizontal" name="projectForm" novalidate>
+    <fieldset>
+        <legend>Publications</legend>
+
+        <div class="form-group" ng-if="ProjPublications.length > 0">
+            <table class="table">
+                <thead><tr><th></th><th></th><th></th><th></th></tr></thead>>
+                <tbody>
+                    <tr ng-repeat="p in ProjPublications">
+                        <td><button ng-click="delete(d)"><i class="glyphicon glyphicon-remove"></i></button></td>
+                        <td>{{p.TITLE}}</td>
+                        <td>{{p.DESCRIPTION}}</td>
+                        <td>{{p.URL}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+        <hr />
+
+        <div>Add new publication</div>
+        <!-- Publication title -->
+        <div class="form-group">
+            <label class="col-md-2 control-label req" for="inputTITLE">Publication title:</label>
+            <div class="col-md-4">
+                <input class="form-control" id="inputTITLE" name="TITLE"
+                       type="text" placeholder=""
+                       ng-model="P.TITLE" required />
+            </div>
+        </div>
+
+        <!-- publication description -->
+        <div class="form-group">
+            <label class="col-md-2 control-label req" for="inputDESCRIPTION">Publication description:</label>
+            <div class="col-md-4">
+                <input class="form-control" id="inputDESCRIPTION" name="DESCRIPTION"
+                       type="text" placeholder=""
+                       ng-model="p.DESCRIPTION" required />
+            </div>
+        </div>
+
+        <!-- publication website/location -->
+        <div class="form-group">
+            <label class="col-md-2 control-label req" for="inputURL">Publication website/location:</label>
+            <div class="col-md-4">
+                <input class="form-control" id="inputURL" name="URL"
+                       type="text" placeholder=""
+                       ng-model="p.URL" required />
+            </div>
+        </div>
+
+        <!--submit button-->
+        <div class="form-group">
+            <div class="col-md-4 col-md-offset-2">
+                <span>
+                    <button class="btn btn-primary"
+                            style="width:80px;margin-right:10px"
+                            ng-click="submit(projectForm.$valid)">
+                        Save
+                    </button>
+                </span>
+
+            </div>
+        </div>
+
+    </fieldset>
+</form>
