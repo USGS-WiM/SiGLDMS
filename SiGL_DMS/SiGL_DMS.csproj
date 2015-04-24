@@ -78,7 +78,7 @@
     <Content Include="partials\projectListView.html" />
     <Content Include="js\SiGLControllers.js" />
     <Content Include="services\LaMPResourceLookups.js" />
-    <Content Include="partials\mainView.html" />
+    <Content Include="partials\homeView.html" />
     <Content Include="services\LaMPResource.js" />
     <Content Include="css\app.css" />
     <Content Include="css\bootstrap_3.1.1.css" />

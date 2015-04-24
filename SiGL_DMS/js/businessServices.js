@@ -61,12 +61,8 @@
 
     //set the USER when user logs in
     siGLBusinessServices.factory('setUser', ['$cookies', function ($cookies) {
-        return function (user) {        
-            $cookies.user = {
-                "name": user.FNAME + " " + user.LNAME,
-                "userID": user.DATA_MANAGER_ID,
-                "roleID": user.ROLE_ID
-            };
+        return function (user) {
+            $cookies.user = user.FNAME + " " + user.LNAME;
         };
     }]);
 
@@ -84,37 +80,38 @@
     }]);
 
     //get lookups from cookie
-    siGLBusinessServices.factory('getProjectLookups', ['$cookies', function ($cookies) {
-        return function () {
-            var returnVal = [];
-            var PDurationList = $cookies.PDurationList;
-            var PStatusList = $cookies.PStatusList;
-            var PObjectiveList = $cookies.PObjectiveList;
+    //siGLBusinessServices.factory('getProjectLookups', ['$cookies', function ($cookies) {
+    //    return function () {
+    //        var returnVal = [];
+    //        var PDurationList = $cookies.PDurationList;
+    //        var PStatusList = $cookies.PStatusList;
+    //        var PObjectiveList = $cookies.PObjectiveList;
 
-            if (PDurationList !== undefined && PDurationList !== "") {
-                returnVal[0] = PDurationList;
-                returnVal[0] = PStatusList;
-                returnVal[0] = PObjectiveList;
-            }
-            return returnVal;
-        };
-    }]);
+    //        if (PDurationList !== undefined && PDurationList !== "") {
+    //            returnVal[0] = PDurationList;
+    //            returnVal[1] = PStatusList;
+    //            returnVal[3] = PObjectiveList;
+    //        }
+    //        return returnVal;
+    //    };
+    //}]);
 
-    //set lookups to cookie
-    siGLBusinessServices.factory('setProjectLookups', ['$cookies', '$http', function ($cookies, $http) {
-        return function () {
-            $http.get('/LaMPServices/ProjectDuration.json').success(function (response) {
-                $cookies.PDurationList = response;
-            });
+    ////set lookups to cookie
+    //siGLBusinessServices.factory('setProjectLookups', ['$cookies', '$http', function ($cookies, $http) {
+    //    return function () {
+    //        $http.get('/LaMPServices/ProjectDuration.json').success(function (response) {
+    //            GdurationList = response;
+    //            //$cookies.PDurationList = response;
+    //        });
 
-            $http.get('/LaMPServices/ProjectStatus.json').success(function (response) {
-                $cookies.PStatusList = response;
-            });
+    //        $http.get('/LaMPServices/ProjectStatus.json').success(function (response) {
+    //            $cookies.PStatusList = response;
+    //        });
 
-            $http.get('/LaMPServices/Objectives.json').success(function (response) {
-                $cookies.PObjectiveList = response;
-            });
-        };
-    }]);
+    //        $http.get('/LaMPServices/Objectives.json').success(function (response) {
+    //            $cookies.PObjectiveList = response;
+    //        });
+    //    };
+    //}]);
 
 })();

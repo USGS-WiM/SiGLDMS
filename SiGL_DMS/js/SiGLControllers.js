@@ -5,17 +5,20 @@ var siGLControllers = angular.module('siGLControllers', []);
 
 siGLControllers.controller('mainCtrl', ['$scope', 'Projects', '$location', '$state', 'checkCreds', 'getUsername', mainCtrl]);
 function mainCtrl($scope, Projects, $location, $state, checkCreds, getUsername) {
+    $scope.logo = 'images/usgsLogo.png';
     if (!checkCreds()) {
         $location.path('/login');
     } else {
         $scope.username = getUsername();
-        $state.go('projectList')
+        $state.go('projectList');
+        //setProjectLookups();
     }
+    
 
 }
 //ProjectListCtrl
 siGLControllers.controller('projectListCtrl', ['$scope', 'Projects', '$location', '$http', 'checkCreds', 'getCreds', 'getUser', projectListCtrl]);
-function projectListCtrl($scope, Projects, $location, $http, checkCreds, getCreds, getUser) { //, setProjectLookups) {
+function projectListCtrl($scope, Projects, $location, $http, checkCreds, getCreds, getUser) {
     if (!checkCreds()) {
         $location.path('/login');
     }
@@ -93,88 +96,118 @@ function ProjectDetailCtrl($scope, project, Projects, $state) {
 }
 //end projectDetailsCtrl
 
-//ProjectEditCtrl  'ProjDurations''allDurations',
-siGLControllers.controller('projectEditCtrl', ['$scope', 'ProjDurations', 'project', 'Projects', 'getProjectLookups', 'ProjStats', 'ObjectiveTypes', '$state', projectEditCtrl]);
-function projectEditCtrl($scope, ProjDurations, project, Projects, getProjectLookups, ProjStats, ObjectiveTypes, $state) {
-    //model needed for ProjectEdit Info tab: 
-    //1. aProject, 2. all durations, 3. all statuses, 4. all objectives, 5. project Keywords, 6. parsed urls
-    $scope.aProject = project;
-   // setProjectLookups();
-    $scope.urls = [];
-    if ($scope.aProject.PROJECT_ID) {
-        $scope.title = "Edit: " + $scope.aProject.NAME;
-
-        //6. parsed URLs by '|'
-        if ($scope.aProject.URL) {
-            if (($scope.aProject.URL).indexOf('|') > -1) {
-                $scope.urls = ($scope.aProject.URL).split("|");
-            } else {
-                $scope.urls[0] = $scope.aProject.URL;
-            }
-        }
-    }
-    else {
-        $scope.title = "New Project";
-    }
-
-    //2. all durations
-    ProjDurations.getAll(function (data) {
-        $scope.DurationList = data; //getProjectLookups()[0];
-    });
-    //3. all status
-    ProjStats.getAll(function (data) {
-        $scope.StatusList = data;
-    });
-
-    var projObjs = [];
-    Projects.getProjObjectives({ id: project.PROJECT_ID }, function (data) {
-        projObjs = data;
-    });
+//ProjectEditCtrl
+siGLControllers.controller('projectEditCtrl', ['$scope', 'ProjDurations', 'project', 'Projects', 'ProjStats', 'ObjectiveTypes', '$state', 'checkCreds', '$http', 'getCreds', projectEditCtrl]);
+function projectEditCtrl($scope, ProjDurations, project, Projects, ProjStats, ObjectiveTypes, $state, checkCreds, $http, getCreds) {
+    //model needed for ProjectEdit Info tab: 1. aProject, 2. parsed urls, 3. project Keywords, 4. all objectives, 5. all statuses, 6. all durations 
     var allObjList = [];
-    ObjectiveTypes.getAll(function (data) {
-        allObjList = data;
-    })
-    //http://isteven.github.io/angular-multi-select/#/demo-minimum
-    //go through allObjList and add selected Property.
-    for (var i = 0; i < allObjList.length; i++) {
-        //for each one, if projObjectives has this id, add 'selected:true' else add 'selected:false'
-        for (var y = 0; y < projObjs.length; y++) {
-            if (projObjs[y].OBJECTIVE_TYPE_ID == allObjList[i].OBJECTIVE_TYPE_ID) {
-                allObjList[i].selected = true;
-                y = projObjs.length;
+
+    if (!checkCreds()) {
+        $location.path('/login');
+    } else {
+        $scope.urls = [];
+        if (project != undefined) {
+            //this is an edit view
+
+            //1. aProject
+            $scope.aProject = project;
+            $scope.title = "Edit: " + $scope.aProject.NAME;
+
+            //2. parsed URLs by '|'
+            if ($scope.aProject.URL) {
+                if (($scope.aProject.URL).indexOf('|') > -1) {
+                    $scope.urls = ($scope.aProject.URL).split("|");
+                } else {
+                    $scope.urls[0] = $scope.aProject.URL;
+                }
             }
-            else {
-                allObjList[i].selected = false;
+
+            //3. aProj keywords
+            Projects.getProjKeywords({ id: project.PROJECT_ID }, function (data) {
+                $scope.ProjectKeywords = data;
+            });
+
+            //get projObjectives to use in making new prop in all objectives for multi select ('selected: true')
+            var projObjs = [];
+            Projects.getProjObjectives({ id: project.PROJECT_ID }, function (data) {
+                projObjs = data;
+            });
+            
+            ObjectiveTypes.getAll(function (data) {
+                allObjList = data;
+            })
+            //http://isteven.github.io/angular-multi-select/#/demo-minimum
+            //go through allObjList and add selected Property.
+            for (var i = 0; i < allObjList.length; i++) {
+                //for each one, if projObjectives has this id, add 'selected:true' else add 'selected:false'
+                for (var y = 0; y < projObjs.length; y++) {
+                    if (projObjs[y].OBJECTIVE_TYPE_ID == allObjList[i].OBJECTIVE_TYPE_ID) {
+                        allObjList[i].selected = true;
+                        y = projObjs.length;
+                    }
+                    else {
+                        allObjList[i].selected = false;
+                    }
+                }
             }
         }
+        else {
+            $scope.title = "New Project";
+        }
+
+        //4. all objectives (with new selected property
+        $scope.ObjectivesList = allObjList;
+        //5. all status
+        ProjStats.getAll(function (data) {
+            $scope.StatusList = data;
+        });
+
+        //6. all durations
+        ProjDurations.getAll(function (data) {
+            $scope.DurationList = data; //getProjectLookups()[0];
+        });
+    
+        $scope.save = function () {
+            //if this is an edit, need to do put, else do post
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+            if ($scope.aProject.PROJECT_ID >= 1) {
+                //put
+                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                Projects.save({id:$scope.aProject.PROJECT_ID}, $scope.aProject, function success(response) {
+                    alert("Awesome");
+                }, function error(errorResponse) {
+                    alert("Nope");
+                });
+            } else {
+                //post
+                Projects.save({}, $scope.aProject, function success(response) {
+                    alert("Awesome");
+                }, function error(errorResponse) {
+                    alert("Nope");
+                });
+            }
+            
+        }
+
+        $scope.cancel = function () {
+            //navigate to a different state
+            $state.go('projectList');
+        };
+
+        //$scope.addOrgs = function (orgs) {
+        //    if (orgs) {
+        //        var array = orgs.split(',');
+        //        $scope.Project.orgs = $scope.Project.orgs ? $scope.Project.orgs.concat(array) : array;
+        //        $scope.newOrgs = "";
+        //    }
+        //    else {
+        //        alert("please enter one or more orgs separated by comma.. not really");
+        //    }
+        //};
+        //$scope.removeOrgs = function (idx) {
+        //    $scope.aProject.orgs.splice(idx, 1);
+        //};
     }
-
-    //4. all objectives
-    $scope.ObjectivesList = allObjList;
-
-    //5. aProj keywords
-    Projects.getProjKeywords({ id: project.PROJECT_ID }, function (data) {
-        $scope.ProjectKeywords = data;
-    });
-
-    $scope.cancel = function () {
-        //navigate to a different state
-        $state.go('projectList');
-    };
-
-    //$scope.addOrgs = function (orgs) {
-    //    if (orgs) {
-    //        var array = orgs.split(',');
-    //        $scope.Project.orgs = $scope.Project.orgs ? $scope.Project.orgs.concat(array) : array;
-    //        $scope.newOrgs = "";
-    //    }
-    //    else {
-    //        alert("please enter one or more orgs separated by comma.. not really");
-    //    }
-    //};
-    //$scope.removeOrgs = function (idx) {
-    //    $scope.aProject.orgs.splice(idx, 1);
-    //};
 }
 //end projectEditCtrl
 
@@ -290,7 +323,7 @@ function LoginCtrl($scope, $state, $http, Login, setCreds, setUser) {
                 }
             },
             function error(errorResponse) {
-                console.log("Error:" + errorResponse);
+                alert("Error:" + errorResponse.statusText);
             }
         );
     };

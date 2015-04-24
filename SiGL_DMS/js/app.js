@@ -1,6 +1,7 @@
 ﻿(function () {
     "use strict"; 
     var app = angular.module('app', ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'laMPResource', 'siGLControllers', 'siGLBusinessServices', 'isteven-multi-select']);
+    //app.value('GdurationList', 'holder');
 
     //app.config(function that defines the config code. 
     app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
@@ -12,7 +13,7 @@
                 //home
                 .state("home", {
                     url: "/",
-                    templateUrl: "partials/mainView.html",
+                    templateUrl: "partials/homeView.html",
                     controller: "mainCtrl"
                 })
 
