@@ -1,8 +1,8 @@
 ﻿<div ng-include src="'partials/nav.html'"></div>
 
-<!--<div>{{User.name}}</div>-->
+<!--<div>{{User}}</div>-->
 <div class="panel panel-primary">
-    <div class="panel-heading" style="font-size:large">Project List for {{User.name}}</div>
+    <div class="panel-heading" style="font-size:large">Project List for {{User}}</div>
     <div class="panel-body">
         <table class="table">
             <thead>
@@ -20,9 +20,12 @@
                     <td><a ui-sref="projectDetail({id: pr.PROJECT_ID})">{{pr.Name}}</a></td>
                     <td>{{pr.StartDate | date}}</td>
                     <td>{{pr.SiteCount}}</td>
-                    <td><a class="btn btn-primary" ui-sref="projectEdit.info({id: pr.PROJECT_ID})">Edit</a></td>
+                    <td><a class="btn btn-primary" ui-sref="projectEdit.info({id: pr.ProjId})">Edit</a></td>
                 </tr>
             </tbody>
         </table>
+        <a ui-sref="projectEdit.info({id:0})"><i class="glyphicon glyphicon-plus"></i>
+            Add Project
+        </a>
     </div>
 </div>
