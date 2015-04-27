@@ -97,10 +97,14 @@ function ProjectDetailCtrl($scope, project, Projects, $state) {
 //end projectDetailsCtrl
 
 //ProjectEditCtrl
-siGLControllers.controller('projectEditCtrl', ['$scope', 'ProjDurations', 'project', 'Projects', 'ProjStats', 'ObjectiveTypes', '$state', 'checkCreds', '$http', 'getCreds', projectEditCtrl]);
-function projectEditCtrl($scope, ProjDurations, project, Projects, ProjStats, ObjectiveTypes, $state, checkCreds, $http, getCreds) {
+siGLControllers.controller('projectEditCtrl', ['$scope', '$location', '$state', '$http', 'Projects', 'project', 'allDurationList', 'allStatsList', 'ObjectiveTypes', 'checkCreds', 'getCreds', projectEditCtrl]);
+function projectEditCtrl($scope, $location, $state, $http, Projects, project, allDurationList, allStatsList, ObjectiveTypes, checkCreds, getCreds) {
+    if (!checkCreds()) {
+        $location.path('/login');
+    }
     //model needed for ProjectEdit Info tab: 1. aProject, 2. parsed urls, 3. project Keywords, 4. all objectives, 5. all statuses, 6. all durations 
     var allObjList = [];
+    $scope.projObjectivesOutput = [];
 
     if (!checkCreds()) {
         $location.path('/login');
@@ -131,47 +135,53 @@ function projectEditCtrl($scope, ProjDurations, project, Projects, ProjStats, Ob
             var projObjs = [];
             Projects.getProjObjectives({ id: project.PROJECT_ID }, function (data) {
                 projObjs = data;
+
             });
             
             ObjectiveTypes.getAll(function (data) {
                 allObjList = data;
-            })
-            //http://isteven.github.io/angular-multi-select/#/demo-minimum
-            //go through allObjList and add selected Property.
-            for (var i = 0; i < allObjList.length; i++) {
-                //for each one, if projObjectives has this id, add 'selected:true' else add 'selected:false'
-                for (var y = 0; y < projObjs.length; y++) {
-                    if (projObjs[y].OBJECTIVE_TYPE_ID == allObjList[i].OBJECTIVE_TYPE_ID) {
-                        allObjList[i].selected = true;
-                        y = projObjs.length;
-                    }
-                    else {
-                        allObjList[i].selected = false;
+                //http://isteven.github.io/angular-multi-select/#/demo-minimum
+                //go through allObjList and add selected Property.
+                for (var i = 0; i < allObjList.length; i++) {
+                    //for each one, if projObjectives has this id, add 'selected:true' else add 'selected:false'
+                    for (var y = 0; y < projObjs.length; y++) {
+                        if (projObjs[y].OBJECTIVE_TYPE_ID == allObjList[i].OBJECTIVE_TYPE_ID) {
+                            allObjList[i].selected = true;
+                            y = projObjs.length;
+                        }
+                        else {
+                            allObjList[i].selected = false;
+                        }
                     }
                 }
-            }
+                //4. all objectives (with new selected property
+                $scope.ObjectivesList = allObjList;
+            });
         }
         else {
             $scope.title = "New Project";
         }
 
-        //4. all objectives (with new selected property
-        $scope.ObjectivesList = allObjList;
-        //5. all status
-        ProjStats.getAll(function (data) {
-            $scope.StatusList = data;
-        });
-
+        //5. all project statuses 
+        $scope.StatusList = allStatsList;
+       
         //6. all durations
-        ProjDurations.getAll(function (data) {
-            $scope.DurationList = data; //getProjectLookups()[0];
-        });
-    
+        $scope.DurationList = allDurationList; 
+          
+        //save this project info
         $scope.save = function () {
             //if this is an edit, need to do put, else do post
             $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
             if ($scope.aProject.PROJECT_ID >= 1) {
+                var test = $scope.projObjectivesOutput;
                 //put
+                //var theProjObjectives = [];
+                //for (var i = 0; i < $scope.ObjectivesList.length; i++) {
+                //    if ($scope.ObjectivesList[i].selected == true) {
+                //        theProjObjectives.push($scope.ObjectivesList[i]);
+                //    }
+                //}
+                //post these (theProjObjectives) to this project
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                 Projects.save({id:$scope.aProject.PROJECT_ID}, $scope.aProject, function success(response) {
                     alert("Awesome");
