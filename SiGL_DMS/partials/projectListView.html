@@ -1,7 +1,4 @@
-﻿<div ng-include src="'partials/nav.html'"></div>
-
-<!--<div>{{User}}</div>-->
-<div class="panel panel-primary">
+﻿<div class="panel panel-primary">
     <div class="panel-heading" style="font-size:large">Project List for {{User}}</div>
     <div class="panel-body">
         <table class="table">
@@ -9,7 +6,7 @@
                 <tr>
                     <!--<th data-field="button" data-align="left" data-sortable="false"><button class="btn-primary" type="button" ng-click="vm.toggleImage()">vm.showImage ? "Hide " : "Show "}}Image</button></th>-->
                     <th data-field="name" data-align="center" data-sortable="true">Project Name</th>
-                    <th data-field="startDate" data-align="center" data-sortable="true">Start Date</th>
+                    <th data-field="startDate" data-align="center" data-sortable="true">Manager</th>
                     <th data-field="sCt" data-align="center" data-sortable="true">Site Count</th>
                 </tr>
             </thead>
@@ -17,8 +14,8 @@
                 <tr ng-repeat="pr in projects">
                     <!--ng-show will download images initially, ng-if will not download unless clicked
         <td><img ng-if="vm.showImage" ng-src="pr.imageURL}}" style="width:6%" /></td>-->
-                    <td><a ui-sref="projectDetail({id: pr.PROJECT_ID})">{{pr.Name}}</a></td>
-                    <td>{{pr.StartDate | date}}</td>
+                    <td><a ui-sref="projectDetail({id: pr.ProjId})">{{pr.Name}}</a></td>
+                    <td>{{pr.Manager}}</td>
                     <td>{{pr.SiteCount}}</td>
                     <td><a class="btn btn-primary" ui-sref="projectEdit.info({id: pr.ProjId})">Edit</a></td>
                 </tr>

@@ -59,10 +59,14 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="css\bootstrap-multiselect.css" />
+    <Content Include="css\isteven-multi-select.css" />
     <Content Include="images\usgsLogo.png" />
-    <Content Include="js\businessServices.js" />
+    <Content Include="services\businessServices.js" />
     <Content Include="js\datePickrCtrl.js" />
     <Content Include="app\Model\Interfaces.js" />
+    <Content Include="js\vendor\bootstrap-multiselect.js" />
+    <Content Include="js\vendor\isteven-multi-select.js" />
     <Content Include="js\vendor\jquery-1.10.2.min.js" />
     <Content Include="partials\login.html" />
     <Content Include="partials\header.html" />
@@ -83,7 +87,6 @@
     <Content Include="css\app.css" />
     <Content Include="css\bootstrap_3.1.1.css" />
     <Content Include="css\bootstrap-table.css" />
-    <Content Include="css\isteven-multi-select.css" />
     <Content Include="css\toastr.css" />
     <Content Include="js\vendor\angular-cookies.js" />
     <Content Include="js\vendor\angular-cookies.min.js" />
@@ -91,8 +94,6 @@
     <Content Include="js\vendor\angular-route.min.js" />
     <Content Include="js\vendor\angular-sanitize.js" />
     <Content Include="js\vendor\angular-sanitize.min.js" />
-    <Content Include="js\vendor\angularjs-dropdown-multiselect.js" />
-    <Content Include="js\vendor\isteven-multi-select.js" />
     <Content Include="js\vendor\marked.js" />
     <Content Include="js\vendor\angular-ui-router.js" />
     <Content Include="js\vendor\angular.min.js">

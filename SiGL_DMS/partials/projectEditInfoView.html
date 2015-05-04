@@ -76,14 +76,14 @@
             <label class="col-md-2 control-label" for="inputPROJ_OBJECTIVES">Project Objectives</label>
             <div class="col-md-10">
                 <div isteven-multi-select
-                     input-model="ObjectivesList"
-                     output-model="projObjectivesOutput"
+                     input-model="Objectivesdata"
+                     output-model="Objectivesmodel.value"
                      button-label="OBJECTIVE"
                      item-label="OBJECTIVE"
-                     max-height="250px"
-                     search-property="OBJECTIVE"
                      tick-property="selected">
-                </div>  
+
+                </div>
+                
                 
             </div>
         </div>
@@ -102,28 +102,25 @@
         <!-- Project Keywords -->
         <div class="form-group" ng-if="ProjectKeywords.length > 0">
             <label class="col-md-2 control-label" for="inputProjKEYWORDS">Project Keywords</label>
-            <div class="col-md-10"><ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button ng-click="delete(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul></div>
+            <div class="col-md-10"><ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button confirmed-click="removeKey(key)" ng-confirm-click="Are you sure you want to remove this keyword?"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul></div>
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label req" for="inputProjKeyword">Add Project Keyword</label>
             <div class="col-md-4">
-                <input class="form-control" id="inputKEYWORD" name="KEYWORD"
-                       type="text" placeholder="" />                
-            </div>
+                <input class="form-control" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="" ng-model="newKey.value" />
+            </div><button ng-click="addProjKeyword()">Add</button>
         </div>
 
         <!-- Project Websites -->
         <div class="form-group" ng-if="urls.length > 0">
             <label class="col-md-2 control-label" for="inputURL">Project Websites</label>
-            <div class="col-md-10"><ul><li style="list-style:none" data-ng-repeat="key in urls"><button ng-click="delete(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key}}</li></ul></div>
+            <div class="col-md-10"><ul><li style="list-style:none" data-ng-repeat="key in urls"><button confirmed-click="removeUrl(key)" ng-confirm-click="Are you sure you want to remove this URL?"><i class="glyphicon glyphicon-remove"></i></button>  {{key}}</li></ul></div>
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label req" for="inputURL">Add Project Website</label>
             <div class="col-md-4">
-                <input class="form-control" ng-model="aProject.URL" id="inputURL" name=""
-                       type="text" placeholder="" />
-
-            </div>
+                <input class="form-control" ng-model="newURL.value" id="inputURL" type="text" placeholder="" />
+            </div><button ng-click="addProjURL()">Add</button>
         </div>
 
         <!-- Project Additional Info -->
