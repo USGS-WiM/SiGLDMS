@@ -1,12 +1,15 @@
 ﻿(function () {
     "use strict"; 
-    var app = angular.module('app', ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'laMPResource', 'siGLControllers', 'siGLBusinessServices', 'isteven-multi-select']);
+    var app = angular.module('app', ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'laMPResource', 'siGLControllers', 'siGLBusinessServices', 'isteven-multi-select',]);
     
-    //app.config(function that defines the config code. 
+    
+
+    //app.config(function that defines the config code. 'ui.select', 'ngSanitize',
     app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
         function ($stateProvider, $urlRouterProvider, $locationProvider) {
             //if no active state, display state associated with this fragment identifier
             $urlRouterProvider.otherwise("/");
+
             //http://stackoverflow.com/questions/19721125/resolve-http-request-before-running-app-and-switching-to-a-route-or-state
             //http://stackoverflow.com/questions/22537311/angular-ui-router-login-authentication
             $stateProvider
@@ -31,7 +34,7 @@
                     controller: "ProjectDetailCtrl",
                     resolve: {
                         Proj: 'Projects', //dependency for the project
-                        project: function (Proj, $stateParams) {
+                        thisPproject: function (Proj, $stateParams) {
                             var projectId = $stateParams.id;
                             return Proj.query(
                                 { id: projectId }).$promise;
@@ -40,7 +43,6 @@
                 })
 
                 // project edit/create page
-                //use abstract root get all initial lookups so all states can see it (http://www.jvandemo.com/how-to-resolve-application-wide-resources-centrally-in-angularjs-with-ui-router/)
                 .state("projectEdit", {
                     abstract: true, //can't be directly activated, only nested states
                     url: "/project/edit/:id",
@@ -48,10 +50,17 @@
                     controller: "projectEditCtrl",
                     resolve: {
                         Proj: 'Projects', //dependency for the project
-                        project: function (Proj, $stateParams) {
+                        thisPproject: function (Proj, $stateParams) {
                             var projectId = $stateParams.id;
                             if (projectId > 0) {
                                 return Proj.query(
+                                    { id: projectId }).$promise;
+                            }
+                        },
+                        projObjectives: function (Proj, $stateParams) {
+                            var projectId = $stateParams.id;
+                            if (projectId > 0) {
+                                return Proj.getProjObjectives(
                                     { id: projectId }).$promise;
                             }
                         },
@@ -66,7 +75,11 @@
                         allOrgs: 'Organizations',
                         allOrgList: function (allOrgs) {
                             return allOrgs.getAll().$promise;
-                        }       
+                        },
+                        allObjs: 'ObjectiveTypes',
+                        allObjList: function (allObjs) {
+                            return allObjs.getAll().$promise;
+                        }  
                     }
                 })
 
@@ -153,17 +166,9 @@
                     url: "/site",
                     templateUrl: "partials/projectEditSiteView.html"
                 });
-            //not sure about this.. "HTML5 mode can provide pretty URLs, but it does require config changes 
-            //on web server in most cases"
-            //$locationProvider.html5Mode(false).hashPrefix('!');
+            $locationProvider.html5Mode(false).hashPrefix('!');
             //$locationProvider.html5Mode({ enabled: true, requireBase: false });
         }
     ]);
 
-    /* Notes for future reference (ideas)
-     * http://www.ng-newsletter.com/posts/angular-ui-router.html
-     * .state(..., { onEnter, onExit -- callback on transistion between views - trigger an action like 'are you sure?' modal, or login request
-     * .state(..., { data -- arbitrary data can be passed from parent state to children state (pass ProjID once posted to other tabs (contrib, publications..etc)
-     * 
-     */
 }());
