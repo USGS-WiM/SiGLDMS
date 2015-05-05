@@ -24,7 +24,13 @@
                 .state("projectList", {
                     url: "/projects",
                     templateUrl: "partials/projectListView.html",
-                    controller: "projectListCtrl"
+                    controller: "projectListCtrl",
+                    resolve: {
+                        Proj: 'Projects',
+                        IndexProjects: function (Proj) {
+                            return Proj.getDMProjects().$promise;
+                        }
+                    }
                 })
 
                 //prject details page
@@ -34,7 +40,7 @@
                     controller: "ProjectDetailCtrl",
                     resolve: {
                         Proj: 'Projects', //dependency for the project
-                        thisPproject: function (Proj, $stateParams) {
+                        thisProject: function (Proj, $stateParams) {
                             var projectId = $stateParams.id;
                             return Proj.query(
                                 { id: projectId }).$promise;
@@ -50,7 +56,7 @@
                     controller: "projectEditCtrl",
                     resolve: {
                         Proj: 'Projects', //dependency for the project
-                        thisPproject: function (Proj, $stateParams) {
+                        thisProject: function (Proj, $stateParams) {
                             var projectId = $stateParams.id;
                             if (projectId > 0) {
                                 return Proj.query(
@@ -61,6 +67,48 @@
                             var projectId = $stateParams.id;
                             if (projectId > 0) {
                                 return Proj.getProjObjectives(
+                                    { id: projectId }).$promise;
+                            }
+                        },
+                        projKeywords: function (Proj, $stateParams) {
+                            var projectId = $stateParams.id;
+                            if (projectId > 0) {
+                                return Proj.getProjKeywords(
+                                    { id: projectId }).$promise;
+                            }
+                        },
+                        projOrgs: function (Proj, $stateParams) {
+                            var projectId = $stateParams.id;
+                            if (projectId > 0) {
+                                return Proj.getProjOrganizations(
+                                    { id: projectId }).$promise;
+                            }
+                        },
+                        projDatum: function (Proj, $stateParams) {
+                            var projectId = $stateParams.id;
+                            if (projectId > 0) {
+                                return Proj.getProjData(
+                                    { id: projectId }).$promise;
+                            }
+                        },
+                        projContacts: function (Proj, $stateParams) {
+                            var projectId = $stateParams.id;
+                            if (projectId > 0) {
+                                return Proj.getProjContacts(
+                                    { id: projectId }).$promise;
+                            }
+                        },
+                        projPubs: function (Proj, $stateParams) {
+                            var projectId = $stateParams.id;
+                            if (projectId > 0) {
+                                return Proj.getProjPublications(
+                                    { id: projectId }).$promise;
+                            }
+                        },
+                        projSites: function (Proj, $stateParams) {
+                            var projectId = $stateParams.id;
+                            if (projectId > 0) {
+                                return Proj.getProjPublications(
                                     { id: projectId }).$promise;
                             }
                         },
