@@ -1,4 +1,4 @@
-﻿<nav class="navbar navbar-inverse" role="navigation">
+﻿<!--<nav class="navbar navbar-inverse" role="navigation">
     <div class="container">
         <a class="navbar-brand" ui-sref="home">Home</a>
         <div class="navbar-header">
@@ -9,16 +9,10 @@
                 <span class="icon-bar"></span>
             </button>
         </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-        <!--    <li><a ui-sref="projectList">Project List</a></li>
-                <li>
-                    <a ui-sref="projectEdit.info({id:0})">
-                        <i class="glyphicon glyphicon-plus"></i>
-                        Add Project
-                    </a>
-                </li>-->
+        <div ng-controller="LogoutCtrl" class="navbar-collapse collapse">
+            <ul ng-show="auth" class="nav navbar-nav">
+                <li><button ng-click="logout()">Log Out</button></li>
             </ul>
         </div>
     </div>
-</nav>
+</nav>-->

@@ -6,11 +6,11 @@
     <div class="panel-body">
         <div class="wizard">
             <a ui-sref=".info" ui-sref-active="active">Project Information</a>
-            <a ui-sref=".cooperator" ui-sref-active="active">Project Cooperators</a>
-            <a ui-sref=".data" ui-sref-active="active">Project Datum</a>
-            <a ui-sref=".contact" ui-sref-active="active">Project Contacts</a>
-            <a ui-sref=".publication" ui-sref-active="active">Project Publications</a>
-            <a ui-sref=".site" ui-sref-active="active">Project Sites</a>
+            <a ui-sref=".cooperator" ui-sref-active="active">Project Cooperators<span class="badge pull-right">{{coopCount}}</span></a>
+            <a ui-sref=".data" ui-sref-active="active">Project Datum<span class="badge pull-right">{{datumCount}}</span></a>
+            <a ui-sref=".contact" ui-sref-active="active">Project Contacts<span class="badge pull-right">{{contactCount}}</span></a>
+            <a ui-sref=".publication" ui-sref-active="active">Project Publications<span class="badge pull-right">{{pubCount}}</span></a>
+            <a ui-sref=".site" ui-sref-active="active">Project Sites<span class="badge pull-right">{{sitesCount}}</span></a>
         </div>
 
         <div ui-view></div>

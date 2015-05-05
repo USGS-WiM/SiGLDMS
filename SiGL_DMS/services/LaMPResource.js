@@ -16,12 +16,14 @@
                 getProjStatus: { isArray: false, url: rootURL + '/projects/:id/projStatus.json' },
                 getProjKeywords: { isArray: true, url: rootURL + '/projects/:id/Keywords.json' },
                 getProjObjectives: { isArray: true, url: rootURL + '/projects/:id/objectives.json' },
+                addProjObjective: {method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addObjective'},
+                deleteProjObjective: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/removeObjective' },
                 getProjOrganizations: { isArray: true, url: rootURL + '/projects/:id/organizations.json' },
                 getProjData: { isArray: true, url: rootURL + '/projects/:id/datahosts.json' },
                 getProjContacts: { isArray: true, url: rootURL + '/projects/:id/contacts.json' },
                 getProjPublications: { isArray: true, url: rootURL + '/projects/:id/publications.json' },
+                getProjSites: { isArray: true, url: rootURL + '/projects/:id/sites.json' },
                 save: { method: 'POST', cache: false, isArray: false },
-                update: { method: 'PUT', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
     }]);
