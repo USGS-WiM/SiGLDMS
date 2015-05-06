@@ -61,6 +61,7 @@
   <ItemGroup>
     <Content Include="css\bootstrap-multiselect.css" />
     <Content Include="css\isteven-multi-select.css" />
+    <Content Include="images\loading1.gif" />
     <Content Include="images\usgsLogo.png" />
     <Content Include="services\businessServices.js" />
     <Content Include="js\datePickrCtrl.js" />
