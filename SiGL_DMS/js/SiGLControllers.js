@@ -43,12 +43,16 @@
         }
         //array of projects    
         $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+        $(".page-loading").removeClass("hidden");
         Projects.getDMProjects(function success (data) {
             $scope.projects = data;
-            }, function error(errorResponse) {
-                toastr.error("Error: " + errorResponse.statusText);
+            $(".page-loading").addClass("hidden");
+        }, function error(errorResponse) {
+            $(".page-loading").addClass("hidden");
+            toastr.error("Error: " + errorResponse.statusText);
             }
-        );
+            
+        ).$promise;
         $scope.User = getUsersNAME();
         //setProjectLookups();
     }
@@ -353,17 +357,19 @@
                 if ($scope.aProject.PROJECT_ID != undefined) {
                     //#region PUT
                     $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-                    Projects.save({id:$scope.aProject.PROJECT_ID}, $scope.aProject, function success(response) {
+                    Projects.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject, function success(response) {
                         toastr.success("Project Updated");
                     }, function error(errorResponse) {
                         toastr.error("Something went wrong");
                     });
+                    delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                 }//#endregion PUT
                 else {
                     //#region POST
+                    var projID;
                     Projects.save({}, $scope.aProject, function success(response) {
                         toastr.success("Project Created");
-                        var projID = response.PROJECT_ID;
+                        projID = response.PROJECT_ID;
                         //post objectives added
                         for (var o = $scope.ObjectivesToAdd.length; o--;) {
                             Projects.addProjObjective({ id: projID }, $scope.ObjectivesToAdd[o],
@@ -388,10 +394,11 @@
                         }
                     }, function error(errorResponse) {
                         toastr.success("Error: " + errorResponse.statusText);
+                    }).$promise.then(function () {
+                        $location.path('/project/edit/' + projID + '/info').replace().notify(false);
                     });
-                    //#endregion POST
                 }
-            }
+            }//#endregion POST
             //#endregion SAVE this project info
 
             $scope.cancel = function () {

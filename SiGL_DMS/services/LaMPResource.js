@@ -4,7 +4,7 @@
     //look up common service module, and register the new factory with that module 
     var laMPResource = angular.module('laMPResource', ['ngResource']);
     var rootURL = "/LaMPServices";
-
+   // var rootURL = "/LaMPServicesTest";
     
     //projects
     laMPResource.factory('Projects', ['$resource', function ($resource) {
@@ -26,7 +26,7 @@
                 getProjContacts: { isArray: true, url: rootURL + '/projects/:id/contacts.json' },
                 getProjPublications: { isArray: true, url: rootURL + '/projects/:id/publications.json' },
                 getProjSites: { isArray: true, url: rootURL + '/projects/:id/sites.json' },
-                save: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects' },
+                save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false },
             });
     }]);
