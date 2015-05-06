@@ -2,7 +2,20 @@
     "use strict"; 
     var app = angular.module('app', ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'laMPResource', 'siGLControllers', 'siGLBusinessServices', 'isteven-multi-select',]);
     
-    
+    app.run(function ($rootScope) {
+        $rootScope
+            .$on('$stateChangeStart',
+                function (event, toState, toParams, fromState, fromParams) {
+                    $("#ui-view").html("");
+                    $(".page-loading").removeClass("hidden");
+                });
+
+        $rootScope
+            .$on('$stateChangeSuccess',
+                function (event, toState, toParams, fromState, fromParams) {
+                    $(".page-loading").addClass("hidden");
+                });
+    });
 
     //app.config(function that defines the config code. 'ui.select', 'ngSanitize',
     app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
@@ -24,13 +37,13 @@
                 .state("projectList", {
                     url: "/projects",
                     templateUrl: "partials/projectListView.html",
-                    controller: "projectListCtrl",
-                    resolve: {
-                        Proj: 'Projects',
-                        IndexProjects: function (Proj) {
-                            return Proj.getDMProjects().$promise;
-                        }
-                    }
+                    controller: "projectListCtrl"//,
+                    //resolve: {
+                    //    Proj: 'Projects',
+                    //    IndexProjects: function (Proj) {
+                    //        return Proj.getDMProjects().$promise;
+                    //    }
+                    //}
                 })
 
                 //prject details page
@@ -143,18 +156,18 @@
                     templateUrl: "partials/projectEditCooperatorView.html",
                     controller: "projectEditCoopCtrl",
                     resolve: {
-                        Proj: 'Projects', //dependency for project orgs
-                        projOrganizations: function (Proj, $stateParams) {
-                            var projID = $stateParams.id;
-                            if (projID > 0) {
-                                return Proj.getProjOrganizations(
-                                    { id: projID }).$promise;
-                            }
-                        },
-                        allOrgs: 'Organizations',
-                        allOrgList: function (allOrgs) {
-                            return allOrgs.getAll().$promise;
-                        }
+                        //Proj: 'Projects', //dependency for project orgs
+                        //projOrganizations: function (Proj, $stateParams) {
+                        //    var projID = $stateParams.id;
+                        //    if (projID > 0) {
+                        //        return Proj.getProjOrganizations(
+                        //            { id: projID }).$promise;
+                        //    }
+                        //},
+                       // allOrgs: 'Organizations',
+                        //allOrgList: function (allOrgs) {
+                        //    return allOrgs.getAll().$promise;
+                        //}
                     }
                 })
                 // project edit/create page nested state for ProjectData

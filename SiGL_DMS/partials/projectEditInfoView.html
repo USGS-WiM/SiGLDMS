@@ -28,7 +28,7 @@
             <label class="col-md-2 control-label" for="inputPROJ_STATUS_ID">Project Status</label>
             <div class="col-md-10">
                 <select id="inputPROJ_STATUS_ID" name="PROJ_STATUS_ID"
-                        ng-model="aProject.PROJ_STATUS_ID"
+                        ng-model="aProject.PROJ_STATUS_ID" ng-change="selectedStat(aProject.PROJ_STATUS_ID)"
                         ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList"></select>
             </div>
         </div>
@@ -39,7 +39,7 @@
                    for="inputSTART_DATE">Project Start Date</label>
             <div class="col-md-4">
                 <div class="input-group">
-                    <input class="form-control" id="inputSTART_DATE" name="sd"
+                    <input class="form-control" id="inputSTART_DATE" name="sd" ng-change="disableIf(data)"
                            type="text" datepicker-popup="MMM dd, yyyy"
                            is-open="datepickrs.sd"
                            ng-model="aProject.START_DATE" />
@@ -58,7 +58,7 @@
             <label class="col-md-2 control-label" for="inputEND_DATE">Project Completion Date</label>
             <div class="col-md-4">
                 <div class="input-group">
-                    <input class="form-control" id="inputEND_DATE" name="ed"
+                    <input class="form-control" id="inputEND_DATE" name="ed" ng-disabled="undetermined"
                            type="text" datepicker-popup="MMM dd, yyyy"
                            is-open="datepickrs.ed"
                            ng-model="aProject.END_DATE" />
@@ -80,12 +80,13 @@
                      output-model="Objectivesmodel.value"
                      button-label="OBJECTIVE"
                      item-label="OBJECTIVE"
-                     on-item-click="fClick()"
+                     max-height="300px"
+                     on-item-click="fClick(data)"
                      tick-property="selected">
 
                 </div>
-                
-                
+
+
             </div>
         </div>
 
@@ -93,10 +94,7 @@
         <div class="form-group">
             <label class="col-md-2 control-label" for="inputDESCRIPTION">Description</label>
             <div class="col-md-10">
-                <textarea id="inputDESCRIPTION"
-                          type="text" rows="3"
-                          placeholder="Project Description"
-                          ng-model="aProject.DESCRIPTION" />
+                <textarea id="inputDESCRIPTION" type="text" rows="3" placeholder="Project Description" ng-model="aProject.DESCRIPTION" />
             </div>
         </div>
 
@@ -109,7 +107,8 @@
             <label class="col-md-2 control-label req" for="inputProjKeyword">Add Project Keyword</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="" ng-model="newKey.value" />
-            </div><button ng-click="addProjKeyword()">Add</button>
+            </div>
+            <button ng-click="addThisKeyword()">Add</button>
         </div>
 
         <!-- Project Websites -->
@@ -142,7 +141,7 @@
                     <button class="btn btn-primary"
                             style="width:80px;margin-right:10px"
                             ng-click="save(projectForm.$valid)">
-                        Save
+                        <span>{{aProject.PROJECT_ID != undefined ? 'Update' : 'Create'}}</span>
                     </button>
                 </span>
                 <span>
