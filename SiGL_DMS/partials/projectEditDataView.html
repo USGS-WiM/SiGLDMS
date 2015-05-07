@@ -1,34 +1,29 @@
-﻿<form class="form-horizontal" name="projectForm" novalidate>
+﻿<legend>Data Sources</legend>
+
+<div class="form-group" ng-if="ProjData.length > 0">
+    <table class="table">
+        <thead><tr><th></th><th></th><th></th><th></th></tr></thead>
+        <tbody>
+            <tr ng-repeat="d in ProjData">
+                <td><button ng-click="RemoveData(d)"><i class="glyphicon glyphicon-remove"></i></button></td>
+                <td>{{d.DESCRIPTION}}</td>
+                <td>{{d.HOST_NAME}}</td>
+                <td>{{d.PORTAL_URL}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<hr />
+<form class="form-horizontal" name="projectForm.Data">
     <fieldset>
-        <legend>Data Sources</legend>
-
-        <div class="form-group" ng-if="ProjData.length > 0">
-            <table class="table">
-                <thead><tr><th></th><th></th><th></th><th></th></tr></thead>>
-                <tbody>
-                    <tr ng-repeat="d in ProjData">
-                        <td><button ng-click="delete(d)"><i class="glyphicon glyphicon-remove"></i></button></td>
-                        <td>{{d.DESCRIPTION}}</td>
-                        <td>{{d.HOST_NAME}}</td>
-                        <td>{{d.PORTAL_URL}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-
-
-
-        <hr />
-
         <div>Add new data source</div>
-        <!-- Data Management System -->
+        <!-- Data Management System   (taken from form tag above == not sure what it does   novalidate) -->
         <div class="form-group">
             <label class="col-md-2 control-label req" for="inputDESCRIPTION">Data management system or data description:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputDESCRIPTION" name="DESCRIPTION"
-                       type="text" placeholder=""
-                       ng-model="d.DESCRIPTION" required />
+                       type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
+                       ng-model="newData.DESCRIPTION" />
             </div>
         </div>
 
@@ -37,8 +32,8 @@
             <label class="col-md-2 control-label req" for="inputHOST_NAME">Data Hosting Entity:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputHOST_NAME" name="HOST_NAME"
-                       type="text" placeholder=""
-                       ng-model="d.HOST_NAME" required />
+                       type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
+                       ng-model="newData.HOST_NAME" />
             </div>
         </div>
 
@@ -47,8 +42,8 @@
             <label class="col-md-2 control-label req" for="inputPORTAL_URL">Online Data Location:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputPORTAL_URL" name="PORTAL_URL"
-                       type="text" placeholder=""
-                       ng-model="d.PORTAL_URL" required />
+                       type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
+                       ng-model="newData.PORTAL_URL" />
             </div>
         </div>
 
@@ -58,11 +53,10 @@
                 <span>
                     <button class="btn btn-primary"
                             style="width:80px;margin-right:10px"
-                            ng-click="submit(projectForm.$valid)">
-                        Save
+                            ng-click="AddData(projectForm.Data.$valid, newData)">
+                        Add
                     </button>
                 </span>
-                
             </div>
         </div>
 

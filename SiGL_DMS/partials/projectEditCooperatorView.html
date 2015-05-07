@@ -1,15 +1,17 @@
-﻿<form class="form-horizontal" name="projectCoopForm" novalidate>
+﻿<form class="form-horizontal" name="projectForm.Coop">
     <fieldset>
         <legend>Organizations</legend>
 
         <!-- Project Organizations -->
         <div class="form-group" ng-if="ProjOrgs.length >= 1">
             <table class="table">
-                <thead><tr><th></th><th>Name</th><th>Division</th><th>Section</th></tr></thead>>
+                <thead><tr><th></th><th>Name</th><th>Division</th><th>Section</th></tr></thead>
                 <tbody>
                     <tr ng-repeat="o in ProjOrgs">
                         <td><button ng-click="delete(o)"><i class="glyphicon glyphicon-remove"></i></button></td>
-                        <td>{{o.NAME}}</td><td>{{o.DIVISION}}</td><td>{{o.SECTION}}</td>
+                        <td>{{o.NAME}}</td>
+                        <td>{{o.DIVISION}}</td>
+                        <td>{{o.SECTION}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -31,7 +33,7 @@
                 <span>
                     <button class="btn btn-primary"
                             style="width:80px;margin-right:10px"
-                            ng-click="submit(projectForm.$valid)">
+                            ng-click="submit(projectForm.Coop.$valid)">
                         Save
                     </button>
                 </span>

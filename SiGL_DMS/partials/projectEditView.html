@@ -4,16 +4,18 @@
     </div>
 
     <div class="panel-body">
-        <div class="wizard">
+        <div class="wizard">            
             <a ui-sref=".info" ui-sref-active="active">Project Information</a>
-            <a ui-sref=".cooperator" ui-sref-active="active">Project Cooperators<span class="badge pull-right">{{coopCount}}</span></a>
-            <a ui-sref=".data" ui-sref-active="active">Project Datum<span class="badge pull-right">{{datumCount}}</span></a>
-            <a ui-sref=".contact" ui-sref-active="active">Project Contacts<span class="badge pull-right">{{contactCount}}</span></a>
-            <a ui-sref=".publication" ui-sref-active="active">Project Publications<span class="badge pull-right">{{pubCount}}</span></a>
-            <a ui-sref=".site" ui-sref-active="active">Project Sites<span class="badge pull-right">{{sitesCount}}</span></a>
+            <a ui-sref=".cooperator" a-disabled="aProject.PROJECT_ID == null" ui-sref-active=" active">Project Cooperators<span class="badge pull-right">{{coopCount.total}}</span></a>
+            <a ui-sref=".data" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Project Datum<span class="badge pull-right">{{datumCount.total}}</span></a>
+            <a ui-sref=".contact" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Project Contacts<span class="badge pull-right">{{contactCount.total}}</span></a>
+            <a ui-sref=".publication" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Project Publications<span class="badge pull-right">{{pubCount.total}}</span></a>
+            <a ui-sref=".site" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Project Sites<span class="badge pull-right">{{sitesCount.total}}</span></a>
+            
         </div>
-
+        
         <div ui-view></div>
-    </div>
+        
+</div>
 
 </div>
