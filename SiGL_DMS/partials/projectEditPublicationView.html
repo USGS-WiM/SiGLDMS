@@ -1,54 +1,50 @@
-﻿<form class="form-horizontal" name="projectForm" novalidate>
+﻿<legend>Publications</legend>
+
+<div class="form-group" ng-if="ProjPubs.length > 0">
+    <table class="table">
+        <thead><tr><th></th><th></th><th></th><th></th></tr></thead>
+        <tbody>
+            <tr ng-repeat="p in ProjPubs">
+                <td><button ng-click="RemovePub(p)"><i class="glyphicon glyphicon-remove"></i></button></td>
+                <td>{{p.TITLE}}</td>
+                <td>{{p.CITATION}}</td>
+                <td>{{p.URL}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<hr />
+
+<form class="form-horizontal" name="projectForm.Pubs">
     <fieldset>
-        <legend>Publications</legend>
-
-        <div class="form-group" ng-if="ProjPublications.length > 0">
-            <table class="table">
-                <thead><tr><th></th><th></th><th></th><th></th></tr></thead>>
-                <tbody>
-                    <tr ng-repeat="p in ProjPublications">
-                        <td><button ng-click="delete(d)"><i class="glyphicon glyphicon-remove"></i></button></td>
-                        <td>{{p.TITLE}}</td>
-                        <td>{{p.DESCRIPTION}}</td>
-                        <td>{{p.URL}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-
-
-
-        <hr />
-
         <div>Add new publication</div>
-        <!-- Publication title -->
+        <!-- Publication Title -->
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputTITLE">Publication title:</label>
+            <label class="col-md-2 control-label" for="inputTITLE">Publication title:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputTITLE" name="TITLE"
-                       type="text" placeholder=""
-                       ng-model="P.TITLE" required />
+                       type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.CITATION.length || newPub.URL.length)"
+                       ng-model="newPub.TITLE" />
             </div>
         </div>
 
-        <!-- publication description -->
+        <!-- Publication description -->
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputDESCRIPTION">Publication description:</label>
+            <label class="col-md-2 control-label" for="inputCITATION">Publication description:</label>
             <div class="col-md-4">
-                <input class="form-control" id="inputDESCRIPTION" name="DESCRIPTION"
-                       type="text" placeholder=""
-                       ng-model="p.DESCRIPTION" required />
+                <textarea class="form-control" id="inputCITATION" rows="3"
+                          type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.CITATION.length || newPub.URL.length)"
+                          ng-model="newPub.CITATION" />
             </div>
         </div>
 
-        <!-- publication website/location -->
+        <!-- Publication website/location -->
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputURL">Publication website/location:</label>
+            <label class="col-md-2 control-label" for="inputURL">Publication website/location:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputURL" name="URL"
-                       type="text" placeholder=""
-                       ng-model="p.URL" required />
+                       type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.CITATION.length || newPub.URL.length)"
+                       ng-model="newPub.URL" />
             </div>
         </div>
 
@@ -58,13 +54,13 @@
                 <span>
                     <button class="btn btn-primary"
                             style="width:80px;margin-right:10px"
-                            ng-click="submit(projectForm.$valid)">
-                        Save
+                            ng-click="AddPub(projectPubsForm.$valid, newPub)">
+                        Add
                     </button>
                 </span>
-
             </div>
         </div>
 
     </fieldset>
 </form>
+

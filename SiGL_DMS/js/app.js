@@ -1,6 +1,6 @@
 ﻿(function () {
     "use strict"; 
-    var app = angular.module('app', ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'laMPResource', 'siGLControllers', 'siGLBusinessServices', 'isteven-multi-select',]);
+    var app = angular.module('app', ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'laMPResource', 'siGLControllers', 'siGLBusinessServices', 'isteven-multi-select', ]);
     
     app.run(function ($rootScope) {
         $rootScope
@@ -154,74 +154,30 @@
                 .state("projectEdit.cooperator", {
                     url: "/cooperator",
                     templateUrl: "partials/projectEditCooperatorView.html",
-                    controller: "projectEditCoopCtrl",
-                    resolve: {
-                        //Proj: 'Projects', //dependency for project orgs
-                        //projOrganizations: function (Proj, $stateParams) {
-                        //    var projID = $stateParams.id;
-                        //    if (projID > 0) {
-                        //        return Proj.getProjOrganizations(
-                        //            { id: projID }).$promise;
-                        //    }
-                        //},
-                       // allOrgs: 'Organizations',
-                        //allOrgList: function (allOrgs) {
-                        //    return allOrgs.getAll().$promise;
-                        //}
-                    }
+                    controller: "projectEditCoopCtrl"                    
                 })
+
                 // project edit/create page nested state for ProjectData
                 .state("projectEdit.data", {
                     url: "/data",
                     templateUrl: "partials/projectEditDataView.html",
-                    controller: "projectEditDataCtrl",
-                    resolve: {
-                        Proj: 'Projects', //dependency for project orgs
-                        projData: function (Proj, $stateParams) {
-                            var projID = $stateParams.id;
-                            if (projID > 0) {
-                                return Proj.getProjData(
-                                    { id: projID }).$promise;
-                            }
-                        }
-                    }
+                    controller: "projectEditDataCtrl"                    
                 })
+
                 // project edit/create page  nested state for ProjectContacts
                 .state("projectEdit.contact", {
                     url: "/contact",
                     templateUrl: "partials/projectEditContactView.html",
-                    controller: "projectEditContactCtrl",
-                    resolve: {
-                        Proj: 'Projects', //dependency for project orgs
-                        projContacts: function (Proj, $stateParams) {
-                            var projID = $stateParams.id;
-                            if (projID > 0) {
-                                return Proj.getProjContacts(
-                                    { id: projID }).$promise;
-                            }
-                        },
-                        allOrgs: 'Organizations',
-                        allOrgList: function (allOrgs) {
-                            return allOrgs.getAll().$promise;
-                        }
-                    }
+                    controller: "projectEditContactCtrl"                   
                 })
+
                 // project edit/create page  nested state for Projectpublications
                 .state("projectEdit.publication", {
                     url: "/publication",
                     templateUrl: "partials/projectEditPublicationView.html",
-                    controller: "projectEditPubCtrl",
-                    resolve: {
-                        Proj: 'Projects', //dependency for project orgs
-                        projPubs: function (Proj, $stateParams) {
-                            var projID = $stateParams.id;
-                            if (projID > 0) {
-                                return Proj.getProjPublications(
-                                    { id: projID }).$promise;
-                            }
-                        }
-                    }
+                    controller: "projectEditPubCtrl"
                 })
+
                 // project edit/create page  nested state for projectSites
                 .state("projectEdit.site", {
                     url: "/site",

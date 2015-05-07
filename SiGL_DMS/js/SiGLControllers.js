@@ -2,23 +2,46 @@
     /* controllers.js*/
     'use strict';
 
-    var siGLControllers = angular.module('siGLControllers', []);
+    var siGLControllers = angular.module('siGLControllers', ['ngInputModified']);
 
-    siGLControllers.directive('ngConfirmClick', [
-            function () {
-                return {
-                    link: function (scope, element, attr) {
-                        var msg = attr.ngConfirmClick || "Are you sure?";
-                        var clickAction = attr.confirmedClick;
-                        element.bind('click', function (event) {
-                            if (window.confirm(msg)) {
-                                scope.$apply(clickAction)
-                            }
-                        });
-                    }
+    siGLControllers.directive('ngConfirmClick', [ function () {
+        return {
+            link: function (scope, element, attr) {
+                var msg = attr.ngConfirmClick || "Are you sure?";
+                var clickAction = attr.confirmedClick;
+                element.bind('click', function (event) {
+                    if (window.confirm(msg)) {
+                        scope.$apply(clickAction)
+                     }
+                });
+            }
+        };
+    }]);
+
+    siGLControllers.directive('aDisabled', function () {
+        return {
+            compile: function (tElement, tAttrs, transclude) {
+                //Disable ngClick
+                tAttrs["ngClick"] = "!(" + tAttrs["aDisabled"] + ") && (" + tAttrs["ngClick"] + ")";
+
+                //Toggle "disabled" to class when aDisabled becomes true
+                return function (scope, iElement, iAttrs) {
+                    scope.$watch(iAttrs["aDisabled"], function (newValue) {
+                        if (newValue !== undefined) {
+                            iElement.toggleClass("disabled", newValue);
+                        }
+                    });
+
+                    //Disable href on click
+                    iElement.on("click", function (e) {
+                        if (scope.$eval(iAttrs["aDisabled"])) {
+                            e.preventDefault();
+                        }
+                    });
                 };
-            }]);
-
+            }
+        };
+    });
 
     siGLControllers.controller('mainCtrl', ['$scope', 'Projects', '$location', '$state', 'checkCreds', 'getUsername', mainCtrl]);
     function mainCtrl($scope, Projects, $location, $state, checkCreds, getUsername) {
@@ -124,11 +147,11 @@
 
     //ProjectEditCtrl
     siGLControllers.controller('projectEditCtrl',
-        ['$scope', '$location', '$state', '$http', 'checkCreds', 'getCreds',
+        ['$scope', '$rootScope', '$location', '$state', '$http', 'checkCreds', 'getCreds',
             'thisProject', 'projOrgs', 'projDatum', 'projContacts', 'projPubs', 'projSites', 'projObjectives', 'projKeywords',
             'Projects', 'allDurationList', 'allStatsList', 'allObjList', projectEditCtrl
         ]);
-    function projectEditCtrl($scope, $location, $state, $http, checkCreds, getCreds,
+    function projectEditCtrl($scope, $rootScope, $location, $state, $http, checkCreds, getCreds,
         thisProject, projOrgs, projDatum, projContacts, projPubs, projSites, projObjectives, projKeywords,
         Projects, allDurationList, allStatsList, allObjList) {
         //model needed for ProjectEdit Info tab: ( Counts for Cooperators, Datum, Contacts, Publications and Sites) 1. thisProject, 2. parsed urls, 3. project Keywords, 4. all objectives, 5. all statuses, 6. all durations 
@@ -137,6 +160,47 @@
             //not creds, go log in        
             $location.path('/login');
         } else {
+            $scope.projectForm = {};
+            //#region changing tabs handler /////////////////////
+            $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+                var formNameModified = false;
+                switch (fromState.url) {
+                    case '/info':
+                        formNameModified = false;
+                        break;
+                    case '/cooperator':
+                        formNameModified = $scope.projectForm.Coop.modified;
+                        break;
+                    case '/data':
+                        formNameModified = $scope.projectForm.Data.modified;
+                        break;
+                    case '/contact':
+                        formNameModified = $scope.projectForm.Contact.modified;
+                        break;
+                    case '/publication':
+                        formNameModified = $scope.projectForm.Pubs.modified;
+                        break;
+                    default:
+                        formNameModified = $scope.projectForm.Site.modified;
+                        break;
+                }
+                if (formNameModified) {
+                    console.log('toState.name: ' + toState.name);
+                    console.log('fromState.name: ' + fromState.name);
+
+
+                    if (confirm("Are you sure you want to change tabs? Any unsaved information will be lost.")) {
+                        console.log('go to: ' + toState.name);
+                    } else {
+                        console.log('stay at state: ' + fromState.name);
+                        $(".page-loading").addClass("hidden");
+                        event.preventDefault();
+                        //event.stopPropagation;
+                    }
+                }
+			});
+            //#endregion changing tabs handler //////////////////////
+
             //TODO:check that this project belongs to them if they are not admin
             $scope.aProject = {}; //holder for project (either coming in for edit, or being created on POST )
             $scope.Objectivesmodel = {}; //holder for new ProjObjs if they make any to multiselect
@@ -149,11 +213,11 @@
             
             if (thisProject != undefined) {
                 //this is an edit view
-                $scope.coopCount = projOrgs.length;
-                $scope.datumCount = projDatum.length;
-                $scope.contactCount = projContacts.length;
-                $scope.pubCount = projPubs.length;
-                $scope.sitesCount = projSites.length;
+                $scope.coopCount = { total: projOrgs.length };
+                $scope.datumCount = { total: projDatum.length };
+                $scope.contactCount = { total: projContacts.length};
+                $scope.pubCount = { total: projPubs.length};
+                $scope.sitesCount = { total: projSites.length};
 
                 //1. aProject
                 $scope.aProject = thisProject;
@@ -395,7 +459,8 @@
                     }, function error(errorResponse) {
                         toastr.success("Error: " + errorResponse.statusText);
                     }).$promise.then(function () {
-                        $location.path('/project/edit/' + projID + '/info').replace().notify(false);
+                        $location.path('/project/edit/' + projID + '/info').replace();//.notify(false);
+                        $scope.apply;
                     });
                 }
             }//#endregion POST
@@ -413,29 +478,8 @@
     function projectEditCoopCtrl($scope, projOrgs, allOrgList) {
         $scope.ProjOrgs = projOrgs;
         $scope.allOrganizations = allOrgList;
-        //$scope.addOrgs = function (orgs) {
-        //    if (orgs) {
-        //        var array = orgs.split(',');
-        //        $scope.Project.orgs = $scope.Project.orgs ? $scope.Project.orgs.concat(array) : array;
-        //        $scope.newOrgs = "";
-        //    }
-        //    else {
-        //        alert("please enter one or more orgs separated by comma.. not really");
-        //    }
-        //};
-        //$scope.removeOrgs = function (idx) {
-        //    $scope.aProject.orgs.splice(idx, 1);
-        //};
-        $scope.submit = function (isValid) {
-            if (isValid) {
-                $scope.Project.$save(function (data) {
-                    //  toastr.success("Save successful");
-                });
-            }
-            else {
-                alert("Please correct the validation errors first");
-            }
-        };
+        
+        
         $scope.cancel = function () {
             //navigate to a different state
             $state.go('projectList');
@@ -443,21 +487,57 @@
     }
 
     //ProjectEditDataCtrl
-    siGLControllers.controller('projectEditDataCtrl', ['$scope', 'projData', projectEditDataCtrl]);
-    function projectEditDataCtrl($scope, projData) {
-        $scope.ProjData = projData;
-    
+    siGLControllers.controller('projectEditDataCtrl', ['$scope', '$http', 'Projects', 'thisProject', 'projDatum', 'getCreds', projectEditDataCtrl]);
+    function projectEditDataCtrl($scope, $http, Projects, thisProject, projDatum, getCreds) {
+        $scope.ProjData = projDatum;
+        
+        $scope.IsData = false;
+        if ($scope.ProjData.length >= 1) {
+            $scope.IsData = true;
+        }
 
-        $scope.submit = function (isValid) {
-            if (isValid) {
-                $scope.Project.$save(function (data) {
-                    //  toastr.success("Save successful");
+        $scope.newData = {};
+        var thisProjID = thisProject.PROJECT_ID;
+
+        //#region POST Data click
+        $scope.AddData = function (valid, d) {
+            if (valid) {
+                //add it
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                Projects.addProjData({ id: thisProjID }, d, function success(response) {
+                    $scope.ProjData.push(d);
+                    $scope.datumCount.total = $scope.datumCount.total + 1;
+                    $scope.newData = {};
+                    toastr.success("Data Added");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " + errorResponse.statusText);
                 });
+
+            } else {
+                alert("You must populate at least one field before adding the data.");
             }
-            else {
-                alert("Please correct the validation errors first");
-            }
-        };
+        }
+        //#endregion POST Data click
+
+        //#region DELETE Data click
+        $scope.RemoveData = function (dataH) {
+            var index = $scope.ProjData.indexOf(dataH);
+            //DELETE it
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+            $http.defaults.headers.common['Accept'] = 'application/json';
+            $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
+
+            Projects.deleteProjData({ id: thisProjID }, dataH, function success(response) {
+                $scope.ProjData.splice(index, 1);
+                $scope.datumCount.total = $scope.datumCount.total - 1;
+                toastr.success("Data Removed");
+            }, function error(errorResponse) {
+                toastr.error("Something went wrong: " + errorResponse.statusText);
+            });
+        }
+        //#endregion DELETE Data click
+
         $scope.cancel = function () {
             //navigate to a different state
             $state.go('projectList');
@@ -487,20 +567,57 @@
     }
 
     //projectEditPubCtrl
-    siGLControllers.controller('projectEditPubCtrl', ['$scope', 'projPubs', projectEditPubCtrl]);
-    function projectEditPubCtrl($scope, projPubs) {
-        $scope.ProjPublications = projPubs;
-    
-        $scope.submit = function (isValid) {
-            if (isValid) {
-                $scope.Project.$save(function (data) {
-                    //  toastr.success("Save successful");
+    siGLControllers.controller('projectEditPubCtrl', ['$scope', '$http', 'Projects', 'thisProject', 'projPubs', 'getCreds', projectEditPubCtrl]);
+    function projectEditPubCtrl($scope, $http, Projects, thisProject, projPubs, getCreds) {
+        $scope.ProjPubs = projPubs;
+
+        $scope.IsData = false;
+        if ($scope.ProjPubs.length >= 1) {
+            $scope.IsData = true;
+        }
+
+        $scope.newPub = {};
+        var thisProjID = thisProject.PROJECT_ID;
+
+        //#region POST Pub click
+        $scope.AddPub = function (valid, p) {
+            if (valid) {
+                //add it
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                Projects.addProjPublication({ id: thisProjID }, p, function success(response) {
+                    $scope.ProjPubs.push(p);
+                    $scope.pubCount.total = $scope.pubCount.total + 1;
+                    $scope.newPub = {};
+                    toastr.success("Publication Added");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " + errorResponse.statusText);
                 });
+
+            } else {
+                alert("You must populate at least one field before adding the publication.");
             }
-            else {
-                alert("Please correct the validation errors first");
-            }
-        };
+        }
+        //#endregion POST Pub click
+
+        //#region DELETE Pub click
+        $scope.RemovePub = function (pub) {
+            var index = $scope.ProjPubs.indexOf(pub);
+            //DELETE it
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+            $http.defaults.headers.common['Accept'] = 'application/json';
+            $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
+
+            Projects.deleteProjPublication({ id: thisProjID }, pub, function success(response) {
+                $scope.ProjPubs.splice(index, 1);
+                $scope.pubCount.total = $scope.pubCount.total - 1;
+                toastr.success("Publication Removed");
+            }, function error(errorResponse) {
+                toastr.error("Something went wrong: " + errorResponse.statusText);
+            });
+        }
+        //#endregion DELETE Pub click
+
         $scope.cancel = function () {
             //navigate to a different state
             $state.go('projectList');
@@ -510,6 +627,27 @@
     //login
     siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', 'Login', 'setCreds', LoginCtrl]);
     function LoginCtrl($scope, $state, $http, Login, setCreds) {
+        $('[type=password]').keypress(function (e) {
+            var $password = $(this),
+                tooltipVisible = $('.tooltip').is(':visible'),
+                s = String.fromCharCode(e.which);
+
+            //Check if capslock is on. No easy way to test for this
+            //Tests if letter is upper case and the shift key is NOT pressed.
+            if (s.toUpperCase() === s && s.toLowerCase() !== s && !e.shiftKey) {
+                if (!tooltipVisible)
+                    $password.tooltip('show');
+            } else {
+                if (tooltipVisible)
+                    $password.tooltip('hide');
+            }
+
+            //Hide the tooltip when moving away from the password field
+            $password.blur(function (e) {
+                $password.tooltip('hide');
+            });
+        });
+
         $scope.submit = function () {
             $scope.sub = true;
             var postData = {

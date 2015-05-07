@@ -1,20 +1,20 @@
-﻿<form class="form-horizontal" name="projectForm" novalidate>
+﻿<form class="form-horizontal" name="projectForm.Info">
     <fieldset>
         <legend>Project Information</legend>
 
         <!-- Project Name -->
-        <div class="form-group required" ng-class="{'has-error':projectForm.NAME.$invalid && projectForm.NAME.$dirty}">
+        <div class="form-group required" ng-class="{'has-error':projectForm.Info.NAME.$invalid && projectForm.Info.NAME.$dirty}">
             <label class="col-md-2 control-label req" for="inputNAME">Project Name</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputNAME" name="NAME"
                        type="text" placeholder="Project Name"
                        ng-model="aProject.NAME" required />
-                <span class="help-block has-error" ng-show="projectForm.NAME.$invalid">Project Name is required.</span>
+                <span class="help-block has-error" ng-show="projectForm.Info.NAME.$invalid">Project Name is required.</span>
             </div>
         </div>
 
         <!-- Project Duration -->
-        <div class="form-group required" ng-class="{'has-error':projectForm.PROJ_DURATION_ID.$invalid && projectForm.PROJ_DURATION_ID.$dirty}">
+        <div class="form-group required" ng-class="{'has-error':projectForm.Info.PROJ_DURATION_ID.$invalid && projectForm.Info.PROJ_DURATION_ID.$dirty}">
             <label class="col-md-2 control-label" for="inputPROJ_DURATION_ID">Project Duration</label>
             <div class="col-md-10">
                 <select id="inputPROJ_DURATION_ID" name="PROJ_DURATION_ID"
@@ -24,7 +24,7 @@
         </div>
 
         <!-- Project Status -->
-        <div class="form-group required" ng-class="{'has-error':projectForm.PROJ_STATUS_ID.$invalid && projectForm.PROJ_STATUS_ID.$dirty}">
+        <div class="form-group required" ng-class="{'has-error':projectForm.Info.PROJ_STATUS_ID.$invalid && projectForm.Info.PROJ_STATUS_ID.$dirty}">
             <label class="col-md-2 control-label" for="inputPROJ_STATUS_ID">Project Status</label>
             <div class="col-md-10">
                 <select id="inputPROJ_STATUS_ID" name="PROJ_STATUS_ID"
@@ -140,7 +140,7 @@
                 <span>
                     <button class="btn btn-primary"
                             style="width:80px;margin-right:10px"
-                            ng-click="save(projectForm.$valid)">
+                            ng-click="save(projectForm.Info.Info.$valid)">
                         <span>{{aProject.PROJECT_ID != undefined ? 'Update' : 'Create'}}</span>
                     </button>
                 </span>
