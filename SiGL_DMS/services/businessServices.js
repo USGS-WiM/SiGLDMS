@@ -37,7 +37,7 @@
             var siGLCreds = $cookies.siGLCreds;
 
             if (siGLCreds !== undefined && siGLCreds !== "") {
-                return true;
+                returnVal = true;
             }
             return returnVal;
         };

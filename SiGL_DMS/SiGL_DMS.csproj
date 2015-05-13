@@ -61,12 +61,13 @@
   <ItemGroup>
     <Content Include="css\bootstrap-multiselect.css" />
     <Content Include="css\isteven-multi-select.css" />
+    <Content Include="css\xeditable.css" />
     <Content Include="images\loading1.gif" />
     <Content Include="images\usgsLogo.png" />
     <Content Include="js\vendor\angular-input-modified.min.js" />
+    <Content Include="js\vendor\xeditable.min.js" />
     <Content Include="services\businessServices.js" />
     <Content Include="js\datePickrCtrl.js" />
-    <Content Include="app\Model\Interfaces.js" />
     <Content Include="js\vendor\bootstrap-multiselect.js" />
     <Content Include="js\vendor\isteven-multi-select.js" />
     <Content Include="js\vendor\jquery-1.10.2.min.js" />
@@ -83,7 +84,6 @@
     <Content Include="partials\projectEditView.html" />
     <Content Include="partials\projectListView.html" />
     <Content Include="js\SiGLControllers.js" />
-    <Content Include="services\LaMPResourceLookups.js" />
     <Content Include="partials\homeView.html" />
     <Content Include="services\LaMPResource.js" />
     <Content Include="css\app.css" />
@@ -890,16 +890,11 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="app\project\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="js\vendor\bootstrap-table.js" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="app\Model\DataManager.ts" />
-    <TypeScriptCompile Include="app\Model\Interfaces.ts" />
-    <TypeScriptCompile Include="app\Model\Project.ts" />
     <TypeScriptCompile Include="js\typings\angularjs\angular-animate.d.ts" />
     <TypeScriptCompile Include="js\typings\angularjs\angular-cookies.d.ts" />
     <TypeScriptCompile Include="js\typings\angularjs\angular-mocks.d.ts" />

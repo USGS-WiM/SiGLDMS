@@ -22,9 +22,12 @@
                 addProjObjective: {method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addObjective'},
                 deleteProjObjective: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/removeObjective' },
                 getProjOrganizations: { isArray: true, url: rootURL + '/projects/:id/organizations.json' },
+                addProjOrg: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/AddOrganization.json' },
+                deleteProjOrg: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/RemoveOrganization' },
                 getProjData: { isArray: true, url: rootURL + '/projects/:id/datahosts.json' },
                 addProjData: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addDataHost.json' },
                 deleteProjData: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/removeProjectDataHost' },
+                updateProjData: { method: 'POST', cache: false, isArray: false, url: rootURL + '/datahosts'},
                 getProjContacts: { isArray: true, url: rootURL + '/projects/:id/contacts.json' },
                 getProjPublications: { isArray: true, url: rootURL + '/projects/:id/publications.json' },
                 addProjPublication: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addPublication.json' },
@@ -47,19 +50,40 @@
     }]);
 
     ////Durations
-    laMPResource.factory('ProjDurations', ['$resource', function ($resource) {
+    laMPResource.factory('ProjDuration', ['$resource', function ($resource) {
         return $resource(rootURL + '/ProjectDuration/:id.json',
             {}, {
                 query: { isArray: true },                
                 getAll: { method: 'GET', isArray: true },
                 save: { method: 'POST', cache: false, isArray: false },
-                update: { method: 'PUT', cache: false, isArray: false },
+                delete: { method: 'DELETE', cache: false, isArray: false }
+            });
+    }]);
+
+    ////Data Hosts
+    laMPResource.factory('DataHost', ['$resource', function ($resource) {
+        return $resource(rootURL + '/DataHosts/:id.json',
+            {}, {
+                query: { isArray: true },
+                getAll: { method: 'GET', isArray: true },
+                save: { method: 'POST', cache: false, isArray: false },
+                delete: { method: 'DELETE', cache: false, isArray: false }
+            });
+    }]);
+
+    ////Publications
+    laMPResource.factory('Publication', ['$resource', function ($resource) {
+        return $resource(rootURL + '/publications/:id.json',
+            {}, {
+                query: { isArray: true },
+                getAll: { method: 'GET', isArray: true },
+                save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
     }]);
 
     //Status
-    laMPResource.factory('ProjStats', ['$resource', function ($resource) {
+    laMPResource.factory('ProjStat', ['$resource', function ($resource) {
         return $resource(rootURL + '/ProjectStatus/:id.json',
             {}, {
                 query: { isArray: true },                
@@ -70,20 +94,19 @@
             });
     }]);
 
-    //Organizations
-    laMPResource.factory('Organizations', ['$resource', function ($resource) {
+    //Organization
+    laMPResource.factory('Organization', ['$resource', function ($resource) {
         return $resource(rootURL + '/Organizations/:id.json',
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
                 save: { method: 'POST', cache: false, isArray: false },
-                update: { method: 'PUT', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
-    }]);//end of Organizations
+    }]);//end of Organization
 
-    //ObjectiveTypes
-    laMPResource.factory('ObjectiveTypes', ['$resource', function ($resource) {
+    //ObjectiveType
+    laMPResource.factory('ObjectiveType', ['$resource', function ($resource) {
         return $resource(rootURL + '/Objectives/:id.json',
             {},{
                 query: { isArray: true },
@@ -92,7 +115,7 @@
                 update: { method: 'PUT', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
-    }]);//end of ObjectiveTypes
+    }]);//end of ObjectiveType
 
     laMPResource.factory('Login', ['$resource', function ($resource) {
         return $resource(rootURL + '/login',

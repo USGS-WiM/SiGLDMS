@@ -1,4 +1,4 @@
-﻿<form class="form-horizontal" name="projectForm.Info">
+﻿<form editable-form class="form-horizontal" name="projectForm.Info">
     <fieldset>
         <legend>Project Information</legend>
 
@@ -6,9 +6,9 @@
         <div class="form-group required" ng-class="{'has-error':projectForm.Info.NAME.$invalid && projectForm.Info.NAME.$dirty}">
             <label class="col-md-2 control-label req" for="inputNAME">Project Name</label>
             <div class="col-md-4">
-                <input class="form-control" id="inputNAME" name="NAME"
-                       type="text" placeholder="Project Name"
-                       ng-model="aProject.NAME" required />
+                <input class="form-control" id="inputNAME" name="NAME" ng-model="aProject.NAME"
+                       type="text" placeholder="Project Name" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
+                       required />
                 <span class="help-block has-error" ng-show="projectForm.Info.NAME.$invalid">Project Name is required.</span>
             </div>
         </div>
@@ -18,7 +18,7 @@
             <label class="col-md-2 control-label" for="inputPROJ_DURATION_ID">Project Duration</label>
             <div class="col-md-10">
                 <select id="inputPROJ_DURATION_ID" name="PROJ_DURATION_ID"
-                        ng-model="aProject.PROJ_DURATION_ID"
+                        ng-model="aProject.PROJ_DURATION_ID" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
                         ng-options="d.PROJ_DURATION_ID as d.DURATION_VALUE for d in DurationList"></select>
             </div>
         </div>
@@ -28,21 +28,20 @@
             <label class="col-md-2 control-label" for="inputPROJ_STATUS_ID">Project Status</label>
             <div class="col-md-10">
                 <select id="inputPROJ_STATUS_ID" name="PROJ_STATUS_ID"
-                        ng-model="aProject.PROJ_STATUS_ID" ng-change="selectedStat(aProject.PROJ_STATUS_ID)"
-                        ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList"></select>
+                        ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(aProject.PROJ_STATUS_ID)"
+                        ng-model="aProject.PROJ_STATUS_ID" ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList"></select>
             </div>
         </div>
 
-        <!-- Project Start Date -->
-        <div class="form-group" ng-controller="datePickrCtrl">
+        <!-- Project Start Date  ng-controller="datePickrCtrl"-->
+        <div class="form-group">
             <label class="col-md-2 control-label"
                    for="inputSTART_DATE">Project Start Date</label>
             <div class="col-md-4">
                 <div class="input-group">
-                    <input class="form-control" id="inputSTART_DATE" name="sd" ng-change="disableIf(data)"
-                           type="text" datepicker-popup="MMM dd, yyyy"
-                           is-open="datepickrs.sd"
-                           ng-model="aProject.START_DATE" />
+                    <input class="form-control" id="inputSTART_DATE" name="sd" type="text" datepicker-popup="MMM dd, yyyy"
+                           is-open="datepickrs.sd" ng-model-options="{ updateOn: 'blur' }"
+                           ng-change="SaveOnBlur(0)" ng-model="aProject.START_DATE" />
                     <span class="input-group-btn">
                         <button class="btn btn-default" ng-click="open($event, 'sd')">
                             <i class="glyphicon glyphicon-calendar" />
@@ -59,8 +58,8 @@
             <div class="col-md-4">
                 <div class="input-group">
                     <input class="form-control" id="inputEND_DATE" name="ed" ng-disabled="undetermined"
-                           type="text" datepicker-popup="MMM dd, yyyy"
-                           is-open="datepickrs.ed"
+                           type="text" datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
+                           ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
                            ng-model="aProject.END_DATE" />
                     <span class="input-group-btn">
                         <button class="btn btn-default" ng-click="open($event, 'ed')">
@@ -81,8 +80,9 @@
                      button-label="OBJECTIVE"
                      item-label="OBJECTIVE"
                      max-height="300px"
-                     on-item-click="fClick(data)"
-                     tick-property="selected">
+                     on-item-click="ObjClick(data)"
+                     tick-property="selected"
+                     helper-elements="filter">
 
                 </div>
 
@@ -94,14 +94,20 @@
         <div class="form-group">
             <label class="col-md-2 control-label" for="inputDESCRIPTION">Description</label>
             <div class="col-md-10">
-                <textarea id="inputDESCRIPTION" type="text" rows="3" placeholder="Project Description" ng-model="aProject.DESCRIPTION" />
+                <textarea id="inputDESCRIPTION" type="text" rows="3" placeholder="Project Description"
+                          ng-model="aProject.DESCRIPTION" ng-change="isDescChanged.bool = true" />
+                <span ng-show="isDescChanged.bool && aProject.DESCRIPTION.length">
+                    <button class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="SaveOnBlur(0)">
+                        SAVE
+                    </button>
+                </span>
             </div>
         </div>
 
         <!-- Project Keywords -->
         <div class="form-group" ng-if="ProjectKeywords.length > 0">
             <label class="col-md-2 control-label" for="inputProjKEYWORDS">Project Keywords</label>
-            <div class="col-md-10"><ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button confirmed-click="removeKey(key)" ng-confirm-click="Are you sure you want to remove this keyword?"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul></div>
+            <div class="col-md-10"><ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button ng-click="removeKey(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul></div>
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label req" for="inputProjKeyword">Add Project Keyword</label>
@@ -111,10 +117,10 @@
             <button ng-click="addThisKeyword()">Add</button>
         </div>
 
-        <!-- Project Websites -->
+        <!-- Project Websites confirmed-click  ng-confirm-click="Are you sure you want to remove this URL?"-->
         <div class="form-group" ng-if="urls.length > 0">
             <label class="col-md-2 control-label" for="inputURL">Project Websites</label>
-            <div class="col-md-10"><ul><li style="list-style:none" data-ng-repeat="key in urls"><button confirmed-click="removeUrl(key)" ng-confirm-click="Are you sure you want to remove this URL?"><i class="glyphicon glyphicon-remove"></i></button>  {{key}}</li></ul></div>
+            <div class="col-md-10"><ul><li style="list-style:none" data-ng-repeat="key in urls"><button ng-click="removeUrl(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key}}</li></ul></div>
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label req" for="inputURL">Add Project Website</label>
@@ -127,10 +133,13 @@
         <div class="form-group">
             <label class="col-md-2 control-label" for="inputADDITIONAL_INFO">Additional Information</label>
             <div class="col-md-10">
-                <textarea id="inputADDITIONAL_INFO"
-                          type="text" rows="3"
-                          placeholder="Additional Information"
-                          ng-model="aProject.ADDITIONAL_INFO" />
+                <textarea id="inputADDITIONAL_INFO" type="text" rows="3" placeholder="Additional Information"
+                          ng-change="isAddInfoChanged.bool = true" ng-model="aProject.ADDITIONAL_INFO" />
+                <span ng-show="isAddInfoChanged.bool && aProject.ADDITIONAL_INFO.length">
+                    <button class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="SaveOnBlur(0)">
+                        SAVE
+                    </button>
+                </span>
             </div>
         </div>
 
@@ -138,21 +147,33 @@
         <div class="form-group">
             <div class="col-md-4 col-md-offset-2">
                 <span>
-                    <button class="btn btn-primary"
+                    <button ng-show="aProject.PROJECT_ID == undefined" class="btn btn-primary"
                             style="width:80px;margin-right:10px"
                             ng-click="save(projectForm.Info.Info.$valid)">
-                        <span>{{aProject.PROJECT_ID != undefined ? 'Update' : 'Create'}}</span>
+                        <span>Create</span>
                     </button>
                 </span>
                 <span>
-                    <button class="btn btn-default"
-                            style="width:70px"
-                            ng-click="cancel()">
-                        Cancel
+                    <button class="btn btn-default" ng-click="cancel()">
+                        Back to Project List
                     </button>
                 </span>
             </div>
         </div>
 
     </fieldset>
-</form>
+    </formeditable-form>
+
+    <script type="text/ng-template" id="removemodal.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Remove {{what}}</h3>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to remove this {{what}}: <b>{{keyToRmv}}</b></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+    
