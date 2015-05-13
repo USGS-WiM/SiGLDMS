@@ -13,11 +13,11 @@
             <tbody>
                 <tr ng-repeat="pr in projects">
                     <!--ng-show will download images initially, ng-if will not download unless clicked
-        <td><img ng-if="vm.showImage" ng-src="pr.imageURL}}" style="width:6%" /></td><a ui-sref="projectDetail({id: pr.ProjId})">-->
-                    <td>{{pr.Name}}</td>
+        <td><img ng-if="vm.showImage" ng-src="pr.imageURL}}" style="width:6%" /></td>-->
+                    <td><a ui-sref="projectEdit.info({id: pr.ProjId})">{{pr.Name}}</td>
                     <td>{{pr.Manager}}</td>
                     <td>{{pr.SiteCount}}</td>
-                    <td><a class="btn btn-primary" ui-sref="projectEdit.info({id: pr.ProjId})">Edit</a></td>
+<!--                    <td><a class="btn btn-primary" ui-sref="projectEdit.info({id: pr.ProjId})">Edit</a></td>-->
                 </tr>
             </tbody>
         </table>

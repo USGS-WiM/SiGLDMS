@@ -125,19 +125,19 @@
                                     { id: projectId }).$promise;
                             }
                         },
-                        prDurations: 'ProjDurations',
+                        prDurations: 'ProjDuration',
                         allDurationList: function (prDurations) {
                             return prDurations.getAll().$promise;
                         },
-                        prStats: 'ProjStats',
+                        prStats: 'ProjStat',
                         allStatsList: function (prStats) {
                             return prStats.getAll().$promise;
                         },
-                        allOrgs: 'Organizations',
+                        allOrgs: 'Organization',
                         allOrgList: function (allOrgs) {
                             return allOrgs.getAll().$promise;
                         },
-                        allObjs: 'ObjectiveTypes',
+                        allObjs: 'ObjectiveType',
                         allObjList: function (allObjs) {
                             return allObjs.getAll().$promise;
                         }  
