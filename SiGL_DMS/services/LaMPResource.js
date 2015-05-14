@@ -29,6 +29,7 @@
                 deleteProjData: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/removeProjectDataHost' },
                 updateProjData: { method: 'POST', cache: false, isArray: false, url: rootURL + '/datahosts'},
                 getProjContacts: { isArray: true, url: rootURL + '/projects/:id/contacts.json' },
+                addProjContact: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addContact'},
                 getProjPublications: { isArray: true, url: rootURL + '/projects/:id/publications.json' },
                 addProjPublication: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addPublication.json' },
                 deleteProjPublication: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/RemoveProjectPublication' },
@@ -104,6 +105,17 @@
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
     }]);//end of Organization
+
+    //Contact
+    laMPResource.factory('Contact', ['$resource', function ($resource) {
+        return $resource(rootURL + '/Contacts/:id.json',
+            {}, {
+                query: { isArray: true },
+                getAll: { method: 'GET', isArray: true },
+                save: { method: 'POST', cache: false, isArray: false },
+                delete: { method: 'DELETE', cache: false, isArray: false }
+            });
+    }]);//end of Contact
 
     //ObjectiveType
     laMPResource.factory('ObjectiveType', ['$resource', function ($resource) {

@@ -4,7 +4,7 @@
 
         <!-- Project Name -->
         <div class="form-group required" ng-class="{'has-error':projectForm.Info.NAME.$invalid && projectForm.Info.NAME.$dirty}">
-            <label class="col-md-2 control-label req" for="inputNAME">Project Name</label>
+            <label class="col-md-2 control-label req" for="inputNAME">Project Name:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputNAME" name="NAME" ng-model="aProject.NAME"
                        type="text" placeholder="Project Name" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
@@ -12,10 +12,10 @@
                 <span class="help-block has-error" ng-show="projectForm.Info.NAME.$invalid">Project Name is required.</span>
             </div>
         </div>
-
+        <hr/>
         <!-- Project Duration -->
         <div class="form-group required" ng-class="{'has-error':projectForm.Info.PROJ_DURATION_ID.$invalid && projectForm.Info.PROJ_DURATION_ID.$dirty}">
-            <label class="col-md-2 control-label" for="inputPROJ_DURATION_ID">Project Duration</label>
+            <label class="col-md-2 control-label" for="inputPROJ_DURATION_ID">Project Duration:</label>
             <div class="col-md-10">
                 <select id="inputPROJ_DURATION_ID" name="PROJ_DURATION_ID"
                         ng-model="aProject.PROJ_DURATION_ID" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
@@ -25,7 +25,7 @@
 
         <!-- Project Status -->
         <div class="form-group required" ng-class="{'has-error':projectForm.Info.PROJ_STATUS_ID.$invalid && projectForm.Info.PROJ_STATUS_ID.$dirty}">
-            <label class="col-md-2 control-label" for="inputPROJ_STATUS_ID">Project Status</label>
+            <label class="col-md-2 control-label" for="inputPROJ_STATUS_ID">Project Status:</label>
             <div class="col-md-10">
                 <select id="inputPROJ_STATUS_ID" name="PROJ_STATUS_ID"
                         ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(aProject.PROJ_STATUS_ID)"
@@ -36,7 +36,7 @@
         <!-- Project Start Date  ng-controller="datePickrCtrl"-->
         <div class="form-group">
             <label class="col-md-2 control-label"
-                   for="inputSTART_DATE">Project Start Date</label>
+                   for="inputSTART_DATE">Project Start Date:</label>
             <div class="col-md-4">
                 <div class="input-group">
                     <input class="form-control" id="inputSTART_DATE" name="sd" type="text" datepicker-popup="MMM dd, yyyy"
@@ -49,12 +49,11 @@
                     </span>
                 </div>
             </div>
-
         </div>
 
         <!-- Project Completion Date -->
         <div class="form-group" ng-controller="datePickrCtrl">
-            <label class="col-md-2 control-label" for="inputEND_DATE">Project Completion Date</label>
+            <label class="col-md-2 control-label" for="inputEND_DATE">Project Completion Date:</label>
             <div class="col-md-4">
                 <div class="input-group">
                     <input class="form-control" id="inputEND_DATE" name="ed" ng-disabled="undetermined"
@@ -69,6 +68,8 @@
                 </div>
             </div>
         </div>
+
+        <hr/>
 
         <!-- Project Objectives -->
         <div class="form-group">
@@ -104,6 +105,7 @@
             </div>
         </div>
 
+        <hr/>
         <!-- Project Keywords -->
         <div class="form-group" ng-if="ProjectKeywords.length > 0">
             <label class="col-md-2 control-label" for="inputProjKEYWORDS">Project Keywords</label>
@@ -164,6 +166,7 @@
     </fieldset>
     </formeditable-form>
 
+    <!-- MODALs for "are you sure you want to remove this thing (Keyword or URL) -->
     <script type="text/ng-template" id="removemodal.html">
         <div class="modal-header">
             <h3 class="modal-title">Remove {{what}}</h3>

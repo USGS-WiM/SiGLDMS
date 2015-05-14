@@ -1,28 +1,29 @@
 ﻿<div class="panel panel-primary">
-    <div class="panel-heading" style="font-size:large">Project List for {{User}}</div>
-    <div class="panel-body">
-        <table class="table">
+    <div class="panel-heading" style="font-size:large">{{User}} : Your Projects ({{ProjCnt}})</div>
+    <div class="panel-body">        
+        <script>
+            var sortingOrder = 'Name';
+        </script>
+        <div>Click on a project name to view full record.</div>
+        <table class="table table-striped table-condensed">
             <thead>
                 <tr>
-                    <!--<th data-field="button" data-align="left" data-sortable="false"><button class="btn-primary" type="button" ng-click="vm.toggleImage()">vm.showImage ? "Hide " : "Show "}}Image</button></th>-->
-                    <th data-field="name" data-align="center" data-sortable="true">Project Name</th>
-                    <th data-field="startDate" data-align="center" data-sortable="true">Manager</th>
-                    <th data-field="sCt" data-align="center" data-sortable="true">Site Count</th>
+                    <th class="Name">Project Name&nbsp;<a ng-click="sort_by('Name')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="Manager">Manager&nbsp;<a ng-click="sort_by('Manager')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="SiteCount">SiteCount&nbsp;<a ng-click="sort_by('SiteCount')"><i class="glyphicon glyphicon-sort"></i></a></th>
                 </tr>
             </thead>
+
             <tbody>
-                <tr ng-repeat="pr in projects">
-                    <!--ng-show will download images initially, ng-if will not download unless clicked
-        <td><img ng-if="vm.showImage" ng-src="pr.imageURL}}" style="width:6%" /></td>-->
-                    <td><a ui-sref="projectEdit.info({id: pr.ProjId})">{{pr.Name}}</td>
+                <tr ng-repeat="pr in projects | orderBy:sortingOrder:reverse">
+                    <td><a ui-sref="projectEdit.info({id: pr.ProjId})">{{pr.Name}}</a></td>
                     <td>{{pr.Manager}}</td>
                     <td>{{pr.SiteCount}}</td>
-<!--                    <td><a class="btn btn-primary" ui-sref="projectEdit.info({id: pr.ProjId})">Edit</a></td>-->
                 </tr>
-            </tbody>
         </table>
+        
         <a ui-sref="projectEdit.info({id:0})"><i class="glyphicon glyphicon-plus"></i>
-            Add Project
+            Create new Project
         </a>
     </div>
 </div>
