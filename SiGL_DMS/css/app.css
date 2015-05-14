@@ -1,6 +1,12 @@
 ﻿body {
 
 }
+
+form .ng-pristine.ng-invalid-required 
+{
+    box-shadow: none;
+}
+
 .wizard a {
     background: #efefef;
     display: inline-block;

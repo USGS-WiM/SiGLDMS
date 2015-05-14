@@ -19,3 +19,96 @@
 </div>
 
 </div>
+
+<!-- MODALs for "are you sure you want to remove this thing (Keyword or URL) -->
+<script type="text/ng-template" id="removemodal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Remove {{what}}</h3>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to remove this {{what}}: <b>{{keyToRmv}}</b></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!-- MODAL for add new org NAME to database-->
+<script type="text/ng-template" id="AddOrgNAME.html">
+    <!--<div class="modal-header">
+        <h3 class="modal-title"></h3>  "Organization Name"
+    </div>-->
+
+    <div class="modal-body">
+        <form name="newOrgForm">
+            <div class="form-group">
+                <label class="col-md-4 control-label req" for="inputNAME">Add new {{what}}:</label>
+                <div class="col-md-6">
+                    <input class="form-control" id="inputNAME" name="NAME" ng-model="newOrg.NAME" type="text" placeholder="Organization Name" required />
+                </div>
+            </div>
+        </form><br clear="all" />
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-disabled="newOrgForm.$invalid" ng-click="ok()">Add</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!-- MODAL for add new org DIVISION to database-->
+<script type="text/ng-template" id="AddOrgDIV.html">
+    <!--<div class="modal-header">
+        <h3 class="modal-title"></h3>
+    </div>-->
+
+    <div class="modal-body">
+        <form name="newOrgForm">
+            <div class="form-group">
+                <label class="col-md-4 control-label">&nbsp;</label>
+                <div class="col-md-6">
+                    <label><span>{{orgName}},</span></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label req" for="inputDIVISION">Add new {{what}}:</label>
+                <div class="col-md-6">
+                    <input class="form-control" id="inputDIVISION" name="DIVISION" ng-model="newOrg.DIVISION" type="text" placeholder="Division Name" required />
+                </div>
+            </div>
+        </form> <br clear="all" />
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-disabled="newOrgForm.$invalid" ng-click="ok()">Add</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<!-- MODAL for add new org SECTION to database-->
+<script type="text/ng-template" id="AddOrgSEC.html">
+    <!-- <div class="modal-header">  </div>-->
+
+    <div class="modal-body">
+        <form name="newOrgForm">
+            <div class="form-group">
+                <label class="col-md-4 control-label">&nbsp;</label>
+                <div class="col-md-6">
+                    <label><span>{{orgName}},<br /> {{orgDiv}},</span></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label req" for="inputSECTION">Add new {{what}}:</label>
+                <div class="col-md-6">
+                    <input class="form-control" id="inputSECTION" name="SECTION" ng-model="newOrg.SECTION" type="text" placeholder="Section Name" required />
+                </div>
+            </div>
+        </form><br clear="all" />
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-disabled="newOrgForm.$invalid" ng-click="ok()">Add</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

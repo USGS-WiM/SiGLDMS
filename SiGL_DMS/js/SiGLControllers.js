@@ -135,7 +135,7 @@
                 var formNameModified = false;
                 switch (fromState.url) {
                     case '/info':
-                        formNameModified = $scope.projectForm.Info.modified;;
+                        formNameModified = false;
                         break;
                     case '/cooperator':
                         formNameModified = $scope.projectForm.Coop.modified;
@@ -437,63 +437,68 @@
             };
 
             //save NEW PROJECT and then Keywords and Objectives
-            $scope.save = function () {
-                //if this is an edit, need to do PUT
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
-                $http.defaults.headers.common['Accept'] = 'application/json';
-                $scope.aProject.URL = ($scope.urls).join('|');
-                var projID;
-                Projects.save({}, $scope.aProject, function success(response) {
-                    toastr.success("Project Created");
-                    projID = response.PROJECT_ID;
-                    //post objectives added
-                    for (var o = $scope.ObjectivesToAdd.length; o--;) {
-                        Projects.addProjObjective({ id: projID }, $scope.ObjectivesToAdd[o],
-                            function success(response) {
-                                toastr.success("Project Objectives added");
-                            },
-                            function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            }
-                        );
-                    };
-                    //post keywords
-                    for (var k = $scope.KeywordsToAdd.length; k--;) {
-                        Projects.addProjKeyword({ id: projID }, $scope.KeywordsToAdd[k],
-                            function success(response) {
-                                toastr.success("Keyword Added");
-                            },
-                            function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            }
-                        );
-                    }
-                }, function error(errorResponse) {
-                    toastr.success("Error: " + errorResponse.statusText);
-                }).$promise.then(function () {
-                    $location.path('/project/edit/' + projID + '/info').replace();//.notify(false);
-                    $scope.apply;
-                });
-                
+            $scope.save = function (valid) {
+                //check if they filled in all required fields
+                if (valid) {
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $scope.aProject.URL = ($scope.urls).join('|');
+                    var projID;
+                    Projects.save({}, $scope.aProject, function success(response) {
+                        toastr.success("Project Created");
+                        projID = response.PROJECT_ID;
+                        //post objectives added
+                        for (var o = $scope.ObjectivesToAdd.length; o--;) {
+                            Projects.addProjObjective({ id: projID }, $scope.ObjectivesToAdd[o],
+                                function success(response) {
+                                    toastr.success("Project Objectives added");
+                                },
+                                function error(errorResponse) {
+                                    toastr.error("Error: " + errorResponse.statusText);
+                                }
+                            );
+                        };
+                        //post keywords
+                        for (var k = $scope.KeywordsToAdd.length; k--;) {
+                            Projects.addProjKeyword({ id: projID }, $scope.KeywordsToAdd[k],
+                                function success(response) {
+                                    toastr.success("Keyword Added");
+                                },
+                                function error(errorResponse) {
+                                    toastr.error("Error: " + errorResponse.statusText);
+                                }
+                            );
+                        }
+                    }, function error(errorResponse) {
+                        toastr.success("Error: " + errorResponse.statusText);
+                    }).$promise.then(function () {
+                        $location.path('/project/edit/' + projID + '/info').replace();//.notify(false);
+                        $scope.apply;
+                    });
+                }
             }
             
             //change to the aProject made, put it .. fired on each blur after change made to field
             $scope.SaveOnBlur = function(id){
                 if ($scope.aProject.PROJECT_ID != undefined) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
-                    $http.defaults.headers.common['Accept'] = 'application/json';
-                    $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-                    Projects.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject, function success(response) {
-                        toastr.success("Project Updated");
-                        $scope.isDescChanged.bool = false;
-                        $scope.isAddInfoChanged.bool = false;
-                    }, function error(errorResponse) {
-                        toastr.error("Error: " + errorResponse.statusText);
-                    });
-                    if (id > 0) {
-                        $scope.selectedStat(id);
+                    //ensure they don't delete required field values
+                    if ($scope.aProject.NAME != null) {
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Accept'] = 'application/json';
+                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                        Projects.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject, function success(response) {
+                            toastr.success("Project Updated");
+                            $scope.isDescChanged.bool = false;
+                            $scope.isAddInfoChanged.bool = false;
+                        }, function error(errorResponse) {
+                            toastr.error("Error: " + errorResponse.statusText);
+                        });
+                        if (id > 0) {
+                            $scope.selectedStat(id);
+                        }
+                        delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                     }
-                    delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                    else {alert("Project Name is required.")}
                 }
             }//end SaveOnBlur
 
@@ -871,7 +876,7 @@
         //#endregion POST Contact click
 
         //#region DELETE Contact click
-        $scope.RemoveData = function (con) {
+        $scope.RemoveContact = function (con) {
             //modal
             var modalInstance = $modal.open({
                 templateUrl: 'removemodal.html',
@@ -930,6 +935,158 @@
 
 
         //#endregion Edit existing Data
+
+        //#region Filter Divisions / Sections based on select change
+        //org was chosen, get the divisions
+        $scope.filterDivs = function () {
+            if ($scope.newOrg.NAME != undefined) {
+                $scope.showAddSecButton = false;
+                $scope.filteredDivs = [];
+                $scope.filteredSecs = [];
+                var orgID = $scope.newOrg.NAME; //ORG_ID
+                var sele = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == orgID }); //give me just this org
+
+                for (var i = 0; i < $scope.allOrganizations.length; i++) {
+                    if ($scope.allOrganizations[i].NAME == sele[0].NAME) {
+                        $scope.filteredDivs.push($scope.allOrganizations[i]);
+                    };
+                };
+            };
+        };
+
+        //division was chosen, get the sections
+        $scope.filterSecs = function () {
+            if ($scope.newOrg.DIVISION != undefined) {
+                $scope.filteredSecs = [];
+                var orgID = $scope.newOrg.DIVISION; //ORGID
+                var sele = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == orgID }); //give me just this org
+                if (sele[0].DIVISION != null) { $scope.showAddSecButton = true; } else { $scope.showAddSecButton = false; }
+                for (var i = 0; i < $scope.allOrganizations.length; i++) {
+                    if ($scope.allOrganizations[i].NAME == sele[0].NAME && $scope.allOrganizations[i].DIVISION == sele[0].DIVISION) {
+                        $scope.filteredSecs.push($scope.allOrganizations[i]);
+                    };
+                };
+            };
+        };
+        //#endregion Filter Divisions / Sections based on select change
+
+        //#region ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)
+        //Add New Organization Name clicked
+        $scope.AddOrgName = function () {
+            //modal
+            var modalInstance = $modal.open({
+                templateUrl: 'AddOrgNAME.html',
+                controller: 'AddOrgModalCtrl',
+                size: 'md',
+                resolve: {
+                    thisOrg: function () {
+                        return "none";
+                    },
+                    what: function () {
+                        return "organization";
+                    }
+                }
+            });
+            modalInstance.result.then(function (newOrgToSend) {
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                //POST it                            
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                Organization.save(newOrgToSend, function success(response) {
+                    $scope.allOrganizations.push(response);
+                    $scope.newOrg = {};
+                    $scope.filteredDivs = [];
+                    $scope.filteredSecs = [];
+                    $scope.showAddSecButton = false;
+                    toastr.success("Organization Added");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " + errorResponse.statusText);
+                });
+            }, function () {
+                //logic to do on cancel
+            });
+            //end modal
+        };
+
+        //Add New Organization Division clicked
+        $scope.AddDivName = function () {
+
+            var org = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == $scope.newOrg.NAME }); //give me just this org
+            //modal
+            var modalInstance = $modal.open({
+                templateUrl: 'AddOrgDIV.html',
+                controller: 'AddOrgModalCtrl',
+                size: 'md',
+                resolve: {
+                    thisOrg: function () {
+                        return org;
+                    },
+                    what: function () {
+                        return "division";
+                    }
+                }
+            });
+            modalInstance.result.then(function (newOrgToSend) {
+                //yes, add this new org                
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                //POST it                            
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                Organization.save(newOrgToSend, function success(response) {
+                    $scope.allOrganizations.push(response);
+                    $scope.newOrg = {};
+                    $scope.filteredDivs = [];
+                    $scope.filteredSecs = [];
+                    $scope.showAddSecButton = false;
+                    toastr.success("Organization Added");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " + errorResponse.statusText);
+                });
+            }, function () {
+                //logic to do on cancel
+            });
+            //end modal
+        };
+
+        //Add New Organization Section clicked
+        $scope.AddSecName = function () {
+
+            var org = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == $scope.newOrg.DIVISION }); //give me just this org
+            //modal
+            var modalInstance = $modal.open({
+                templateUrl: 'AddOrgSEC.html',
+                controller: 'AddOrgModalCtrl',
+                size: 'md',
+                resolve: {
+                    thisOrg: function () {
+                        return org;
+                    },
+                    what: function () {
+                        return "section";
+                    }
+                }
+            });
+            modalInstance.result.then(function (newOrgToSend) {
+                //yes, add this new org
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                //POST it                            
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                Organization.save(newOrgToSend, function success(response) {
+                    $scope.allOrganizations.push(response);
+                    $scope.newOrg = {};
+                    $scope.filteredDivs = [];
+                    $scope.filteredSecs = [];
+                    toastr.success("Organization Added");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " + errorResponse.statusText);
+                });
+            }, function () {
+                //logic to do on cancel
+            });
+            //end modal
+        };
+
+        //#endregion ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)
+
+
         $scope.cancel = function () {
             //navigate to a different state
             $state.go('projectList');
