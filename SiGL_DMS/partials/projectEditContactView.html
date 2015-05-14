@@ -1,55 +1,69 @@
-﻿<form class="form-horizontal" name="projectForm.Contact">
+﻿<legend>Contacts</legend>
+
+<div class="form-group" ng-if="ProjContacts.length > 0">
+    <table class="table">
+        <thead><tr><th></th><th></th><th></th><th></th><th></th></tr></thead>>
+        <tbody>
+            <tr ng-repeat="c in ProjContacts">
+                <td><button ng-click="delete(c)"><i class="glyphicon glyphicon-remove"></i></button></td>
+                <td>{{c.NAME}}</td>
+                <td>{{c.ORGANIZATION_ID}}</td>
+                <td>{{c.EMAIL}}</td>
+                <td>{{c.PHONE}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr />
+
+<form class="form-horizontal" name="projectForm.Contact">
     <fieldset>
-        <legend>Contacts</legend>
-
-        <div class="form-group" ng-if="ProjContacts.length > 0">
-            <table class="table">
-                <thead><tr><th></th><th></th><th></th><th></th><th></th></tr></thead>>
-                <tbody>
-                    <tr ng-repeat="c in ProjContacts">
-                        <td><button ng-click="delete(c)"><i class="glyphicon glyphicon-remove"></i></button></td>
-                        <td>{{c.NAME}}</td>
-                        <td>{{c.ORGANIZATION_ID}}</td>
-                        <td>{{c.EMAIL}}</td>
-                        <td>{{c.PHONE}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-
-
-
-        <hr />
-
         <div>Add new contact</div>
         <!-- NAME -->
-        <div class="form-group">
+        <div class="form-group required">
             <label class="col-md-2 control-label req" for="inputNAME">Name:</label>
             <div class="col-md-4">
-                <input class="form-control" id="inputNAME" name="NAME"
-                       type="text" placeholder=""
-                       ng-model="c.NAME" required />
+                <input class="form-control" id="inputNAME" name="NAME" type="text" placeholder="" ng-model="newContact.NAME" required />
             </div>
         </div>
-
-        <!-- All Organization Select -->
-        <div class="form-group">
-            <label class="col-md-2 control-label">Organization:</label>
+        
+        <!-- ORG section -->
+        <div class="form-group required">
+            <label class="col-md-2 control-label">Organization</label>
             <div class="col-md-10">
-                <select id="inputORGANIZATION_ID" name="ORGANIZATION"
-                        ng-model="aProject.PROJ_ORGANIZATION"
-                        ng-options="o.ORGANIZATION_ID as o.NAME for o in allOrganizations"></select>
+                <select id="inputORGANIZATION_N" name="NAME"
+                        ng-model="newContact.OrgName" ng-change="filterDivs($data)"
+                        ng-options="o.ORGANIZATION_ID as o.NAME for o in allOrganizations | unique: 'NAME' | orderBy: 'NAME'" required></select>
             </div>
+            <a href ng-click="AddOrgName()">Add a new organization</a>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">Division</label>
+            <div class="col-md-10">
+                <select id="inputORGANIZATION_DIV" name="DIVISION"
+                        ng-model="newContact.DIVISION" ng-change="filterSecs($data)"
+                        ng-options="d.ORGANIZATION_ID as d.DIVISION for d in filteredDivs | unique: 'DIVISION' | orderBy: 'DIVISION'"></select>
+            </div>
+            <a href ng-click="AddDivName()" ng-show="newOrg.NAME">Add a new division</a>
+        </div>
+
+        <div class="form-group required">
+            <label class="col-md-2 control-label">Section</label>
+            <div class="col-md-10">
+                <select id="inputORGANIZATION_SEC" name="SECTION"
+                        ng-model="newContact.SECTION"
+                        ng-options="s.ORGANIZATION_ID as s.SECTION for s in filteredSecs | unique: 'SECTION' | orderBy: 'SECTION'"></select>
+            </div>
+            <a href ng-show="showAddSecButton" ng-click="AddSecName()">Add a new section</a>
         </div>
 
         <!-- Email -->
-        <div class="form-group">
+        <div class="form-group required">
             <label class="col-md-2 control-label req" for="inputEMAIL">Email:</label>
             <div class="col-md-4">
-                <input class="form-control" id="inputEMAIL" name="EMAIL"
-                       type="text" placeholder=""
-                       ng-model="c.EMAIL" required />
+                <input class="form-control" id="inputEMAIL" name="EMAIL" type="email" placeholder="" ng-model="newContact.EMAIL" required />
             </div>
         </div>
 
@@ -58,8 +72,8 @@
             <label class="col-md-2 control-label req" for="inputPHONE">Phone:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputPHONE" name="PHONE"
-                       type="text" placeholder=""
-                       ng-model="c.PHONE" required />
+                       type="tel" placeholder=""
+                       ng-model="newContact.PHONE" />
             </div>
         </div>
 

@@ -1,4 +1,10 @@
-﻿<form editable-form class="form-horizontal" name="projectForm.Info">
+﻿<style type="text/css">
+    form .ng-pristine.ng-invalid-required 
+    {
+       box-shadow: none;
+    }
+</style>
+<form editable-form class="form-horizontal" name="projectForm.Info">
     <fieldset>
         <legend>Project Information</legend>
 
@@ -8,28 +14,31 @@
             <div class="col-md-4">
                 <input class="form-control" id="inputNAME" name="NAME" ng-model="aProject.NAME"
                        type="text" placeholder="Project Name" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
-                       required />
-                <span class="help-block has-error" ng-show="projectForm.Info.NAME.$invalid">Project Name is required.</span>
+                       required />                
             </div>
         </div>
-        <hr/>
+        <hr />
         <!-- Project Duration -->
         <div class="form-group required" ng-class="{'has-error':projectForm.Info.PROJ_DURATION_ID.$invalid && projectForm.Info.PROJ_DURATION_ID.$dirty}">
-            <label class="col-md-2 control-label" for="inputPROJ_DURATION_ID">Project Duration:</label>
+            <label class="col-md-2 control-label req" for="inputPROJ_DURATION_ID">Project Duration:</label>
             <div class="col-md-10">
-                <select id="inputPROJ_DURATION_ID" name="PROJ_DURATION_ID"
-                        ng-model="aProject.PROJ_DURATION_ID" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
-                        ng-options="d.PROJ_DURATION_ID as d.DURATION_VALUE for d in DurationList"></select>
-            </div>
+                <select id="inputPROJ_DURATION_ID" name="PROJ_DURATION_ID" ng-model="aProject.PROJ_DURATION_ID"
+                        ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
+                        ng-options="d.PROJ_DURATION_ID as d.DURATION_VALUE for d in DurationList" required>
+                    <option value="">Select Project Duration</option>
+                </select>
+            </div>            
         </div>
 
-        <!-- Project Status -->
-        <div class="form-group required" ng-class="{'has-error':projectForm.Info.PROJ_STATUS_ID.$invalid && projectForm.Info.PROJ_STATUS_ID.$dirty}">
+        <!-- Project Status  >-->
+        <div class="form-group required">
             <label class="col-md-2 control-label" for="inputPROJ_STATUS_ID">Project Status:</label>
             <div class="col-md-10">
-                <select id="inputPROJ_STATUS_ID" name="PROJ_STATUS_ID"
+                <select id="inputPROJ_STATUS_ID" name="PROJ_STATUS_ID" ng-model="aProject.PROJ_STATUS_ID"
                         ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(aProject.PROJ_STATUS_ID)"
-                        ng-model="aProject.PROJ_STATUS_ID" ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList"></select>
+                        ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList" required>
+                    <option value="">Select Project Status</option>
+                </select>
             </div>
         </div>
 
@@ -69,7 +78,7 @@
             </div>
         </div>
 
-        <hr/>
+        <hr />
 
         <!-- Project Objectives -->
         <div class="form-group">
@@ -105,7 +114,7 @@
             </div>
         </div>
 
-        <hr/>
+        <hr />
         <!-- Project Keywords -->
         <div class="form-group" ng-if="ProjectKeywords.length > 0">
             <label class="col-md-2 control-label" for="inputProjKEYWORDS">Project Keywords</label>
@@ -151,7 +160,7 @@
                 <span>
                     <button ng-show="aProject.PROJECT_ID == undefined" class="btn btn-primary"
                             style="width:80px;margin-right:10px"
-                            ng-click="save(projectForm.Info.Info.$valid)">
+                            ng-click="save(projectForm.Info.$valid)">
                         <span>Create</span>
                     </button>
                 </span>
@@ -166,17 +175,18 @@
     </fieldset>
     </formeditable-form>
 
-    <!-- MODALs for "are you sure you want to remove this thing (Keyword or URL) -->
-    <script type="text/ng-template" id="removemodal.html">
-        <div class="modal-header">
-            <h3 class="modal-title">Remove {{what}}</h3>
-        </div>
-        <div class="modal-body">
-            <p>Are you sure you want to remove this {{what}}: <b>{{keyToRmv}}</b></p>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-        </div>
-    </script>
-    
+    <!-- MODALs for "are you sure you want to remove this thing (Keyword or URL)
+        <script type="text/ng-template" id="removemodal.html">
+            <div class="modal-header">
+                <h3 class="modal-title">Remove {what}}</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to remove this {what}}: <b>{keyToRmv}}</b></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="ok()">OK</button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
+
+    -->
