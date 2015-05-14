@@ -17,7 +17,7 @@
                     </form>
                     <div class="buttons" ng-show="!rowform.$visible">
                         <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
-                        <button class="btn btn-danger" confirmed-click="RemoveData(d)" ng-confirm-click="Are you sure you want to remove this data?">del</button>
+                        <button class="btn btn-danger" ng-click="RemoveData(d)">del</button>
                     </div>
                 </td>
                 <td><div style="display:none"><span editable-text="d.PROJECT_ID" e-form="rowform" e-name="PROJECT_ID">{{d.PROJECT_ID}}</span></div>

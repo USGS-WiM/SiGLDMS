@@ -3,22 +3,8 @@
     'use strict';
 
     var siGLControllers = angular.module('siGLControllers', ['ngInputModified', 'ui.unique', 'xeditable']);
-    
-    
-    siGLControllers.directive('ngConfirmClick', [ function () {
-        return {
-            link: function (scope, element, attr) {
-                var msg = attr.ngConfirmClick || "Are you sure?";
-                var clickAction = attr.confirmedClick;
-                element.bind('click', function (event) {
-                    if (window.confirm(msg)) {
-                        scope.$apply(clickAction)
-                     }
-                });
-            }
-        };
-    }]);
 
+    //disable tabs if there is no project (create page instead of edit page)
     siGLControllers.directive('aDisabled', function () {
         return {
             compile: function (tElement, tAttrs, transclude) {
@@ -64,87 +50,53 @@
         if (!checkCreds()) {
             $scope.auth = false;
             $location.path('/login');
-        }
-        //array of projects    
-        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
-        $(".page-loading").removeClass("hidden");
-        Projects.getDMProjects(function success (data) {
-            $scope.projects = data;
-            $(".page-loading").addClass("hidden");
-        }, function error(errorResponse) {
-            $(".page-loading").addClass("hidden");
-            toastr.error("Error: " + errorResponse.statusText);
+        } else {
+            //array of projects 
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+            $(".page-loading").removeClass("hidden");
+            Projects.getDMProjects(function success(data) {
+                data.sort(function (a, b) {
+                    var nameA = a.Name.toLowerCase(), nameB = b.Name.toLowerCase();
+                    if (nameA < nameB)
+                        return -1;
+                    if (nameA > nameB)
+                        return 1;
+                    return 0;
+                });
+                $scope.projects = data;
+                $scope.ProjCnt = data.length;
+                $scope.MoreThan20 = data.length >= 20 ? true : false;
+                                
+                $(".page-loading").addClass("hidden");
+            }, function error(errorResponse) {
+                $(".page-loading").addClass("hidden");
+                toastr.error("Error: " + errorResponse.statusText);
             }
+            ).$promise;
             
-        ).$promise;
-        $scope.User = getUsersNAME();
-        //setProjectLookups();
-    }
-    //end projectListCtrl
+            // change sorting order
+            $scope.sort_by = function (newSortingOrder) {
+                if ($scope.sortingOrder == newSortingOrder) {
+                    $scope.reverse = !$scope.reverse;
+                }
+                $scope.sortingOrder = newSortingOrder;
+                // icon setup
+                $('th i').each(function () {
+                    // icon reset
+                    $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                });
+                if ($scope.reverse) {
+                    $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                } else {
+                    $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                }
+            };
 
-    //projectDetailsCtrl
-    siGLControllers.controller('ProjectDetailCtrl', ['$scope', 'thisPproject', 'Projects', '$state', ProjectDetailCtrl]);
-    function ProjectDetailCtrl($scope, thisProject, Projects, $state) {
-        $scope.Title = "Project Detail: " + thisProject.NAME;
-
-        //Required Model properties: 
-        //1. aProject, 2. ProjDurationName, 3. ProjStatusName, 4. ProjObjectives, 5. ProjKeywords, 6. parsed URLs 
-
-        //1. aProject
-        $scope.aProject = thisProject;
-        //2. ProjDurationName
-        Projects.getProjDuration({ id: thisProject.PROJECT_ID },
-            function success(response) {
-                $scope.projDurationName = response.DURATION_VALUE;
-            },
-            function error(errorResponse) {
-                $scope.projDurationName = errorResponse;
-            }
-        );
-        //3. ProjStatusName
-        Projects.getProjStatus({ id: thisProject.PROJECT_ID },
-            function success(response) {
-                $scope.projStatusName = response.STATUS_VALUE;
-            },
-            function error(errorResponse) {
-                $scope.projStatusName = errorResponse;
-            }
-        );
-        //4. ProjObjectives
-        Projects.getProjObjectives({ id: thisProject.PROJECT_ID },
-            function success(response) {
-                $scope.ProjectObjectives = response;
-            },
-            function error(errorResponse) {
-                $scope.ProjectObjectives = errorResponse;
-            }
-        );
-        //5. ProjKeywords
-        Projects.getProjKeywords({ id: thisProject.PROJECT_ID },
-            function success(response) {
-                $scope.ProjectKeywords = response;
-            },
-            function error(errorResponse) {
-                $scope.ProjectKeywords = errorResponse;
-            }
-        );
-        //6. parsed URLs by '|'
-        $scope.urls = [];
-        if ($scope.aProject.URL) {
-            if (($scope.aProject.URL).indexOf('|') > -1) {
-                $scope.urls = ($scope.aProject.URL).split("|");
-            } else {
-                $scope.urls[0] = $scope.aProject.URL;
-            }
-        }
-
-        //back button
-        $scope.cancel = function () {
-            //navigate to a different state
-            $state.go('projectList');
+            $scope.User = getUsersNAME();
+            //setProjectLookups();
         }
     }
-    //end projectDetailsCtrl
+    //end projectListCtrl    
 
     //ProjectEditCtrl
     siGLControllers.controller('projectEditCtrl',
@@ -162,6 +114,7 @@
             $location.path('/login');
         } else {
             $scope.projectForm = {};
+
 
             //#region Datepicker
             $scope.datepickrs = {
@@ -241,7 +194,7 @@
 
                 //1. aProject
                 $scope.aProject = thisProject;
-                $scope.title = "Edit: " + $scope.aProject.NAME;
+                $scope.title = "Project: " + $scope.aProject.NAME;
 
                 //check status for disabling of end date
                 if ($scope.aProject.PROJ_STATUS_ID == 1) {
@@ -352,7 +305,7 @@
                 //modal
                 var modalInstance = $modal.open({
                     templateUrl: 'removemodal.html',
-                    controller: 'ModalInstanceCtrl',
+                    controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
                         keyToRemove: function () {
@@ -431,7 +384,7 @@
                 //modal
                 var modalInstance = $modal.open({
                     templateUrl: 'removemodal.html',
-                    controller: 'ModalInstanceCtrl',
+                    controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
                         keyToRemove: function () {
@@ -524,7 +477,6 @@
                 
             }
             
-
             //change to the aProject made, put it .. fired on each blur after change made to field
             $scope.SaveOnBlur = function(id){
                 if ($scope.aProject.PROJECT_ID != undefined) {
@@ -554,18 +506,17 @@
     }//end projectEditCtrl
 
     //ProjectEditCoopCtrl $modal
-    siGLControllers.controller('projectEditCoopCtrl', ['$scope', '$http', '$filter', 'thisProject', 'projOrgs', 'Projects', 'allOrgList', 'Organization', 'getCreds', projectEditCoopCtrl]);
-    function projectEditCoopCtrl($scope, $http, $filter, thisProject, projOrgs, Projects, allOrgList, Organization, getCreds) {
+    siGLControllers.controller('projectEditCoopCtrl', ['$scope', '$http', '$filter', '$modal', 'thisProject', 'projOrgs', 'Projects', 'allOrgList', 'Organization', 'getCreds', projectEditCoopCtrl]);
+    function projectEditCoopCtrl($scope, $http, $filter, $modal, thisProject, projOrgs, Projects, allOrgList, Organization, getCreds) {
         $scope.ProjOrgs = projOrgs;
         $scope.allOrganizations = allOrgList;
         $scope.newOrg = {};
         var thisProjID = thisProject.PROJECT_ID;
         $scope.filteredDivs = [];
         $scope.filteredSecs = [];
-        $scope.items = ['item1', 'item2', 'item3'];
+        $scope.showAddSecButton = false;
 
-
-        //#region POST Org click
+        //#region POST ProjOrg click
         $scope.AddOrg = function (valid, o) {
             if (valid) {
                 //add it
@@ -595,30 +546,53 @@
                 alert("You must first choose an Organization name.");
             }
         }
-        //#endregion POST Org click
+        //#endregion POST ProjOrg click
 
         //#region DELETE Org click
         $scope.RemoveOrg = function (org) {
-            var index = $scope.ProjOrgs.indexOf(org);
-            //DELETE it
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
-            $http.defaults.headers.common['Accept'] = 'application/json';
-            $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-
-            Projects.deleteProjOrg({ id: thisProjID }, org, function success(response) {
-                $scope.ProjOrgs.splice(index, 1);
-                $scope.coopCount.total = $scope.coopCount.total - 1;
-                toastr.success("Cooperator Removed");
-            }, function error(errorResponse) {
-                toastr.error("Error: " + errorResponse.statusText);
+            //modal
+            var modalInstance = $modal.open({
+                templateUrl: 'removemodal.html',
+                controller: 'ConfirmModalCtrl',
+                size: 'sm',
+                resolve: {
+                    keyToRemove: function () {
+                        return org;
+                    },
+                    what: function () {
+                        return "Cooperator";
+                    }
+                }
             });
-            $http.defaults.headers.common['X-HTTP-Method-Override'];
-        }
+            modalInstance.result.then(function (keyToRemove) {
+                //yes, remove this keyword
+                var index = $scope.ProjOrgs.indexOf(org);
+                //DELETE it
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
+
+                Projects.deleteProjOrg({ id: thisProjID }, org, function success(response) {
+                    $scope.ProjOrgs.splice(index, 1);
+                    $scope.coopCount.total = $scope.coopCount.total - 1;
+                    toastr.success("Cooperator Removed");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " + errorResponse.statusText);
+                });
+                delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+            }, function () {
+                //logic for cancel
+            });
+            //end modal
+        };
+
         //#endregion DELETE Org click
 
+        //#region Filter Divisions / Sections based on select change
         //org was chosen, get the divisions
         $scope.filterDivs = function () {            
             if ($scope.newOrg.NAME != undefined) {
+                $scope.showAddSecButton = false;
                 $scope.filteredDivs = [];
                 $scope.filteredSecs = [];
                 var orgID = $scope.newOrg.NAME; //ORG_ID
@@ -638,7 +612,7 @@
                 $scope.filteredSecs = [];
                 var orgID = $scope.newOrg.DIVISION; //ORGID
                 var sele = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == orgID }); //give me just this org
-
+                if (sele[0].DIVISION != null) { $scope.showAddSecButton = true; } else { $scope.showAddSecButton = false;}
                 for (var i = 0; i < $scope.allOrganizations.length; i++) {
                     if ($scope.allOrganizations[i].NAME == sele[0].NAME && $scope.allOrganizations[i].DIVISION == sele[0].DIVISION) {
                         $scope.filteredSecs.push($scope.allOrganizations[i]);
@@ -646,43 +620,123 @@
                 };
             };
         };
+        //#endregion Filter Divisions / Sections based on select change
 
-        //#region MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)
-        //Add New Organization Name clicked http://weblogs.asp.net/dwahlin/building-an-angularjs-modal-service
+        //#region ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)
+        //Add New Organization Name clicked
         $scope.AddOrgName = function () {
-
-            //var modalInstance = $modal.open({
-            //    animation: $scope.animationsEnabled,
-            //    templateUrl: 'partials/addOrgNameModal.html',
-            //    controller: 'ModalInstanceCtrl',
-            //    //scope: allOrgList,
-            //    resolve: {
-            //        allOrgsList: function () {
-            //            return $scope.allOrganizations;
-            //        }
-            //    }
-            //});
-
-            //modalInstance.result.then(function (selectedItem) {
-            //    $scope.selected = selectedItem;
-            //}, function () {
-            //    //$log.info('Modal dismissed at: ' + new Date());
-            //});
-            var modalOptions = {
-                closeButtonText: 'Cancel',
-                actionButtonText: 'Add Organization',
-                headerText: 'Add new organization',
-                bodyText: '<div><select ng-options:"o.ORGANIZATION_ID as o.NAME for o in allOrganizations"></select></div>'
-            };
-            modalService.showModal({}, modalOptions).then(function (result) {
-                var test;
-                //dataService.deleteCustomer($scope.customer.id).then(function () {
-                  //  $location.path('/customers');
-                //}, processError);
+            //modal
+            var modalInstance = $modal.open({
+                templateUrl: 'AddOrgNAME.html',
+                controller: 'AddOrgModalCtrl',
+                size: 'md',
+                resolve: {
+                    thisOrg: function () {
+                        return "none";
+                    },
+                    what: function () {
+                        return "organization";
+                    }
+                }
             });
+            modalInstance.result.then(function (newOrgToSend) {
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                //POST it                            
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                Organization.save(newOrgToSend, function success(response) {
+                    $scope.allOrganizations.push(response);
+                    $scope.newOrg = {};
+                    $scope.filteredDivs = [];
+                    $scope.filteredSecs = [];
+                    $scope.showAddSecButton = false;
+                    toastr.success("Organization Added");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " + errorResponse.statusText);
+                });
+            }, function () {
+                //logic to do on cancel
+            });
+            //end modal
         };
 
-        //#endregion MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)
+        //Add New Organization Division clicked
+        $scope.AddDivName = function () {
+            
+            var org = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == $scope.newOrg.NAME }); //give me just this org
+            //modal
+            var modalInstance = $modal.open({
+                templateUrl: 'AddOrgDIV.html',
+                controller: 'AddOrgModalCtrl',
+                size: 'md',
+                resolve: {
+                    thisOrg: function () {
+                        return org;
+                    },
+                    what: function () {
+                        return "division";
+                    }
+                }
+            });
+            modalInstance.result.then(function (newOrgToSend) {
+                //yes, add this new org                
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                //POST it                            
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                Organization.save(newOrgToSend, function success(response) {
+                    $scope.allOrganizations.push(response);
+                    $scope.newOrg = {};
+                    $scope.filteredDivs = [];
+                    $scope.filteredSecs = [];
+                    $scope.showAddSecButton = false;
+                    toastr.success("Organization Added");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " + errorResponse.statusText);
+                });
+            }, function () {
+                //logic to do on cancel
+            });
+            //end modal
+        };
+
+        //Add New Organization Section clicked
+        $scope.AddSecName = function () {
+
+            var org = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == $scope.newOrg.DIVISION }); //give me just this org
+            //modal
+            var modalInstance = $modal.open({
+                templateUrl: 'AddOrgSEC.html',
+                    controller: 'AddOrgModalCtrl',
+                    size: 'md',
+                    resolve: {
+                        thisOrg: function () {
+                            return org;
+                    },
+                        what: function () {
+                        return "section";
+                        }
+                }
+            });
+            modalInstance.result.then(function (newOrgToSend) {
+                //yes, add this new org
+                $http.defaults.headers.common['Accept']= 'application/json';
+                //POST it                            
+                $http.defaults.headers.common['Authorization']= 'Basic ' +getCreds();
+                Organization.save(newOrgToSend, function success(response) {
+                    $scope.allOrganizations.push(response);
+                    $scope.newOrg = { };
+                    $scope.filteredDivs =[];
+                    $scope.filteredSecs =[];
+                    toastr.success("Organization Added");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " +errorResponse.statusText);
+                    });
+                    }, function () {
+                //logic to do on cancel
+                });
+                //end modal
+        };
+
+        //#endregion ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)
 
         $scope.cancel = function () {
             //navigate to a different state
@@ -691,33 +745,9 @@
 
     }
 
-    // It is not the same as the $modal service used above.
-
-    siGLControllers.controller('ModalInstanceCtrl', function ($scope, $modalInstance, keyToRemove, what) {
-
-        if (keyToRemove['TERM'] != undefined) {
-            $scope.keyToRmv = keyToRemove.TERM;
-        } else {
-            $scope.keyToRmv = keyToRemove;
-        };
-
-        $scope.what = what;
-        //$scope.selected = {
-        //    item: $scope.items[0]
-        //};
-
-        $scope.ok = function () {
-            $modalInstance.close(keyToRemove);
-    };
-
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-    };
-    });
-
     //ProjectEditDataCtrl
-    siGLControllers.controller('projectEditDataCtrl', ['$scope', '$http', 'Projects', 'DataHost', 'thisProject', 'projDatum', 'getCreds', projectEditDataCtrl]);
-    function projectEditDataCtrl($scope, $http, Projects, DataHost, thisProject, projDatum, getCreds) {
+    siGLControllers.controller('projectEditDataCtrl', ['$scope', '$http', '$modal', 'Projects', 'DataHost', 'thisProject', 'projDatum', 'getCreds', projectEditDataCtrl]);
+    function projectEditDataCtrl($scope, $http, $modal, Projects, DataHost, thisProject, projDatum, getCreds) {
         $scope.ProjData = projDatum;
         
         $scope.newData = {};
@@ -746,21 +776,41 @@
 
         //#region DELETE Data click
         $scope.RemoveData = function (dataH) {
-            var index = $scope.ProjData.indexOf(dataH);
-            //DELETE it
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
-            $http.defaults.headers.common['Accept'] = 'application/json';
-            $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-
-            Projects.deleteProjData({ id: thisProjID }, dataH, function success(response) {
-                $scope.ProjData.splice(index, 1);
-                $scope.datumCount.total = $scope.datumCount.total - 1;
-                toastr.success("Data Removed");
-            }, function error(errorResponse) {
-                toastr.error("Error: " + errorResponse.statusText);
+            //modal
+            var modalInstance = $modal.open({
+                templateUrl: 'removemodal.html',
+                controller: 'ConfirmModalCtrl',
+                size: 'sm',
+                resolve: {
+                    keyToRemove: function () {
+                        return dataH;
+                    },
+                    what: function () {
+                        return "Data";
+                    }
+                }
             });
-            $http.defaults.headers.common['X-HTTP-Method-Override']
-        }
+            modalInstance.result.then(function (keyToRemove) {
+                //yes, remove this keyword
+                var index = $scope.ProjData.indexOf(dataH);
+                //DELETE it
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
+
+                Projects.deleteProjData({ id: thisProjID }, dataH, function success(response) {
+                    $scope.ProjData.splice(index, 1);
+                    $scope.datumCount.total = $scope.datumCount.total - 1;
+                    toastr.success("Data Removed");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " + errorResponse.statusText);
+                });
+                delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+            }, function () {
+                //logic for cancel
+            });
+            //end modal
+        };
         //#endregion DELETE Data click
 
         //#region Edit existing Data        
@@ -791,21 +841,95 @@
     }
 
     //projectEditContactCtrl
-    siGLControllers.controller('projectEditContactCtrl', ['$scope', 'projContacts', 'allOrgList', projectEditContactCtrl]);
-    function projectEditContactCtrl($scope, projContacts, allOrgList) {
+    siGLControllers.controller('projectEditContactCtrl', ['$scope', '$http', '$modal', 'Projects', 'projContacts', 'thisProject', 'allOrgList', 'getCreds', projectEditContactCtrl]);
+    function projectEditContactCtrl($scope, $http, $modal, Projects, projContacts, thisProject, allOrgList, getCreds) {
         $scope.ProjContacts = projContacts;
         $scope.allOrganizations = allOrgList;
+        
+        $scope.newContact = {};
+        var thisProjID = thisProject.PROJECT_ID;
 
-        $scope.submit = function (isValid) {
-            if (isValid) {
-                $scope.Project.$save(function (data) {
-                    //  toastr.success("Save successful");
+        //#region POST Contact click
+        $scope.AddContact = function (valid, c) {
+            if (valid) {
+                //add it
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                Projects.addProjContact({ id: thisProjID }, c, function success(response) {
+                    $scope.ProjContacts.push(c);
+                    $scope.contactCount.total = $scope.contactCount.total + 1;
+                    $scope.newData = {};
+                    toastr.success("Contact Added");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " + errorResponse.statusText);
                 });
+
+            } else {
+                alert("You must populate at least one field before adding the contact.");
             }
-            else {
-                alert("Please correct the validation errors first");
-            }
+        }
+        //#endregion POST Contact click
+
+        //#region DELETE Contact click
+        $scope.RemoveData = function (con) {
+            //modal
+            var modalInstance = $modal.open({
+                templateUrl: 'removemodal.html',
+                controller: 'ConfirmModalCtrl',
+                size: 'sm',
+                resolve: {
+                    keyToRemove: function () {
+                        return con;
+                    },
+                    what: function () {
+                        return "Contact";
+                    }
+                }
+            });
+            modalInstance.result.then(function (keyToRemove) {
+                //yes, remove this keyword
+                var index = $scope.ProjContacts.indexOf(con);
+                //DELETE it
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
+
+                Projects.deleteProjData({ id: thisProjID }, con, function success(response) {
+                    $scope.ProjContacts.splice(index, 1);
+                    $scope.contactCount.total = $scope.contactCount.total - 1;
+                    toastr.success("Data Removed");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " + errorResponse.statusText);
+                });
+                delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+            }, function () {
+                //logic for cancel
+            });
+            //end modal
         };
+        //#endregion DELETE Contact click
+
+        //#region Edit existing Contact        
+        $scope.saveContact = function (data, id) {
+            var test;
+            var retur = false;
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+            $http.defaults.headers.common['Accept'] = 'application/json';
+            $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+
+            DataHost.save({ id: id }, data, function success(response) {
+                retur = response;
+                toastr.success("Data Updated");
+            }, function error(errorResponse) {
+                retur = false;
+                toastr.error("Error: " + errorResponse.statusText);
+            });
+            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+            return retur;
+        };
+
+
+        //#endregion Edit existing Data
         $scope.cancel = function () {
             //navigate to a different state
             $state.go('projectList');
@@ -883,6 +1007,85 @@
             //navigate to a different state
             $state.go('projectList');
         };
+    }
+
+    //popup confirm box
+    siGLControllers.controller('ConfirmModalCtrl', ['$scope', '$modalInstance', 'keyToRemove', 'what', ConfirmModalCtrl]);
+    function ConfirmModalCtrl ($scope, $modalInstance, keyToRemove, what) {
+        if (keyToRemove['TERM'] != undefined) {
+            $scope.keyToRmv = keyToRemove.TERM;
+        } else if (keyToRemove['ORGANIZATION_ID'] != undefined)
+        {
+            $scope.keyToRmv = keyToRemove.NAME;
+        } else if (keyToRemove['DATA_HOST_ID'] != undefined) {
+            $scope.keyToRmv = keyToRemove.DESCRIPTION;
+        }
+        else {
+            $scope.keyToRmv = keyToRemove;
+        };
+
+        $scope.what = what;
+
+        $scope.ok = function () {
+            $modalInstance.close(keyToRemove);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    };
+
+    //org popup to add to org db
+    siGLControllers.controller('AddOrgModalCtrl', ['$scope', '$modalInstance', 'what', 'thisOrg', AddOrgModalCtrl]);
+    function AddOrgModalCtrl($scope, $modalInstance, what, thisOrg) {
+        $scope.newOrg = {}; //holder for binding
+        $scope.what = what;
+        var newOrgToSend = {};
+
+        if (thisOrg != "none") {
+            $scope.orgName = thisOrg[0].NAME;
+            if (thisOrg[0].DIVISION != null) {
+                //there's a division, so adding a section now
+                $scope.orgDiv = thisOrg[0].DIVISION;           
+           
+                $scope.ok = function () {
+                    newOrgToSend.NAME = $scope.orgName;
+                    newOrgToSend.DIVISION = $scope.orgDiv;
+                    newOrgToSend.SECTION = $scope.newOrg.SECTION;
+                    $modalInstance.close(newOrgToSend);
+                };
+
+                $scope.cancel = function () {
+                    $modalInstance.dismiss('cancel');
+                };
+            }//thisOrg[0].DIVISION != null
+            else {
+                //DIVISION is null == adding division
+                $scope.ok = function () {
+                    newOrgToSend.NAME = $scope.orgName;
+                    newOrgToSend.DIVISION = $scope.newOrg.DIVISION;
+                    newOrgToSend.SECTION = null;
+                    $modalInstance.close(newOrgToSend);
+                };
+
+                $scope.cancel = function () {
+                    $modalInstance.dismiss('cancel');
+                };
+            }
+        } //thisOrg != null
+        else {
+            //this is a new org name            
+            $scope.ok = function () {
+                newOrgToSend.NAME = $scope.newOrg.NAME;
+                newOrgToSend.DIVISION = null;
+                newOrgToSend.SECTION = null;
+                $modalInstance.close(newOrgToSend);
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        }
     }
 
     //login
