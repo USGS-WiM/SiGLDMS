@@ -37,13 +37,7 @@
                 .state("projectList", {
                     url: "/projects",
                     templateUrl: "partials/projectListView.html",
-                    controller: "projectListCtrl"//,
-                    //resolve: {
-                    //    Proj: 'Projects',
-                    //    IndexProjects: function (Proj) {
-                    //        return Proj.getDMProjects().$promise;
-                    //    }
-                    //}
+                    controller: "projectListCtrl"
                 })
 
                 //prject details page
