@@ -30,18 +30,41 @@
         };
     });
 
-    siGLControllers.controller('mainCtrl', ['$scope', 'Projects', '$location', '$state', 'checkCreds', 'getUsername', mainCtrl]);
-    function mainCtrl($scope, Projects, $location, $state, checkCreds, getUsername) {
+    siGLControllers.controller('mainCtrl', ['$scope', '$rootScope', '$location', '$state', 'Projects', 'checkCreds', 'getUsersNAME', 'deleteCreds', mainCtrl]);
+    function mainCtrl($scope, $rootScope, $location, $state, Projects, checkCreds, getUsersNAME, deleteCreds) {
         $scope.logo = 'images/usgsLogo.png';
+        $rootScope.isAuth = {};
+
         if (!checkCreds()) {
-            //$scope.auth;
+            $rootScope.isAuth.val = false;
             $location.path('/login');
         } else {
-            //$scope.auth = true;
-            $scope.username = getUsername();
+            $rootScope.isAuth.val = true;
+            $rootScope.usersName = getUsersNAME();
             $state.go('projectList');
-            //setProjectLookups();
+
         }
+    }
+
+    siGLControllers.controller('accountCtrl', ['$scope', '$location', '$state', 'Projects', 'checkCreds', 'getUsersNAME', accountCtrl]);
+    function accountCtrl($scope, $location, $state, Projects, checkCreds, getUsersNAME) {
+        $scope.accountUser = {};
+        $scope.accountUser.Name = getUsersNAME();
+    }
+
+    siGLControllers.controller('helpCtrl', ['$scope', helpCtrl]);
+    function helpCtrl($scope) {
+        $scope.helpInfo = {};
+        $scope.helpInfo.fact = "Some really interesting help will be here.";
+    }
+
+    siGLControllers.controller('navCtrl', ['$scope', '$location', '$rootScope', 'checkCreds', 'deleteCreds', navCtrl]);
+    function navCtrl($scope, $location, $rootScope, checkCreds, deleteCreds) {        
+        $scope.logout = function () {
+            deleteCreds();
+            $rootScope.isAuth.val = false;
+            $location.path('/login');
+        }    
     }
 
     //ProjectListCtrl
@@ -1245,15 +1268,16 @@
         }
     }
 
-    //login
-    siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', 'Login', 'setCreds', LoginCtrl]);
-    function LoginCtrl($scope, $state, $http, Login, setCreds) {
+    //login 'setLoggedIn',
+    siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', '$rootScope', 'Login', 'setCreds', LoginCtrl]);
+    function LoginCtrl($scope, $state, $http, $rootScope, Login, setCreds) {
+
+        //#region CAP lock Check
         $('[type=password]').keypress(function (e) {
             var $password = $(this),
                 tooltipVisible = $('.tooltip').is(':visible'),
                 s = String.fromCharCode(e.which);
-
-            //check if caplock is on. tests if letter is upper case and shift is NOT pressed
+            
             if (s.toUpperCase() === s && s.toLowerCase() !== s && !e.shiftKey) {
                 if (!tooltipVisible) 
                     $password.tooltip('show');
@@ -1267,9 +1291,9 @@
                 $password.tooltip('hide');
             });
         });
-
-        $scope.submit = function () {
-            $scope.sub = true;
+        //#endregion CAP lock Check
+         $scope.submit = function () {
+            //$scope.sub = true;
             var postData = {
                 "username": $scope.username,
                 "password": $scope.password
@@ -1284,7 +1308,9 @@
                         //set user cookies (cred, username, name, role
                         var usersNAME = user.FNAME + " " + user.LNAME;
                         setCreds($scope.username, $scope.password, usersNAME, user.ROLE_ID);
-                        $scope.auth = true;
+                        //setLoggedIn.changeLoggedIn(true);
+                        $rootScope.isAuth.val = true;
+                        $rootScope.usersName = usersNAME;
                         $state.go('projectList');
                     }
                     else {

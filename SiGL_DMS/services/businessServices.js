@@ -27,6 +27,20 @@
             $cookies.usersRole = roleName;
         };
     }]);
+
+    siGLBusinessServices.factory('setLoggedIn', ['$cookies', function ($cookies) {
+        var loggedIn = false;
+        return {
+            isLoggedIn: function () {
+                return loggedIn;
+            },
+            changeLoggedIn: function (YesOrNo) {
+                loggedIn = YesOrNo;
+
+            }
+        };
+    }]);
+
     //#endregion SETTERS
 
     //#region GETTERS

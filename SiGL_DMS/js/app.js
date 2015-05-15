@@ -32,18 +32,21 @@
                     templateUrl: "partials/homeView.html",
                     controller: "mainCtrl"
                 })
-
+                 .state("account", {
+                     url: "/",
+                     templateUrl: "partials/accountView.html",
+                     controller: "accountCtrl"
+                 })
+                 .state("help", {
+                     url: "/",
+                     templateUrl: "partials/helpView.html",
+                     controller: "helpCtrl"
+                 })
                 //projects lists page
                 .state("projectList", {
                     url: "/projects",
                     templateUrl: "partials/projectListView.html",
-                    controller: "projectListCtrl"//,
-                    //resolve: {
-                    //    Proj: 'Projects',
-                    //    IndexProjects: function (Proj) {
-                    //        return Proj.getDMProjects().$promise;
-                    //    }
-                    //}
+                    controller: "projectListCtrl"
                 })
 
                 //prject details page
