@@ -32,7 +32,16 @@
                     templateUrl: "partials/homeView.html",
                     controller: "mainCtrl"
                 })
-
+                 .state("account", {
+                     url: "/",
+                     templateUrl: "partials/accountView.html",
+                     controller: "accountCtrl"
+                 })
+                 .state("help", {
+                     url: "/",
+                     templateUrl: "partials/helpView.html",
+                     controller: "helpCtrl"
+                 })
                 //projects lists page
                 .state("projectList", {
                     url: "/projects",

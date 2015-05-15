@@ -66,6 +66,8 @@
     <Content Include="images\usgsLogo.png" />
     <Content Include="js\vendor\angular-input-modified.min.js" />
     <Content Include="js\vendor\xeditable.min.js" />
+    <Content Include="partials\accountView.html" />
+    <Content Include="partials\helpView.html" />
     <Content Include="services\businessServices.js" />
     <Content Include="js\datePickrCtrl.js" />
     <Content Include="js\vendor\bootstrap-multiselect.js" />
@@ -73,7 +75,6 @@
     <Content Include="js\vendor\jquery-1.10.2.min.js" />
     <Content Include="partials\login.html" />
     <Content Include="partials\header.html" />
-    <Content Include="partials\nav.html" />
     <Content Include="partials\projectDetailView.html" />
     <Content Include="partials\projectEditCooperatorView.html" />
     <Content Include="partials\projectEditDataView.html" />

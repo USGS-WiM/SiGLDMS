@@ -63,19 +63,26 @@
             </div>
             <br clear="all"/>
             <div ng-show="isAuth.val" class="container">
-               <h3><a class="navbar-header" style="color:#000" ui-sref="home">Home</a></h3>
+
+                <div class="collapse navbar-collapse" id="">
+                    <ul class="nav navbar-nav">
+                        <li><a style="color:#000" ui-sref="home">Home</a></li>
+                        <li><a style="color:#000" ui-sref="account">Your account</a></li>
+                        <li><a style="color:#000" ui-sref="help">FAQs/Help</a></li>
+                    </ul>
+                </div>
+
             </div>
-            
         </div>
+    </div>
+    <br clear="all" />
+    <!--HEADER END-->
+    <!--<div ng-include src="'partials/nav.html'" style="margin-top:31px"></div>-->
 
-        <br clear="all" />
-        <!--HEADER END-->
-        <!--<div ng-include src="'partials/nav.html'" style="margin-top:31px"></div>-->
-
-        <div class="page-loading"><div id="loading"><div id="loadingcontent"><p id="loadingspinner" style=""><img src="images/loading1.gif" /></p></div></div></div>
-        <div class="container">
-            <div ui-view></div>
-        </div>
+    <div class="page-loading"><div id="loading"><div id="loadingcontent"><p id="loadingspinner" style=""><img src="images/loading1.gif" /></p></div></div></div>
+    <div class="container">
+        <div ui-view></div>
+    </div>
 
 </body>
 </html>

@@ -43,27 +43,28 @@
             $rootScope.usersName = getUsersNAME();
             $state.go('projectList');
 
-            //$scope.logout = function () {
-            //    deleteCreds();
-            //    //setLoggedIn.changeLoggedIn(false);
-            //    $rootScope.isAuth.val = false;
-            //    $location.path('/login');
-            //}
-            //$scope.$watch('setLoggedIn.isLoggedIn()', function (yesOrNo) {
-            //    $scope.isAuth = yesOrNo;
-            //});
         }
     }
 
+    siGLControllers.controller('accountCtrl', ['$scope', '$location', '$state', 'Projects', 'checkCreds', 'getUsersNAME', accountCtrl]);
+    function accountCtrl($scope, $location, $state, Projects, checkCreds, getUsersNAME) {
+        $scope.accountUser = {};
+        $scope.accountUser.Name = getUsersNAME();
+    }
+
+    siGLControllers.controller('helpCtrl', ['$scope', helpCtrl]);
+    function helpCtrl($scope) {
+        $scope.helpInfo = {};
+        $scope.helpInfo.fact = "Some really interesting help will be here.";
+    }
+
     siGLControllers.controller('navCtrl', ['$scope', '$location', '$rootScope', 'checkCreds', 'deleteCreds', navCtrl]);
-    function navCtrl($scope, $location, $rootScope, checkCreds, deleteCreds) {
-        
+    function navCtrl($scope, $location, $rootScope, checkCreds, deleteCreds) {        
         $scope.logout = function () {
             deleteCreds();
             $rootScope.isAuth.val = false;
             $location.path('/login');
-        }
-    
+        }    
     }
 
     //ProjectListCtrl
