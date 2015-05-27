@@ -172,9 +172,9 @@
                     case '/publication':
                         formNameModified = $scope.projectForm.Pubs.modified;
                         break;
-                    default:
+                    case '/siteDetails/:siteId':
                         formNameModified = $scope.projectForm.SiteInfo.modified;
-                        break;
+                        break;                   
                 }
                 if (formNameModified) {
                     console.log('toState.name: ' + toState.name);
@@ -1105,24 +1105,24 @@
             CONTACT.PHONE = data.PHONE;
             CONTACT.SCIENCE_BASE_ID = data.SCIENCE_BASE_ID;
 
-            Contact.save({ id: id }, CONTACT, function success(response) {
-                var thisOrg = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == response.ORGANIZATION_ID });
-                var projCont = {}; //format it back so can be displayed correctly
-                projCont.CONTACT_ID = response.CONTACT_ID;
-                projCont.NAME = response.NAME;
-                projCont.EMAIL = response.EMAIL;
-                projCont.PHONE = response.PHONE;
-                projCont.ORG_ID = response.ORGANIZATION_ID;
-                projCont.orgName = thisOrg[0].NAME;
-                projCont.divName = thisOrg[0].DIVISION;
-                projCont.secName = thisOrg[0].SECTION;
-                projCont.SCIENCE_BASE_ID = response.SCIENCE_BASE_ID;
-                retur = projCont;
-                toastr.success("Contact Updated");
-            }, function error(errorResponse) {
-                retur = false;
-                toastr.error("Error: " + errorResponse.statusText);
-            });
+            //Contact.save({ id: id }, CONTACT, function success(response) {
+            //    var thisOrg = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == response.ORGANIZATION_ID });
+            //    var projCont = {}; //format it back so can be displayed correctly
+            //    projCont.CONTACT_ID = response.CONTACT_ID;
+            //    projCont.NAME = response.NAME;
+            //    projCont.EMAIL = response.EMAIL;
+            //    projCont.PHONE = response.PHONE;
+            //    projCont.ORG_ID = response.ORGANIZATION_ID;
+            //    projCont.orgName = thisOrg[0].NAME;
+            //    projCont.divName = thisOrg[0].DIVISION;
+            //    projCont.secName = thisOrg[0].SECTION;
+            //    projCont.SCIENCE_BASE_ID = response.SCIENCE_BASE_ID;
+            //    retur = projCont;
+            //    toastr.success("Contact Updated");
+            //}, function error(errorResponse) {
+            //    retur = false;
+            //    toastr.error("Error: " + errorResponse.statusText);
+            //});
             delete $http.defaults.headers.common['X-HTTP-Method-Override'];
             //clear my updated ids
             $scope.newOrgNameID = 0;
@@ -1440,14 +1440,21 @@
     }
 
     //projectEditSiteCtrl
-    siGLControllers.controller('projectEditSiteCtrl', ['$scope', '$http', '$modal', 'Projects', 'thisProject', 'thisSite', 'Site', 'projSites', projectEditSiteCtrl]);
-    function projectEditSiteCtrl($scope, $http, $modal, Projects, thisProject, thisSite, Site, projSites) {
+    siGLControllers.controller('projectEditSiteCtrl', ['$scope', '$http', '$modal', 'Projects', 'thisProject', 'Site', 'projSites', projectEditSiteCtrl]);
+    function projectEditSiteCtrl($scope, $http, $modal, Projects, thisProject, Site, projSites) {
+        $scope.projectSites = projSites;
+        $scope.thisProject = thisProject;
+
+
+    }
+    //siteDetailCtrl
+    siGLControllers.controller('projectEditSiteDetailsCtrl', ['$scope', '$http', '$modal', 'Projects', 'thisProject', 'thisSite', 'Site', 'projSites', projectEditSiteDetailsCtrl]);
+    function projectEditSiteDetailsCtrl($scope, $http, $modal, Projects, thisProject, thisSite, Site, projSites) {
         $scope.thisSite = thisSite;
+        var test;
 
-
-}
-
-
+        }
+    
     //popup confirm box
     siGLControllers.controller('ConfirmModalCtrl', ['$scope', '$modalInstance', 'keyToRemove', 'what', ConfirmModalCtrl]);
     function ConfirmModalCtrl ($scope, $modalInstance, keyToRemove, what) {

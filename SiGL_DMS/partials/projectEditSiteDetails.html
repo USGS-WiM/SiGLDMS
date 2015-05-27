@@ -1,24 +1,24 @@
 ﻿<style type="text/css">
-    form .ng-pristine.ng-invalid-required 
+    form .ng-pristine.ng-invalid-required
     {
        box-shadow: none;
     }
 </style>
-<form editable-form class="form-horizontal" name="projectForm.SiteInfo">
+ <form editable-form class="form-horizontal" name="projectForm.SiteInfo">
     <fieldset>
         <legend>Site Information</legend>
 
-        <!-- Site Name -->
+        Site Name
         <div class="form-group required" ng-class="{'has-error':projectForm.Info.NAME.$invalid && projectForm.Info.NAME.$dirty}">
             <label class="col-md-2 control-label req" for="inputNAME">Site Name:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputNAME" name="NAME" ng-model="thisSite.NAME"
                        type="text" placeholder="Site Name" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
-                       required />                
+                       required />
             </div>
         </div>
-        
-        <!--submit and cancel buttons-->
+
+        submit and cancel buttons
         <div class="form-group">
             <div class="col-md-4 col-md-offset-2">
                 <span>
