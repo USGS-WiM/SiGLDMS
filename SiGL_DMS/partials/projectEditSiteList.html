@@ -4,6 +4,7 @@
             var sortingOrder = 'Name';
         </script>
         <div>Click on a site name to view full record.</div>
+        <div><a ui-sref="projectEdit.site.siteEditAll({id:thisProject.PROJECT_ID})">Multi-Edit</a></div>
         <table class="table table-striped table-condensed">
             <thead>
                 <tr>
@@ -11,13 +12,13 @@
                     <th class="Latitude">Latitude&nbsp;<a ng-click="sort_by('Latitude')"><i class="glyphicon glyphicon-sort"></i></a></th>
                     <th class="Longitude">Longitude&nbsp;<a ng-click="sort_by('Longitude')"><i class="glyphicon glyphicon-sort"></i></a></th>
                     <th class="Lake">Lake&nbsp;<a ng-click="sort_by('Lake')"><i class="glyphicon glyphicon-sort"></i></a></th>
-                    <th class="Status">Status&nbsp;<a ng-click="sort_by('Status')"><i class="glyphicon glyphicon-sort"></i></a></th>                    
+                    <th class="Status">Status&nbsp;<a ng-click="sort_by('Status')"><i class="glyphicon glyphicon-sort"></i></a></th>
                 </tr>
             </thead>
 
             <tbody>
                 <tr ng-repeat="s in projectSites | orderBy:sortingOrder:reverse">
-                    <td><a ui-sref="projectEdit.site.siteDetail({id:thisProject.PROJECT_ID, siteId:s.SITE_ID})">{{s.NAME}}</a></td>                    
+                    <td><a ui-sref="projectEdit.site.siteDetail({id:thisProject.PROJECT_ID, siteId:s.SITE_ID})">{{s.NAME}}</a></td>
                     <td>{{s.LATITUDE}}</td>
                     <td>{{s.LONGITUDE}}</td>
                     <td>{{s.Lake}}</td>

@@ -2,7 +2,7 @@
     /* controllers.js*/
     'use strict';
 
-    var siGLControllers = angular.module('siGLControllers', ['ngInputModified', 'ui.unique', 'xeditable']);
+    var siGLControllers = angular.module('siGLControllers', ['ngInputModified', 'ngHandsontable', 'ui.unique', 'xeditable']);
 
     //disable tabs if there is no project (create page instead of edit page)
     siGLControllers.directive('aDisabled', function () {
@@ -1452,8 +1452,9 @@
     function projectEditSiteDetailsCtrl($scope, $http, $modal, Projects, thisProject, thisSite, Site, projSites) {
         $scope.thisSite = thisSite;
         var test;
+           
 
-        }
+    }
     
     //popup confirm box
     siGLControllers.controller('ConfirmModalCtrl', ['$scope', '$modalInstance', 'keyToRemove', 'what', ConfirmModalCtrl]);
@@ -1621,7 +1622,6 @@
         }
     };
    
-
     //service to get 3 arrays from the org table
     siGLControllers.factory('orgService', [orgService]);
     function orgService() {
@@ -1677,19 +1677,5 @@
             return OrgArrays;
         }
     };
-//    //playing with directives for ORG content
-//    siGLControllers.controller('OrganizationCtrl', ['$scope', 'Organization', OrganizationCtrl]);
-//    function OrganizationCtrl($scope, Organization) {
-//        $scope.allOrganizations = [];
-//        Organization.getAll(function success(response) {
-//            $scope.allOrganizations = response;
-//        });
-//    };
 
-
-//    siGLControllers.directive('theOrgs', function() {
-//    return {
-//        template: 'Name: {{customer.name}} Address: {{customer.address}}'
-//    };
-//});
 })();

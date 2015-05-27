@@ -1,0 +1,16 @@
+﻿<div class="panel panel-primary">
+    <div class="panel-body">
+        <hot-table settings="{colHeaders: true, contextMenu: ['row_above', 'row_below', 'remove_row'], afterChange: afterChange, fillhandle : true }"
+                   rowheaders="false"
+                   minsparerows="1"
+                   datarows="projectSites"
+                   height="300"
+                   width="700">
+            <hot-column data="SITE_ID" title="'ID'"></hot-column>
+            <hot-column data="LATITUDE" title="'Latitude'"></hot-column>
+            <hot-column data="LONGITUDE" title="'Longitude'" type="'numeric'"></hot-column>
+            <hot-column data="LAKE_TYPE_ID" title="'LakeType'" type="'numeric'"></hot-column>
+            <hot-column data="STATUS_TYPE_ID" title="'Status'"></hot-column>
+        </hot-table>
+    </div>
+</div>

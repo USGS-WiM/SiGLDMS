@@ -185,7 +185,7 @@
                 .state("projectEdit.site", {
                     template: '<div class="panel panel-primary"><div ui-view=""></div></div>',
                     url: "/site",
-                    abstract: true                    
+                    abstract: true
                 })
 
                 .state("projectEdit.site.siteList", {
@@ -195,7 +195,7 @@
                 })
 
                 .state("projectEdit.site.siteDetail", {
-                    url: "/siteDetails/:siteId",                   
+                    url: "/siteDetails/:siteId",
                     templateUrl: "partials/projectEditSiteDetails.html",
                     controller: "projectEditSiteDetailsCtrl",
                     resolve: {
@@ -208,6 +208,12 @@
                             }
                         }
                     }
+                })
+
+                .state("projectEdit.site.siteEditAll", {
+                    url: "/siteEditAll",
+                    templateUrl: "partials/projectEditSiteEditAll.html",
+                    controller: "projectEditSiteCtrl"
                 });
 
                 //    
