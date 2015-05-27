@@ -17,15 +17,14 @@
                     </form>
                     <div class="buttons" ng-show="!rowform.$visible">
                         <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
-                        <button class="btn btn-danger" confirmed-click="RemovePub(p)" ng-confirm-click="Are you sure you want to remove this publication?">del</button>
+                        <button class="btn btn-danger" ng-click="RemovePub(p)">del</button>
                     </div>
                 </td>
                 <td>
-                    <!--<div style="display:none"><span editable-text="p.PROJECT_ID" e-form="rowform" e-name="PROJECT_ID">{p.PROJECT_ID}}</span></div>-->
                     <span editable-text="p.TITLE" e-name="TITLE" e-form="rowform">{{ p.TITLE || '' }}</span>
                 </td>
                 <td>
-                    <span editable-textarea="p.CITATION" e-rows="5" e-cols="40" e-name="CITATION" e-form="rowform">{{ p.CITATION || '' }}</span>
+                    <span editable-textarea="p.DESCRIPTION" e-rows="5" e-cols="40" e-name="DESCRIPTION" e-form="rowform">{{ p.DESCRIPTION || '' }}</span>
                 </td>
                 <td>
                     <span editable-text="p.URL" e-name="URL" e-form="rowform">{{ p.URL || '' }}</span>
@@ -44,18 +43,18 @@
             <label class="col-md-2 control-label req" for="inputTITLE">Publication title:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputTITLE" name="TITLE"
-                       type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.CITATION.length || newPub.URL.length)"
+                       type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.DESCRIPTION.length || newPub.URL.length)"
                        ng-model="newPub.TITLE" />
             </div>
         </div>
 
         <!-- Publication description -->
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputCITATION">Publication description:</label>
+            <label class="col-md-2 control-label req" for="inputDESCRIPTION">Publication description:</label>
             <div class="col-md-4">
-                <textarea class="form-control" id="inputCITATION" rows="3"
-                          type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.CITATION.length || newPub.URL.length)"
-                          ng-model="newPub.CITATION" />
+                <textarea class="form-control" id="inputDESCRIPTION" rows="3"
+                          type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.DESCRIPTION.length || newPub.URL.length)"
+                          ng-model="newPub.DESCRIPTION" />
             </div>
         </div>
 
@@ -64,7 +63,7 @@
             <label class="col-md-2 control-label req" for="inputURL">Publication website/location:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputURL" name="URL"
-                       type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.CITATION.length || newPub.URL.length)"
+                       type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.DESCRIPTION.length || newPub.URL.length)"
                        ng-model="newPub.URL" />
             </div>
         </div>

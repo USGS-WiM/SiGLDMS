@@ -124,7 +124,7 @@
                         projSites: function (Proj, $stateParams) {
                             var projectId = $stateParams.id;
                             if (projectId > 0) {
-                                return Proj.getProjPublications(
+                                return Proj.getProjSites(
                                     { id: projectId }).$promise;
                             }
                         },
