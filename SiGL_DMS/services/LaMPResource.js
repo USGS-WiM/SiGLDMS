@@ -30,6 +30,7 @@
                 updateProjData: { method: 'POST', cache: false, isArray: false, url: rootURL + '/datahosts'},
                 getProjContacts: { isArray: true, url: rootURL + '/projects/:id/contacts.json' },
                 addProjContact: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addContact'},
+                deleteProjContact: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/RemoveProjectContact' },
                 getProjPublications: { isArray: true, url: rootURL + '/projects/:id/publications.json' },
                 addProjPublication: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addPublication.json' },
                 deleteProjPublication: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/RemoveProjectPublication' },
@@ -40,7 +41,7 @@
     }]);
 
     //sites
-    laMPResource.factory('Sites', ['$resource', function ($resource) {
+    laMPResource.factory('Site', ['$resource', function ($resource) {
         return $resource(rootURL + '/sites/:siteId.json',
             {}, {
                 get: { method: 'GET', cache: false, isArray: false },
