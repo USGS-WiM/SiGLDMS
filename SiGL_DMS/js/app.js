@@ -66,7 +66,7 @@
 
                 // project edit/create page
                 .state("projectEdit", {
-                    abstract: true, //can't be directly activated, only nested states
+                    //abstract: true, //can't be directly activated, only nested states
                     url: "/project/edit/:id",
                     templateUrl: "partials/projectEditView.html",
                     controller: "projectEditCtrl",
@@ -143,7 +143,7 @@
                         allObjs: 'ObjectiveType',
                         allObjList: function (allObjs) {
                             return allObjs.getAll().$promise;
-                        }  
+                        }
                     }
                 })
 
@@ -157,21 +157,21 @@
                 .state("projectEdit.cooperator", {
                     url: "/cooperator",
                     templateUrl: "partials/projectEditCooperatorView.html",
-                    controller: "projectEditCoopCtrl"                    
+                    controller: "projectEditCoopCtrl"
                 })
 
                 // project edit/create page nested state for ProjectData
                 .state("projectEdit.data", {
                     url: "/data",
                     templateUrl: "partials/projectEditDataView.html",
-                    controller: "projectEditDataCtrl"                    
+                    controller: "projectEditDataCtrl"
                 })
 
                 // project edit/create page  nested state for ProjectContacts
                 .state("projectEdit.contact", {
                     url: "/contact",
                     templateUrl: "partials/projectEditContactView.html",
-                    controller: "projectEditContactCtrl"                   
+                    controller: "projectEditContactCtrl"
                 })
 
                 // project edit/create page  nested state for Projectpublications
@@ -183,9 +183,34 @@
 
                 // project edit/create page  nested state for projectSites
                 .state("projectEdit.site", {
+                    template: '<div class="panel panel-primary"><div ui-view=""></div></div>',
                     url: "/site",
-                    templateUrl: "partials/projectEditSiteView.html"
+                    abstract: true                    
+                })
+
+                .state("projectEdit.site.siteList", {
+                    url: "/siteList",
+                    templateUrl: "partials/projectEditSiteList.html",
+                    controller: "projectEditSiteCtrl"
+                })
+
+                .state("projectEdit.site.siteDetail", {
+                    url: "/siteDetails/:siteId",                   
+                    templateUrl: "partials/projectEditSiteDetails.html",
+                    controller: "projectEditSiteDetailsCtrl",
+                    resolve: {
+                        aSite: 'Site', //dependency for the project
+                        thisSite: function (aSite, $stateParams) {
+                            var siteId = $stateParams.siteId;
+                            if (siteId > 0) {
+                                return aSite.query(
+                                    { id: siteId }).$promise;
+                            }
+                        }
+                    }
                 });
+
+                //    
             $locationProvider.html5Mode(false).hashPrefix('!');
             //$locationProvider.html5Mode({ enabled: true, requireBase: false });
         }

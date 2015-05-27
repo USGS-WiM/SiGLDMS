@@ -34,7 +34,7 @@
                     <span editable-select="c.secName" e-name="secName" e-form="rowform" e-ng-change="secChosen($data)" e-ng-options="s.SECTION as s.SECTION for s in filtEDITSecs | orderBy: 'SECTION'">
                         , {{showSecName(c)}}
                     </span><br />
-                    <div><a href ng-click="AddOrgName()">Add a new organization</a><a href ng-click="AddDivName()" ng-show="selectedOrgName.value > 0">Add a new division</a><a href ng-hide="selectedOrgDiv.value == '' || selectedOrgDiv.value == null" ng-show="selectedOrgDiv.value" ng-click="AddSecName()">Add a new section</a></div><br />
+                    <!--<div><a href ng-click="AddOrgName()">Add a new organization</a><a href ng-click="AddDivName(c.orgName)">Add a new division</a><a href ng-click="AddSecName()">Add a new section</a></div><br />-->
                     <span editable-text="c.EMAIL" e-style="width:25em;" e-name="EMAIL" e-form="rowform">{{ c.EMAIL || '' }}</span><br />
                     <span editable-text="c.PHONE" e-ui-mask="(999) 999-9999" e-style="width:25em;" e-name="PHONE" e-form="rowform">{{ c.PHONE || '' }}</span>
                 </td>

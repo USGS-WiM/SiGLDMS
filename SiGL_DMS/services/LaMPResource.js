@@ -42,9 +42,9 @@
 
     //sites
     laMPResource.factory('Site', ['$resource', function ($resource) {
-        return $resource(rootURL + '/sites/:siteId.json',
+        return $resource(rootURL + '/sites/:id.json',
             {}, {
-                get: { method: 'GET', cache: false, isArray: false },
+                query: {},
                 save: { method: 'POST', cache: false, isArray: false },
                 update: { method: 'PUT', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
