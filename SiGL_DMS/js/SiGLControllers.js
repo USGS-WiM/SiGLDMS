@@ -4,6 +4,7 @@
 
     var siGLControllers = angular.module('siGLControllers', ['ngInputModified', 'ngHandsontable', 'ui.unique', 'xeditable']);
 
+    //#region DIRECTIVES
     //disable tabs if there is no project (create page instead of edit page)
     siGLControllers.directive('aDisabled', function () {
         return {
@@ -29,6 +30,30 @@
             }
         };
     });
+
+    //siGLControllers.directive('numberOnlyInput', function () {
+    //    var allowedListeners = ["ui-keyup"];
+    //    return {
+    //        restrict: 'A',
+    //        template: '<input name="{{inputName}}" />',
+    //        scope: {
+    //            inputValue: '=',
+    //            inputName: '='
+    //        },
+    //        link: function (scope) {
+    //            scope.$watch('inputValue',  function (newValue, oldValue) {
+    //                var arr = String(newValue).split("");
+    //                if (arr.length === 0) return;
+    //                if (arr.length === 1 && (arr[0] == '-' || arr[0] === '.')) return;
+    //                if (arr.length === 2 && newValue === '-.') return;
+    //                if (isNaN(newValue)) {
+    //                    scope.inputValue = oldValue;
+    //                }
+    //            });
+    //        }
+    //    };
+    //});
+    //#endregion DIRECTIVES
 
     siGLControllers.controller('mainCtrl', ['$scope', '$rootScope', '$location', '$state', 'Projects', 'checkCreds', 'getUsersNAME', 'deleteCreds', mainCtrl]);
     function mainCtrl($scope, $rootScope, $location, $state, Projects, checkCreds, getUsersNAME, deleteCreds) {
@@ -1773,12 +1798,23 @@
             }//end ResClick
             //#endregion a RESOURCE was clicked - if added POST, if removed DELETE - for edit view or store for create view
 
+            
+            $scope.isNum = function (evt) {
+                var theEvent = evt || window.event;
+                var key = theEvent.keyCode || theEvent.which;
+                //key = String.fromCharCode(key);
+                //var regex = /[0-9]|\./;
+                if (key != 46 && key != 45 && key > 31 && (key < 48 || key > 57)) {
+                    theEvent.returnValue = false;
+                    if (theEvent.preventDefault) theEvent.preventDefault();
+                }
+            };
             //change to the thisSite made, put it .. fired on each blur after change made to field
-            $scope.SaveOnBlur = function (valid) {
+            $scope.SaveOnBlur = function (valid, da) {
                 if (valid) {
                     if ($scope.thisSite.SITE_ID != undefined) {
                         //ensure they don't delete required field values
-                        if ($scope.thisSite.NAME != null) {
+                        if (($scope.thisSite.LATITUDE > 0 && $scope.thisSite.LATITUDE < 73.0) && ($scope.thisSite.LONGITUDE > -175 && $scope.thisSite.LONGITUDE < -60)){
                             $http.defaults.headers.common['Authorization']= 'Basic ' +getCreds();
                             $http.defaults.headers.common['Accept']= 'application/json';
                             $http.defaults.headers.common['X-HTTP-Method-Override']= 'PUT';
@@ -1793,6 +1829,12 @@
                                     });
                             delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                         }
+                        else if ($scope.thisSite.LATITUDE < 0 || $scope.thisSite.LATITUDE > 73) {
+                            alert("The Latitude must be between 0 and 73.0");
+                        }
+                        else if ($scope.thisSite.LONGITUDE < -175 || $scope.thisSite.LONGITUDE > -60) {
+                            alert("The Longitude must be between -175.0 and -60.0");
+                        }
                     }
                 }
         }//end SaveOnBlur
@@ -1800,7 +1842,7 @@
             //save NEW SITE and then frequencies, media, parameters, and resources
             $scope.save = function (valid) {
                 //check if they filled in all required fields
-                if (valid) {
+                if (valid && ($scope.thisSite.LATITUDE > 0 && $scope.thisSite.LATITUDE < 73.0) && ($scope.thisSite.LONGITUDE > -175 && $scope.thisSite.LONGITUDE < -60)) {
                     $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     $scope.thisSite.PROJECT_ID = thisProject.PROJECT_ID;
@@ -1860,6 +1902,12 @@
                         $location.path('/project/edit/' + thisProject.PROJECT_ID + '/site/siteList').replace();//.notify(false);
                         $scope.apply;
                     });
+                }
+                if ($scope.thisSite.LATITUDE < 0 || $scope.thisSite.LATITUDE > 73.0) {
+                    alert("The Latitude must be between 0 and 73.0");
+                }
+                if ($scope.thisSite.LONGITUDE < -175 || $scope.thisSite.LONGITUDE > -60) {
+                    alert("The Longitude must be between -175.0 and -60.0");
                 }
             }//end save
 
