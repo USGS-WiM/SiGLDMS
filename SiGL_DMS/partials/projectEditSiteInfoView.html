@@ -22,8 +22,8 @@
          <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.LATITUDE.$invalid && projectForm.SiteInfo.LATITUDE.$dirty}">
              <label class="col-md-2 control-label req" for="inputLATITUDE">Latitude:</label>
              <div class="col-md-4">
-                 <input class="form-control" id="inputLATITUDE" name="LATITUDE" ng-model="thisSite.LATITUDE"
-                        type="number" min="0" max="72" placeholder="Latitude" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
+                 <input class="form-control" ng-keypress="isNum($event)" name="LATITUDE" id="inputLATITUDE" ng-model="thisSite.LATITUDE"
+                        type="text" placeholder="Latitude" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
                         required />
              </div>
          </div>
@@ -32,8 +32,8 @@
          <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.LONGITUDE.$invalid && projectForm.SiteInfo.LONGITUDE.$dirty}">
              <label class="col-md-2 control-label req" for="inputLONGITUDE">Longitude:</label>
              <div class="col-md-4">
-                 <input class="form-control" id="inputLONGITUDE" name="LONGITUDE" ng-model="thisSite.LONGITUDE"
-                        type="text" min="-175" max="-60" placeholder="Longitude" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
+                 <input class="form-control" ng-keypress="isNum($event)" id="inputLONGITUDE" name="LONGITUDE" ng-model="thisSite.LONGITUDE"
+                        type="text" placeholder="Longitude" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
                         required />
              </div>
          </div>
@@ -88,7 +88,7 @@
              <label class="col-md-2 control-label" for="inputWATERSHED_HUC8">Watershed (8-digit HUC):</label>
              <div class="col-md-4">
                  <input class="form-control" id="inputWATERSHED_HUC8" name="WATERSHED_HUC8" ng-model="thisSite.WATERSHED_HUC8"
-                        type="text" ui-mask="{{'99999999'}}" placeholder="Watershed (HUC8)" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)" />
+                        type="text" ui-mask="{{'99999999'}}" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)" />
              </div>
          </div>
 
