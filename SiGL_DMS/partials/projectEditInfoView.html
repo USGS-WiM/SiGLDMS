@@ -30,7 +30,7 @@
             </div>            
         </div>
 
-        <!-- Project Status  >-->
+        <!-- Project Status -->
         <div class="form-group required">
             <label class="col-md-2 control-label" for="inputPROJ_STATUS_ID">Project Status:</label>
             <div class="col-md-10">
@@ -82,7 +82,7 @@
 
         <!-- Project Objectives -->
         <div class="form-group">
-            <label class="col-md-2 control-label" for="inputPROJ_OBJECTIVES">Project Objectives</label>
+            <label class="col-md-2 control-label" for="inputPROJ_OBJECTIVES">Project Objectives:</label>
             <div class="col-md-10">
                 <div isteven-multi-select
                      input-model="Objectivesdata"
@@ -102,11 +102,11 @@
 
         <!-- Project Description -->
         <div class="form-group">
-            <label class="col-md-2 control-label" for="inputDESCRIPTION">Description</label>
+            <label class="col-md-2 control-label" for="inputDESCRIPTION">Description:</label>
             <div class="col-md-10">
                 <textarea id="inputDESCRIPTION" type="text" rows="3" placeholder="Project Description"
-                          ng-model="aProject.DESCRIPTION" ng-change="isDescChanged.bool = true" />
-                <span ng-show="isDescChanged.bool && aProject.DESCRIPTION.length">
+                          ng-model="aProject.DESCRIPTION" ng-change="isProjDescChanged.bool = true" />
+                <span ng-show="aProject.PROJECT_ID > 0 && isProjDescChanged.bool && aProject.DESCRIPTION.length">
                     <button class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="SaveOnBlur(0)">
                         SAVE
                     </button>
@@ -117,11 +117,11 @@
         <hr />
         <!-- Project Keywords -->
         <div class="form-group" ng-if="ProjectKeywords.length > 0">
-            <label class="col-md-2 control-label" for="inputProjKEYWORDS">Project Keywords</label>
+            <label class="col-md-2 control-label" for="inputProjKEYWORDS">Project Keywords:</label>
             <div class="col-md-10"><ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button ng-click="removeKey(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul></div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputProjKeyword">Add Project Keyword</label>
+            <label class="col-md-2 control-label req" for="inputProjKeyword">Add Project Keyword:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="" ng-model="newKey.value" />
             </div>
@@ -130,11 +130,11 @@
 
         <!-- Project Websites confirmed-click  ng-confirm-click="Are you sure you want to remove this URL?"-->
         <div class="form-group" ng-if="urls.length > 0">
-            <label class="col-md-2 control-label" for="inputURL">Project Websites</label>
+            <label class="col-md-2 control-label" for="inputURL">Project Websites:</label>
             <div class="col-md-10"><ul><li style="list-style:none" data-ng-repeat="key in urls"><button ng-click="removeUrl(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key}}</li></ul></div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputURL">Add Project Website</label>
+            <label class="col-md-2 control-label req" for="inputURL">Add Project Website:</label>
             <div class="col-md-4">
                 <input class="form-control" ng-model="newURL.value" id="inputURL" type="text" placeholder="" />
             </div><button ng-click="addProjURL()">Add</button>
@@ -142,11 +142,11 @@
 
         <!-- Project Additional Info -->
         <div class="form-group">
-            <label class="col-md-2 control-label" for="inputADDITIONAL_INFO">Additional Information</label>
+            <label class="col-md-2 control-label" for="inputADDITIONAL_INFO">Additional Information:</label>
             <div class="col-md-10">
                 <textarea id="inputADDITIONAL_INFO" type="text" rows="3" placeholder="Additional Information"
-                          ng-change="isAddInfoChanged.bool = true" ng-model="aProject.ADDITIONAL_INFO" />
-                <span ng-show="isAddInfoChanged.bool && aProject.ADDITIONAL_INFO.length">
+                          ng-change="isProjAddInfoChanged.bool = true" ng-model="aProject.ADDITIONAL_INFO" />
+                <span ng-show="aProject.PROJECT_ID > 0 && isProjAddInfoChanged.bool && aProject.ADDITIONAL_INFO.length">
                     <button class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="SaveOnBlur(0)">
                         SAVE
                     </button>

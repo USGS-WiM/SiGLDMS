@@ -26,45 +26,39 @@
             //http://stackoverflow.com/questions/19721125/resolve-http-request-before-running-app-and-switching-to-a-route-or-state
             //http://stackoverflow.com/questions/22537311/angular-ui-router-login-authentication
             $stateProvider
-                //home (login page OR projList page depending on checkCreds() call
+                //#region region home
                 .state("home", {
                     url: "/",
                     templateUrl: "partials/homeView.html",
                     controller: "mainCtrl"
                 })
+                //#endregion region home
+
+                //#region region account
                  .state("account", {
                      url: "/",
                      templateUrl: "partials/accountView.html",
                      controller: "accountCtrl"
                  })
+                //#endregion region account
+
+                //#region region help
                  .state("help", {
                      url: "/",
                      templateUrl: "partials/helpView.html",
                      controller: "helpCtrl"
                  })
-                //projects lists page
+                //#endregion region help
+
+                //#region region projectList
                 .state("projectList", {
                     url: "/projects",
                     templateUrl: "partials/projectListView.html",
                     controller: "projectListCtrl"
                 })
+                //#endregion region projectList
 
-                //prject details page
-                .state("projectDetail", {
-                    url: "/project/:id",
-                    templateUrl: "partials/projectDetailView.html",
-                    controller: "ProjectDetailCtrl",
-                    resolve: {
-                        Proj: 'Projects', //dependency for the project
-                        thisProject: function (Proj, $stateParams) {
-                            var projectId = $stateParams.id;
-                            return Proj.query(
-                                { id: projectId }).$promise;
-                        }
-                    }
-                })
-
-                // project edit/create page
+                //#region region projectEdit
                 .state("projectEdit", {
                     //abstract: true, //can't be directly activated, only nested states
                     url: "/project/edit/:id",
@@ -146,58 +140,154 @@
                         }
                     }
                 })
+                //#endregion region projectEdit
 
-                // project edit/create page nested state for ProjectDetails
+                //#region region projectEdit.info
                 .state("projectEdit.info", {
                     url: "/info",
                     templateUrl: "partials/projectEditInfoView.html"
                 })
+                //#endregion region projectEdit.info
 
-                // project edit/create page nested state for ProjectData
+                //#region region projectEdit.cooperator
                 .state("projectEdit.cooperator", {
                     url: "/cooperator",
                     templateUrl: "partials/projectEditCooperatorView.html",
                     controller: "projectEditCoopCtrl"
                 })
+                //#endregion region projectEdit.cooperator
 
-                // project edit/create page nested state for ProjectData
+                //#region region projectEdit.data
                 .state("projectEdit.data", {
                     url: "/data",
                     templateUrl: "partials/projectEditDataView.html",
                     controller: "projectEditDataCtrl"
                 })
+                //#endregion region projectEdit.data
 
-                // project edit/create page  nested state for ProjectContacts
+                //#region region projectEdit.contact
                 .state("projectEdit.contact", {
                     url: "/contact",
                     templateUrl: "partials/projectEditContactView.html",
                     controller: "projectEditContactCtrl"
                 })
+                //#endregion region projectEdit.contact
 
-                // project edit/create page  nested state for Projectpublications
+                //#region region projectEdit.publication
                 .state("projectEdit.publication", {
                     url: "/publication",
                     templateUrl: "partials/projectEditPublicationView.html",
                     controller: "projectEditPubCtrl"
                 })
+                //#endregion region projectEdit.publication
 
-                // project edit/create page  nested state for projectSites
+                //#region region projectEdit.site
                 .state("projectEdit.site", {
                     template: '<div class="panel panel-primary"><div ui-view=""></div></div>',
                     url: "/site",
-                    abstract: true                    
+                    abstract: true,
+                    resolve: {                        
+                        //countries
+                        CountryList: function () {
+                            var c = [];
+                            c.push("Canada"); c.push("United States Of America");
+                            return c;
+                        },
+                        //states
+                        //theStates: 'States',
+                        stateList: function () {
+                            var s = [];
+                            s.push("Illinois"); s.push("Indiana"); s.push("Michigan"); s.push("Minnesota"); s.push("New York");
+                            s.push("Ohio"); s.push("Pennsylvania"); s.push("Wisconsin"); s.push("Ontario"); 
+                            return s;
+                            //return theStates.getAll().$promise;
+                        },
+                        //lakes
+                        theLakes: 'Lake',
+                        lakeList: function (theLakes) {
+                            return theLakes.getAll().$promise;
+                        },
+                        //statuses
+                        theSiteStats: 'SiteStatus',
+                        siteStatList: function (theSiteStats) {
+                            return theSiteStats.getAll().$promise;
+                        },
+                        //resources
+                        theRes: 'ResourceType',
+                        resourceList: function (theRes) {
+                            return theRes.getAll().$promise;
+                        },
+                        //media
+                        theMedia: 'MediaType',
+                        mediaList: function (theMedia) {
+                            return theMedia.getAll().$promise;
+                        },
+                        //frequencies
+                        theFreq: 'FrequencyType',
+                        frequencyList: function (theFreq) {
+                            return theFreq.getAll().$promise;
+                        },
+                        //parameters
+                        theParams: 'parameterType',
+                        parameterList: function (theParams) {
+                            return theParams.getAll().$promise;
+                        }
+                    }
                 })
+                //#endregion region projectEdit.site
 
+                //#region region projectEdit.site.siteList
                 .state("projectEdit.site.siteList", {
                     url: "/siteList",
                     templateUrl: "partials/projectEditSiteList.html",
-                    controller: "projectEditSiteCtrl"
+                    resolve: {
+                        Proj: 'Projects',
+                        projS: function (Proj, $stateParams) {
+                            var projectId = $stateParams.id;
+                            if (projectId > 0) {
+                                return Proj.getProjSites(
+                            { id: projectId }).$promise;
+                                    }
+                            }
+                    },
+                    controller: function ($scope, projS, thisProject, siteStatList, lakeList) {
+                        var formattedProjSites = [];
+                        for (var x = 0; x < projS.length; x++) {
+                            var thisOne = {};
+                            thisOne.Name = projS[x].NAME; thisOne.Lat = projS[x].LATITUDE; thisOne.SiteID = projS[x].SITE_ID;
+                            thisOne.Long = projS[x].LONGITUDE; thisOne.State = projS[x].STATE_PROVINCE;
+                            thisOne.Lake = lakeList.filter(function (l) { return l.LAKE_TYPE_ID == projS[x].LAKE_TYPE_ID });
+                            thisOne.Waterbody = projS[x].WATERBODY; thisOne.Status = siteStatList.filter(function (s) { return s.STATUS_ID == projS[x].STATUS_TYPE_ID });
+                            formattedProjSites.push(thisOne);
+                        }
+                        $scope.projectSites = formattedProjSites;
+                        $scope.thisProject = thisProject;
+                        // change sorting order
+                        $scope.sort_by = function (newSortingOrder) {
+                            if ($scope.sortingOrder == newSortingOrder) {
+                                $scope.reverse = !$scope.reverse;
+                                }
+                                $scope.sortingOrder = newSortingOrder;
+                                // icon setup
+                            $('th i').each(function () {
+                                    // icon reset
+                                $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                                });
+                            if ($scope.reverse) {
+                                $('th.' +newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                                } else {
+                                $('th.' +newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                                }
+                            };
+                    }
                 })
+                //#endregion region projectEdit.site.siteList
 
-                .state("projectEdit.site.siteDetail", {
-                    url: "/siteDetails/:siteId",                   
-                    templateUrl: "partials/projectEditSiteDetails.html",
-                    controller: "projectEditSiteDetailsCtrl",
+                //#region region projectEdit.site.siteInfo
+                .state("projectEdit.site.siteInfo", {
+                    url: "/siteInfo/:siteId",
+                    templateUrl: "partials/projectEditSiteInfoView.html",
+                    controller: "projectEditSiteInfoCtrl",
                     resolve: {
                         aSite: 'Site', //dependency for the project
                         thisSite: function (aSite, $stateParams) {
@@ -206,9 +296,44 @@
                                 return aSite.query(
                                     { id: siteId }).$promise;
                             }
+                        },
+                        siteFrequencies: function (aSite, $stateParams) {
+                            var siteId = $stateParams.siteId;
+                            if (siteId > 0) {
+                                return aSite.getSiteFrequencies(
+                                    { id: siteId }).$promise;
+                            }
+                        },
+                        siteMedium: function (aSite, $stateParams) {
+                            var siteId = $stateParams.siteId;
+                            if (siteId > 0) {
+                                return aSite.getSiteMedia(
+                                    { id: siteId }).$promise;
+                            }
+                        },
+                        siteParameters: function (aSite, $stateParams) {
+                            var siteId = $stateParams.siteId;
+                            if (siteId > 0) {
+                                return aSite.getSiteParameters(
+                                    { id: siteId }).$promise;
+                            }
+                        },
+                        siteResources: function (aSite, $stateParams) {
+                            var siteId = $stateParams.siteId;
+                            if (siteId > 0) {
+                                return aSite.getSiteResources(
+                                    { id: siteId }).$promise;
+                            }
                         }
                     }
-                });
+                })
+            //#endregion region projectEdit.site.siteInfo
+
+                //.state("projectEdit.site.siteEditAll", {
+                //    url: "/siteEditAll",
+                //    templateUrl: "partials/projectEditSiteEditAll.html",
+                //    controller: "projectEditSiteCtrl"
+                //});
 
                 //    
             $locationProvider.html5Mode(false).hashPrefix('!');

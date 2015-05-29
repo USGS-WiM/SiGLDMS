@@ -39,18 +39,7 @@
                 delete: { method: 'DELETE', cache: false, isArray: false },
             });
     }]);
-
-    //sites
-    laMPResource.factory('Site', ['$resource', function ($resource) {
-        return $resource(rootURL + '/sites/:id.json',
-            {}, {
-                query: {},
-                save: { method: 'POST', cache: false, isArray: false },
-                update: { method: 'PUT', cache: false, isArray: false },
-                delete: { method: 'DELETE', cache: false, isArray: false }
-            });
-    }]);
-
+    
     ////Durations
     laMPResource.factory('ProjDuration', ['$resource', function ($resource) {
         return $resource(rootURL + '/ProjectDuration/:id.json',
@@ -129,6 +118,103 @@
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
     }]);//end of ObjectiveType
+
+    //sites
+    laMPResource.factory('Site', ['$resource', function ($resource) {
+        return $resource(rootURL + '/sites/:id.json',
+            {}, {
+                query: {},
+                getSiteParameters: { isArray: true, url: rootURL + '/sites/:id/parameters.json' },
+                addSiteParameter: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addParameter' },
+                deleteSiteParameter: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/RemoveSiteParameter' },
+                getSiteFrequencies: { isArray: true, url: rootURL + '/sites/:id/frequencies.json' },
+                addSiteFrequency: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addFrequency' },
+                deleteSiteFrequency: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/removeFrequency' },
+                getSiteMedia: { isArray: true, url: rootURL + '/sites/:id/media.json' },
+                addSiteMedia: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addMedium' },
+                deleteSiteMedia: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/removeMedium' },
+                getSiteResources: { isArray: true, url: rootURL + '/sites/:id/resourcetypes.json' },
+                addSiteResource: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addResourcetype' },
+                deleteSiteResource: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/removeResourcetype' },
+                save: { method: 'POST', cache: false, isArray: false },
+                update: { method: 'PUT', cache: false, isArray: false },
+                delete: { method: 'DELETE', cache: false, isArray: false }
+            });
+    }]);
+
+    //States
+    laMPResource.factory('States', ['$resource', function ($resource) {
+        return $resource(rootURL + '/states.json',
+            {}, {
+                getAll: { method: 'GET', isArray: true }
+            });
+    }]);
+
+    //Lake
+    laMPResource.factory('Lake', ['$resource', function ($resource) {
+        return $resource(rootURL + '/lakes/:id.json',
+            {}, {
+                query: { isArray: true },
+                getAll: { method: 'GET', isArray: true },
+                save: { method: 'POST', cache: false, isArray: false },
+                delete: { method: 'DELETE', cache: false, isArray: false }
+            });
+    }]);//end of Lake
+        
+    //statuses
+    laMPResource.factory('SiteStatus', ['$resource', function ($resource) {
+        return $resource(rootURL + '/status/:id.json',
+            {}, {
+                query: { isArray: true },
+                getAll: { method: 'GET', isArray: true },
+                save: { method: 'POST', cache: false, isArray: false },
+                delete: { method: 'DELETE', cache: false, isArray: false }
+            });
+    }]);//end of statuses
+
+    //resources
+    laMPResource.factory('ResourceType', ['$resource', function ($resource) {
+        return $resource(rootURL + '/resourcetypes/:id.json',
+            {}, {
+                query: { isArray: true },
+                getAll: { method: 'GET', isArray: true },
+                save: { method: 'POST', cache: false, isArray: false },
+                delete: { method: 'DELETE', cache: false, isArray: false }
+            });
+    }]);//end of resources
+
+    //media
+    laMPResource.factory('MediaType', ['$resource', function ($resource) {
+        return $resource(rootURL + '/media/:id.json',
+            {}, {
+                query: { isArray: true },
+                getAll: { method: 'GET', isArray: true },
+                save: { method: 'POST', cache: false, isArray: false },
+                delete: { method: 'DELETE', cache: false, isArray: false }
+            });
+    }]);//end of media
+
+    //frequencies
+    laMPResource.factory('FrequencyType', ['$resource', function ($resource) {
+        return $resource(rootURL + '/frequencies/:id.json',
+            {}, {
+                query: { isArray: true },
+                getAll: { method: 'GET', isArray: true },
+                save: { method: 'POST', cache: false, isArray: false },
+                delete: { method: 'DELETE', cache: false, isArray: false }
+            });
+    }]);//end of frequencies
+
+    //parameters
+    laMPResource.factory('parameterType', ['$resource', function ($resource) {
+        return $resource(rootURL + '/parameters/:id.json',
+            {}, {
+                query: { isArray: true },
+                getAll: { method: 'GET', isArray: true },
+                save: { method: 'POST', cache: false, isArray: false },
+                delete: { method: 'DELETE', cache: false, isArray: false }
+            });
+    }]);//end of parameters
 
     laMPResource.factory('Login', ['$resource', function ($resource) {
         return $resource(rootURL + '/login',
