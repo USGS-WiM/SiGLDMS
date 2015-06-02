@@ -18,7 +18,7 @@
     });
 
     //app.config(function that defines the config code. 'ui.select', 'ngSanitize',
-    app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
+    app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 
         function ($stateProvider, $urlRouterProvider, $locationProvider) {
             //if no active state, display state associated with this fragment identifier
             $urlRouterProvider.otherwise("/");
@@ -169,7 +169,17 @@
                 .state("projectEdit.contact", {
                     url: "/contact",
                     templateUrl: "partials/projectEditContactView.html",
-                    controller: "projectEditContactCtrl"
+                    controller: "projectEditContactCtrl",
+                    resolve: {
+                        Proj: 'Projects',
+                        projContacts: function (Proj, $stateParams) {
+                            var projectId = $stateParams.id;
+                            if (projectId > 0) {
+                                return Proj.getProjContacts(
+                                    { id: projectId }).$promise;
+                            }
+                        },
+                    }
                 })
                 //#endregion region projectEdit.contact
 

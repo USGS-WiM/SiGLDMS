@@ -2,7 +2,7 @@
     /* controllers.js*/
     'use strict';
 
-    var siGLControllers = angular.module('siGLControllers', ['ngInputModified', 'ngHandsontable', 'ui.unique', 'xeditable']);
+    var siGLControllers = angular.module('siGLControllers', ['ngInputModified', 'ngHandsontable', 'ui.unique', 'angular.filter', 'xeditable']);
 
     //#region DIRECTIVES
     //disable tabs if there is no project (create page instead of edit page)
@@ -31,28 +31,6 @@
         };
     });
 
-    //siGLControllers.directive('numberOnlyInput', function () {
-    //    var allowedListeners = ["ui-keyup"];
-    //    return {
-    //        restrict: 'A',
-    //        template: '<input name="{{inputName}}" />',
-    //        scope: {
-    //            inputValue: '=',
-    //            inputName: '='
-    //        },
-    //        link: function (scope) {
-    //            scope.$watch('inputValue',  function (newValue, oldValue) {
-    //                var arr = String(newValue).split("");
-    //                if (arr.length === 0) return;
-    //                if (arr.length === 1 && (arr[0] == '-' || arr[0] === '.')) return;
-    //                if (arr.length === 2 && newValue === '-.') return;
-    //                if (isNaN(newValue)) {
-    //                    scope.inputValue = oldValue;
-    //                }
-    //            });
-    //        }
-    //    };
-    //});
     //#endregion DIRECTIVES
 
     siGLControllers.controller('mainCtrl', ['$scope', '$rootScope', '$location', '$state', 'Projects', 'checkCreds', 'getUsersNAME', 'deleteCreds', mainCtrl]);
@@ -247,6 +225,7 @@
                 //1. aProject
                 $scope.aProject = thisProject;
                 $scope.title = "Project: " + $scope.aProject.NAME;
+                $scope.readyFlagModel = thisProject.READY_FLAG > 0 ? "Yes" : "No";
 
                 //check status for disabling of end date
                 if ($scope.aProject.PROJ_STATUS_ID == 1) {
@@ -1005,6 +984,9 @@
                     $scope.ProjContacts.push(formattedContact);
                     $scope.contactCount.total = $scope.contactCount.total + 1;
                     $scope.newContact = {};
+                    $scope.selectedOrgName.value = "";
+                    $scope.selectedOrgDiv.value = "";
+                    $scope.selectedOrgSec.value = "";
                     $scope.projectForm.Contact.$setPristine(true);
                     toastr.success("Contact Added");
                 }, function error(errorResponse) {
@@ -1069,22 +1051,22 @@
         //#endregion DELETE Contact click
 
         //#region Edit existing Contact 
-        
+        $scope.showDivComma = false; $scope.showSecComma = false;
         $scope.showOrgName = function (contact) {
             var selected =[];
             if (contact.orgName) {
                 selected = $filter('filter')($scope.OrgNameArray, {  NAME : contact.orgName});
             }
             return selected.length ? selected[0].NAME: '';
-        };
-        
+        };  
         $scope.showDivName = function (contact) {
             var selected = [];
            
             if (contact.divName) {
                 selected = $filter('filter')($scope.OrgDivArray, { DIVISION: contact.divName });                
-                
+                $scope.showDivComma = true;
             }
+            else { $scope.showDivComma = false;}
             //push all divisions for this NAME 
             if ($scope.DivsUnfiltered) {
                 //if this is called after filterDivs happens..and divs already populated. DONT WANT To clear it again
@@ -1102,7 +1084,8 @@
             
             if (contact.secName) {
                 selected = $filter('filter')($scope.OrgSecArray, { SECTION: contact.secName });
-            }
+                $scope.showSecComma = true;
+            } else { $scope.showSecComma = false;}
             //push all sections for this DIVISION
             if ($scope.SecsUnfiltered) {
             //if this is called after filterSecs happens..and sections already populated. DONT WANT To clear it again
@@ -1134,24 +1117,26 @@
             CONTACT.PHONE = data.PHONE;
             CONTACT.SCIENCE_BASE_ID = data.SCIENCE_BASE_ID;
 
-            //Contact.save({ id: id }, CONTACT, function success(response) {
-            //    var thisOrg = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == response.ORGANIZATION_ID });
-            //    var projCont = {}; //format it back so can be displayed correctly
-            //    projCont.CONTACT_ID = response.CONTACT_ID;
-            //    projCont.NAME = response.NAME;
-            //    projCont.EMAIL = response.EMAIL;
-            //    projCont.PHONE = response.PHONE;
-            //    projCont.ORG_ID = response.ORGANIZATION_ID;
-            //    projCont.orgName = thisOrg[0].NAME;
-            //    projCont.divName = thisOrg[0].DIVISION;
-            //    projCont.secName = thisOrg[0].SECTION;
-            //    projCont.SCIENCE_BASE_ID = response.SCIENCE_BASE_ID;
-            //    retur = projCont;
-            //    toastr.success("Contact Updated");
-            //}, function error(errorResponse) {
-            //    retur = false;
-            //    toastr.error("Error: " + errorResponse.statusText);
-            //});
+            Contact.save({ id: id }, CONTACT, function success(response) {
+                var thisOrg = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == response.ORGANIZATION_ID });
+                var projCont = {}; //format it back so can be displayed correctly
+                projCont.CONTACT_ID = response.CONTACT_ID;
+                projCont.NAME = response.NAME;
+                projCont.EMAIL = response.EMAIL;
+                projCont.PHONE = response.PHONE;
+                projCont.ORG_ID = response.ORGANIZATION_ID;
+                projCont.orgName = thisOrg[0].NAME;
+                projCont.divName = thisOrg[0].DIVISION;
+                projCont.secName = thisOrg[0].SECTION;
+                projCont.SCIENCE_BASE_ID = response.SCIENCE_BASE_ID;
+                retur = projCont;
+                
+                
+                toastr.success("Contact Updated");
+            }, function error(errorResponse) {
+                retur = false;
+                toastr.error("Error: " + errorResponse.statusText);
+            });
             delete $http.defaults.headers.common['X-HTTP-Method-Override'];
             //clear my updated ids
             $scope.newOrgNameID = 0;
@@ -1185,7 +1170,7 @@
                 }
             } else if (d != undefined) {
                 //this is filtering the xeditable org divisions up top                
-                $scope.showAddSecButton = false;
+                //$scope.showAddSecButton = false;
                 $scope.filtEDITdivs =[];
                 $scope.divName = '';
                 $scope.filtEDITSecs =[];
@@ -1217,7 +1202,7 @@
                 var orgID = $scope.selectedOrgDiv.value; //ORGID
                 var org = ($scope.OrgDivArray).filter(function (o) { return o.ORGANIZATION_ID == orgID });
                 var sele = ($scope.OrgSecArray).filter(function (o) { return o.DIVISION == org[0].DIVISION }); //give me just this org
-                $scope.showAddSecButton = sele[0].DIVISION != null ? true : false;
+                //$scope.showAddSecButton = sele[0].DIVISION != null ? true : false;
                 if (sele.length > 0) {
                     //now populate the section dropdown that are of this division
                     for (var i = 0; i < $scope.OrgSecArray.length; i++) {
@@ -1234,7 +1219,7 @@
                 var sele = ($scope.OrgDivArray).filter(function (o) { return o.DIVISION == divName }); //give me just this org
                 $scope.newOrgDivID = sele[0].ORGANIZATION_ID;
                 $scope.SecsUnfiltered = false;
-                $scope.showAddSecButton = sele[0].DIVISION != null ? true: false;
+               // $scope.showAddSecButton = sele[0].DIVISION != null ? true: false;
 
                 //now populate the section dropdown that are of this division
                 for (var i = 0; i < $scope.OrgSecArray.length; i++) {
@@ -1280,7 +1265,7 @@
                     $scope.newContact.OrgName = '';
                     $scope.filteredDivs = [];
                     $scope.filteredSecs = [];
-                    $scope.showAddSecButton = false;
+                    //$scope.showAddSecButton = false;
                     toastr.success("Organization Added");
                     }, function error(errorResponse) {
                         toastr.error("Error: " + errorResponse.statusText);
@@ -1318,7 +1303,7 @@
                     $scope.allOrganizations.push(response);
                     $scope.filterDivs();
                     $scope.filteredSecs = [];
-                    $scope.showAddSecButton = false;
+                    //$scope.showAddSecButton = false;
                     toastr.success("Organization Added");
                     }, function error(errorResponse) {
                         toastr.error("Error: " + errorResponse.statusText);
@@ -1490,6 +1475,8 @@
             $scope.ResourceToAdd = []; //holder for create Site page and user adds Resources Types
             $scope.isSiteDescChanged = {}; //trigger to show/hide save button for description change
             $scope.isSiteAddInfoChanged = {}; //trigger to show/hide save button for additional info change
+            $scope.showParams = false;// div containing all parameters (toggles show/hide)
+            $scope.showHide = "Show"; //button text for show/hide parameters
 
             //all the dropdowns
             $scope.allCountries = CountryList;
@@ -1497,6 +1484,41 @@
             $scope.allLakes = lakeList;
             $scope.allStats = siteStatList;
             $scope.allResources = resourceList;
+
+            var ParamGrouping = function (params) {
+                //now add the grouping property 
+                //go through array, make new arrays for each group, then unshift with start and push with end, then merge back together
+                var physP = []; var chemP = []; var bioP = [];
+                var microbP = []; var toxP = [];
+                for (var i = 0; i < params.length; i++) {
+                    if (params[i].PARAMETER_GROUP == "Physical") {
+                        physP.push(params[i]);
+                    } else if (params[i].PARAMETER_GROUP == "Chemical") {
+                        chemP.push(params[i]);
+                    } else if (params[i].PARAMETER_GROUP == "Biological") {
+                        bioP.push(params[i]);
+                    } else if (params[i].PARAMETER_GROUP == "Microbiological") {
+                        microbP.push(params[i]);
+                    } else if (params[i].PARAMETER_GROUP == "Toxicological") {
+                        toxP.push(params[i]);
+                    }
+                };
+                physP.unshift({ PARAMETER: '<strong>Physical</strong>', paraGroup: true });
+                physP.push({ paraGroup: false });
+                chemP.unshift({ PARAMETER: '<strong>Chemical</strong>', paraGroup: true });
+                chemP.push({ paraGroup: false });
+                bioP.unshift({ PARAMETER: '<strong>Biological</strong>', paraGroup: true });
+                bioP.push({ paraGroup: false });
+                microbP.unshift({ PARAMETER: '<strong>Microbiological</strong>', paraGroup: true });
+                microbP.push({ paraGroup: false });
+                toxP.unshift({ PARAMETER: '<strong>Toxicological</strong>', paraGroup: true });
+                toxP.push({ paraGroup: false });
+
+                params = [];
+                var newParams = params.concat(physP, chemP, bioP, microbP, toxP);
+                return newParams;
+            };
+
 
             //are we in edit or create?
             if (thisSite != undefined) {
@@ -1570,7 +1592,9 @@
                         allParams[i].selected = false;
                     }
                 }
-                $scope.Parameterdata = allParams;
+                
+                $scope.Parameterdata = ParamGrouping(allParams);// allParams.concat(physP, chemP, bioP, microbP, toxP);
+
                 //#endregion siteParameters
 
                 //#region siteResources
@@ -1620,7 +1644,7 @@
                 for (var a = parameterList.length; a--;) {
                     parameterList[a].selected = false;
                 };
-                $scope.Parameterdata = parameterList;
+                $scope.Parameterdata =$scope.Parameterdata = ParamGrouping(parameterList);
                 //resources
                 for (var a = resourceList.length; a--;) {
                     resourceList[a].selected = false;
@@ -1732,7 +1756,7 @@
                                 toastr.error("Error: " + errorResponse.statusText);
                             }
                         );
-                    } else {
+                    } else if (data.selected == false) {
                         //delete it
                         delete data['selected']; // remove the selected flag first
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
@@ -1744,6 +1768,34 @@
                                 toastr.error("Error: " + errorResponse.statusText);
                             }
                         );
+                    } else if (data.paraGroup == true) {
+                        //for each on of the $scope.Parametermodel.value .. it will be all of them..if selected=true =>post, else delete
+                        for (var i = 0; i < $scope.Parametermodel.value.length; i++) {
+                            if ($scope.Parametermodel.value[i].selected == true) {
+                                //post them all
+                                delete data['selected']; //need to remove the selected property first
+                                Site.addSiteParameter({ id: $scope.thisSite.SITE_ID }, data,
+                                    function success(response) {
+                                        toastr.success("Site Parameter added");
+                                    },
+                                    function error(errorResponse) {
+                                        toastr.error("Error: " + errorResponse.statusText);
+                                    }
+                                );
+                            } else {
+                                //delete them all
+                                 delete data['selected']; // remove the selected flag first
+                                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
+                                Site.deleteSiteParameter({ id: $scope.thisSite.SITE_ID }, data,
+                                    function success(response) {
+                                        toastr.success("Site Parameter removed");
+                                    },
+                                    function error(errorResponse) {
+                                        toastr.error("Error: " + errorResponse.statusText);
+                                    }
+                                );
+                            }
+                        }
                     }
                 } else {
                     //this is a create Site and need to store this to handle after site is POSTed

@@ -247,10 +247,24 @@
 
          <hr />
 
-         <!--Add Parameters
-             TODO
-            -->
-
+         <!--Add Parameters-->
+         <div class="form-group">
+             <label class="col-md-2 control-label" for="inputSITE_PARAMETERS">Site Parameters:</label>
+             <div class="col-md-10">
+                 <div isteven-multi-select
+                      input-model="Parameterdata"
+                      output-model="Parametermodel.value"
+                      button-label="PARAMETER"
+                      item-label="PARAMETER"
+                      max-height="300px"
+                      on-item-click="ParamClick(data)"
+                      tick-property="selected"
+                      helper-elements="filter" 
+                      orientation="horizontal"
+                      group-property="paraGroup">
+                 </div>
+             </div>
+         </div>
 
          <!--submit and cancel buttons-->
          <div class="form-group">
@@ -263,10 +277,10 @@
                      </button>
                  </span>
                  <!--<span>
-                     <button class="btn btn-default" ng-click="cancel()">
-                         Back to Site List
-                     </button>
-                 </span>-->
+                    <button class="btn btn-default" ng-click="cancel()">
+                        Back to Site List
+                    </button>
+                </span>-->
              </div>
          </div>
 

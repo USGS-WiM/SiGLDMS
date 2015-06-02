@@ -932,7 +932,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>55282</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost/SiGL_DMS</IISUrl>
+          <IISUrl>http://localhost/SiGL_DMS</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

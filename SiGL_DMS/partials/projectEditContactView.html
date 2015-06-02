@@ -26,13 +26,13 @@
                     <div style="display:none"><span editable-text="c.SCIENCE_BASE_ID" e-form="rowform" e-name="SCIENCE_BASE_ID">{c.SCIENCE_BASE_ID}}</span></div>
                     <span editable-text="c.NAME" e-style="width:25em;" e-name="NAME" e-form="rowform">{{ c.NAME || '' }}</span><br />
                     <span editable-select="c.orgName" e-name="orgName" e-ng-change="filterDivs($data)" e-form="rowform" e-ng-options="o.NAME as o.NAME for o in OrgNameArray | orderBy: 'NAME'">
-                        {{showOrgName(c) }}
+                        {{showOrgName(c)}}
                     </span>
                     <span editable-select="c.divName" e-name="divName" e-ng-change="filterSecs($data)" e-form="rowform" e-ng-options="d.DIVISION as d.DIVISION for d in filtEDITdivs | orderBy: 'DIVISION'">
-                        , {{showDivName(c)}}
+                        <span ng-show="c.divName">, </span> {{showDivName(c)}}
                     </span>
                     <span editable-select="c.secName" e-name="secName" e-form="rowform" e-ng-change="secChosen($data)" e-ng-options="s.SECTION as s.SECTION for s in filtEDITSecs | orderBy: 'SECTION'">
-                        , {{showSecName(c)}}
+                        <span ng-show="c.secName">, </span> {{showSecName(c)}}
                     </span><br />
                     <!--<div><a href ng-click="AddOrgName()">Add a new organization</a><a href ng-click="AddDivName(c.orgName)">Add a new division</a><a href ng-click="AddSecName()">Add a new section</a></div><br />-->
                     <span editable-text="c.EMAIL" e-style="width:25em;" e-name="EMAIL" e-form="rowform">{{ c.EMAIL || '' }}</span><br />
