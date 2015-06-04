@@ -3,6 +3,9 @@
     {
        box-shadow: none;
     }
+    .orange {
+    color: orange;
+}
 </style>
  <form editable-form class="form-horizontal" name="projectForm.SiteInfo">
      <fieldset>
@@ -247,26 +250,97 @@
 
          <hr />
 
-         <!--Add Parameters
-             TODO
-            -->
+         <!--Add Parameters-->
+         <div class="form-group">
+             <label class="col-md-2 control-label" for="inputSITE_PARAMS">Site Parameters:</label>
+             <div class="col-md-4">
+                 <button ng-click="showParamDiv($event)">
+                     {{showHide }} Parameters
+                 </button>
+             </div>
+         </div>
 
+         <!--PHYSICAL-->
+         <div class="col-md-3 pull-left" ng-show="showParams">
+             <ul>
+                 <label><strong>Physical</strong></label>
+                 <li style="list-style:none;" ng-repeat="phys in physParams[0]">
+                     <input type="checkbox" ng-model="phys.selected"
+                            ng-checked="phys.selected" value="{{phys.PARAMETER_TYPE_ID}}"
+                            ng-click="ParamClick(phys)" />
+                     <span ng-class="{orange:phys.selected}">{{ phys.PARAMETER }}</span>
+                 </li>
+             </ul>
+         </div>
 
+         <!--CHEMICAL-->
+         <div class="col-md-3 pull-left" ng-show="showParams">
+             <ul>
+                 <label><strong>Chemical</strong></label>
+                 <li style="list-style:none;" ng-repeat="chem in chemParams[0]">
+                     <input type="checkbox" ng-model="chem.selected"
+                            ng-checked="chem.selected" value="{{chem.PARAMETER_TYPE_ID}}"
+                            ng-click="ParamClick(chem)" />
+                     <span ng-class="{orange:chem.selected}">{{ chem.PARAMETER }}</span>
+</li>
+             </ul>
+         </div>
+
+         <!--BIOLOGICAL-->
+         <div class="col-md-3 pull-left" ng-show="showParams">
+             <ul>
+                 <label><strong>Physical</strong></label>
+                 <li style="list-style:none;" ng-repeat="bio in bioParams[0]">
+                     <input type="checkbox" ng-model="bio.selected"
+                            ng-checked="bio.selected" value="{{bio.PARAMETER_TYPE_ID}}"
+                            ng-click="ParamClick(bio)" />
+                     <span ng-class="{orange:bio.selected}">{{ bio.PARAMETER }}</span>
+</li>
+             </ul>
+         </div>
+
+         <!--MICROBIOLOGICAL-->
+         <div class="col-md-3 pull-left" ng-show="showParams">
+             <ul>
+                 <label><strong>Microbiological</strong></label>
+                 <li style="list-style:none;" ng-repeat="mic in microBioParams[0]">
+                     <input type="checkbox" ng-model="mic.selected"
+                            ng-checked="mic.selected" value="{{mic.PARAMETER_TYPE_ID}}"
+                            ng-click="ParamClick(mic)" />
+                     <span ng-class="{orange:mic.selected}">{{ mic.PARAMETER }}</span>
+</li>
+             </ul>
+         </div>
+
+         <!--Toxicological-->
+         <div class="col-md-3 pull-left" ng-show="showParams">
+             <ul>
+                 <label><strong>Toxicological</strong></label>
+                 <li style="list-style:none;" ng-repeat="tox in toxiParams[0]">
+                     <input type="checkbox" ng-model="tox.selected"
+                            ng-checked="tox.selected" value="{{tox.PARAMETER_TYPE_ID}}"
+                            ng-click="ParamClick(tox)" />
+                     <span ng-class="{orange:tox.selected}">{{ tox.PARAMETER }}</span>
+</li>
+             </ul>
+         </div>
+
+         <br clear="all" />
          <!--submit and cancel buttons-->
          <div class="form-group">
              <div class="col-md-4 col-md-offset-2">
                  <span>
                      <button ng-show="thisSite.SITE_ID == undefined" class="btn btn-primary"
                              style="width:80px;margin-right:10px"
-                             ng-click="save(projectForm.SiteInfo.$valid)">
+                             ng-submit="save(projectForm.SiteInfo.$valid)">
                          <span>Create</span>
                      </button>
                  </span>
                  <!--<span>
-                     <button class="btn btn-default" ng-click="cancel()">
-                         Back to Site List
-                     </button>
-                 </span>-->
+                    <button class="btn btn-default" ng-click="cancel()">
+                        Back to Site List
+                    </button>
+                </span>-->
              </div>
          </div>
 
