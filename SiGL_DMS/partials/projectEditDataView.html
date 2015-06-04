@@ -44,7 +44,11 @@
                 <input class="form-control" id="inputDESCRIPTION" name="DESCRIPTION"
                        type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                        ng-model="newData.DESCRIPTION" />
-            </div>
+            </div>&nbsp;
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  title="Describe your project data and where it resides (USGS NWIS, the Water Quality Portal, Access database, Excel spreadsheet, etc.). If your project uses multiple systems at different locations, enter each as a separate Data entry."
+                  data-placement="right" tooltip>
+            </span>
         </div>
 
         <!-- Data Hosting Entity -->
@@ -54,7 +58,11 @@
                 <input class="form-control" id="inputHOST_NAME" name="HOST_NAME"
                        type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                        ng-model="newData.HOST_NAME" />
-            </div>
+            </div>&nbsp;
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  title="Enter the entity, person, or organization that hosts or holds your data."
+                  data-placement="right" tooltip>
+            </span>
         </div>
 
         <!-- Online Data Location -->
@@ -64,7 +72,11 @@
                 <input class="form-control" id="inputPORTAL_URL" name="PORTAL_URL"
                        type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                        ng-model="newData.PORTAL_URL" />
-            </div>
+            </div>&nbsp;
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  title="If data is available online, provide the entire URL of the data’s location (be sure to include the ' http://'). Only enter one address."
+                  data-placement="right" tooltip>
+            </span>
         </div>
 
         <!--submit button-->

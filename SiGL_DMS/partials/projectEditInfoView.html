@@ -14,7 +14,7 @@
             <div class="col-md-4">
                 <input class="form-control" id="inputNAME" name="NAME" ng-model="aProject.NAME"
                        type="text" placeholder="Project Name" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
-                       required />                
+                       required />
             </div>
         </div>
         <hr />
@@ -26,8 +26,12 @@
                         ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
                         ng-options="d.PROJ_DURATION_ID as d.DURATION_VALUE for d in DurationList" required>
                     <option value="">Select Project Duration</option>
-                </select>
-            </div>            
+                </select>&nbsp;
+                <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                      title="Select the category that best describes the current status of your project."
+                      data-placement="right" tooltip></span>
+
+            </div>
         </div>
 
         <!-- Project Status -->
@@ -38,7 +42,10 @@
                         ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(aProject.PROJ_STATUS_ID)"
                         ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList" required>
                     <option value="">Select Project Status</option>
-                </select>
+                </select>&nbsp;
+                <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                      title="Select the category that best represents the length (or anticipated length) of your project."
+                      data-placement="right" tooltip></span>
             </div>
         </div>
 
@@ -74,7 +81,11 @@
                             <i class="glyphicon glyphicon-calendar" />
                         </button>
                     </span>
-                </div>
+                </div>&nbsp;
+                <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                      title="If project is ongoing, leave this field blank."
+                      data-placement="right" tooltip>
+                </span>
             </div>
         </div>
 
@@ -83,7 +94,7 @@
         <!-- Project Objectives -->
         <div class="form-group">
             <label class="col-md-2 control-label" for="inputPROJ_OBJECTIVES">Project Objectives:</label>
-            <div class="col-md-10">
+            <div class="col-md-3">
                 <div isteven-multi-select
                      input-model="Objectivesdata"
                      output-model="Objectivesmodel.value"
@@ -93,9 +104,10 @@
                      on-item-click="ObjClick(data)"
                      tick-property="selected"
                      helper-elements="filter">
-
-                </div>
-
+                </div>&nbsp;
+                <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                      title="Select the objectives that best describe the purpose of your project."
+                      data-placement="right" tooltip></span>
 
             </div>
         </div>
@@ -105,7 +117,10 @@
             <label class="col-md-2 control-label" for="inputDESCRIPTION">Description:</label>
             <div class="col-md-10">
                 <textarea id="inputDESCRIPTION" type="text" rows="3" placeholder="Project Description"
-                          ng-model="aProject.DESCRIPTION" ng-change="isProjDescChanged.bool = true" />
+                          ng-model="aProject.DESCRIPTION" ng-change="isProjDescChanged.bool = true" />&nbsp;
+                <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                      title="Briefly describe the goals and/or details of your project."
+                      data-placement="right" tooltip></span>
                 <span ng-show="aProject.PROJECT_ID > 0 && isProjDescChanged.bool && aProject.DESCRIPTION.length">
                     <button class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="SaveOnBlur(0)">
                         SAVE
@@ -125,7 +140,10 @@
             <div class="col-md-4">
                 <input class="form-control" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="" ng-model="newKey.value" />
             </div>
-            <button ng-click="addThisKeyword()">Add</button>
+            <button ng-click="addThisKeyword()">Add</button>&nbsp;
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  title="Type a keyword and then click add. Can add multiple keywords."
+                  data-placement="right" tooltip></span>
         </div>
 
         <!-- Project Websites confirmed-click  ng-confirm-click="Are you sure you want to remove this URL?"-->
@@ -137,7 +155,10 @@
             <label class="col-md-2 control-label req" for="inputURL">Add Project Website:</label>
             <div class="col-md-4">
                 <input class="form-control" ng-model="newURL.value" id="inputURL" type="text" placeholder="" />
-            </div><button ng-click="addProjURL()">Add</button>
+            </div><button ng-click="addProjURL()">Add</button>&nbsp;
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  title="If your project has a website, enter the URL here. If information about your project can be found in multiple locations, add them here."
+                  data-placement="right" tooltip></span>
         </div>
 
         <!-- Project Additional Info -->
@@ -145,7 +166,10 @@
             <label class="col-md-2 control-label" for="inputADDITIONAL_INFO">Additional Information:</label>
             <div class="col-md-10">
                 <textarea id="inputADDITIONAL_INFO" type="text" rows="3" placeholder="Additional Information"
-                          ng-change="isProjAddInfoChanged.bool = true" ng-model="aProject.ADDITIONAL_INFO" />
+                          ng-change="isProjAddInfoChanged.bool = true" ng-model="aProject.ADDITIONAL_INFO" />&nbsp;
+                <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                      title="Include any other information about your project here."
+                      data-placement="right" tooltip></span>
                 <span ng-show="aProject.PROJECT_ID > 0 && isProjAddInfoChanged.bool && aProject.ADDITIONAL_INFO.length">
                     <button class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="SaveOnBlur(0)">
                         SAVE
