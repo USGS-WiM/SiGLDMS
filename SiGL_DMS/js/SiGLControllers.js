@@ -1279,7 +1279,7 @@
         //Add New Organization Division clicked
         $scope.AddDivName = function () {
 
-            var org = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == $scope.newContact.OrgName }); //give me just this org
+            var org = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == $scope.selectedOrgName.value }); //give me just this org
             //modal
             var modalInstance = $modal.open({
                 templateUrl: 'AddOrgDIV.html',
@@ -1317,7 +1317,7 @@
         //Add New Organization Section clicked
         $scope.AddSecName = function () {
 
-            var org = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == $scope.newContact.DIVISION }); //give me just this org
+            var org = ($scope.allOrganizations).filter(function (o) { return o.ORGANIZATION_ID == $scope.selectedOrgDiv.value }); //give me just this org
             //modal
             var modalInstance = $modal.open({
                 templateUrl: 'AddOrgSEC.html',
@@ -1467,7 +1467,7 @@
             $scope.thisSite = {}; //holder for project (either coming in for edit, or being created on POST )
             $scope.Frequencymodel = {}; //holder for new siteFrequencies if they make any change to multiselect
             $scope.Mediamodel = {}; //holder for new siteMedia if they make any change to multiselect
-            $scope.Parametermodel = {}; //holder for new siteParameters if they make any change to multiselect
+           // $scope.Parametermodel = {}; //holder for new siteParameters if they make any change to multiselect
             $scope.Resourcemodel = {}; //holder for new siteResource if they make any change to multiselect
             $scope.FrequenciesToAdd = []; //holder for create Site page and user adds Frequency Types
             $scope.MediaToAdd = []; //holder for create Site page and user adds Media Types
@@ -1484,42 +1484,9 @@
             $scope.allLakes = lakeList;
             $scope.allStats = siteStatList;
             $scope.allResources = resourceList;
+            $scope.allParametes = parameterList;
 
-            var ParamGrouping = function (params) {
-                //now add the grouping property 
-                //go through array, make new arrays for each group, then unshift with start and push with end, then merge back together
-                var physP = []; var chemP = []; var bioP = [];
-                var microbP = []; var toxP = [];
-                for (var i = 0; i < params.length; i++) {
-                    if (params[i].PARAMETER_GROUP == "Physical") {
-                        physP.push(params[i]);
-                    } else if (params[i].PARAMETER_GROUP == "Chemical") {
-                        chemP.push(params[i]);
-                    } else if (params[i].PARAMETER_GROUP == "Biological") {
-                        bioP.push(params[i]);
-                    } else if (params[i].PARAMETER_GROUP == "Microbiological") {
-                        microbP.push(params[i]);
-                    } else if (params[i].PARAMETER_GROUP == "Toxicological") {
-                        toxP.push(params[i]);
-                    }
-                };
-                physP.unshift({ PARAMETER: '<strong>Physical</strong>', paraGroup: true });
-                physP.push({ paraGroup: false });
-                chemP.unshift({ PARAMETER: '<strong>Chemical</strong>', paraGroup: true });
-                chemP.push({ paraGroup: false });
-                bioP.unshift({ PARAMETER: '<strong>Biological</strong>', paraGroup: true });
-                bioP.push({ paraGroup: false });
-                microbP.unshift({ PARAMETER: '<strong>Microbiological</strong>', paraGroup: true });
-                microbP.push({ paraGroup: false });
-                toxP.unshift({ PARAMETER: '<strong>Toxicological</strong>', paraGroup: true });
-                toxP.push({ paraGroup: false });
-
-                params = [];
-                var newParams = params.concat(physP, chemP, bioP, microbP, toxP);
-                return newParams;
-            };
-
-
+            
             //are we in edit or create?
             if (thisSite != undefined) {
                 //edit view
@@ -1592,8 +1559,15 @@
                         allParams[i].selected = false;
                     }
                 }
-                
-                $scope.Parameterdata = ParamGrouping(allParams);// allParams.concat(physP, chemP, bioP, microbP, toxP);
+                $scope.physParams = []; $scope.bioParams = []; $scope.chemParams = []; $scope.microBioParams = []; $scope.toxiParams = [];
+                $scope.physParams.push(allParams.filter(function (p) { return p.PARAMETER_GROUP == "Physical" }));
+                $scope.bioParams.push(allParams.filter(function (p) { return p.PARAMETER_GROUP == "Biological" }));
+                $scope.chemParams.push(allParams.filter(function (p) { return p.PARAMETER_GROUP == "Chemical" }));
+                $scope.microBioParams.push(allParams.filter(function (p) { return p.PARAMETER_GROUP == "Microbiological" }));
+                $scope.toxiParams.push(allParams.filter(function (p) { return p.PARAMETER_GROUP == "Toxicological" }));
+
+
+                //$scope.Parameterdata = allParams;
 
                 //#endregion siteParameters
 
@@ -1627,6 +1601,19 @@
 
             //requirements for both create and edit views
 
+            //show/hide the parameters
+            $scope.showParamDiv = function ($event) {
+                if ($scope.showHide == "Hide") {
+                    $scope.showHide = "Show";
+                    $scope.showParams = false;
+                } else {
+                    $scope.showHide = "Hide";
+                    $scope.showParams = true;
+                }
+                $event.preventDefault();
+                $event.stopPropagation();
+            };
+
             if (thisSite == undefined) {
 
                 //#region add selected property to all multiselects (need to set these if new site)
@@ -1644,7 +1631,13 @@
                 for (var a = parameterList.length; a--;) {
                     parameterList[a].selected = false;
                 };
-                $scope.Parameterdata =$scope.Parameterdata = ParamGrouping(parameterList);
+                $scope.physParams = []; $scope.bioParams = []; $scope.chemParams = []; $scope.microBioParams = []; $scope.toxiParams = [];
+                $scope.physParams.push(parameterList.filter(function (p) { return p.PARAMETER_GROUP == "Physical" }));
+                $scope.bioParams.push(parameterList.filter(function (p) { return p.PARAMETER_GROUP == "Biological" }));
+                $scope.chemParams.push(parameterList.filter(function (p) { return p.PARAMETER_GROUP == "Chemical" }));
+                $scope.microBioParams.push(parameterList.filter(function (p) { return p.PARAMETER_GROUP == "Microbiological" }));
+                $scope.toxiParams.push(parameterList.filter(function (p) { return p.PARAMETER_GROUP == "Toxicological" }));
+               // $scope.Parameterdata = parameterList;
                 //resources
                 for (var a = resourceList.length; a--;) {
                     resourceList[a].selected = false;
@@ -1742,13 +1735,14 @@
             $scope.ParamClick = function (data) {
                 $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
                 $http.defaults.headers.common['Accept'] = 'application/json';
+                var Param = data;
 
                 if ($scope.thisSite.SITE_ID != undefined) {
-                    //this is an edit page and there is a site
+                    //this is an edit page and there is a site    
                     if (data.selected == true) {
-                        //post it
-                        delete data['selected']; //need to remove the selected property first
-                        Site.addSiteParameter({ id: $scope.thisSite.SITE_ID }, data,
+                        //POST                       
+                        delete Param['selected'];//need to remove the selected property first
+                        Site.addSiteParameter({ id: $scope.thisSite.SITE_ID }, Param,
                             function success(response) {
                                 toastr.success("Site Parameter added");
                             },
@@ -1757,10 +1751,11 @@
                             }
                         );
                     } else if (data.selected == false) {
-                        //delete it
-                        delete data['selected']; // remove the selected flag first
+                        //DELETE
+
+                        delete Param['selected']; // remove the selected flag first
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                        Site.deleteSiteParameter({ id: $scope.thisSite.SITE_ID }, data,
+                        Site.deleteSiteParameter({ id: $scope.thisSite.SITE_ID }, Param,
                             function success(response) {
                                 toastr.success("Site Parameter removed");
                             },
@@ -1768,41 +1763,13 @@
                                 toastr.error("Error: " + errorResponse.statusText);
                             }
                         );
-                    } else if (data.paraGroup == true) {
-                        //for each on of the $scope.Parametermodel.value .. it will be all of them..if selected=true =>post, else delete
-                        for (var i = 0; i < $scope.Parametermodel.value.length; i++) {
-                            if ($scope.Parametermodel.value[i].selected == true) {
-                                //post them all
-                                delete data['selected']; //need to remove the selected property first
-                                Site.addSiteParameter({ id: $scope.thisSite.SITE_ID }, data,
-                                    function success(response) {
-                                        toastr.success("Site Parameter added");
-                                    },
-                                    function error(errorResponse) {
-                                        toastr.error("Error: " + errorResponse.statusText);
-                                    }
-                                );
-                            } else {
-                                //delete them all
-                                 delete data['selected']; // remove the selected flag first
-                                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                                Site.deleteSiteParameter({ id: $scope.thisSite.SITE_ID }, data,
-                                    function success(response) {
-                                        toastr.success("Site Parameter removed");
-                                    },
-                                    function error(errorResponse) {
-                                        toastr.error("Error: " + errorResponse.statusText);
-                                    }
-                                );
-                            }
-                        }
                     }
                 } else {
                     //this is a create Site and need to store this to handle after site is POSTed
                     if (data.selected == true) {
-                        delete data['selected'];
+                        //delete Param['selected'];
                         //only care if true since this is a new site and nothing to delete
-                        $scope.ParameterToAdd.push(data);
+                        $scope.ParameterToAdd.push(Param);
                     }
                 }
             }//end ParamClick
@@ -2105,6 +2072,7 @@
             var up = $scope.username + ":" + $scope.password;
             $http.defaults.headers.common['Authorization'] = 'Basic ' + btoa(up);
             $http.defaults.headers.common['Accept'] = 'application/json';
+            
             Login.login({}, postData,
                 function success(response) {
                     var user = response;
