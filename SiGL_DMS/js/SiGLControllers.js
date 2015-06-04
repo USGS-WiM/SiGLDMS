@@ -2,7 +2,8 @@
     /* controllers.js*/
     'use strict';
 
-    var siGLControllers = angular.module('siGLControllers', ['ngInputModified', 'ngHandsontable', 'ui.unique', 'angular.filter', 'xeditable']);
+    var siGLControllers = angular.module('siGLControllers',
+        ['ngInputModified', 'ngHandsontable', 'ui.unique', 'angular.filter', 'xeditable']);
 
     //#region DIRECTIVES
     //disable tabs if there is no project (create page instead of edit page)
@@ -31,6 +32,33 @@
         };
     });
 
+    siGLControllers.directive('tooltip', function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                $(element).hover(function () {
+                    // on mouseenter
+                    $(element).tooltip('show');
+                }, function () {
+                    // on mouseleave
+                    $(element).tooltip('hide');
+                });
+            }
+        };
+    });
+
+    siGLControllers.directive('myInputMask', function() {
+        return {
+            restrict: 'AC',
+            link: function (scope, el, attrs) {
+                el.inputmask(scope.$eval(attrs.myInputMask));
+                el.on('change', function() {
+                    scope.$eval(attrs.ngModel + "='" + el.val() + "'");
+                    // or scope[attrs.ngModel] = el.val() if your expression doesn't contain dot.
+                });
+            }
+        }
+    });
     //#endregion DIRECTIVES
 
     siGLControllers.controller('mainCtrl', ['$scope', '$rootScope', '$location', '$state', 'Projects', 'checkCreds', 'getUsersNAME', 'deleteCreds', mainCtrl]);
@@ -176,11 +204,11 @@
                         formNameModified = $scope.projectForm.Pubs.modified;
                         break;
                     case '/siteInfo/:siteId':
-                        formNameModified = $scope.projectForm.SiteInfo.modified;
-                        if (fromState.url == '/siteInfo/:siteId' && toState.url == '/siteList') {
-                            //just creating a site ..no need to flag
-                            formNameModified = false;
-                        }
+                        formNameModified = false; //$scope.projectForm.SiteInfo.modified;
+                        //if (fromState.url == '/siteInfo/:siteId' && toState.url == '/siteList') {
+                        //    //just creating a site ..no need to flag
+                        //    formNameModified = false;
+                        //}
                         break;                   
                 }
                 if (formNameModified) {
@@ -1735,13 +1763,16 @@
             $scope.ParamClick = function (data) {
                 $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
                 $http.defaults.headers.common['Accept'] = 'application/json';
-                var Param = data;
+                var Param = {};
+                Param.PARAMETER_TYPE_ID = data.PARAMETER_TYPE_ID;
+                Param.PARAMETER = data.PARAMETER;
+                Param.PARAMETER_GROUP = data.PARAMETER_GROUP;
 
                 if ($scope.thisSite.SITE_ID != undefined) {
                     //this is an edit page and there is a site    
                     if (data.selected == true) {
                         //POST                       
-                        delete Param['selected'];//need to remove the selected property first
+                        //delete Param['selected'];//need to remove the selected property first
                         Site.addSiteParameter({ id: $scope.thisSite.SITE_ID }, Param,
                             function success(response) {
                                 toastr.success("Site Parameter added");
@@ -1752,8 +1783,7 @@
                         );
                     } else if (data.selected == false) {
                         //DELETE
-
-                        delete Param['selected']; // remove the selected flag first
+                        //delete Param['selected']; // remove the selected flag first
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
                         Site.deleteSiteParameter({ id: $scope.thisSite.SITE_ID }, Param,
                             function success(response) {
@@ -1763,6 +1793,7 @@
                                 toastr.error("Error: " + errorResponse.statusText);
                             }
                         );
+                        delete $http.defaults.headers.common['X-HTTP-Method-Override']
                     }
                 } else {
                     //this is a create Site and need to store this to handle after site is POSTed

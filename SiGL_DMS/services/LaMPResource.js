@@ -126,7 +126,7 @@
                 query: {},
                 getSiteParameters: { isArray: true, url: rootURL + '/sites/:id/parameters.json' },
                 addSiteParameter: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addParameter' },
-                deleteSiteParameter: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/RemoveSiteParameter' },
+                deleteSiteParameter: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/removeParameter' },
                 getSiteFrequencies: { isArray: true, url: rootURL + '/sites/:id/frequencies.json' },
                 addSiteFrequency: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addFrequency' },
                 deleteSiteFrequency: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/removeFrequency' },
@@ -137,7 +137,6 @@
                 addSiteResource: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addResourcetype' },
                 deleteSiteResource: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/removeResourcetype' },
                 save: { method: 'POST', cache: false, isArray: false },
-                update: { method: 'PUT', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
     }]);

@@ -1,6 +1,8 @@
 ﻿(function () {
     "use strict"; 
-    var app = angular.module('app', ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'laMPResource', 'siGLControllers', 'siGLBusinessServices', 'isteven-multi-select', ]);
+    var app = angular.module('app',
+        ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'isteven-multi-select',
+            'laMPResource', 'siGLControllers', 'siGLBusinessServices']);
     
     app.run(function ($rootScope) {
         $rootScope
@@ -18,9 +20,8 @@
     });
 
     //app.config(function that defines the config code. 'ui.select', 'ngSanitize',
-    app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
+    app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 
         function ($stateProvider, $urlRouterProvider, $locationProvider){
-            
             //if no active state, display state associated with this fragment identifier
             $urlRouterProvider.otherwise("/");
 

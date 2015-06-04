@@ -23,7 +23,11 @@
                     </div>
                 </td>
                 <td>
-                    <div style="display:none"><span editable-text="c.SCIENCE_BASE_ID" e-form="rowform" e-name="SCIENCE_BASE_ID">{c.SCIENCE_BASE_ID}}</span></div>
+                    <div style="display:none">
+                        <span editable-text="c.SCIENCE_BASE_ID" e-form="rowform" e-name="SCIENCE_BASE_ID">{c.SCIENCE_BASE_ID}}</span>
+                        <span editable-text="c.ORG_ID" e-form="rowform" e-name="ORG_ID">{c.ORG_ID}}</span>
+                    </div>
+
                     <span editable-text="c.NAME" e-style="width:25em;" e-name="NAME" e-form="rowform">{{ c.NAME || '' }}</span><br />
                     <span editable-select="c.orgName" e-name="orgName" e-ng-change="filterDivs($data)" e-form="rowform" e-ng-options="o.NAME as o.NAME for o in OrgNameArray | orderBy: 'NAME'">
                         {{showOrgName(c)}}
@@ -53,9 +57,13 @@
             <label class="col-md-2 control-label req" for="inputNAME">Name:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputNAME" name="NAME" type="text" placeholder="" ng-model="newContact.NAME" required />
-            </div>
+            </div>&nbsp;
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  title="Enter the contact's first and last name."
+                  data-placement="right" tooltip>
+            </span>
         </div>
-        
+
         <!-- ORG section -->
         <div class="form-group required">
             <label class="col-md-2 control-label">Organization</label>
@@ -98,7 +106,11 @@
             <label class="col-md-2 control-label req" for="inputEMAIL">Email:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputEMAIL" name="EMAIL" type="email" placeholder="" ng-model="newContact.EMAIL" required />
-            </div>
+            </div>&nbsp;
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  title="Enter the contact's email address."
+                  data-placement="right" tooltip>
+            </span>
         </div>
 
         <!-- Phone -->
@@ -106,9 +118,14 @@
             <label class="col-md-2 control-label req" for="inputPHONE">Phone:</label>
             <div class="col-md-4">
                 <input class="form-control" id="inputPHONE" name="PHONE"
-                       type="tel" ui-mask="{{'(999) 999-9999'}}" ui-mask-use-viewvalue="true"
+                       type="text" my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}"
                        ng-model="newContact.PHONE" />
-            </div>
+                
+            </div>&nbsp;
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  title="Enter the contact's phone number. To add an extension, type 'x' followed by the extension number."
+                  data-placement="right" tooltip>
+            </span>
         </div>
 
 
