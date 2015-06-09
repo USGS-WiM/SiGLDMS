@@ -16,7 +16,7 @@
     <div class="panel-body">
         <div class="wizard">
             <a ui-sref=".info" ui-sref-active="active">Project Information</a>
-            <a ui-sref=".cooperator" a-disabled="aProject.PROJECT_ID == null" ui-sref-active=" active">Project Cooperators<span class="badge pull-right">{{coopCount.total}}</span></a>
+            <a ui-sref=".cooperator" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Project Cooperators<span class="badge pull-right">{{coopCount.total}}</span></a>
             <a ui-sref=".data" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Project Datum<span class="badge pull-right">{{datumCount.total}}</span></a>
             <a ui-sref=".contact" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Project Contacts<span class="badge pull-right">{{contactCount.total}}</span></a>
             <a ui-sref=".publication" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Project Publications<span class="badge pull-right">{{pubCount.total}}</span></a>
@@ -30,7 +30,7 @@
 
 </div>
 
-<!-- MODALs for "are you sure you want to remove this thing (Keyword or URL) -->
+<!-- MODALs for "are you sure you want to remove this thing (Keyword or URL) 
 <script type="text/ng-template" id="removemodal.html">
     <div class="modal-header">
         <h3 class="modal-title">Remove {{what}}</h3>
@@ -44,11 +44,11 @@
     </div>
 </script>
 
-<!-- MODAL for add new org NAME to database-->
+<!-- MODAL for add new org NAME to database
 <script type="text/ng-template" id="AddOrgNAME.html">
     <!--<div class="modal-header">
         <h3 class="modal-title"></h3>  "Organization Name"
-    </div>-->
+    </div>
 
     <div class="modal-body">
         <form name="newOrgForm">
@@ -67,11 +67,11 @@
     </div>
 </script>
 
-<!-- MODAL for add new org DIVISION to database-->
+<!-- MODAL for add new org DIVISION to database
 <script type="text/ng-template" id="AddOrgDIV.html">
     <!--<div class="modal-header">
         <h3 class="modal-title"></h3>
-    </div>-->
+    </div>
 
     <div class="modal-body">
         <form name="newOrgForm">
@@ -96,9 +96,9 @@
     </div>
 </script>
 
-<!-- MODAL for add new org SECTION to database-->
+<!-- MODAL for add new org SECTION to database
 <script type="text/ng-template" id="AddOrgSEC.html">
-    <!-- <div class="modal-header">  </div>-->
+    <!-- <div class="modal-header">  </div>
 
     <div class="modal-body">
         <form name="newOrgForm">
@@ -123,3 +123,4 @@
     </div>
 </script>
 
+-->

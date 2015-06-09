@@ -40,8 +40,8 @@
         <div>Add new publication</div>
         <!-- Publication Title -->
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputTITLE">Publication title:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label req" for="inputTITLE">Publication title:</label>
+            <div class="col-md-6">
                 <input class="form-control" id="inputTITLE" name="TITLE"
                        type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.DESCRIPTION.length || newPub.URL.length)"
                        ng-model="newPub.TITLE" />
@@ -50,22 +50,30 @@
 
         <!-- Publication description -->
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputDESCRIPTION">Publication description:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label req" for="inputDESCRIPTION">Publication description:</label>
+            <div class="col-md-6">
                 <textarea class="form-control" id="inputDESCRIPTION" rows="3"
                           type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.DESCRIPTION.length || newPub.URL.length)"
                           ng-model="newPub.DESCRIPTION" />
-            </div>
+            </div>&nbsp;
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  title="Briefly describe the content and format of the publication. Include publication number (if applicable)."
+                  data-placement="right" tooltip>
+            </span>
         </div>
 
         <!-- Publication website/location -->
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputURL">Publication website/location:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label req" for="inputURL">Publication website/location:</label>
+            <div class="col-md-6">
                 <input class="form-control" id="inputURL" name="URL"
                        type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.DESCRIPTION.length || newPub.URL.length)"
                        ng-model="newPub.URL" />
-            </div>
+            </div>&nbsp;
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  title="If the publication is online, enter the URL. Otherwise, provide information on how to obtain a copy of the publication."
+                  data-placement="right" tooltip>
+            </span>
         </div>
 
         <!--submit button-->

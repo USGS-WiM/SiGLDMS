@@ -1,17 +1,12 @@
-﻿<style type="text/css">
-    form .ng-pristine.ng-invalid-required 
-    {
-       box-shadow: none;
-    }
-</style>
+﻿
 <form editable-form class="form-horizontal" name="projectForm.Info">
     <fieldset>
         <legend>Project Information</legend>
 
         <!-- Project Name -->
         <div class="form-group required" ng-class="{'has-error':projectForm.Info.NAME.$invalid && projectForm.Info.NAME.$dirty}">
-            <label class="col-md-2 control-label req" for="inputNAME">Project Name:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label req" for="inputNAME">Project Name:</label>
+            <div class="col-md-6">
                 <input class="form-control" id="inputNAME" name="NAME" ng-model="aProject.NAME"
                        type="text" placeholder="Project Name" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
                        required />
@@ -20,9 +15,10 @@
         <hr />
         <!-- Project Duration -->
         <div class="form-group required" ng-class="{'has-error':projectForm.Info.PROJ_DURATION_ID.$invalid && projectForm.Info.PROJ_DURATION_ID.$dirty}">
-            <label class="col-md-2 control-label req" for="inputPROJ_DURATION_ID">Project Duration:</label>
-            <div class="col-md-10">
-                <select id="inputPROJ_DURATION_ID" name="PROJ_DURATION_ID" ng-model="aProject.PROJ_DURATION_ID"
+            <label class="col-md-3 control-label req" for="inputPROJ_DURATION_ID">Project Duration:</label>
+            <div class="col-md-6">
+                <select class="form-control" id="inputPROJ_DURATION_ID" name="PROJ_DURATION_ID" 
+                        ng-model="aProject.PROJ_DURATION_ID"
                         ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(0)"
                         ng-options="d.PROJ_DURATION_ID as d.DURATION_VALUE for d in DurationList" required>
                     <option value="">Select Project Duration</option>
@@ -36,9 +32,10 @@
 
         <!-- Project Status -->
         <div class="form-group required">
-            <label class="col-md-2 control-label" for="inputPROJ_STATUS_ID">Project Status:</label>
-            <div class="col-md-10">
-                <select id="inputPROJ_STATUS_ID" name="PROJ_STATUS_ID" ng-model="aProject.PROJ_STATUS_ID"
+            <label class="col-md-3 control-label" for="inputPROJ_STATUS_ID">Project Status:</label>
+            <div class="col-md-6">
+                <select class="form-control" id="inputPROJ_STATUS_ID" name="PROJ_STATUS_ID" 
+                        ng-model="aProject.PROJ_STATUS_ID"
                         ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(aProject.PROJ_STATUS_ID)"
                         ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList" required>
                     <option value="">Select Project Status</option>
@@ -51,9 +48,9 @@
 
         <!-- Project Start Date  ng-controller="datePickrCtrl"-->
         <div class="form-group">
-            <label class="col-md-2 control-label"
+            <label class="col-md-3 control-label"
                    for="inputSTART_DATE">Project Start Date:</label>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="input-group">
                     <input class="form-control" id="inputSTART_DATE" name="sd" type="text" datepicker-popup="MMM dd, yyyy"
                            is-open="datepickrs.sd" ng-model-options="{ updateOn: 'blur' }"
@@ -69,8 +66,8 @@
 
         <!-- Project Completion Date -->
         <div class="form-group" ng-controller="datePickrCtrl">
-            <label class="col-md-2 control-label" for="inputEND_DATE">Project Completion Date:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label" for="inputEND_DATE">Project Completion Date:</label>
+            <div class="col-md-6">
                 <div class="input-group">
                     <input class="form-control" id="inputEND_DATE" name="ed" ng-disabled="undetermined"
                            type="text" datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
@@ -93,8 +90,8 @@
 
         <!-- Project Objectives -->
         <div class="form-group">
-            <label class="col-md-2 control-label" for="inputPROJ_OBJECTIVES">Project Objectives:</label>
-            <div class="col-md-3">
+            <label class="col-md-3 control-label" for="inputPROJ_OBJECTIVES">Project Objectives:</label>
+            <div class="col-md-6">
                 <div isteven-multi-select
                      input-model="Objectivesdata"
                      output-model="Objectivesmodel.value"
@@ -114,9 +111,9 @@
 
         <!-- Project Description -->
         <div class="form-group">
-            <label class="col-md-2 control-label" for="inputDESCRIPTION">Description:</label>
-            <div class="col-md-10">
-                <textarea id="inputDESCRIPTION" type="text" rows="3" placeholder="Project Description"
+            <label class="col-md-3 control-label" for="inputDESCRIPTION">Description:</label>
+            <div class="col-md-6">
+                <textarea class="form-control" id="inputDESCRIPTION" type="text" rows="3" placeholder="Project Description"
                           ng-model="aProject.DESCRIPTION" ng-change="isProjDescChanged.bool = true" />&nbsp;
                 <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                       title="Briefly describe the goals and/or details of your project."
@@ -132,12 +129,12 @@
         <hr />
         <!-- Project Keywords -->
         <div class="form-group" ng-if="ProjectKeywords.length > 0">
-            <label class="col-md-2 control-label" for="inputProjKEYWORDS">Project Keywords:</label>
-            <div class="col-md-10"><ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button ng-click="removeKey(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul></div>
+            <label class="col-md-3 control-label" for="inputProjKEYWORDS">Project Keywords:</label>
+            <div class="col-md-6 "><ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button ng-click="removeKey(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul></div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputProjKeyword">Add Project Keyword:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label req" for="inputProjKeyword">Add Project Keyword:</label>
+            <div class="col-md-6">
                 <input class="form-control" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="" ng-model="newKey.value" />
             </div>
             <button ng-click="addThisKeyword()">Add</button>&nbsp;
@@ -148,12 +145,12 @@
 
         <!-- Project Websites confirmed-click  ng-confirm-click="Are you sure you want to remove this URL?"-->
         <div class="form-group" ng-if="urls.length > 0">
-            <label class="col-md-2 control-label" for="inputURL">Project Websites:</label>
-            <div class="col-md-10"><ul><li style="list-style:none" data-ng-repeat="key in urls"><button ng-click="removeUrl(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key}}</li></ul></div>
+            <label class="col-md-3 control-label" for="inputURL">Project Websites:</label>
+            <div class="col-md-6"><ul><li style="list-style:none" data-ng-repeat="key in urls"><button ng-click="removeUrl(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key}}</li></ul></div>
         </div>
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputURL">Add Project Website:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label req" for="inputURL">Add Project Website:</label>
+            <div class="col-md-6">
                 <input class="form-control" ng-model="newURL.value" id="inputURL" type="text" placeholder="" />
             </div><button ng-click="addProjURL()">Add</button>&nbsp;
             <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
@@ -163,9 +160,9 @@
 
         <!-- Project Additional Info -->
         <div class="form-group">
-            <label class="col-md-2 control-label" for="inputADDITIONAL_INFO">Additional Information:</label>
-            <div class="col-md-10">
-                <textarea id="inputADDITIONAL_INFO" type="text" rows="3" placeholder="Additional Information"
+            <label class="col-md-3 control-label" for="inputADDITIONAL_INFO">Additional Information:</label>
+            <div class="col-md-6">
+                <textarea class="form-control" id="inputADDITIONAL_INFO" type="text" rows="3" placeholder="Additional Information"
                           ng-change="isProjAddInfoChanged.bool = true" ng-model="aProject.ADDITIONAL_INFO" />&nbsp;
                 <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                       title="Include any other information about your project here."
