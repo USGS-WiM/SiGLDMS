@@ -39,8 +39,8 @@
         <div>Add new data source</div>
         <!-- Data Management System   (taken from form tag above == not sure what it does   novalidate) -->
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputDESCRIPTION">Data management system or data description:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label req" for="inputDESCRIPTION">Data management system or data description:</label>
+            <div class="col-md-6">
                 <input class="form-control" id="inputDESCRIPTION" name="DESCRIPTION"
                        type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                        ng-model="newData.DESCRIPTION" />
@@ -53,8 +53,8 @@
 
         <!-- Data Hosting Entity -->
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputHOST_NAME">Data Hosting Entity:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label req" for="inputHOST_NAME">Data Hosting Entity:</label>
+            <div class="col-md-6">
                 <input class="form-control" id="inputHOST_NAME" name="HOST_NAME"
                        type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                        ng-model="newData.HOST_NAME" />
@@ -67,8 +67,8 @@
 
         <!-- Online Data Location -->
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputPORTAL_URL">Online Data Location:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label req" for="inputPORTAL_URL">Online Data Location:</label>
+            <div class="col-md-6">
                 <input class="form-control" id="inputPORTAL_URL" name="PORTAL_URL"
                        type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                        ng-model="newData.PORTAL_URL" />

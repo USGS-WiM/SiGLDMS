@@ -38,15 +38,39 @@
 
                 //#region region account
                  .state("account", {
-                     url: "/",
+                     url: "/account/:uID",
                      templateUrl: "partials/accountView.html",
-                     controller: "accountCtrl"
+                     controller: "accountCtrl",
+                     resolve: {
+                         dm: 'DataManager',
+                         dmProjects: function (dm, $stateParams) {
+                             var dmID = $stateParams.uID;
+                             if (dmID != "") {
+                                 return dm.getDMProject(
+                                   { id: dmID }).$promise;
+                             }
+                         },
+                         thisDM: function (dm, $stateParams) {
+                             var dmID = $stateParams.uID;
+                             if (dmID != "") {
+                                 return dm.query(
+                                     {id: dmID}).$promise;
+                             }
+                         },
+                         allOrgs: 'Organization',
+                         allOrgList: function (allOrgs) {
+                             return allOrgs.getAll().$promise;
+                         },
+                         allDMsList: function (dm) {
+                             return dm.getAll().$promise;
+                         }
+                     }
                  })
                 //#endregion region account
 
                 //#region region help
                  .state("help", {
-                     url: "/",
+                     url: "/help",
                      templateUrl: "partials/helpView.html",
                      controller: "helpCtrl"
                  })
@@ -62,7 +86,7 @@
 
                 //#region region projectEdit
                 .state("projectEdit", {
-                    //abstract: true, //can't be directly activated, only nested states
+                    abstract: true, //can't be directly activated, only nested states
                     url: "/project/edit/:id",
                     templateUrl: "partials/projectEditView.html",
                     controller: "projectEditCtrl",

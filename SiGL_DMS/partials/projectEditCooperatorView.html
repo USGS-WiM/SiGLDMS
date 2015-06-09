@@ -21,9 +21,9 @@
 <form class="form-horizontal" name="projectForm.Coop">
     <fieldset>
         <div class="form-group required">
-            <label class="col-md-2 control-label">Organization</label>
+            <label class="col-md-3 control-label">Organization</label>
             <div class="col-md-6">
-                <select id="inputORGANIZATION_N" name="NAME" required
+                <select class="form-control" id="inputORGANIZATION_N" name="NAME" required
                         ng-model="selectedOrgName.value" ng-change="filterDivs($data)"
                         ng-options="o.ORGANIZATION_ID as o.NAME for o in OrgNameArray | orderBy: 'NAME'">
                     <option value="">Choose an Organization to add</option>
@@ -37,9 +37,9 @@
 </div>
 
         <div class="form-group">
-            <label class="col-md-2 control-label">Division</label>
-            <div class="col-md-10">
-                <select id="inputORGANIZATION_DIV" name="DIVISION"
+            <label class="col-md-3 control-label">Division</label>
+            <div class="col-md-6">
+                <select class="form-control" id="inputORGANIZATION_DIV" name="DIVISION"
                         ng-model="selectedOrgDiv.value" ng-change="filterSecs($data)"
                         ng-options="d.ORGANIZATION_ID as d.DIVISION for d in filteredDivs | orderBy: 'DIVISION'">
                     <option value=""></option>
@@ -49,9 +49,9 @@
         </div>
 
         <div class="form-group">
-            <label class="col-md-2 control-label">Section</label>
-            <div class="col-md-10">
-                <select id="inputORGANIZATION_SEC" name="SECTION"
+            <label class="col-md-3 control-label">Section</label>
+            <div class="col-md-6">
+                <select class="form-control" id="inputORGANIZATION_SEC" name="SECTION"
                         ng-model="selectedOrgSec.value"
                         ng-options="s.ORGANIZATION_ID as s.SECTION for s in filteredSecs | orderBy: 'SECTION'">
                     <option value=""></option>
@@ -73,128 +73,3 @@
         </div>
     </fieldset>
 </form>
-
-        <!--<fieldset>
-            <div class="form-group required">
-                <label class="col-md-2 control-label">Organization</label>
-                <div class="col-md-10">
-                    <select id="inputORGANIZATION_N" name="NAME" required
-                            ng-model="newOrg.NAME" ng-change="filterDivs($data)"
-                            ng-options="o.ORGANIZATION_ID as o.NAME for o in allOrganizations | unique: 'NAME' | orderBy: 'NAME'"></select>
-                </div>
-                <a href ng-click="AddOrgName()">Add a new organization</a>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-2 control-label">Division</label>
-                <div class="col-md-10">
-                    <select id="inputORGANIZATION_DIV" name="DIVISION"
-                            ng-model="newOrg.DIVISION" ng-change="filterSecs($data)"
-                            ng-options="d.ORGANIZATION_ID as d.DIVISION for d in filteredDivs | unique: 'DIVISION' | orderBy: 'DIVISION'"></select>
-                </div>
-                <a href ng-click="AddDivName()" ng-show="newOrg.NAME">Add a new division</a>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-2 control-label">Section</label>
-                <div class="col-md-10">
-                    <select id="inputORGANIZATION_SEC" name="SECTION"
-                            ng-model="newOrg.SECTION"
-                            ng-options="s.ORGANIZATION_ID as s.SECTION for s in filteredSecs | unique: 'SECTION' | orderBy: 'SECTION'"></select>
-                </div>
-                <a href ng-show="showAddSecButton" ng-click="AddSecName()">Add a new section</a>
-            </div>
-
-            <!--submit button
-            <div class="form-group">
-                <div class="col-md-4 col-md-offset-2">
-                    <span>
-                        <button class="btn btn-primary"
-                                style="width:80px;margin-right:10px"
-                                ng-click="AddOrg(projectForm.Coop.$valid, newOrg)">
-                            Add
-                        </button>
-                    </span>
-                </div>
-            </div>
-        </fieldset>-->
-</form>
-
-<!-- MODAL for add new org NAME to database
-<script type="text/ng-template" id="AddOrgNAME.html">
-    <!--<div class="modal-header">
-        <h3 class="modal-title"></h3>  "Organization Name"
-    </div>
-
-    <div class="modal-body">
-        <form name="newOrgForm">
-            <div class="form-group">
-                <label class="col-md-4 control-label req" for="inputNAME">Add new {what}}:</label>
-                <div class="col-md-6">
-                    <input class="form-control" id="inputNAME" name="NAME" ng-model="newOrg.NAME" type="text" placeholder="Organization Name" required />
-                </div>
-            </div>
-        </form><br clear="all" />
-    </div>
-
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-disabled="newOrgForm.$invalid" ng-click="ok()">Add</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-    </div>
-</script>
-
-<!-- MODAL for add new org DIVISION to database
-<script type="text/ng-template" id="AddOrgDIV.html">
-    <!--<div class="modal-header">
-        <h3 class="modal-title"></h3>
-    </div>
-
-    <div class="modal-body">
-        <form name="newOrgForm">
-            <div class="form-group">
-                <label class="col-md-4 control-label">&nbsp;</label>
-                <div class="col-md-6">
-                    <label><span>{orgName}},</span></label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-4 control-label req" for="inputDIVISION">Add new {what}}:</label>
-                <div class="col-md-6">
-                    <input class="form-control" id="inputDIVISION" name="DIVISION" ng-model="newOrg.DIVISION" type="text" placeholder="Division Name" required />
-                </div>
-            </div>
-        </form> <br clear="all"/>
-    </div>
-
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-disabled="newOrgForm.$invalid" ng-click="ok()">Add</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-    </div>
-</script>
-
-<!-- MODAL for add new org SECTION to database
-<script type="text/ng-template" id="AddOrgSEC.html">
-    <!-- <div class="modal-header">  </div>
-
-    <div class="modal-body">
-        <form name="newOrgForm">
-            <div class="form-group">
-                <label class="col-md-4 control-label">&nbsp;</label>
-                <div class="col-md-6">
-                    <label><span>{orgName}},<br /> {orgDiv}},</span></label>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-4 control-label req" for="inputSECTION">Add new {what}}:</label>
-                <div class="col-md-6">
-                    <input class="form-control" id="inputSECTION" name="SECTION" ng-model="newOrg.SECTION" type="text" placeholder="Section Name" required />
-                </div>
-            </div>
-        </form><br clear="all" />
-    </div>
-
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-disabled="newOrgForm.$invalid" ng-click="ok()">Add</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-    </div>
-</script>-->

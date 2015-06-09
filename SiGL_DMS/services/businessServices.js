@@ -6,12 +6,13 @@
     //#region SETTERS
     //set the credentials (encodedToken, username, usersName, usersRole)  when user logs in
     siGLBusinessServices.factory('setCreds', ['$cookies', function ($cookies) {
-        return function (un, pw, userName, userRole) {
+        return function (un, pw, userName, userRole, userID) {
             var token = un.concat(":", pw);
             $cookies.siGLCreds = token;
 
             $cookies.siGLUsername = un;
             $cookies.usersName = userName;
+            $cookies.dmID = userID;
             var roleName;
             switch(userRole) {
                 case 1:
@@ -78,6 +79,19 @@
 
             if (usesName !== undefined && usesName !== "") {
                 returnVal = usesName;
+            }
+            return returnVal;
+        };
+    }]);
+
+    //retrieve users ID from cookie
+    siGLBusinessServices.factory('getUserID', ['$cookies', function ($cookies) {
+        return function () {
+            var returnVal = "";
+            var userID = $cookies.dmID;
+
+            if (userID !== undefined && userID !== "") {
+                returnVal = userID;
             }
             return returnVal;
         };

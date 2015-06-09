@@ -54,8 +54,8 @@
         <div>Add new contact</div>
         <!-- NAME -->
         <div class="form-group required">
-            <label class="col-md-2 control-label req" for="inputNAME">Name:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label req" for="inputNAME">Name:</label>
+            <div class="col-md-6">
                 <input class="form-control" id="inputNAME" name="NAME" type="text" placeholder="" ng-model="newContact.NAME" required />
             </div>&nbsp;
             <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
@@ -66,9 +66,9 @@
 
         <!-- ORG section -->
         <div class="form-group required">
-            <label class="col-md-2 control-label">Organization</label>
-            <div class="col-md-10">
-                <select id="inputORGANIZATION_N" name="NAME"
+            <label class="col-md-3 control-label">Organization</label>
+            <div class="col-md-6">
+                <select class="form-control" id="inputORGANIZATION_N" name="NAME"
                         ng-model="selectedOrgName.value" ng-change="filterDivs($data)"
                         ng-options="o.ORGANIZATION_ID as o.NAME for o in OrgNameArray | orderBy: 'NAME'" required>
                     <option value=""></option>
@@ -78,9 +78,9 @@
         </div>
 
         <div class="form-group">
-            <label class="col-md-2 control-label">Division</label>
-            <div class="col-md-10">
-                <select id="inputORGANIZATION_DIV" name="DIVISION"
+            <label class="col-md-3 control-label">Division</label>
+            <div class="col-md-6">
+                <select class="form-control" id="inputORGANIZATION_DIV" name="DIVISION"
                         ng-model="selectedOrgDiv.value" ng-change="filterSecs($data)"
                         ng-options="d.ORGANIZATION_ID as d.DIVISION for d in filteredDivs | orderBy: 'DIVISION'">
                     <option value=""></option>
@@ -90,9 +90,9 @@
         </div>
 
         <div class="form-group">
-            <label class="col-md-2 control-label">Section</label>
-            <div class="col-md-10">
-                <select id="inputORGANIZATION_SEC" name="SECTION"
+            <label class="col-md-3 control-label">Section</label>
+            <div class="col-md-6">
+                <select class="form-control" id="inputORGANIZATION_SEC" name="SECTION"
                         ng-model="selectedOrgSec.value"
                         ng-options="s.ORGANIZATION_ID as s.SECTION for s in filteredSecs | orderBy: 'SECTION'">
                     <option value=""></option>
@@ -103,8 +103,8 @@
 
         <!-- Email -->
         <div class="form-group required">
-            <label class="col-md-2 control-label req" for="inputEMAIL">Email:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label req" for="inputEMAIL">Email:</label>
+            <div class="col-md-6">
                 <input class="form-control" id="inputEMAIL" name="EMAIL" type="email" placeholder="" ng-model="newContact.EMAIL" required />
             </div>&nbsp;
             <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
@@ -115,15 +115,15 @@
 
         <!-- Phone -->
         <div class="form-group">
-            <label class="col-md-2 control-label req" for="inputPHONE">Phone:</label>
-            <div class="col-md-4">
+            <label class="col-md-3 control-label req" for="inputPHONE">Phone:</label>
+            <div class="col-md-6">
                 <input class="form-control" id="inputPHONE" name="PHONE"
                        type="text" my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}"
                        ng-model="newContact.PHONE" />
                 
             </div>&nbsp;
             <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                  title="Enter the contact's phone number. To add an extension, type 'x' followed by the extension number."
+                  title="Enter the contact's phone number. To add an extension, immediately following the phone number type 'x' and then the extension number."
                   data-placement="right" tooltip>
             </span>
         </div>

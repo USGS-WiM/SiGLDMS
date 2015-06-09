@@ -12,7 +12,7 @@
             {}, {
                 query: {},
                 getAll: { method: 'GET', isArray: true },
-                getDMProjects: { method: 'GET', isArray: true, url: rootURL + '/projects/IndexProjects.json' },
+                getIndexProjects: { method: 'GET', isArray: true, url: rootURL + '/projects/IndexProjects.json' },
                 getProjDuration: { isArray: false, url: rootURL + '/projects/:id/projDuration.json' },
                 getProjStatus: { isArray: false, url: rootURL + '/projects/:id/projStatus.json' },
                 getProjKeywords: { isArray: true, url: rootURL + '/projects/:id/Keywords.json' },
@@ -40,6 +40,18 @@
             });
     }]);
     
+    //data manager
+    laMPResource.factory('DataManager', ['$resource', function ($resource) {
+        return $resource(rootURL + '/dataManagers/:id.json',
+            {}, {
+                query: { },
+                getDMProject: { method: 'GET', isArray: true, url: rootURL + '/dataManagers/:id/projects.json' },     
+                getAll: { method: 'GET', isArray: true },
+                save: { method: 'POST', cache: false, isArray: false },
+                delete: { method: 'DELETE', cache: false, isArray: false }
+            });
+    }]);//end of media
+
     ////Durations
     laMPResource.factory('ProjDuration', ['$resource', function ($resource) {
         return $resource(rootURL + '/ProjectDuration/:id.json',
