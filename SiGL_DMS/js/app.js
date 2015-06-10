@@ -4,12 +4,32 @@
         ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'isteven-multi-select',
             'laMPResource', 'siGLControllers', 'siGLBusinessServices']);
     
-    app.run(function ($rootScope) {
+    app.run(function ($rootScope, $location, getUserRole, getUserID, DataManager) {
+        
         $rootScope
             .$on('$stateChangeStart',
                 function (event, toState, toParams, fromState, fromParams) {
+                    
                     $("#ui-view").html("");
                     $(".page-loading").removeClass("hidden");
+
+                    //check to see if they are going to project info
+                    //if (toState.url == "/info") {
+                    //    //make sure they have rights to see it
+                    //    var roleID = getUserRole();
+                    //    if (roleID == "Manager") {
+                    //        //make sure they can come here
+                    //        var useID = getUserID();
+                    //        var dmProjs = [];
+                    //        DataManager.getDMProject({ id: useID }, function sucess(response) {
+                    //            dmProjs = response.filter(function (p) { return p.PROJECT_ID == toParams.id });
+                    //            if (dmProjs.length < 1) {
+                    //                alert("Not authorized");
+                    //                $location.path('/home');
+                    //            }
+                    //        });
+                    //    }
+                    //}
                 });
 
         $rootScope
@@ -91,6 +111,29 @@
                     templateUrl: "partials/projectEditView.html",
                     controller: "projectEditCtrl",
                     resolve: {
+                        //check to see if they are going to project info
+                        validate: function ($q, $location, $stateParams, getUserRole, getUserID, DataManager) {
+                            var defer = $q.defer();
+                            var roleID = getUserRole();
+                            if (roleID == "Manager") {
+                                //make sure they can come here
+                                var useID = getUserID();
+                                var dmProjs = [];
+                                DataManager.getDMProject({ id: useID }, function sucess(response) {
+                                    dmProjs = response.filter(function (p) { return p.PROJECT_ID == $stateParams.id });
+                                    if (dmProjs.length > 0) {
+                                        defer.resolve();
+                                        //get the rest of the stuff
+                                        
+                                    } else {
+                                        defer.reject("Access blocked");
+                                        alert("Not authorized");
+                                        $location.path('/');
+                                    }
+                                    
+                                });
+                            }
+                        },
                         Proj: 'Projects', //dependency for the project
                         thisProject: function (Proj, $stateParams) {
                             var projectId = $stateParams.id;
@@ -164,6 +207,7 @@
                         allObjList: function (allObjs) {
                             return allObjs.getAll().$promise;
                         }
+
                     }
                 })
                 //#endregion region projectEdit
