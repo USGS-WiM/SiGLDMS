@@ -112,7 +112,7 @@
                     controller: "projectEditCtrl",
                     resolve: {
                         //check to see if they are going to project info
-                        validate: function ($q, $location, $stateParams, getUserRole, getUserID, DataManager) {
+                        validate: function ($q, $timeout, $location, $stateParams, getUserRole, getUserID, DataManager) {
                             var defer = $q.defer();
                             var roleID = getUserRole();
                             if (roleID == "Manager") {
@@ -126,9 +126,13 @@
                                         //get the rest of the stuff
                                         
                                     } else {
-                                        defer.reject("Access blocked");
-                                        alert("Not authorized");
-                                        $location.path('/');
+                                        $timeout(function () {
+                                            // anything you want can go here and will safely be run on the next digest.
+                                            defer.reject("Access blocked");
+                                            alert("Not authorized to view this project.");
+                                            $location.path('/');
+                                        });
+                                        
                                     }
                                     
                                 });
