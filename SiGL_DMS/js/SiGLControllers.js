@@ -127,13 +127,16 @@
         }
     }
 
-    siGLControllers.controller('accountCtrl', ['$scope', '$location', '$state', '$http', '$modal', '$filter', 'orgService', 'Organization', 'Projects', 'DataManager', 'allOrgList', 'allDMsList', 'thisDM', 'dmProjects', 'checkCreds', 'setCreds', 'getCreds', 'getUserRole', 'getUsersNAME', 'getUserID', accountCtrl]);
-    function accountCtrl($scope, $location, $state, $http, $modal, $filter, orgService, Organization, Projects, DataManager, allOrgList, allDMsList, thisDM, dmProjects, checkCreds, setCreds, getCreds, getUserRole, getUsersNAME, getUserID) {
+    siGLControllers.controller('accountCtrl', ['$scope', '$location', '$state', '$http', '$modal', '$stateParams', '$filter', 'orgService', 'Organization', 'Projects', 'DataManager', 'allOrgList', 'allDMsList', 'thisDM', 'dmProjects', 'checkCreds', 'setCreds', 'getCreds', 'getUserRole', 'getUsersNAME', 'getUserID', accountCtrl]);
+    function accountCtrl($scope, $location, $state, $http, $modal, $stateParams, $filter, orgService, Organization, Projects, DataManager, allOrgList, allDMsList, thisDM, dmProjects, checkCreds, setCreds, getCreds, getUserRole, getUsersNAME, getUserID) {
         $scope.accountUser = {};
         $scope.accountUser.Name = getUsersNAME(); //User's NAME
         $scope.accountUser.ID = getUserID();
         $scope.accountUser.Role = getUserRole();
         $scope.DMProjects = dmProjects; //All their Projects
+        //check to see if the acct User is the same as the user they are looking at
+        $scope.matchingUsers = $stateParams.uID == $scope.accountUser.ID ? true : false;
+
         $scope.pass = {
             newP: '',
             confirmP: ''

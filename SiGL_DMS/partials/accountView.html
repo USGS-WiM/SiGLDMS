@@ -1,8 +1,8 @@
 ﻿<div>{{accountUser.Name}} : Your Account</div>
 
 <h2></h2>
-
-<form editable-form class="form-horizontal" name="accountForm">
+<!-- If this is the user logged -->
+<form ng-show="matchingUsers" editable-form class="form-horizontal" name="accountForm">
     <fieldset>
         <legend>YOUR ACCOUNT INFORMATION</legend>
 
@@ -191,8 +191,52 @@
     </fieldset>
 </form>
 
+<!-- If this isn't the user logged in -->
+<form ng-show="!matchingUsers" editable-form class="form-horizontal" name="accountForm">
+    <legend>USER ACCOUNT INFORMATION</legend>
+
+    <!-- Your Name -->
+    <div class="form-group">
+        <label class="col-md-3 control-label">Name:</label>
+        <div class="col-md-6"><span>{{DM.FNAME}} {{DM.LNAME}}</span></div>
+    </div>
+
+    <!-- Username-->
+    <div class="form-group">
+        <label class="col-md-3 control-label">Username:</label>
+        <div class="col-md-6"><span>{{DM.USERNAME}}</span></div>
+    </div>
+
+    <!-- Organization-->
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="inputORGANIZATION_ID">Organization:</label>
+        <div class="col-md-6">
+            <span>{{dmOrg[0].NAME}}</span><span ng-show="dmOrg[0].DIVISION">, {{dmOrg[0].DIVISION}}</span><span ng-show="dmOrg[0].SECTION">, {{dmOrg[0].SECTION}}</span>
+        </div>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+        <label class="col-md-3 control-label">Email:</label>
+        <div class="col-md-6"><span>{{DM.EMAIL}}</span></div>
+    </div>
+
+    <!-- Phone -->
+    <div class="form-group">
+        <label class="col-md-3 control-label">Phone:</label>
+        <div class="col-md-6"><span>{{DM.PHONE}}</span></div>
+    </div>
+
+    <!-- Role-->
+    <div class="form-group">
+        <label class="col-md-3 control-label">Role:</label>
+        <div class="col-md-6"><span>{{accountUser.Role}}</span></div>
+    </div>
+</form>
+
+
 <div class="form-group" ng-if="DMProjects.length > 0">
-    <legend>YOUR Projects</legend>
+    <legend>YOUR PROJECTS</legend>
     <table class="table">
         <thead><tr><th></th><th></th><th></th></tr></thead>
         <tbody>
@@ -219,7 +263,7 @@
                         {{showDMs(p)}}
                     </span>
                 </td>
-                <td style="white-space: nowrap">
+                <td ng-show="matchingUsers" style="white-space: nowrap">
                     <!-- form -->
                     <form editable-form name="rowform" onaftersave="updateDMonProj($data, p.PROJECT_ID)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == p">
                         <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
@@ -231,9 +275,9 @@
                     </form>
                     <div class="buttons" ng-show="!rowform.$visible">
                         <button class="btn btn-primary" ng-click="rowform.$show()">Reassign Project</button>
-
                     </div>
                 </td>
+                <td ng-show="!matchUsers"></td>
             </tr>
         </tbody>
     </table>
