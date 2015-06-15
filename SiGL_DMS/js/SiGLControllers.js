@@ -542,6 +542,7 @@
             $location.path('/login');
         } else {
             $scope.projectForm = {};
+            $scope.readyFlagModel = "No";
 
             //#region Datepicker
             $scope.datepickrs = {
@@ -865,6 +866,15 @@
                 }
                 else {
                     $scope.undetermined = false;
+                }
+            };
+
+            //flag radio clicked
+            $scope.Flagged = function (data) {
+                $scope.aProject.READY_FLAG = data == "Yes" ? 1 : 0;
+
+                if ($scope.aProject.PROJECT_ID != undefined) {                        
+                    $scope.SaveOnBlur($scope.aProject.PROJECT_ID)
                 }
             };
 
@@ -1554,7 +1564,7 @@
         $scope.newOrgDivID = 0;
         $scope.newOrgSecID = 0;
         $scope.filterDivs = function (d) {
-            if ($scope.selectedOrgName.value != undefined) {
+            if ($scope.selectedOrgName.value != "" && $scope.selectedOrgName.value != undefined) {
                 $scope.showAddSecButton = false;
                 $scope.filteredDivs = [];
                 $scope.filteredSecs = [];
@@ -1598,7 +1608,7 @@
         //division was chosen, get the sections
         $scope.filterSecs = function (d) {
             $scope.filteredSecs = [];
-            if ($scope.selectedOrgDiv.value != undefined) {
+            if ($scope.selectedOrgDiv.value != undefined && $scope.selectedOrgDiv.value != "") {
                 var orgID = $scope.selectedOrgDiv.value; //ORGID
                 var org = ($scope.OrgDivArray).filter(function (o) { return o.ORGANIZATION_ID == orgID });
                 var sele = ($scope.OrgSecArray).filter(function (o) { return o.DIVISION == org[0].DIVISION }); //give me just this org
