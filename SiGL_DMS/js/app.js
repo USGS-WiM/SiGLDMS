@@ -14,22 +14,10 @@
                     $(".page-loading").removeClass("hidden");
 
                     //check to see if they are going to project info
-                    //if (toState.url == "/info") {
-                    //    //make sure they have rights to see it
-                    //    var roleID = getUserRole();
-                    //    if (roleID == "Manager") {
-                    //        //make sure they can come here
-                    //        var useID = getUserID();
-                    //        var dmProjs = [];
-                    //        DataManager.getDMProject({ id: useID }, function sucess(response) {
-                    //            dmProjs = response.filter(function (p) { return p.PROJECT_ID == toParams.id });
-                    //            if (dmProjs.length < 1) {
-                    //                alert("Not authorized");
-                    //                $location.path('/home');
-                    //            }
-                    //        });
-                    //    }
-                    //}
+                    if (toState.url == "/") {
+                        //make username focus
+                        $("#userNameFocus").focus();
+                    };
                 });
 
         $rootScope
@@ -113,29 +101,27 @@
                     resolve: {
                         //check to see if they are going to project info
                         validate: function ($q, $timeout, $location, $stateParams, getUserRole, getUserID, DataManager) {
-                            var defer = $q.defer();
-                            var roleID = getUserRole();
-                            if (roleID == "Manager") {
-                                //make sure they can come here
-                                var useID = getUserID();
-                                var dmProjs = [];
-                                DataManager.getDMProject({ id: useID }, function sucess(response) {
-                                    dmProjs = response.filter(function (p) { return p.PROJECT_ID == $stateParams.id });
-                                    if (dmProjs.length > 0) {
-                                        defer.resolve();
-                                        //get the rest of the stuff
-                                        
-                                    } else {
-                                        $timeout(function () {
-                                            // anything you want can go here and will safely be run on the next digest.
-                                            defer.reject("Access blocked");
-                                            alert("Not authorized to view this project.");
-                                            $location.path('/');
-                                        });
-                                        
-                                    }
-                                    
-                                });
+                            if ($stateParams.id > 0) {
+                                var defer = $q.defer();
+                                var roleID = getUserRole();
+                                if (roleID == "Manager") {
+                                    //make sure they can come here
+                                    var useID = getUserID();
+                                    var dmProjs = [];
+                                    DataManager.getDMProject({ id: useID }, function sucess(response) {
+                                        dmProjs = response.filter(function (p) { return p.PROJECT_ID == $stateParams.id });
+                                        if (dmProjs.length > 0) {
+                                            defer.resolve();
+                                        } else {
+                                            $timeout(function () {
+                                                // anything you want can go here and will safely be run on the next digest.
+                                                defer.reject("Access blocked");
+                                                alert("Not authorized to view this project.");
+                                                $location.path('/');
+                                            });
+                                        }
+                                    });
+                                }
                             }
                         },
                         Proj: 'Projects', //dependency for the project
