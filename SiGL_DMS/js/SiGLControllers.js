@@ -559,36 +559,36 @@
 
             //#region changing tabs handler /////////////////////
             $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-                var formNameModified = false;
+                //var formNameModified = false;
+                var formNamePristine = true;
                 switch (fromState.url) {
                     case '/info':
-                        formNameModified = false;
+                        formNamePristine = true;
                         break;
                     case '/cooperator':
-                        formNameModified = $scope.projectForm.Coop.modified;
+                        formNamePristine = $scope.projectForm.Coop.$pristine;
                         break;
                     case '/data':
-                        formNameModified = $scope.projectForm.Data.modified;
+                        formNamePristine = $scope.projectForm.Data.$pristine;
                         break;
                     case '/contact':
-                        formNameModified = $scope.projectForm.Contact.modified;
+                        formNamePristine = $scope.projectForm.Contact.$pristine;
                         break;
                     case '/publication':
-                        formNameModified = $scope.projectForm.Pubs.modified;
+                        formNamePristine = $scope.projectForm.Pubs.$pristine;
                         break;
                     case '/siteInfo/:siteId':
-                        formNameModified = false; //$scope.projectForm.SiteInfo.modified;
+                        formNamePristine = false;// $scope.projectForm.SiteInfo.$pristine;
                         //if (fromState.url == '/siteInfo/:siteId' && toState.url == '/siteList') {
                         //    //just creating a site ..no need to flag
                         //    formNameModified = false;
                         //}
                         break;
                 }
-                if (formNameModified) {
+                if (!formNamePristine) {
                     console.log('toState.name: ' + toState.name);
                     console.log('fromState.name: ' + fromState.name);
-
-
+                    
                     if (confirm("Are you sure you want to change tabs? Any unsaved information will be lost.")) {
                         console.log('go to: ' + toState.name);
                     } else {
@@ -1227,6 +1227,7 @@
                 $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 Projects.addProjData({ id: thisProjID }, d, function success(response) {
+                    d.PROJECT_ID = thisProjID;
                     $scope.ProjData.push(d);
                     $scope.datumCount.total = $scope.datumCount.total + 1;
                     $scope.newData = {};
