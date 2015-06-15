@@ -2,12 +2,12 @@
     <div class="panel-heading clearfix" style="font-size:large">
         <span class="panel-title pull-left">{{title}}</span>
         <div class="btn-group pull-right">
-            <span class="" style="font-size:small" ng-hide="aProject.READY_FLAG > 0">
+            <span class="" style="font-size:small">
                 Publish project on SiGL Mapper?
             </span>
             <span class="pull-right">
-                <label class="btn btn-primary" ng-model="readyFlagModel" btn-radio="'Yes'">Yes</label>
-                <label class="btn btn-primary" ng-model="readyFlagModel" btn-radio="'No'">No</label>
+                <label class="btn btn-primary" ng-model="readyFlagModel" ng-click="Flagged('Yes')" btn-radio="'Yes'">Yes</label>
+                <label class="btn btn-primary" ng-model="readyFlagModel" ng-click="Flagged('No')" btn-radio="'No'">No</label>
             </span>
         </div>
 
