@@ -3,7 +3,107 @@
     'use strict';
 
     var siGLControllers = angular.module('siGLControllers',
-        ['ngInputModified', 'ngHandsontable', 'ui.unique', 'ui.validate', 'angular.filter', 'xeditable']);
+        ['ngInputModified', 'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.edit', 'ui.grid.cellNav', 'ui.unique', 'ui.validate', 'angular.filter', 'xeditable']);
+
+    //#region FILTERS
+    siGLControllers.filter('mapLakes', function () {
+        var lakeHash = {
+            1: 'Erie',
+            2: 'Huron',
+            3: 'Michigan',
+            4: 'Ontario',
+            5: 'Superior'
+        };
+        return function (input) {
+            if (!input) {
+                return '';
+            } else {
+                return lakeHash[input];
+            }
+        };
+    });
+    siGLControllers.filter('mapSiteStats', function () {
+        var siteStatHash = {
+            1: 'Active',
+            2: 'Inactive'
+        };
+        return function (input) {
+            if (!input) {
+                return '';
+            } else {
+                return siteStatHash[input];
+            }
+        };
+    });
+    siGLControllers.filter('mapStates', function () {
+        var stateHash = {
+            'Illinois': "Illinois",
+            'Indiana': "Indiana",
+            'Michigan': "Michigan",
+            'Minnesota': "Minnesota",
+            'New York': "New York",
+            'Ohio': "Ohio",
+            'Pennsylvania': "Pennsylvania",
+            'Wisconsin': "Wisconsin",
+            'Ontario': "Ontario"
+        };
+        return function (input) {
+            if (!input) {
+                return '';
+            } else {
+                return stateHash[input];
+            }
+        };
+    });
+    siGLControllers.filter('mapCountries', function () {
+        var countryHash = {
+            'Canada': 'Canada',
+            'United States Of America': 'United States Of America'
+        };
+        return function (input) {
+            if (!input) {
+                return '';
+            } else {
+                return countryHash[input];
+            }
+        };
+    });
+    siGLControllers.filter('mapSiteResources', function () {
+        var resourceHash = {
+            1: 'Atmosphere',
+            2: 'Beach',
+            3: 'Drowned River Mouth',
+            4: 'Embayment',
+            5: 'Estuary',
+            6: 'Ground Water',
+            7: 'Harbors',
+            8: 'Inland Lakes',
+            9: 'Lake',
+            10: 'Lake or Stream Bottom (Benthic Province)',
+            11: 'Medium Nearshore',
+            12: 'Offshore',
+            13: 'River Mouth',
+            14: 'River Substrate',
+            15:	'Shallow Nearshore',
+            16: 'Shoreline',
+            17:	'Stormwater Conveyance System',
+            18: 'Stream/River',
+            19: 'Tributary',
+            20: 'Water Column (Variable Depths; Pelagic Province)',
+            21: 'Water Treatment Facility Intake',
+            22: 'Wetland'
+        };
+        return function (input) {
+            if (!input) {
+                return '';
+            } else {
+                return resourceHash[input];
+            }
+        };
+        
+})
+
+    //#endregion FILTERS
 
     //#region CONSTANTS
     //regular expression for a password requirement of at least 8 characters long and at least 3 of 4 character categories used (upper, lower, digit, special
@@ -116,6 +216,7 @@
 
     //#endregion DIRECTIVES
 
+    //#region MAIN Controller
     siGLControllers.controller('mainCtrl', ['$scope', '$rootScope', '$location', '$state',
         'Projects', 'checkCreds', 'getUsersNAME', 'deleteCreds', 'getUserID', mainCtrl]);
     function mainCtrl($scope, $rootScope, $location, $state, Projects, checkCreds, getUsersNAME, deleteCreds, getUserID) {
@@ -133,7 +234,9 @@
 
         }
     }
+    //#endregion MAIN Controller
 
+    //#region ACCOUNT Controller
     siGLControllers.controller('accountCtrl', ['$scope', '$location', '$state', '$http', '$modal', '$stateParams', '$filter', 'orgService', 'Organization', 'Projects', 'DataManager', 'allOrgList', 'allDMsList', 'thisDM', 'dmProjects', 'checkCreds', 'setCreds', 'getCreds', 'getUserRole', 'getUsersNAME', 'getUserID', accountCtrl]);
     function accountCtrl($scope, $location, $state, $http, $modal, $stateParams, $filter, orgService, Organization, Projects, DataManager, allOrgList, allDMsList, thisDM, dmProjects, checkCreds, setCreds, getCreds, getUserRole, getUsersNAME, getUserID) {
         if (!checkCreds()) {
@@ -456,13 +559,17 @@
         }
 
     }
+    //#endregion ACCOUNT Controller
 
+    //#region HELP Controller
     siGLControllers.controller('helpCtrl', ['$scope', helpCtrl]);
     function helpCtrl($scope) {
         $scope.helpInfo = {};
         $scope.helpInfo.fact = "Some really interesting help will be here.";
     }
+    //#endregion HELP Controller
 
+    //#region NAV Controller
     siGLControllers.controller('navCtrl', ['$scope', '$location', '$rootScope', 'checkCreds', 'deleteCreds', navCtrl]);
     function navCtrl($scope, $location, $rootScope, checkCreds, deleteCreds) {
         $scope.logout = function () {
@@ -471,7 +578,9 @@
             $location.path('/login');
         }
     }
+    //#endregion NAV Controller
 
+    //#region PROJECT LIST Controller
     //ProjectListCtrl
     siGLControllers.controller('projectListCtrl', ['$scope', 'Projects', '$location', '$http', 'checkCreds', 'getCreds', 'getUsersNAME', projectListCtrl]);
     function projectListCtrl($scope, Projects, $location, $http, checkCreds, getCreds, getUsersNAME) {
@@ -525,7 +634,9 @@
         }
     }
     //end projectListCtrl    
+    //#endregion PROJECT LIST Controller
 
+    //#region ABSTRACT PROJECT EDIT Controller
     //ProjectEditCtrl
     siGLControllers.controller('projectEditCtrl',
         ['$scope', '$rootScope', '$location', '$state', '$http', '$filter', '$modal', 'checkCreds', 'getCreds', 'DataManager',
@@ -579,7 +690,7 @@
                         formNamePristine = $scope.projectForm.Pubs.$pristine;
                         break;
                     case '/siteInfo/:siteId':
-                        formNamePristine = false;// $scope.projectForm.SiteInfo.$pristine;
+                        formNamePristine = true;// $scope.projectForm.SiteInfo.$pristine;
                         //if (fromState.url == '/siteInfo/:siteId' && toState.url == '/siteList') {
                         //    //just creating a site ..no need to flag
                         //    formNameModified = false;
@@ -951,7 +1062,9 @@
             };//end cancel           
         }//end else (checkCreds == true)
     }//end projectEditCtrl
+    //#endregion ABSTRACT PROJECT EDIT Controller
 
+    //#region COOPERATOR Controller
     //ProjectEditCoopCtrl
     siGLControllers.controller('projectEditCoopCtrl', ['$scope', '$http', '$filter', '$modal', 'orgService', 'thisProject', 'projOrgs', 'Projects', 'allOrgList', 'Organization', 'getCreds', projectEditCoopCtrl]);
     function projectEditCoopCtrl($scope, $http, $filter, $modal, orgService, thisProject, projOrgs, Projects, allOrgList, Organization, getCreds) {
@@ -1221,7 +1334,9 @@
         };
 
     }
+    //#endregion COOPERATOR Controller
 
+    //#region DATA Controller
     //ProjectEditDataCtrl
     siGLControllers.controller('projectEditDataCtrl', ['$scope', '$http', '$modal', 'Projects', 'DataHost', 'thisProject', 'projDatum', 'getCreds', projectEditDataCtrl]);
     function projectEditDataCtrl($scope, $http, $modal, Projects, DataHost, thisProject, projDatum, getCreds) {
@@ -1317,7 +1432,9 @@
             $state.go('projectList');
         };
     }
+    //#endregion DATA Controller
 
+    //#region CONTACT Controller
     //projectEditContactCtrl
     siGLControllers.controller('projectEditContactCtrl', ['$scope', '$http', '$filter', '$modal', 'orgService', 'Projects', 'Contact', 'projContacts', 'thisProject', 'allOrgList', 'Organization', 'getCreds', projectEditContactCtrl]);
     function projectEditContactCtrl($scope, $http, $filter, $modal, orgService, Projects, Contact, projContacts, thisProject, allOrgList, Organization, getCreds) {
@@ -1768,8 +1885,9 @@
             $state.go('projectList');
         };
     }
+    //#endregion CONTACT Controller
 
-    //projectEditPubCtrl
+    //#region PUBLICATION Controller
     siGLControllers.controller('projectEditPubCtrl', ['$scope', '$http', '$modal', 'Projects', 'thisProject', 'Publication', 'projPubs', 'getCreds', projectEditPubCtrl]);
     function projectEditPubCtrl($scope, $http, $modal, Projects, thisProject, Publication, projPubs, getCreds) {
         $scope.ProjPubs = projPubs;
@@ -1862,6 +1980,70 @@
             $state.go('projectList');
         };
     }
+    //#endregion PUBLICATION Controller
+
+    //#region SITE Controller
+
+    siGLControllers.controller('projectEditSiteListCtrl', ['$scope', 'Site', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'CountryList', 'stateList', projectEditSiteListCtrl]); 
+    function projectEditSiteListCtrl($scope, Site, projS, thisProject, siteStatList, lakeList, CountryList, siteList) {
+        var formattedProjSites = [];
+        
+        //format each project for the list table
+        for (var x = 0; x < projS.length; x++) {
+            var thisOne = {};
+
+            thisOne.SiteID = projS[x].SITE_ID;
+            thisOne.Name = projS[x].NAME;
+            thisOne.Lat = projS[x].LATITUDE;            
+            thisOne.Long = projS[x].LONGITUDE;
+            thisOne.Country = projS[x].COUNTRY;
+            thisOne.State = projS[x].STATE_PROVINCE;
+            thisOne.Lake = lakeList.filter(function (l) { return l.LAKE_TYPE_ID == projS[x].LAKE_TYPE_ID });
+            thisOne.Waterbody = projS[x].WATERBODY;
+            thisOne.Watershed = projS[x].WATERSHED_HUC8;
+            thisOne.Description = projS[x].DESCRIPTION;
+            thisOne.Status = siteStatList.filter(function (s) { return s.STATUS_ID == projS[x].STATUS_TYPE_ID });
+            thisOne.StartDate = projS[x].START_DATE;
+            thisOne.EndDate = projS[x].END_DATE;
+            thisOne.Platform = projS[x].SAMPLING_PLATFORM;
+            thisOne.AddInfo = projS[x].ADDITIONAL_INFO;
+            thisOne.url = projS[x].URL;
+
+            Site.getSiteResources({ id: projS[x].SITE_ID }, function success(response1) {
+                thisOne.Resource = response1;
+            }).$promise;
+            Site.getSiteMedia({ id: projS[x].SITE_ID }, function success(response2) {
+                thisOne.Media = response2;                
+            }).$promise;
+            Site.getSiteFrequencies({ id: projS[x].SITE_ID }, function success(response3) {
+                thisOne.Frequency = response3;                
+            }).$promise;           
+            Site.getSiteParameters({ id: projS[x].SITE_ID }, function success(response4) {
+                thisOne.Parameters = response4;                
+            }).$promise;
+
+            formattedProjSites.push(thisOne);
+        } 
+        $scope.projectSites = formattedProjSites;
+        $scope.thisProject = thisProject;
+        // change sorting order
+        $scope.sort_by = function (newSortingOrder) {
+            if ($scope.sortingOrder == newSortingOrder) {
+                $scope.reverse = !$scope.reverse;
+            }
+            $scope.sortingOrder = newSortingOrder;
+            // icon setup
+            $('th i').each(function () {
+                // icon reset
+                $(this).removeClass().addClass('glyphicon glyphicon-sort');
+            });
+            if ($scope.reverse) {
+                $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+            } else {
+                $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+            }
+        };
+    };
 
     //projectEditSiteInfoCtrl ( CREATE / EDIT page)    
     siGLControllers.controller('projectEditSiteInfoCtrl', ['$scope', '$location', '$http', '$modal', '$state', 'checkCreds', 'getCreds',
@@ -2002,7 +2184,6 @@
                 }
                 $scope.Resourcedata = allRes;
                 //#endregion siteResources
-
 
             }//end edit view
             else {
@@ -2331,6 +2512,7 @@
                     }, function error(errorResponse) {
                         toastr.success("Error: " + errorResponse.statusText);
                     }).$promise.then(function () {
+                        $scope.projectForm.Coop.$setPristine(true);
                         $location.path('/project/edit/' + thisProject.PROJECT_ID + '/site/siteList').replace();//.notify(false);
                         $scope.apply;
                     });
@@ -2343,14 +2525,91 @@
                 }
             }//end save
 
-            //$scope.cancel = function () {
-            //    //navigate to a different state
-            //    $state.go('projectEdit.site.siteList');
-            //};
-
         }//end CheckCreds() passed
     }//end projectEditSiteInfoCtrl
 
+    //projectEditALL Sites
+    siGLControllers.controller('projectEditAllSitesCtrl', ['$scope', '$location', '$http', '$state', 'Projects', 'thisProject', 'Site', 'projSites',
+        'lakeList', 'CountryList', 'stateList', 'siteStatList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', projectEditAllSitesCtrl]);
+    function projectEditAllSitesCtrl($scope, $location, $http, $state, Projects, thisProject, Site, projSites,
+        lakeList, CountryList, stateList, siteStatList, resourceList, mediaList, frequencyList, parameterList) {
+        //need id/value format for ui-grid
+        $scope.formatArray = function (o) {
+            var newlyFormatted = [];
+            for (var x = 0; x < o.length; x++) {
+                var thisone = { 'id': x + 1, 'value': o[x] };
+                newlyFormatted.push(thisone);
+            };
+            return newlyFormatted;
+        }
+        
+        //dropdowns and multiselects
+        $scope.countryArray = $scope.formatArray(CountryList);
+        $scope.stateArray = $scope.formatArray(stateList);
+        $scope.lakeArray = lakeList;
+        $scope.statusArray = siteStatList;
+        $scope.resourceArray = resourceList;//  $scope.convertToArray(resourceList);
+        $scope.mediaArray = mediaList;// $scope.convertToArray(mediaList);
+        $scope.frequencyArray = frequencyList;// $scope.convertToArray(frequencyList);
+        $scope.paramsArray = parameterList;// $scope.convertToArray(parameterList);
+        
+        
+        //http://stackoverflow.com/questions/26245495/using-an-ng-option-dropdown-in-a-ui-grid-editablecelltemplate-ng-grid-3-x  //
+        $scope.gridOptions = {
+            enableSorting: true,
+            columnDefs: [
+                { name: 'NAME', enableCellEdit: true, enableCellEditOnFocus: true, width: 200 },
+                { name: 'LATITUDE', type: 'string', enableCellEdit: true, enableCellEditOnFocus: true, width: 100 },
+                { name: 'LONGITUDE', type: 'string', enableCellEdit: true, enableCellEditOnFocus: true, width: 100, },
+                {
+                    name: 'COUNTRY', editType: 'dropdown', width: 200,
+                    editableCellTemplate: 'ui-grid/dropdownEditor', enableCellEdit: true, enableCellEditOnFocus: true,
+                    editDropdownOptionsArray: $scope.countryArray, editDropdownValueLabel: 'value', editDropdownIdLabel: 'value',
+                    cellFilter: 'mapCountries'
+                },
+                {
+                    name: 'STATE_PROVINCE', displayName: 'State', editType: 'dropdown', width: 100,
+                    editableCellTemplate: 'ui-grid/dropdownEditor', enableCellEdit: true, enableCellEditOnFocus: true,
+                    editDropdownOptionsArray: $scope.stateArray, editDropdownValueLabel: 'value', editDropdownIdLabel: 'value',
+                    cellFilter: 'mapStates'
+                },
+                {
+                    name: 'LAKE_TYPE_ID', displayName: 'Lake', editType: 'dropdown', width: 100,
+                    editableCellTemplate: 'ui-grid/dropdownEditor', enableCellEdit: true, enableCellEditOnFocus: true,
+                    editDropdownOptionsArray: $scope.lakeArray, editDropdownIdLabel: 'LAKE_TYPE_ID',
+                    editDropdownValueLabel: 'LAKE', cellFilter: 'mapLakes'
+                },
+                {
+                    name: 'WATERBODY', width: 200,
+                    enableCellEdit: true, enableCellEditOnFocus: true
+                },
+                {
+                    name: 'WATERSHED_HUC8', displayName: 'Watershed (HUC8)', width: 100,
+                    enableCellEdit: true, enableCellEditOnFocus: true 
+                },
+                {
+                    name: 'DESCRIPTION', width: 200,
+                    enableCellEdit: true, enableCellEditOnFocus: true
+                },
+                {
+                    name: 'STATUS_TYPE_ID', displayName: 'Status', editType: 'dropdown', width: 100, editableCellTemplate: 'ui-grid/dropdownEditor',
+                    enableCellEdit: true, enableCellEditOnFocus: true, editDropdownOptionsArray: $scope.statusArray, editDropdownIdLabel: 'STATUS_ID',
+                    editDropdownValueLabel: 'STATUS', cellFilter: 'mapSiteStats'
+                },
+                {
+                    name: 'RESOURCE_TYPE', displayName: 'Resource Component', multiselect: true, editType: 'dropdown', width: 200, editableCellTemplate: 'ui-grid/dropdownEditor',
+                    enableCellEdit: true, enableCellEditOnFocus: true, editDropdownOptionsArray: $scope.resourceArray, editDropdownIdLabel: 'RESOURCE_TYPE_ID',
+                    editDropdownValueLabel: 'RESOURCE_NAME', cellFilter: 'mapSiteResources'
+                }
+            ]
+        };
+
+        $scope.gridOptions.data = projSites;
+        
+    }
+    //#endregion SITE Controller
+
+    //#region MODALS
     //popup confirm box
     siGLControllers.controller('ConfirmModalCtrl', ['$scope', '$modalInstance', 'keyToRemove', 'what', ConfirmModalCtrl]);
     function ConfirmModalCtrl($scope, $modalInstance, keyToRemove, what) {
@@ -2398,12 +2657,12 @@
     siGLControllers.controller('AddOrgModalCtrl', ['$scope', '$modalInstance', 'what', 'thisOrg', AddOrgModalCtrl]);
     function AddOrgModalCtrl($scope, $modalInstance, what, thisOrg) {
         $scope.newOrg = {}; //holder for binding
-        $scope.what = what;
+        $scope.what = what; // 'Organization', 'division', 'section'
         var newOrgToSend = {};
 
         if (thisOrg != "none") {
             $scope.orgName = thisOrg[0].NAME;
-            if (thisOrg[0].DIVISION != null) {
+            if ($scope.what == 'section'){ // thisOrg[0].DIVISION != null) {
                 //there's a division, so adding a section now
                 $scope.orgDiv = thisOrg[0].DIVISION;
 
@@ -2446,7 +2705,9 @@
             };
         }
     }
+    //#endregion MODALS
 
+    //#region LOGIN/OUT
     //login 'setLoggedIn',
     siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', '$rootScope', 'Login', 'setCreds', LoginCtrl]);
     function LoginCtrl($scope, $state, $http, $rootScope, Login, setCreds) {
@@ -2513,6 +2774,7 @@
             $location.path('/login');
         }
     };
+    //#endregion LOGIN/OUT
 
     //service to get 3 arrays from the org table
     siGLControllers.factory('orgService', [orgService]);

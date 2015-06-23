@@ -312,44 +312,14 @@
                     templateUrl: "partials/projectEditSiteList.html",
                     resolve: {
                         Proj: 'Projects',
-                        projS: function (Proj, $stateParams) {
+                        projS: function (Proj, $stateParams, lakeList, siteStatList, Site, $q) {
                             var projectId = $stateParams.id;
                             if (projectId > 0) {
-                                return Proj.getProjSites(
-                            { id: projectId }).$promise;
-                                    }
+                                 return Proj.getProjSites({ id: projectId }).$promise;
                             }
-                    },
-                    controller: function ($scope, projS, thisProject, siteStatList, lakeList) {
-                        var formattedProjSites = [];
-                        for (var x = 0; x < projS.length; x++) {
-                            var thisOne = {};
-                            thisOne.Name = projS[x].NAME; thisOne.Lat = projS[x].LATITUDE; thisOne.SiteID = projS[x].SITE_ID;
-                            thisOne.Long = projS[x].LONGITUDE; thisOne.State = projS[x].STATE_PROVINCE;
-                            thisOne.Lake = lakeList.filter(function (l) { return l.LAKE_TYPE_ID == projS[x].LAKE_TYPE_ID });
-                            thisOne.Waterbody = projS[x].WATERBODY; thisOne.Status = siteStatList.filter(function (s) { return s.STATUS_ID == projS[x].STATUS_TYPE_ID });
-                            formattedProjSites.push(thisOne);
                         }
-                        $scope.projectSites = formattedProjSites;
-                        $scope.thisProject = thisProject;
-                        // change sorting order
-                        $scope.sort_by = function (newSortingOrder) {
-                            if ($scope.sortingOrder == newSortingOrder) {
-                                $scope.reverse = !$scope.reverse;
-                                }
-                                $scope.sortingOrder = newSortingOrder;
-                                // icon setup
-                            $('th i').each(function () {
-                                    // icon reset
-                                $(this).removeClass().addClass('glyphicon glyphicon-sort');
-                                });
-                            if ($scope.reverse) {
-                                $('th.' +newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
-                                } else {
-                                $('th.' +newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
-                                }
-                            };
-                    }
+                    },
+                    controller: 'projectEditSiteListCtrl'
                 })
                 //#endregion region projectEdit.site.siteList
 
@@ -397,15 +367,15 @@
                         }
                     }
                 })
-            //#endregion region projectEdit.site.siteInfo
+                //#endregion region projectEdit.site.siteInfo
 
-                //.state("projectEdit.site.siteEditAll", {
-                //    url: "/siteEditAll",
-                //    templateUrl: "partials/projectEditSiteEditAll.html",
-                //    controller: "projectEditSiteCtrl"
-                //});
+                .state("projectEdit.site.siteEditAll", {
+                    url: "/siteEditAll",
+                    templateUrl: "partials/projectEditSiteEditAll.html",
+                    controller: "projectEditAllSitesCtrl"
+                });
 
-                //    
+              
             $locationProvider.html5Mode(false).hashPrefix('!');
             //$locationProvider.html5Mode({ enabled: true, requireBase: false });
         }

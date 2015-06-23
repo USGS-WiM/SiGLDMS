@@ -1,0 +1,19 @@
+﻿<div class="form-group">
+    <label class="col-md-3 control-label" for="inputSITE_RESOURCES">Resource Component:</label>
+    <div class="col-md-6">
+        <div isteven-multi-select
+             input-model="Resourcedata"
+             output-model="Resourcemodel.value"
+             button-label="RESOURCE_NAME"
+             item-label="RESOURCE_NAME"
+             max-height="300px"
+             on-item-click="ResClick(data)"
+             tick-property="selected"
+             helper-elements="filter">
+        </div>
+    </div>&nbsp;
+    <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+          title="Select where the sampling or analysis occurred."
+          data-placement="right" tooltip>
+    </span>
+</div>
