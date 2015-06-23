@@ -62,8 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\bootstrap-multiselect.css" />
-    <Content Include="css\handsontable.full.css" />
     <Content Include="css\isteven-multi-select.css" />
+    <Content Include="css\ui-grid-unstable.css" />
+    <Content Include="css\ui-grid.svg" />
     <Content Include="css\xeditable.css" />
     <Content Include="images\loading1.gif" />
     <Content Include="images\usgsLogo.png" />
@@ -71,14 +72,14 @@
     <Content Include="js\vendor\handsontable.full.js" />
     <Content Include="js\vendor\inputmask.min.js" />
     <Content Include="js\vendor\jquery.inputmask.js" />
-    <Content Include="js\vendor\ngHandsontable.js" />
-    <Content Include="js\vendor\ngHandsontable.min.js" />
+    <Content Include="js\vendor\ui-grid-unstable.js" />
     <Content Include="js\vendor\xeditable.min.js" />
     <Content Include="partials\accountView.html" />
     <Content Include="partials\helpView.html" />
     <Content Include="partials\projectEditSiteInfoView.html" />
     <Content Include="partials\projectEditSiteEditAll.html" />
     <Content Include="partials\projectEditSiteList.html" />
+    <Content Include="partials\resourceUIGridTemp.html" />
     <Content Include="Scripts\angular-ui\ui-utils-ieshiv.js" />
     <Content Include="Scripts\angular-ui\ui-utils-ieshiv.min.js" />
     <Content Include="Scripts\angular-ui\ui-utils.js" />
@@ -128,6 +129,9 @@
     <Content Include="js\vendor\angular-route.min.js.map" />
     <Content Include="js\vendor\angular-cookies.min.js.map" />
     <Content Include="js\vendor\angular-sanitize.min.js.map" />
+    <Content Include="css\ui-grid.eot" />
+    <Content Include="css\ui-grid.ttf" />
+    <Content Include="css\ui-grid.woff" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
