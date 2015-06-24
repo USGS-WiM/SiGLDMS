@@ -1,0 +1,258 @@
+body{
+    background-color: #E5E4C8;
+    font-family: 'Nunito', sans-serif;
+}
+
+/*
+===============================================
+===============================================
+===============================================
+===============================================
+==========                           ==========
+==========                           ==========
+==========          Text             ==========
+==========                           ==========
+==========                           ==========
+===============================================
+===============================================
+===============================================
+===============================================
+*/
+
+a{
+    color:#F56938;
+}
+    a:hover{
+        text-decoration:none
+    }
+        a:visited{
+            color:#f34b11;
+        }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+
+}
+h1{font-size:20pt;}
+
+
+p{
+    font-size:12pt;
+    font-weight:300;
+    padding-bottom:15px;
+    letter-spacing:1px;
+}
+
+
+.section_heaader{
+    border-bottom:1px solid #BEBB9F;
+    padding-bottom:10px;
+}
+
+
+
+
+
+.btn-sigl{
+    border:none;
+    border-radius:5px;
+    box-sizing:border-box;
+    padding:8px 12px 8px 12px;;
+    font-weight:300;
+    letter-spacing:1px;
+    transition:0.2s;
+}
+    .btn-sigl:hover{
+        cursor:pointer;
+        transition:0.2s;
+    }
+
+
+    .btn-sigl-grey{
+        color:#fff;
+        background-color:#525352;
+    }
+        .btn-sigl-grey:hover{
+            transition:0.2s;
+            background-color:#3c3d3c;
+        }
+
+    .btn-sigl-orange{
+        color:#fff;
+        background-color:#f56938;
+    }
+        .btn-sigl-orange:hover{
+            transition:0.2s;
+            background-color:#f34b11;
+        }
+
+/*
+===============================================
+===============================================
+===============================================
+===============================================
+==========                           ==========
+==========                           ==========
+==========        Universal          ==========
+==========                           ==========
+==========                           ==========
+===============================================
+===============================================
+===============================================
+===============================================
+*/
+/*Navigation bar*/
+#app_nav{
+    background-color: #525352;
+    border-bottom:2px solid ;
+    height:65px;
+    border-bottom:2px solid #3c3d3c;
+    margin-bottom:15px;
+}
+    #app_nav .container-fluid{
+        padding:0; margin:0 auto;
+    }
+
+/*Logo Branding*/
+#app_nav_logo{
+    height:65px;
+    border-top:5px solid #000;
+    border-bottom:5px solid #000;
+    border-left:10px solid #000;
+    border-right:10px solid #000;
+    display:inline-block;
+}
+#app_nav h2{
+    margin:0 auto;
+    padding:0;
+    display: inline-block;
+    position:relative; top:7px;
+    margin-left:25px;
+    color:#E5E4C8;
+    font-family: 'Nunito', sans-serif;
+}
+    #app_nav h2 i{
+        font-style:normal;
+        color:#F56938;
+    }
+
+#nav_welcome{
+    color:#fff;
+    box-sizing:border-box;
+    padding:6px 35px 6px 0;
+    font-weight:300;
+    text-align:center;
+}
+    #nav_welcome button{
+        display:block;
+        font-size:8pt;
+        padding: 5px 10px 5px 10px;
+        float:right;
+        margin-top:3px;
+    }
+
+#nav_links{
+    width:100%;
+    background-color:#77797A;
+    height:30px;
+    border-bottom:1px solid #626364;
+    padding:0; margin:0 auto;
+}
+    #nav_links ul{
+        margin:0 auto;
+        padding:0;
+    }
+        #nav_links ul li{
+            display:inline-block;
+        }
+            #nav_links ul li a{
+                color:#fff;
+                background-color:rgba(255,50,100,0.5);
+                height:30px;
+                display:block;
+                line-height:30px;
+                font-size:11pt;
+                font-weight:300;
+                box-sizing:border-box;
+                padding: 0 20px 0 20px;
+                transition:0.2s;
+                background-color:#323432;
+            }
+                #nav_links ul li a:hover{
+                    background-color:#f56938;
+                    transition:0.2s;
+                }
+                #nav_links ul li .active{
+                    text-transform:capitalize;
+                }
+
+
+
+
+
+
+
+
+
+/*
+===============================================
+===============================================
+===============================================
+===============================================
+==========                           ==========
+==========                           ==========
+==========        Specifics          ==========
+==========                           ==========
+==========                           ==========
+===============================================
+===============================================
+===============================================
+===============================================
+*/
+
+/*
+=========================================
+=========================================
+=======                           =======
+=======        Login.html         =======
+=======                           =======
+=========================================
+=========================================
+*/
+#sigl-login-wrapper{
+    width:410px; height:auto;
+    overflow:hidden;
+    background-color:#00BAB1;
+    box-sizing:border-box;
+    padding:25px;
+    border:1px solid #009991;
+    border-radius:5px;
+}
+    #sigl-login-wrapper label{
+        text-transform:capitalize;
+        color:#fff;
+        font-weight:300;
+        letter-spacing:1px;
+        font-size:14pt;
+        width:130px;
+    }
+    #sigl-login-wrapper input{
+        font-size:14pt;
+        margin:0 auto;
+        box-sizing:border-box;
+        padding:5px;
+        margin-bottom:15px;
+    }
+    #sigl-login-wrapper a{
+        color:#fff;
+        font-weight:300;
+        position:relative; top:17px;
+    }
+    #sigl-login-wrapper button{
+        margin-top:10px;
+        float:right;
+    }

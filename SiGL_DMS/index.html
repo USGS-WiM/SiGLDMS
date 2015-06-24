@@ -15,6 +15,11 @@
     <link href="css/xeditable.css" rel="stylesheet" />
     <link href="css/ui-grid-unstable.css" rel="stylesheet" />
 
+    <link href="css/styles.css" rel="stylesheet" />
+    <link href='http://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+    <link href='http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css' rel='stylesheet' type='text/css'>
+
     <!--library scripts-->
     <script src="js/vendor/jquery-1.10.2.min.js"></script>
     <script src="js/vendor/angular.min.js"></script>
@@ -51,37 +56,34 @@
 
 <body ng-app="app">
     <!--<div ng-include src="'partials/header.html'"></div>-->
-    <!--HEADER START-->
-    <div ng-controller="mainCtrl" class="navbar navbar-default">
-        <div class="container-fluid" style="background-color:gray;">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">
-                    <img alt="Brand" src="images/usgsLogo.png">
-                </a>
-            </div>
-            <div>
-                <div style="width:60%;float:left;">
-                    <h2>SiGL: Data Management System (DMS)</h2>
-                </div>
-                <div class="pull-right" ng-show="isAuth.val">
-                    <div><span>Welcome, {{usersName}}</span></div>
-                    <div><button ng-controller="navCtrl" ng-click="logout()">LOG OFF</button></div>
-                </div>
-            </div>
-            <br clear="all" />
-            <div ng-show="isAuth.val" class="container">
 
-                <div class="collapse navbar-collapse" id="">
-                    <ul class="nav navbar-nav">
-                        <li><a style="color:#000" ui-sref="home" ui-sref-active="active">Home</a></li>
-                        <li><a style="color:#000" ui-sref="account({uID:userID})" ui-sref-active="active">Your account</a></li>
-                        <li><a style="color:#000" ui-sref="help" ui-sref-active="active">FAQs/Help</a></li>
-                    </ul>
-                </div>
+
+    <div ng-controller="mainCtrl" id="app_nav">
+        <div class="container-fluid">
+            <a href="/">
+                <img alt="Brand" src="images/usgsLogo.png" id="app_nav_logo">
+            </a>
+            <h2>SiGL <i>:</i> Data Management System (DMS)</h2>
+
+            <div id="nav_welcome" class="pull-right" ng-show="isAuth.val">
+                Welcome, {{usersName}} Mitchas
+                <br/>
+                <button ng-controller="navCtrl" ng-click="logout()" class="btn-sigl btn-sigl-orange">LOG OFF</button>
+            </div>
+
+            <div ng-show="isAuth.val" id="nav_links" class="container">
+
+                <ul>
+                    <li><a ui-sref="home" ui-sref-active="active"><i class="ion-ios-home"></i> Home</a></li>
+                    <li><a ui-sref="account({uID:userID})" ui-sref-active="active">Your account</a></li>
+                    <li><a ui-sref="help" ui-sref-active="active">FAQs/Help</a></li>
+                </ul>
 
             </div>
         </div>
-    </div>
+    </div><!-- End Nav -->
+
+
     <br clear="all" />
     <!--HEADER END-->
     <!--<div ng-include src="'partials/nav.html'" style="margin-top:31px"></div>-->
@@ -186,4 +188,3 @@
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
-
