@@ -94,6 +94,30 @@
 </body>
 </html>
 
+<!-- MODAL for 'new site name' for copy off sitelist -->
+<script type="text/ng-template" id="newSiteNameModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Copy Site</h3>
+    </div>
+    <div class="modal-body">
+        <div class="modal-body">
+            <form name="newSiteName">
+                <div class="form-group">
+                    <label class="col-md-9 control-label req" for="inputNAME">New Site Name:</label>
+                    <div class="col-md-12">
+                        <input class="form-control" id="inputNAME" name="NAME" ng-model="newSite.NAME" type="text" required />
+                    </div>
+                </div>
+            </form><br clear="all" />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+
+</script>
+
 <!-- MODALs for "are you sure you want to remove this thing (Keyword or URL) -->
 <script type="text/ng-template" id="removemodal.html">
     <div class="modal-header">

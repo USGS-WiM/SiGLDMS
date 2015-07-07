@@ -315,7 +315,7 @@
                         projS: function (Proj, $stateParams, lakeList, siteStatList, Site, $q) {
                             var projectId = $stateParams.id;
                             if (projectId > 0) {
-                                 return Proj.getProjSites({ id: projectId }).$promise;
+                                return Proj.getFullSiteList({ projId: projectId }).$promise;
                             }
                         }
                     },

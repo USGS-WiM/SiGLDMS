@@ -1984,48 +1984,13 @@
 
     //#region SITE Controller
 
-    siGLControllers.controller('projectEditSiteListCtrl', ['$scope', 'Site', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'CountryList', 'stateList', projectEditSiteListCtrl]); 
-    function projectEditSiteListCtrl($scope, Site, projS, thisProject, siteStatList, lakeList, CountryList, siteList) {
-        var formattedProjSites = [];
+    siGLControllers.controller('projectEditSiteListCtrl', ['$scope', '$location', '$modal', '$http', 'getCreds', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'Site', projectEditSiteListCtrl]);
+    function projectEditSiteListCtrl($scope, $location, $modal, $http, getCreds, projS, thisProject, siteStatList, lakeList, stateList, resourceList, mediaList, frequencyList, parameterList, Site) {
         
-        //format each project for the list table
-        for (var x = 0; x < projS.length; x++) {
-            var thisOne = {};
-
-            thisOne.SiteID = projS[x].SITE_ID;
-            thisOne.Name = projS[x].NAME;
-            thisOne.Lat = projS[x].LATITUDE;            
-            thisOne.Long = projS[x].LONGITUDE;
-            thisOne.Country = projS[x].COUNTRY;
-            thisOne.State = projS[x].STATE_PROVINCE;
-            thisOne.Lake = lakeList.filter(function (l) { return l.LAKE_TYPE_ID == projS[x].LAKE_TYPE_ID });
-            thisOne.Waterbody = projS[x].WATERBODY;
-            thisOne.Watershed = projS[x].WATERSHED_HUC8;
-            thisOne.Description = projS[x].DESCRIPTION;
-            thisOne.Status = siteStatList.filter(function (s) { return s.STATUS_ID == projS[x].STATUS_TYPE_ID });
-            thisOne.StartDate = projS[x].START_DATE;
-            thisOne.EndDate = projS[x].END_DATE;
-            thisOne.Platform = projS[x].SAMPLING_PLATFORM;
-            thisOne.AddInfo = projS[x].ADDITIONAL_INFO;
-            thisOne.url = projS[x].URL;
-
-            Site.getSiteResources({ id: projS[x].SITE_ID }, function success(response1) {
-                thisOne.Resource = response1;
-            }).$promise;
-            Site.getSiteMedia({ id: projS[x].SITE_ID }, function success(response2) {
-                thisOne.Media = response2;                
-            }).$promise;
-            Site.getSiteFrequencies({ id: projS[x].SITE_ID }, function success(response3) {
-                thisOne.Frequency = response3;                
-            }).$promise;           
-            Site.getSiteParameters({ id: projS[x].SITE_ID }, function success(response4) {
-                thisOne.Parameters = response4;                
-            }).$promise;
-
-            formattedProjSites.push(thisOne);
-        } 
-        $scope.projectSites = formattedProjSites;
+        $scope.projectSites = projS;
         $scope.thisProject = thisProject;
+        $scope.LakeList = lakeList; $scope.StatusList = siteStatList; $scope.ResourceList = resourceList; $scope.MediaList = mediaList; $scope.FreqList = frequencyList; $scope.ParamList = parameterList;
+        $scope.FrequenciesToAdd =[]; $scope.MediaToAdd =[]; $scope.ParameterToAdd = []; $scope.ResourceToAdd = [];
         // change sorting order
         $scope.sort_by = function (newSortingOrder) {
             if ($scope.sortingOrder == newSortingOrder) {
@@ -2043,6 +2008,186 @@
                 $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
             }
         };
+
+        //used in CopyToNew for formatting the new Site
+        var formatSite = function (aSite) {
+            //format it properly
+            var SITE = {};
+            SITE.START_DATE = aSite.StartDate != undefined ? aSite.StartDate : "";
+            SITE.END_DATE = aSite.EndDate != undefined ? aSite.EndDate : "";
+            SITE.PROJECT_ID = aSite.ProjID;
+            SITE.SAMPLE_PLATFORM = aSite.SamplePlatform != undefined ? aSite.SamplePlatform : "";
+            SITE.NAME = aSite.Name;
+            SITE.DESCRIPTION = aSite.Description != undefined ? aSite.Description : "";
+            SITE.LATITUDE = aSite.latitude;
+            SITE.LONGITUDE = aSite.longitude;
+            SITE.WATERBODY = aSite.Waterbody != undefined ? aSite.Waterbody : "";
+            SITE.STATUS_TYPE_ID = aSite.StatType[0].STATUS_ID;
+            SITE.LAKE_TYPE_ID = aSite.LakeType[0].LAKE_TYPE_ID;
+            SITE.COUNTRY = aSite.Country;
+            SITE.STATE_PROVINCE = aSite.State;
+            SITE.WATERSHED_HUC8 = aSite.WatershedHUC8 != undefined ? aSite.WatershedHUC8 : "";
+            SITE.URL = aSite.URL != undefined ? aSite.URL : "";
+
+            return SITE;
+        };
+
+        //copy to new site using this site's info, show edit page populated with create button
+        $scope.CopyToNew = function (siteId) {
+            //ask for new name: (modal)
+            var modalInstance = $modal.open({
+                templateUrl: 'newSiteNameModal.html',
+                controller: 'NewSiteNameModalCtrl',
+                size: 'sm',
+                resolve: {
+                    thisSiteID: function () {
+                        return siteId;
+                    }
+                }
+            });
+            modalInstance.result.then(function (newSiteName) {
+                //go use this (newSiteName.name and newSiteName.id) (new with this new name and duplicate everything and then direct to it
+                var thisSite = $scope.projectSites.filter(function (s) { return s.SiteId == newSiteName.id });
+                thisSite[0].ProjID = $scope.thisProject.PROJECT_ID;
+                thisSite[0].Name = newSiteName.name;
+                thisSite[0].StatType = $scope.StatusList.filter(function (st) { return st.STATUS == thisSite[0].Status });
+                thisSite[0].LakeType = $scope.LakeList.filter(function (st) { return st.LAKE == thisSite[0].GreatLake });
+                //properly form the site
+                var SITE = formatSite(thisSite[0]);
+                var freqSplit = thisSite[0].Frequency.split(',');
+                var medSplit = thisSite[0].Media.split(',');
+                var resSplit = thisSite[0].Resources.split(',');
+
+                var paramSorted = [];
+                var bioSplit = thisSite[0].ParameterStrings.Biological.split(';');
+                var chemSplit = thisSite[0].ParameterStrings.Chemical.split(';');
+                var micSplit = thisSite[0].ParameterStrings.Microbiological.split(';');
+                var phySplit = thisSite[0].ParameterStrings.Physical.split(';');
+                var toxSplit = thisSite[0].ParameterStrings.Toxicological.split(';');
+               
+                for (var b = 0; b < bioSplit.length; b++) {
+                    //add biological string
+                    paramSorted.push(bioSplit[b]);
+                }
+                for (var c = 0; c < chemSplit.length; c++) {
+                    //add chemical string
+                    paramSorted.push(chemSplit[c]);
+                }
+                for (var m = 0; m < micSplit.length; m++) {
+                    //add microbiological string
+                    paramSorted.push(micSplit[m]);
+                }
+                for (var p = 0; p < phySplit.length; p++) {
+                    //add physical string
+                    paramSorted.push(phySplit[p]);
+                }
+                for (var t = 0; t < toxSplit.length; t++) {
+                    //add tox string
+                    paramSorted.push(toxSplit[t]);
+                }                     
+                var paramsSplit = paramSorted;
+
+                //now that they are all arrays, go get them to add for posting
+                for (var sf = 0; sf < freqSplit.length; sf++) {
+                    for (var f = 0; f < $scope.FreqList.length; f++) {
+                        //remove spaces for accurate compare with Replace
+                        if (freqSplit[sf].replace(/\s/g, '') == $scope.FreqList[f].FREQUENCY.replace(/\s/g, '')) {
+                            $scope.FrequenciesToAdd.push($scope.FreqList[f]);
+                            f = $scope.FreqList.length;
+                        }
+                    }
+                } 
+                for (var sm = 0; sm < medSplit.length; sm++) {
+                    for (var m = 0; m < $scope.MediaList.length; m++) {
+                        //remove spaces for accurate compare with Replace
+                        if (medSplit[sm].replace(/\s/g, '') == $scope.MediaList[m].MEDIA.replace(/\s/g, '')) {
+                            $scope.MediaToAdd.push($scope.MediaList[m]);
+                            m = $scope.MediaList.length;
+                        }
+                    }
+                }
+                for (var sr = 0; sr < resSplit.length; sr++) {
+                    for (var r = 0; r < $scope.ResourceList.length; r++) {
+                        //remove spaces for accurate compare with Replace
+                        if (resSplit[sr].replace(/\s/g, '') == $scope.ResourceList[r].RESOURCE_NAME.replace(/\s/g, '')) {
+                            $scope.ResourceToAdd.push($scope.ResourceList[r]);
+                            r = $scope.ResourceList.length;
+                        }
+                    }
+                }
+                for (var sp = 0; sp < paramsSplit.length; sp++) {
+                    for (var p = 0; p < $scope.ParamList.length; p++) {
+                        //remove spaces for accurate compare with Replace
+                        if (paramsSplit[sp].replace(/\s/g, '') == $scope.ParamList[p].PARAMETER.replace(/\s/g, '')) {
+                            $scope.ParameterToAdd.push($scope.ParamList[p]);
+                            p = $scope.ParamList.length;
+                        }
+                    }
+                }
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                var siteId = "";
+                Site.save({}, SITE, function success(response) {
+                    toastr.success("Site Created");
+                    siteId = response.SITE_ID;
+                    //projSites.push(response);
+                    $scope.sitesCount.total = $scope.sitesCount.total + 1;
+                    //post frequencies added
+                    for (var o = $scope.FrequenciesToAdd.length; o--;) {
+                        Site.addSiteFrequency({ id: siteId }, $scope.FrequenciesToAdd[o],
+                            function success(response) {
+                //                toastr.success("Site Frequency added");
+                            },
+                            function error(errorResponse) {
+                                toastr.error("Error: " + errorResponse.statusText);
+                            }
+                        );
+                    };
+                    //post media
+                    for (var k = $scope.MediaToAdd.length; k--;) {
+                        Site.addSiteMedia({ id: siteId }, $scope.MediaToAdd[k],
+                            function success(response) {
+                //                toastr.success("Site Media Added");
+                            },
+                            function error(errorResponse) {
+                                toastr.error("Error: " + errorResponse.statusText);
+                            }
+                        );
+                    };
+                    //post parameters
+                    for (var k = $scope.ParameterToAdd.length; k--;) {
+                        Site.addSiteParameter({ id: siteId }, $scope.ParameterToAdd[k],
+                            function success(response) {
+                //                toastr.success("Site Parameter Added");
+                            },
+                            function error(errorResponse) {
+                                toastr.error("Error: " + errorResponse.statusText);
+                            }
+                        );
+                    };
+                    //post resources
+                    for (var k = $scope.ResourceToAdd.length; k--;) {
+                        Site.addSiteResource({ id: siteId }, $scope.ResourceToAdd[k],
+                            function success(response) {
+                //                toastr.success("Site Resource Added");
+                            },
+                            function error(errorResponse) {
+                                toastr.error("Error: " + errorResponse.statusText);
+                            }
+                        );
+                    };
+                }, function error(errorResponse) {
+                    toastr.success("Error: " + errorResponse.statusText);
+                }).$promise.then(function () {
+                //    $scope.projectForm.Coop.$setPristine(true);
+                    $location.path('/project/edit/' + thisProject.PROJECT_ID + '/site/siteInfo/' + siteId).replace();
+                //    //$location.path('/project/edit/' + thisProject.PROJECT_ID + '/site/siteList').replace();//.notify(false);
+                    $scope.apply;
+                });
+                
+            });
+        }//end CopyToNew
+        
     };
 
     //projectEditSiteInfoCtrl ( CREATE / EDIT page)    
@@ -2411,7 +2556,6 @@
             }//end ResClick
             //#endregion a RESOURCE was clicked - if added POST, if removed DELETE - for edit view or store for create view
 
-
             $scope.isNum = function (evt) {
                 var theEvent = evt || window.event;
                 var key = theEvent.keyCode || theEvent.which;
@@ -2610,6 +2754,21 @@
     //#endregion SITE Controller
 
     //#region MODALS
+    //popup new Site name
+    siGLControllers.controller('NewSiteNameModalCtrl', ['$scope', '$modalInstance', 'thisSiteID', NewSiteNameModalCtrl]);
+    function NewSiteNameModalCtrl($scope, $modalInstance, thisSiteID) {
+        var nameToSendBack = {};
+        $scope.newSite = {};
+        $scope.ok = function () {
+            nameToSendBack.name = $scope.newSite.NAME;
+            nameToSendBack.id = thisSiteID;
+            $modalInstance.close(nameToSendBack);
+        }
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        }
+    }
+
     //popup confirm box
     siGLControllers.controller('ConfirmModalCtrl', ['$scope', '$modalInstance', 'keyToRemove', 'what', ConfirmModalCtrl]);
     function ConfirmModalCtrl($scope, $modalInstance, keyToRemove, what) {
