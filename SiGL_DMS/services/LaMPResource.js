@@ -35,6 +35,7 @@
                 addProjPublication: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addPublication.json' },
                 deleteProjPublication: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/RemoveProjectPublication' },
                 getProjSites: { isArray: true, url: rootURL + '/projects/:id/sites.json' },
+                getFullSiteList: { isArray: true, url: rootURL + '/Sites/FullSiteInfo/:projId.json' },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false },
             });
@@ -136,7 +137,7 @@
     laMPResource.factory('Site', ['$resource', function ($resource) {
         return $resource(rootURL + '/sites/:id.json',
             {}, {
-                query: {},
+                query: {},                
                 getSiteParameters: { isArray: true, url: rootURL + '/sites/:id/parameters.json' },
                 addSiteParameter: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addParameter' },
                 deleteSiteParameter: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/removeParameter' },
