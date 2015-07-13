@@ -48,7 +48,7 @@
                 query: { },
                 getDMProject: { method: 'GET', isArray: true, url: rootURL + '/dataManagers/:id/projects.json' },     
                 getAll: { method: 'GET', isArray: true },
-                changePW: {method:'GET', isArray:false, url: rootURL + '/dataManagers.json?username&newP'},
+                changePW: {method:'GET', isArray:false, url: rootURL + '/dataManagers.json'},
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });

@@ -1,41 +1,4 @@
-﻿
-<!--main top bar with logo and app name-->
-<!--<div class="navbar navbar-fixed-top" style="background-color:gray;">
-    <img ng-src="{logo}}" alt="" />
-    <div>SiGL: Data Management System (DMS)</div>
-    <div>Welcome, {username}}</div>
-</div>
-<br clear="all" />
-end top bar-->
-
-<!--nav below - should only show once they log in??
-<nav class="navbar navbar-inverse" role="navigation">
-    <div class="container">
-        <a class="navbar-brand" ui-sref="main.home">Home</a>
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <!--    <li><a ui-sref="projectList">Project List</a></li>
-                        <li>
-                            <a ui-sref="projectEdit.info({id:0})">
-                                <i class="glyphicon glyphicon-plus"></i>
-                                Add Project
-                            </a>
-                        </li>
-            </ul>
-        </div>
-    </div>
-</nav>-->
-<!--end navbar-->
-
-<!--login content if getCreds == undefined, else projectList-->
+﻿<!--login content if getCreds == undefined, else projectList-->
 <div ng-controller="LoginCtrl">
     <div ng-include src="'partials/login.html'"></div>
 </div>

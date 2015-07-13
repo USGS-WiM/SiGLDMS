@@ -130,11 +130,11 @@
                     scope.$apply(function () {
                         if ((regex.PASSWORD).test(viewValue.target.value)) {
                             //it is valid
-                            ctrl.$setValidity('passwordValidate', true);
+                            ctrl.$setValidity("passwordValidate", true);
                             return viewValue;
                         } else {
                             //it is invalid, return undefined - no model update
-                            ctrl.$setValidity('passwordValidate', false);
+                            ctrl.$setValidity("passwordValidate", false);
                             return undefined;
                         }
                     });
@@ -153,7 +153,7 @@
                     scope.$watch(function () {
                         return $parse(attrs.sameAs)(scope) === ctrl.$modelValue;
                     }, function (currentValue) {
-                        ctrl.$setValidity('passwordMismatch', currentValue);
+                        ctrl.$setValidity("passwordMismatch", currentValue);
                     });
                 });
             }

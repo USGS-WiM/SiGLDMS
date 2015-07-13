@@ -90,7 +90,6 @@
     <Content Include="js\vendor\isteven-multi-select.js" />
     <Content Include="js\vendor\jquery-1.10.2.min.js" />
     <Content Include="partials\login.html" />
-    <Content Include="partials\header.html" />
     <Content Include="partials\projectEditCooperatorView.html" />
     <Content Include="partials\projectEditDataView.html" />
     <Content Include="partials\projectEditContactView.html" />
