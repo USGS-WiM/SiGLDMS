@@ -2054,9 +2054,9 @@
                 thisSite[0].LakeType = $scope.LakeList.filter(function (st) { return st.LAKE == thisSite[0].GreatLake });
                 //properly form the site
                 var SITE = formatSite(thisSite[0]);
-                var freqSplit = thisSite[0].Frequency.split(',');
-                var medSplit = thisSite[0].Media.split(',');
-                var resSplit = thisSite[0].Resources.split(',');
+                var freqSplit = thisSite[0].Frequency != undefined ? thisSite[0].Frequency.split(',') : [];
+                var medSplit = thisSite[0].Media!= undefined ? thisSite[0].Media.split(',') : [];
+                var resSplit = thisSite[0].Resources != undefined ? thisSite[0].Resources.split(',') : [];
 
                 var paramSorted = [];
                 var bioSplit = thisSite[0].ParameterStrings.Biological.split(';');
@@ -2656,7 +2656,7 @@
                     }, function error(errorResponse) {
                         toastr.success("Error: " + errorResponse.statusText);
                     }).$promise.then(function () {
-                        $scope.projectForm.Coop.$setPristine(true);
+                        $scope.projectForm.SiteInfo.$setPristine(true);
                         $location.path('/project/edit/' + thisProject.PROJECT_ID + '/site/siteList').replace();//.notify(false);
                         $scope.apply;
                     });
