@@ -63,6 +63,7 @@
   <ItemGroup>
     <Content Include="css\bootstrap-multiselect.css" />
     <Content Include="css\isteven-multi-select.css" />
+    <Content Include="css\styles.css" />
     <Content Include="css\ui-grid-unstable.css" />
     <Content Include="css\ui-grid.svg" />
     <Content Include="css\xeditable.css" />

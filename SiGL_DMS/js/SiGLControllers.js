@@ -535,8 +535,7 @@
                     DataManager.changePW({ username: $scope.DM.USERNAME, newP: $scope.pass.newP },
                         function success(response) {
                             toastr.success("Password Updated");
-
-                            //update creds?
+                            //update creds
                             setCreds($scope.DM.USERNAME, $scope.pass.newP, $scope.accountUser.Name, $scope.DM.ROLE_ID, $scope.DM.DATA_MANAGER_ID);
                             $scope.changePass = false;
                             $scope.pass.newP = '';
@@ -630,7 +629,6 @@
             };
 
             $scope.User = getUsersNAME();
-            //setProjectLookups();
         }
     }
     //end projectListCtrl    
