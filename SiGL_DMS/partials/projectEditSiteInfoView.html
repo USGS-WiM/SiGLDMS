@@ -10,7 +10,7 @@
  <form editable-form class="form-horizontal" name="projectForm.SiteInfo">
      <fieldset>
          <legend>Site Information</legend>
-
+         <button style="margin-left:10px" class="btn btn-primary" ui-sref="projectEdit.site.siteList">Back to Site List</button>
          <!--Site Name*-->
          <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.NAME.$invalid && projectForm.SiteInfo.NAME.$dirty}">
              <label class="col-md-3 control-label req" for="inputNAME">Site Name:</label>
@@ -142,13 +142,13 @@
          </div>
 
          <!--Status-->
-         <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.STATUS_TYPE_ID.$invalid && projectForm.SiteInfo.STATUS_TYPE_ID.$dirty}">
-             <label class="col-md-3 control-label req" for="inputSTATUS_TYPE_ID">Status:</label>
+         <div class="form-group">
+             <label class="col-md-3 control-label" for="inputSTATUS_TYPE_ID">Status:</label>
              <div class="col-md-6">
                  <select class="form-control" id="inputSTATUS_TYPE_ID" name="STATUS_TYPE_ID" ng-model="thisSite.STATUS_TYPE_ID"
                          ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
-                         ng-options="st.STATUS_ID as st.STATUS for st in allStats" required>
-                     <option value="">Choose a Status</option>
+                         ng-options="st.STATUS_ID as st.STATUS for st in allStats">
+                     <option value="0">Choose a Status</option>
                  </select>
              </div>&nbsp;
              <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
@@ -306,7 +306,7 @@
              <label class="col-md-3 control-label" for="inputURL">Site URL:</label>
              <div class="col-md-6">
                  <input class="form-control" id="inputURL" name="URL" ng-model="thisSite.URL"
-                        type="text" placeholder="" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)" />
+                        type="url" placeholder="http://www.exampleurl.com" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)" />
              </div>&nbsp;
              <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                    title="If site-specific data is available online, enter URL here."

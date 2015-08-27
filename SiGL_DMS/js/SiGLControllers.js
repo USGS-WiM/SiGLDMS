@@ -212,7 +212,20 @@
             }
         }
     });
-
+    
+    //This directive allows us to pass a function in on an enter key to do what we want.
+    siGLControllers.directive('ngEnter', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if (event.which === 13) {
+                    scope.$apply(function () {
+                        scope.$eval(attrs.ngEnter);
+                    });
+                    event.preventDefault();
+                }
+            });
+        };
+    });
 
     //#endregion DIRECTIVES
 
@@ -581,8 +594,8 @@
 
     //#region PROJECT LIST Controller
     //ProjectListCtrl
-    siGLControllers.controller('projectListCtrl', ['$scope', 'Projects', '$location', '$http', 'checkCreds', 'getCreds', 'getUsersNAME', projectListCtrl]);
-    function projectListCtrl($scope, Projects, $location, $http, checkCreds, getCreds, getUsersNAME) {
+    siGLControllers.controller('projectListCtrl', ['$scope', 'Projects', '$location', '$http', 'checkCreds', 'getCreds', 'getUserRole', 'getUsersNAME', projectListCtrl]);
+    function projectListCtrl($scope, Projects, $location, $http, checkCreds, getCreds, getUserRole, getUsersNAME) {
         if (!checkCreds()) {
             $scope.auth = false;
             $location.path('/login');
@@ -599,6 +612,7 @@
                         return 1;
                     return 0;
                 });
+                $scope.userRole = getUserRole();
                 $scope.projects = data;
                 $scope.ProjCnt = data.length;
                 $scope.MoreThan20 = data.length >= 20 ? true : false;
@@ -873,8 +887,8 @@
                 //end modal
             };
 
-            $scope.addProjURL = function () {
-                if ($scope.newURL.value != undefined) {
+            $scope.addProjURL = function (form) {
+                if ($scope.newURL.value != undefined && form.inputURL.$valid) {
                     //push to array of urls to show on view and store in model
                     $scope.urls.push($scope.newURL.value);
                     if ($scope.aProject.PROJECT_ID != undefined) {
@@ -884,7 +898,7 @@
                     }
                     $scope.newURL = {};
                 } else {
-                    alert("Please type a URL in first.");
+                    alert("Please type a valid URL in first.");
                 }
             }
             //#endregion ADD/REMOVE URLS
@@ -922,7 +936,7 @@
             }
 
             //remove keyword click (passed confirm)
-            $scope.removeKey = function (key) {
+            $scope.removeKey = function (key, index) {
                 //modal
                 var modalInstance = $modal.open({
                     templateUrl: 'removemodal.html',
@@ -939,7 +953,7 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     //yes, remove this keyword
-                    var index = $scope.ProjectKeywords.indexOf(key);
+                    var index1 = $scope.ProjectKeywords.indexOf(key);
                     if ($scope.aProject.PROJECT_ID != undefined) {
                         //DELETE it
                         $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
@@ -947,7 +961,7 @@
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
                         Projects.deleteProjKeyword({ id: $scope.aProject.PROJECT_ID }, key, function success(response) {
-                            $scope.ProjectKeywords.splice(index, 1);
+                            $scope.ProjectKeywords.splice(index1, 1);
                             toastr.success("Keyword Removed");
                         }, function error(errorResponse) {
                             toastr.error("Error: " + errorResponse.statusText);
@@ -955,7 +969,9 @@
                         delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                     } else {
                         //just remove it from the list (this is a create page)
-                        $scope.ProjectKeywords.splice(index, 1);
+                        $scope.ProjectKeywords.splice(index1, 1);
+                        $scope.KeywordsToAdd.splice(index, 1);
+
                     }
                 }, function () {
                     //logic for cancel
@@ -995,6 +1011,7 @@
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     $scope.aProject.URL = ($scope.urls).join('|');
                     var projID;
+                    $(".page-loading").removeClass("hidden");
                     Projects.save({}, $scope.aProject, function success(response) {
                         toastr.success("Project Created");
                         projID = response.PROJECT_ID;
@@ -1023,6 +1040,7 @@
                     }, function error(errorResponse) {
                         toastr.success("Error: " + errorResponse.statusText);
                     }).$promise.then(function () {
+                        $(".page-loading").addClass("hidden");
                         $location.path('/project/edit/' + projID + '/info').replace();//.notify(false);
                         $scope.apply;
                     });
@@ -1339,7 +1357,7 @@
     siGLControllers.controller('projectEditDataCtrl', ['$scope', '$http', '$modal', 'Projects', 'DataHost', 'thisProject', 'projDatum', 'getCreds', projectEditDataCtrl]);
     function projectEditDataCtrl($scope, $http, $modal, Projects, DataHost, thisProject, projDatum, getCreds) {
         $scope.ProjData = projDatum;
-
+        $scope.isEditing = false; //disables form inputs while user is editing existing data up top
         $scope.newData = {};
         var thisProjID = thisProject.PROJECT_ID;
 
@@ -1350,10 +1368,12 @@
                 $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 Projects.addProjData({ id: thisProjID }, d, function success(response) {
-                    d.PROJECT_ID = thisProjID;
-                    $scope.ProjData.push(d);
+                    var postedDATA = response.filter(function (postedD) { return postedD.DESCRIPTION == d.DESCRIPTION && postedD.PORTAL_URL == d.PORTAL_URL && postedD.HOST_NAME == d.HOST_NAME })[0];
+                    $scope.ProjData.push(postedDATA); 
+                   
                     $scope.datumCount.total = $scope.datumCount.total + 1;
                     $scope.newData = {};
+                    $scope.projectForm.Data.$setPristine(true);
                     toastr.success("Data Added");
                 }, function error(errorResponse) {
                     toastr.error("Error: " + errorResponse.statusText);
@@ -1390,7 +1410,7 @@
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
                 Projects.deleteProjData({ id: thisProjID }, dataH, function success(response) {
-                    $scope.ProjData.splice(index, 1);
+                    $scope.ProjData.splice(index, 1); projDatum.splice(index, 1);
                     $scope.datumCount.total = $scope.datumCount.total - 1;
                     toastr.success("Data Removed");
                 }, function error(errorResponse) {
@@ -1403,6 +1423,20 @@
             //end modal
         };
         //#endregion DELETE Data click
+        
+        $scope.EditRowClicked = function () {
+            //make sure form is not pristine in case they change tabs before hitting save/cancel
+            $scope.projectForm.Data.$pristine = false;
+            //disable create new fields until they hit save/cancel
+            $scope.isEditing = true;
+        };
+        $scope.CancelEditRowClick = function () {
+            //make sure form is not pristine in case they change tabs before hitting save/cancel
+            $scope.projectForm.Data.$setPristine(true);
+            //disable create new fields until they hit save/cancel
+            $scope.isEditing = false;
+        };
+
 
         //#region Edit existing Data        
         $scope.saveData = function (data, id) {
@@ -1413,7 +1447,8 @@
             $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
 
             DataHost.save({ id: id }, data, function success(response) {
-                retur = response;
+                retur = response; //maybe need to update the projData that this controller gets from resolve, for returning to this tab later
+                $scope.projectForm.Data.$setPristine(true);
                 toastr.success("Data Updated");
             }, function error(errorResponse) {
                 retur = false;
@@ -1442,7 +1477,7 @@
         $scope.OrgNameArray = OrgArrays.ONames;
         $scope.OrgDivArray = OrgArrays.ODivs;
         $scope.OrgSecArray = OrgArrays.OSecs;
-
+        $scope.isEditing = false; //disables form inputs while user is editing existing data up top
         $scope.DivsUnfiltered = true;
         $scope.SecsUnfiltered = false;
 
@@ -1521,6 +1556,22 @@
             }
         }
         //#endregion POST Contact click
+        $scope.checkRequiredFields = function (data) {
+            if (data.NAME == undefined || data.orgName == undefined || data.EMAIL == undefined)
+                return "Name, Organization Name and Email are required fields.";
+        }
+        $scope.EditRowClicked = function () {
+        //make sure form is not pristine in case they change tabs before hitting save/cancel
+            $scope.projectForm.Contact.$pristine = false;
+            //disable create new fields until they hit save/cancel
+            $scope.isEditing = true;
+        };
+        $scope.CancelEditRowClick = function () {
+            //make sure form is not pristine in case they change tabs before hitting save/cancel
+            $scope.projectForm.Contact.$setPristine(true);
+            //disable create new fields until they hit save/cancel
+            $scope.isEditing = false;
+        };
 
         //#region DELETE Contact click
 
@@ -1889,7 +1940,7 @@
     siGLControllers.controller('projectEditPubCtrl', ['$scope', '$http', '$modal', 'Projects', 'thisProject', 'Publication', 'projPubs', 'getCreds', projectEditPubCtrl]);
     function projectEditPubCtrl($scope, $http, $modal, Projects, thisProject, Publication, projPubs, getCreds) {
         $scope.ProjPubs = projPubs;
-
+        $scope.isEditing = false; //disables form inputs while user is editing existing data up top
         $scope.newPub = {};
         var thisProjID = thisProject.PROJECT_ID;
 
@@ -1900,9 +1951,12 @@
                 $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 Projects.addProjPublication({ id: thisProjID }, p, function success(response) {
-                    $scope.ProjPubs.push(p);
-                    $scope.pubCount.total = $scope.pubCount.total + 1;
+                    var postedPUB = response.filter(function (postedP) { return postedP.URL == p.URL && postedP.TITLE == p.TITLE && postedP.DESCRIPTION == p.DESCRIPTION })[0];
+                    $scope.ProjPubs.push(postedPUB);
+
+                    $scope.pubCount.total = $scope.pubCount.total +1;
                     $scope.newPub = {};
+                    $scope.projectForm.Pubs.$setPristine(true);
                     toastr.success("Publication Added");
                 }, function error(errorResponse) {
                     toastr.error("Error: " + errorResponse.statusText);
@@ -1951,7 +2005,20 @@
             });
             //end modal
         }
-        //#endregion DELETE Pub click
+            //#endregion DELETE Pub click
+
+        $scope.EditRowClicked = function () {
+            //make sure form is not pristine in case they change tabs before hitting save/cancel
+            $scope.projectForm.Pubs.$pristine = false;
+            //disable create new fields until they hit save/cancel
+            $scope.isEditing = true;
+        };
+        $scope.CancelEditRowClick = function () {
+            //make sure form is not pristine in case they change tabs before hitting save/cancel
+            $scope.projectForm.Pubs.$setPristine(true);
+                //disable create new fields until they hit save/cancel
+            $scope.isEditing = false;
+        };
 
         //#region Edit existing Data
         $scope.savePub = function (data, id) {
@@ -1963,6 +2030,7 @@
 
             Publication.save({ id: id }, data, function success(response) {
                 retur = response;
+                $scope.projectForm.Pubs.$setPristine(true);
                 toastr.success("Publication Updated");
             }, function error(errorResponse) {
                 retur = false;
@@ -2020,7 +2088,7 @@
             SITE.LATITUDE = aSite.latitude;
             SITE.LONGITUDE = aSite.longitude;
             SITE.WATERBODY = aSite.Waterbody != undefined ? aSite.Waterbody : "";
-            SITE.STATUS_TYPE_ID = aSite.StatType[0].STATUS_ID;
+            SITE.STATUS_TYPE_ID = aSite.StatType != undefined ? aSite.StatType[0].STATUS_ID : "0";
             SITE.LAKE_TYPE_ID = aSite.LakeType[0].LAKE_TYPE_ID;
             SITE.COUNTRY = aSite.Country;
             SITE.STATE_PROVINCE = aSite.State;
@@ -2186,6 +2254,7 @@
             });
         }//end CopyToNew
         
+       
     };
 
     //projectEditSiteInfoCtrl ( CREATE / EDIT page)    
@@ -2566,8 +2635,8 @@
             };
             //change to the thisSite made, put it .. fired on each blur after change made to field
             $scope.SaveOnBlur = function (valid, da) {
-                if (valid) {
-                    if ($scope.thisSite.SITE_ID != undefined) {
+                if ($scope.thisSite.SITE_ID != undefined) {
+                    if (valid) {
                         //ensure they don't delete required field values
                         if (($scope.thisSite.LATITUDE > 0 && $scope.thisSite.LATITUDE < 73.0) && ($scope.thisSite.LONGITUDE > -175 && $scope.thisSite.LONGITUDE < -60)) {
                             $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
@@ -2591,13 +2660,24 @@
                             alert("The Longitude must be between -175.0 and -60.0");
                         }
                     }
+                    else {
+                        //not valid.. is url invalid
+                        if (!$scope.projectForm.SiteInfo.URL.$valid) {
+                            alert("Please enter a valid url. Example: 'http://www.google.com'");
+                        }
+                        else {
+                            alert("Required fields must be populated.");
+                        }
+                    }
                 }
+               
             }//end SaveOnBlur
 
             //save NEW SITE and then frequencies, media, parameters, and resources
             $scope.save = function (valid) {
                 //check if they filled in all required fields
                 if (valid && ($scope.thisSite.LATITUDE > 0 && $scope.thisSite.LATITUDE < 73.0) && ($scope.thisSite.LONGITUDE > -175 && $scope.thisSite.LONGITUDE < -60)) {
+                    $(".page-loading").removeClass("hidden");
                     $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     $scope.thisSite.PROJECT_ID = thisProject.PROJECT_ID;
@@ -2655,6 +2735,7 @@
                         toastr.success("Error: " + errorResponse.statusText);
                     }).$promise.then(function () {
                         $scope.projectForm.SiteInfo.$setPristine(true);
+                        $(".page-loading").addClass("hidden");
                         $location.path('/project/edit/' + thisProject.PROJECT_ID + '/site/siteList').replace();//.notify(false);
                         $scope.apply;
                     });

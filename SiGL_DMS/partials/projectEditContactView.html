@@ -9,7 +9,7 @@
                 <!--<td><button ng-click="RemoveContact(c)"><i class="glyphicon glyphicon-remove"></i></button></td>-->
                 <td style="white-space: nowrap;width:12%">
                     <!-- form -->
-                    <form editable-form name="rowform" onaftersave="saveContact($data, c.CONTACT_ID)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == c">
+                    <form editable-form name="rowform" onshow="EditRowClicked()" onhide="CancelEditRowClick()" onbeforesave="checkRequiredFields($data)" onaftersave="saveContact($data, c.CONTACT_ID)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == c">
                         <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
                             save
                         </button>
@@ -28,18 +28,28 @@
                         <span editable-text="c.ORG_ID" e-form="rowform" e-name="ORG_ID">{c.ORG_ID}}</span>
                     </div>
 
-                    <span editable-text="c.NAME" e-style="width:25em;" e-name="NAME" e-form="rowform">{{ c.NAME || '' }}</span><br />
-                    <span editable-select="c.orgName" e-name="orgName" e-ng-change="filterDivs($data)" e-form="rowform" e-ng-options="o.NAME as o.NAME for o in OrgNameArray | orderBy: 'NAME'">
+                    <label ng-show="isEditing">Name:</label>&nbsp;
+                    <span editable-text="c.NAME" e-required e-style="width:25em;" e-name="NAME" e-form="rowform">{{ c.NAME }}</span><br />
+
+                    <label ng-show="isEditing">Organization Name:</label>&nbsp;
+                    <span editable-select="c.orgName" e-required e-name="orgName" e-ng-change="filterDivs($data)" e-form="rowform" e-ng-options="o.NAME as o.NAME for o in OrgNameArray | orderBy: 'NAME'">
                         {{showOrgName(c)}}
-                    </span>
+                    </span><br />
+
+                    <label ng-show="isEditing">Division:</label>&nbsp;
                     <span editable-select="c.divName" e-name="divName" e-ng-change="filterSecs($data)" e-form="rowform" e-ng-options="d.DIVISION as d.DIVISION for d in filtEDITdivs | orderBy: 'DIVISION'">
                         <span ng-show="c.divName">, </span> {{showDivName(c)}}
-                    </span>
+                    </span><br />
+
+                    <label ng-show="isEditing">Section:</label>&nbsp;
                     <span editable-select="c.secName" e-name="secName" e-form="rowform" e-ng-change="secChosen($data)" e-ng-options="s.SECTION as s.SECTION for s in filtEDITSecs | orderBy: 'SECTION'">
                         <span ng-show="c.secName">, </span> {{showSecName(c)}}
                     </span><br />
-                    <!--<div><a href ng-click="AddOrgName()">Add a new organization</a><a href ng-click="AddDivName(c.orgName)">Add a new division</a><a href ng-click="AddSecName()">Add a new section</a></div><br />-->
-                    <span editable-text="c.EMAIL" e-style="width:25em;" e-name="EMAIL" e-form="rowform">{{ c.EMAIL || '' }}</span><br />
+
+                    <label ng-show="isEditing">Email:</label>&nbsp;
+                    <span editable-text="c.EMAIL" e-style="width:25em;" e-required e-name="EMAIL" e-form="rowform">{{ c.EMAIL || '' }}</span><br />
+
+                    <label ng-show="isEditing">Phone:</label>&nbsp;
                     <span editable-text="c.PHONE" e-ui-mask="(999) 999-9999" e-style="width:25em;" e-name="PHONE" e-form="rowform">{{ c.PHONE || '' }}</span>
                 </td>
             </tr>
@@ -50,7 +60,7 @@
 <hr />
 
 <form class="form-horizontal" name="projectForm.Contact">
-    <fieldset>
+    <fieldset ng-disabled="isEditing">
         <div>Add new contact</div>
         <!-- NAME -->
         <div class="form-group required">
@@ -120,7 +130,7 @@
                 <input class="form-control" id="inputPHONE" name="PHONE"
                        type="text" my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}"
                        ng-model="newContact.PHONE" />
-                
+
             </div>&nbsp;
             <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                   title="Enter the contact's phone number. To add an extension, immediately following the phone number type 'x' and then the extension number."

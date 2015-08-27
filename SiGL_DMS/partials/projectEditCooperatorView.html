@@ -1,11 +1,12 @@
-﻿<div class="form-group" ng-if="ProjOrgs.length > 0">
+﻿<legend>Organizations</legend>
+<div class="form-group" ng-if="ProjOrgs.length > 0">
     <table class="table">
         <thead><tr><th></th><th>Organization name</th><th>Division</th><th>Section</th></tr></thead>
         <tbody>
             <tr ng-repeat="o in ProjOrgs">
                 <td style="white-space: nowrap">
                     <div class="buttons">
-                        <button class="btn btn-danger" ng-click="RemoveOrg(o)">del</button>
+                        <button class="btn" ng-click="RemoveOrg(o)"><i class="glyphicon glyphicon-remove"></i></button>
                     </div>
                 </td>
                 <td><span>{{ o.NAME }}</span></td>
@@ -17,7 +18,7 @@
 </div>
 
 <hr /><!---->
-<h3>Add Cooperator</h3>
+<div>Add New Organization</div>
 <form class="form-horizontal" name="projectForm.Coop">
     <fieldset>
         <div class="form-group required">

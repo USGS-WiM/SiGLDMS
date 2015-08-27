@@ -7,7 +7,7 @@
             <tr ng-repeat="p in ProjPubs">
                 <td style="white-space: nowrap">
                     <!-- form -->
-                    <form editable-form name="rowform" onaftersave="savePub($data, p.PUBLICATION_ID)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == p">
+                    <form editable-form name="rowform" onshow="EditRowClicked()" onhide="CancelEditRowClick()" onaftersave="savePub($data, p.PUBLICATION_ID)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == p">
                         <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
                             save
                         </button>
@@ -40,8 +40,8 @@
 <hr />
 
 <form class="form-horizontal" name="projectForm.Pubs">
-    <fieldset>
-        <div>Add new publication</div>
+    <fieldset ng-disabled="isEditing">
+        <div>Add New Publication</div>
         <!-- Publication Title -->
         <div class="form-group">
             <label class="col-md-3 control-label req" for="inputTITLE">Publication title:</label>

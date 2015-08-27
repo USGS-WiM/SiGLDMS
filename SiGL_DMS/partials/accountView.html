@@ -148,22 +148,21 @@
                 <!--START new password inputs-->
 
                 <div class="col-md-12" ng-show="changePass">
+                    <div style="margin-bottom:10px">
+                        <span class="glyphicon glyphicon-question-sign">&nbsp;Password must be at least 8 characters long, contain at least 1 uppercase, 1 lowercase and 1 numeric. Passwords may contain any of these special characters ONLY: "_", "$", "#"</span>
+                    </div>
                     <div class="col-md-10">
                         <label class="col-md-5 control-label" for="NewPassword">New Password:</label>
                         <div class="col-md-7"><input class="form-control" id="inputNPASSWORD" name="inputNPASSWORD" password-validate type="password" ng-model="pass.newP" /></div>
-                        <span class="ui-state-error h5-message" ng-show="(accountForm.inputNPASSWORD.$error.passwordValidate)"><span class="h5-arrow"></span><span class="h5-content">For password requirement, click the '?' icon.</span></span>
+                        <span class="ui-state-error h5-message" ng-show="(accountForm.inputNPASSWORD.$error.passwordValidate)"><span class="h5-arrow"></span><span class="h5-content">For password requirement, see the '?' icon above.</span></span>
                     </div>
                     <div style="margin-top:5px;" class="col-md-10">
                         <label class="col-md-5 control-label" for="ConfirmPassword">Confirm Password:</label>
                         <div class="col-md-7"><input class="form-control" id="inputCPASSWORD" name="inputCPASSWORD" type="password" password-validate same-as="pass.newP" ng-model="pass.confirmP" /></div>
-                        <span class="ui-state-error h5-message" ng-show="(accountForm.inputCPASSWORD.$error.passwordValidate)"><span class="h5-arrow"></span><span class="h5-content">For password requirement, click the '?' icon.</span></span>
+                        <span class="ui-state-error h5-message" ng-show="(accountForm.inputCPASSWORD.$error.passwordValidate)"><span class="h5-arrow"></span><span class="h5-content">For password requirement, see the '?' icon above.</span></span>
                         <span class="ui-state-error h5-message" ng-show="(accountForm.inputCPASSWORD.$error.passwordMismatch)"><span class="h5-arrow"></span><span class="h5-conent">Mismatch password</span></span>
                     </div>&nbsp;
-                    <!--<tooltip title="...."/>-->
-                    <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                          title='Password must be at least 8 characters long, contain at least 1 uppercase, 1 lowercase and 1 numeric. Passwords may contain any of these special characters ONLY: "_", "$", "#"'
-                          data-placement="right" tooltip>
-                    </span>
+                    
                     <!--END new password inputs-->
                     <!--START update/cancel button-->
                     <div class="form-group">
