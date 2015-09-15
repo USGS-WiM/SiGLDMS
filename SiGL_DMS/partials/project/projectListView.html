@@ -9,7 +9,8 @@
             <thead>
                 <tr>
                     <th class="Name">Project Name&nbsp;<a ng-click="sort_by('Name')"><i class="glyphicon glyphicon-sort"></i></a></th>
-                    <th class="Manager">Manager&nbsp;<a ng-click="sort_by('Manager')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th ng-if="userRole == 'Admin'" class="Manager">Manager&nbsp;<a ng-click="sort_by('Manager')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th ng-if="userRole == 'Admin'" class="ManagerOrg">Organization&nbsp;<a ng-click="sort_by('ManagerOrg')"><i class="glyphicon glyphicon-sort"></i></a></th>
                     <th class="SiteCount">SiteCount&nbsp;<a ng-click="sort_by('SiteCount')"><i class="glyphicon glyphicon-sort"></i></a></th>
                 </tr>
             </thead>
@@ -17,7 +18,8 @@
             <tbody>
                 <tr ng-repeat="pr in projects | orderBy:sortingOrder:reverse">
                     <td><a ui-sref="projectEdit.info({id: pr.ProjId})">{{pr.Name}}</a></td>
-                    <td>{{pr.Manager}}</td>
+                    <td ng-if="userRole == 'Admin'">{{pr.Manager}}</td>
+                    <td ng-if="userRole == 'Admin'">{{pr.ManagerOrg}}</td>
                     <td>{{pr.SiteCount}}</td>
                 </tr>
         </table>

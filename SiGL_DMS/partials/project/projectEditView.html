@@ -1,0 +1,35 @@
+﻿<div><button class="btn btn-default" ng-click="cancel()">
+    Back to Project List
+</button></div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading clearfix" style="font-size:large">
+        <span class="panel-title pull-left">{{title}}</span>
+        <div class="btn-group pull-right">
+            <span class="" style="font-size:small">
+                Publish project on SiGL Mapper?
+            </span>
+            <span class="pull-right">
+                <label class="btn btn-primary" ng-model="readyFlagModel" ng-click="Flagged('Yes')" btn-radio="'Yes'">Yes</label>
+                <label class="btn btn-primary" ng-model="readyFlagModel" ng-click="Flagged('No')" btn-radio="'No'">No</label>
+            </span>
+        </div>
+
+    </div>
+
+    <div class="panel-body">
+        <div class="wizard">
+            <a ui-sref=".info" ui-sref-active="active">Project Information</a>
+            <a ui-sref=".cooperator" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Organizations<span class="badge pull-right">{{coopCount.total}}</span></a>
+            <a ui-sref=".data" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Data Sources<span class="badge pull-right">{{datumCount.total}}</span></a>
+            <a ui-sref=".contact" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Contacts<span class="badge pull-right">{{contactCount.total}}</span></a>
+            <a ui-sref=".publication" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Publications<span class="badge pull-right">{{pubCount.total}}</span></a>
+            <a ui-sref=".site.siteList" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Sites<span class="badge pull-right">{{sitesCount.total}}</span></a>
+
+        </div>
+
+        <div ui-view></div>
+
+    </div>
+
+</div>

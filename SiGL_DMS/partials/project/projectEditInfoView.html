@@ -130,19 +130,19 @@
         <!-- Project Keywords -->
         <div class="form-group" ng-if="ProjectKeywords.length > 0">
             <label class="col-md-3 control-label" for="inputProjKEYWORDS">Project Keywords:</label>
-            <div class="col-md-6 "><ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button ng-click="removeKey(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul></div>
+            <div class="col-md-6 "><ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button ng-click="removeKey(key, $index)"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul></div>
         </div>
         <div class="form-group">
             <label class="col-md-3 control-label req" for="inputProjKeyword">Add Project Keyword:</label>
             <div class="col-md-6">
-                <input class="form-control" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="" ng-model="newKey.value" />
+                <input class="form-control" ng-enter="addThisKeyword()" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="Enter one keyword at a time" ng-model="newKey.value" />
             </div>
             <button ng-click="addThisKeyword()">Add</button>&nbsp;
             <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                   title="Type a keyword and then click add. Can add multiple keywords."
                   data-placement="right" tooltip></span>
         </div>
-
+        <hr />
         <!-- Project Websites confirmed-click  ng-confirm-click="Are you sure you want to remove this URL?"-->
         <div class="form-group" ng-if="urls.length > 0">
             <label class="col-md-3 control-label" for="inputURL">Project Websites:</label>
@@ -151,8 +151,8 @@
         <div class="form-group">
             <label class="col-md-3 control-label req" for="inputURL">Add Project Website:</label>
             <div class="col-md-6">
-                <input class="form-control" ng-model="newURL.value" id="inputURL" type="text" placeholder="" />
-            </div><button ng-click="addProjURL()">Add</button>&nbsp;
+                <input class="form-control" ng-enter="addProjURL(projectForm.Info)" ng-model="newURL.value" name="inputURL" id="inputURL" type="url" placeholder="http://examplewebsite.com" />
+            </div><button ng-click="addProjURL(projectForm.Info)">Add</button>&nbsp;
             <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                   title="If your project has a website, enter the URL here. If information about your project can be found in multiple locations, add them here."
                   data-placement="right" tooltip></span>
@@ -185,29 +185,13 @@
                         <span>Create</span>
                     </button>
                 </span>
-                <span>
+                <!--<span>
                     <button class="btn btn-default" ng-click="cancel()">
                         Back to Project List
                     </button>
-                </span>
+                </span>-->
             </div>
         </div>
 
     </fieldset>
     </formeditable-form>
-
-    <!-- MODALs for "are you sure you want to remove this thing (Keyword or URL)
-        <script type="text/ng-template" id="removemodal.html">
-            <div class="modal-header">
-                <h3 class="modal-title">Remove {what}}</h3>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to remove this {what}}: <b>{keyToRmv}}</b></p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="ok()">OK</button>
-                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-            </div>
-        </script>
-
-    -->

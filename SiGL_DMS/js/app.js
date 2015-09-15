@@ -4,7 +4,7 @@
         ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'isteven-multi-select',
             'laMPResource', 'siGLControllers', 'siGLBusinessServices']);
     
-    app.run(function ($rootScope, $location, getUserRole, getUserID, DataManager) {
+    app.run(function ($rootScope) {
         
         $rootScope
             .$on('$stateChangeStart',
@@ -44,37 +44,239 @@
                 })
                 //#endregion region home
 
-                //#region region account
-                 .state("account", {
-                     url: "/account/:uID",
-                     templateUrl: "partials/accountView.html",
-                     controller: "accountCtrl",
-                     resolve: {
-                         dm: 'DataManager',
-                         dmProjects: function (dm, $stateParams) {
-                             var dmID = $stateParams.uID;
-                             if (dmID != "") {
-                                 return dm.getDMProject(
-                                   { id: dmID }).$promise;
-                             }
+                //#region admin settings
+                //#region settings page
+                .state("settings", {
+                    url: "/settings",
+                    templateUrl: "partials/settings.html",
+                    controller: "settingsCtrl"    
+                })
+                //#endregion settings page
+
+                //#region datamanager
+                //#region datamanager ABSTRACT
+                 .state("dataManagers", {
+                     url: "/dataManager",
+                     abstract: true,
+                     templateUrl: "partials/DM/dmHolderView.html",
+                     controller: "dataManagerCtrl",
+                     resolve: {                         
+                         orgS: 'ORGANIZATION_RESOURCE',
+                         allOrgRes: function (orgS) {
+                             return orgS.getAll().$promise;
                          },
-                         thisDM: function (dm, $stateParams) {
-                             var dmID = $stateParams.uID;
-                             if (dmID != "") {
-                                 return dm.query(
-                                     {id: dmID}).$promise;
-                             }
+                         org: 'ORGANIZATION',
+                         allOrgs: function (org) {
+                             return org.getAll().$promise;
                          },
-                         allOrgs: 'Organization',
-                         allOrgList: function (allOrgs) {
-                             return allOrgs.getAll().$promise;
+                         divs: 'DIVISION',
+                         allDivs: function (divs) {
+                             return divs.getAll().$promise;
                          },
-                         allDMsList: function (dm) {
-                             return dm.getAll().$promise;
+                         secs: 'SECTION',
+                         allSecs: function (secs) {
+                             return secs.getAll().$promise;
+                         },                         
+                         p: 'PROJECT',
+                         allProj: function (p) {
+                             return p.getAll().$promise;
+                         },
+                         r: 'ROLE',
+                         roleList: function (r) {
+                             return r.getAll().$promise;
                          }
+                      }
+                 })
+                //#endregion datamanager ABSTRACT
+
+                //#region dataManager.dmList
+                .state("dataManagers.DMList", {
+                    url: "/dataManagerList",
+                    templateUrl: "partials/DM/DMList.html"
+                })
+                //#endregion dataManager.dmList
+
+                //#region dataManager.DMInfo
+                .state("dataManagers.DMInfo", {
+                    url: "/dataManagerInfo/:id",
+                    templateUrl: "partials/DM/dataManagerInfo.html",
+                    controller: "dataManagerInfoCtrl",
+                    resolve: {
+                        dm: 'DATA_MANAGER',
+                        thisDM: function (dm, $stateParams, $http, getCreds) {                           
+                            var dmId = $stateParams.id;
+                            if (dmId > 0) {
+                                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                                $http.defaults.headers.common['Accept'] = 'application/json';
+                                return dm.query(
+                                    { id: dmId }).$promise;
+                            }
+                        },
+                        dmProjects: function (dm, $stateParams) {
+                            if ($stateParams.id > 0) {
+                                return dm.getDMProject({ id: $stateParams.id }).$promise;
+                            }
+                        }
+                    }
+                })
+                //#endregion dataManager.DMInfo
+
+                //#endregion datamanager
+
+                 //#region organizations
+                //#region organizations ABSTRACT
+                 .state("organizations", {
+                     url: "/organizations",
+                     abstract: true,
+                     templateUrl: "partials/Org/orgHolderView.html",
+                     controller: "organizationCtrl",
+                     resolve: {
+                         
                      }
                  })
-                //#endregion region account
+                //#endregion organizations ABSTRACT
+
+                //#region organizations.OrgList
+                .state("organizations.OrgList", {
+                    url: "/organizationList",
+                    templateUrl: "partials/Org/OrgList.html"
+                })
+                //#endregion organizations.OrgList
+
+                //#region organizations.OrgInfo
+                .state("organizations.OrgInfo", {
+                    url: "/organizations/:id",
+                    templateUrl: "partials/Org/OrgInfo.html",
+                    controller: "organizationInfoCtrl",
+                    resolve: {
+                        
+                    }
+                })
+                //#endregion organizations.OrgInfo
+
+                //#endregion organizations
+
+                //#region resources
+                .state("resources", {
+                    url: "/Resources",
+                    abstract: true,
+                    templateUrl: "partials/Resources/resourcesHolderView.html",
+                    controller: "resourcesCtrl",
+                    resolve: {
+                        f: 'FREQUENCY_TYPE',
+                        allFreqs: function (f) {
+                            return f.getAll().$promise;
+                        },
+                        l: 'LAKE_TYPE',
+                        allLakes: function (l) {
+                            return l.getAll().$promise;
+                        },
+                        m: 'MEDIA_TYPE',
+                        allMedias: function (m) {
+                            return m.getAll().$promise;
+                        },
+                        o: 'OBJECTIVE_TYPE',
+                        allObjectives: function (o) {
+                            return o.getAll().$promise;
+                        },
+                        p: 'PARAMETER_TYPE',
+                        allParams: function (p) {
+                            return p.getAll().$promise;
+                        },
+                        r: 'RESOURCE_TYPE',
+                        allResources: function (r) {
+                            return r.getAll().$promise;
+                        },
+                        pd: 'PROJ_DURATION',
+                        allProjDurations: function (pd) {
+                            return pd.getAll().$promise;
+                        },
+                        ps: 'PROJ_STATUS',
+                        allProjStats: function (ps) {
+                            return ps.getAll().$promise;
+                        },
+                        st: 'STATUS_TYPE',
+                        allSiteStats: function (st) {
+                            return st.getAll().$promise;
+                        }
+                    }
+                })//#endregion resources
+
+                //#region resources.ResourcesList
+                .state("resources.ResourcesList", {
+                    url: "/ResourcesList",
+                    templateUrl: "partials/Resources/resourcesList.html"
+                })
+                //#endregion resources.ResourcesList
+
+                //#region all lookup htmls
+
+                //#region resources.ResourcesList.frequencyType
+                .state("resources.ResourcesList.frequencyType", {
+                    url: "/FrequencyTypes",
+                    templateUrl: "partials/Resources/PageContent/FrequencyType.html"
+                })
+                //#endregion resources.ResourcesList.frequencyTypes
+
+                //#region resources.ResourcesList.LakeType
+                .state("resources.ResourcesList.LakeType", {
+                    url: "/LakeTypes",
+                    templateUrl: "partials/Resources/PageContent/LakeType.html"
+                })
+                //#endregion resources.ResourcesList.LakeType
+
+                //#region resources.ResourcesList.MediaType
+                .state("resources.ResourcesList.MediaType", {
+                    url: "/MediaTypes",
+                    templateUrl: "partials/Resources/PageContent/MediaType.html"
+                })
+                //#endregion resources.ResourcesList.MediaType
+
+                //#region resources.ResourcesList.ObjectiveType
+                .state("resources.ResourcesList.ObjectiveType", {
+                    url: "/ObjectiveTypes",
+                    templateUrl: "partials/Resources/PageContent/ObjectiveType.html"
+                })
+                //#endregion resources.ResourcesList.ObjectiveType
+
+                //#region resources.ResourcesList.ParameterType
+                .state("resources.ResourcesList.ParameterType", {
+                    url: "/ParameterTypes",
+                    templateUrl: "partials/Resources/PageContent/ParameterType.html"
+                })
+                //#endregion resources.ResourcesList.ParameterType
+
+                //#region resources.ResourcesList.ResourceType
+                .state("resources.ResourcesList.ResourceType", {
+                    url: "/ResourceTypes",
+                    templateUrl: "partials/Resources/PageContent/ResourceType.html"
+                })
+                //#endregion resources.ResourcesList.ResourceType
+
+                //#region resources.ResourcesList.ProjectDuration
+                .state("resources.ResourcesList.ProjectDuration", {
+                    url: "/ProjectDurations",
+                    templateUrl: "partials/Resources/PageContent/ProjectDuration.html"
+                })
+                //#endregion resources.ResourcesList.ProjectDuration
+
+                //#region resources.ResourcesList.ProjectStatus
+                .state("resources.ResourcesList.ProjectStatus", {
+                    url: "/ProjectStatuses",
+                    templateUrl: "partials/Resources/PageContent/ProjectStatus.html"
+                })
+                //#endregion resources.ResourcesList.ProjectStatus
+
+                //#region resources.ResourcesList.SiteStatus
+                .state("resources.ResourcesList.SiteStatus", {
+                    url: "/SiteStatuses",
+                    templateUrl: "partials/Resources/PageContent/SiteStatus.html"
+                })
+                //#endregion resources.ResourcesList.SiteStatus
+
+                //#endregion all lookup htmls
+
+                //#endregion admin settings
 
                 //#region region help
                  .state("help", {
@@ -87,7 +289,7 @@
                 //#region region projectList
                 .state("projectList", {
                     url: "/projects",
-                    templateUrl: "partials/projectListView.html",
+                    templateUrl: "partials/project/projectListView.html",
                     controller: "projectListCtrl"
                 })
                 //#endregion region projectList
@@ -96,11 +298,11 @@
                 .state("projectEdit", {
                     abstract: true, //can't be directly activated, only nested states
                     url: "/project/edit/:id",
-                    templateUrl: "partials/projectEditView.html",
+                    templateUrl: "partials/project/projectEditView.html",
                     controller: "projectEditCtrl",
                     resolve: {
                         //check to see if they are going to project info
-                        validate: function ($q, $timeout, $location, $stateParams, getUserRole, getUserID, DataManager) {
+                        validate: function ($q, $timeout, $location, $stateParams, getUserRole, getUserID, DATA_MANAGER) {
                             if ($stateParams.id > 0) {
                                 var defer = $q.defer();
                                 var roleID = getUserRole();
@@ -108,7 +310,7 @@
                                     //make sure they can come here
                                     var useID = getUserID();
                                     var dmProjs = [];
-                                    DataManager.getDMProject({ id: useID }, function sucess(response) {
+                                    DATA_MANAGER.getDMProject({ id: useID }, function sucess(response) {
                                         dmProjs = response.filter(function (p) { return p.PROJECT_ID == $stateParams.id });
                                         if (dmProjs.length > 0) {
                                             defer.resolve();
@@ -124,7 +326,7 @@
                                 }
                             }
                         },
-                        Proj: 'Projects', //dependency for the project
+                        Proj: 'PROJECT', //dependency for the project
                         thisProject: function (Proj, $stateParams) {
                             var projectId = $stateParams.id;
                             if (projectId > 0) {
@@ -181,19 +383,31 @@
                                     { id: projectId }).$promise;
                             }
                         },
-                        prDurations: 'ProjDuration',
+                        prDurations: 'PROJ_DURATION',
                         allDurationList: function (prDurations) {
                             return prDurations.getAll().$promise;
                         },
-                        prStats: 'ProjStat',
+                        prStats: 'PROJ_STATUS',
                         allStatsList: function (prStats) {
                             return prStats.getAll().$promise;
                         },
-                        allOrgs: 'Organization',
+                        r: 'ROLE',
+                        roleList: function(r){
+                            r.getAll().$promise;
+                        },                        
+                        allOrgs: 'ORGANIZATION',
                         allOrgList: function (allOrgs) {
                             return allOrgs.getAll().$promise;
                         },
-                        allObjs: 'ObjectiveType',
+                        allDivs: 'DIVISION',
+                        allDivisionList: function (allDivs) {
+                            return allDivs.getAll().$promise;
+                        },
+                        allSecs: 'SECTION',
+                        allSectionList: function (allSecs) {
+                            return allSecs.getAll().$promise;
+                        },
+                        allObjs: 'OBJECTIVE_TYPE',
                         allObjList: function (allObjs) {
                             return allObjs.getAll().$promise;
                         }
@@ -205,14 +419,14 @@
                 //#region region projectEdit.info
                 .state("projectEdit.info", {
                     url: "/info",
-                    templateUrl: "partials/projectEditInfoView.html"
+                    templateUrl: "partials/project/projectEditInfoView.html"
                 })
                 //#endregion region projectEdit.info
 
                 //#region region projectEdit.cooperator
                 .state("projectEdit.cooperator", {
                     url: "/cooperator",
-                    templateUrl: "partials/projectEditCooperatorView.html",
+                    templateUrl: "partials/project/projectEditCooperatorView.html",
                     controller: "projectEditCoopCtrl"
                 })
                 //#endregion region projectEdit.cooperator
@@ -220,7 +434,7 @@
                 //#region region projectEdit.data
                 .state("projectEdit.data", {
                     url: "/data",
-                    templateUrl: "partials/projectEditDataView.html",
+                    templateUrl: "partials/project/projectEditDataView.html",
                     controller: "projectEditDataCtrl"
                 })
                 //#endregion region projectEdit.data
@@ -228,10 +442,10 @@
                 //#region region projectEdit.contact
                 .state("projectEdit.contact", {
                     url: "/contact",
-                    templateUrl: "partials/projectEditContactView.html",
+                    templateUrl: "partials/project/projectEditContactView.html",
                     controller: "projectEditContactCtrl",
                     resolve: {
-                        Proj: 'Projects',
+                        Proj: 'PROJECT',
                         projContacts: function (Proj, $stateParams) {
                             var projectId = $stateParams.id;
                             if (projectId > 0) {
@@ -239,6 +453,10 @@
                                     { id: projectId }).$promise;
                             }
                         },
+                        orgRes: 'ORGANIZATION_RESOURCE',
+                        orgResources: function (orgRes) {
+                            return orgRes.getAll().$promise;
+                        }
                     }
                 })
                 //#endregion region projectEdit.contact
@@ -246,7 +464,7 @@
                 //#region region projectEdit.publication
                 .state("projectEdit.publication", {
                     url: "/publication",
-                    templateUrl: "partials/projectEditPublicationView.html",
+                    templateUrl: "partials/project/projectEditPublicationView.html",
                     controller: "projectEditPubCtrl"
                 })
                 //#endregion region projectEdit.publication
@@ -273,32 +491,32 @@
                             //return theStates.getAll().$promise;
                         },
                         //lakes
-                        theLakes: 'Lake',
+                        theLakes: 'LAKE_TYPE',
                         lakeList: function (theLakes) {
                             return theLakes.getAll().$promise;
                         },
                         //statuses
-                        theSiteStats: 'SiteStatus',
+                        theSiteStats: 'STATUS_TYPE',
                         siteStatList: function (theSiteStats) {
                             return theSiteStats.getAll().$promise;
                         },
                         //resources
-                        theRes: 'ResourceType',
+                        theRes: 'RESOURCE_TYPE',
                         resourceList: function (theRes) {
                             return theRes.getAll().$promise;
                         },
                         //media
-                        theMedia: 'MediaType',
+                        theMedia: 'MEDIA_TYPE',
                         mediaList: function (theMedia) {
                             return theMedia.getAll().$promise;
                         },
                         //frequencies
-                        theFreq: 'FrequencyType',
+                        theFreq: 'FREQUENCY_TYPE',
                         frequencyList: function (theFreq) {
                             return theFreq.getAll().$promise;
                         },
                         //parameters
-                        theParams: 'parameterType',
+                        theParams: 'PARAMETER_TYPE',
                         parameterList: function (theParams) {
                             return theParams.getAll().$promise;
                         }
@@ -309,10 +527,10 @@
                 //#region region projectEdit.site.siteList
                 .state("projectEdit.site.siteList", {
                     url: "/siteList",
-                    templateUrl: "partials/projectEditSiteList.html",
+                    templateUrl: "partials/project/projectEditSiteList.html",
                     resolve: {
-                        Proj: 'Projects',
-                        projS: function (Proj, $stateParams, lakeList, siteStatList, Site, $q) {
+                        Proj: 'PROJECT',
+                        projS: function (Proj, $stateParams) {
                             var projectId = $stateParams.id;
                             if (projectId > 0) {
                                 return Proj.getFullSiteList({ projId: projectId }).$promise;
@@ -326,10 +544,10 @@
                 //#region region projectEdit.site.siteInfo
                 .state("projectEdit.site.siteInfo", {
                     url: "/siteInfo/:siteId",
-                    templateUrl: "partials/projectEditSiteInfoView.html",
+                    templateUrl: "partials/project/projectEditSiteInfoView.html",
                     controller: "projectEditSiteInfoCtrl",
                     resolve: {
-                        aSite: 'Site', //dependency for the project
+                        aSite: 'SITE', //dependency for the project
                         thisSite: function (aSite, $stateParams) {
                             var siteId = $stateParams.siteId;
                             if (siteId > 0) {
@@ -371,7 +589,7 @@
 
                 .state("projectEdit.site.siteEditAll", {
                     url: "/siteEditAll",
-                    templateUrl: "partials/projectEditSiteEditAll.html",
+                    templateUrl: "partials/project/projectEditSiteEditAll.html",
                     controller: "projectEditAllSitesCtrl"
                 });
 
