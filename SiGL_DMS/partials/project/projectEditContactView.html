@@ -24,33 +24,40 @@
                 </td>
                 <td>
                     <div style="display:none">
+                        <span editable-text="c.CONTACT_ID" e-form="rowform" e-name="CONTACT_ID">{c.CONTACT_ID}}</span>
                         <span editable-text="c.SCIENCE_BASE_ID" e-form="rowform" e-name="SCIENCE_BASE_ID">{c.SCIENCE_BASE_ID}}</span>
-                        <span editable-text="c.ORG_ID" e-form="rowform" e-name="ORG_ID">{c.ORG_ID}}</span>
+                        <span editable-text="c.ORGANIZATION_SYSTEM_ID" e-form="rowform" e-name="ORGANIZATION_SYSTEM_ID">{c.ORGANIZATION_SYSTEM_ID}}</span>
                     </div>
 
                     <label ng-show="isEditing">Name:</label>&nbsp;
                     <span editable-text="c.NAME" e-required e-style="width:25em;" e-name="NAME" e-form="rowform">{{ c.NAME }}</span><br />
 
-                    <label ng-show="isEditing">Organization Name:</label>&nbsp;
-                    <span editable-select="c.orgName" e-required e-name="orgName" e-ng-change="filterDivs($data)" e-form="rowform" e-ng-options="o.NAME as o.NAME for o in OrgNameArray | orderBy: 'NAME'">
-                        {{showOrgName(c)}}
-                    </span><br />
 
-                    <label ng-show="isEditing">Division:</label>&nbsp;
-                    <span editable-select="c.divName" e-name="divName" e-ng-change="filterSecs($data)" e-form="rowform" e-ng-options="d.DIVISION as d.DIVISION for d in filtEDITdivs | orderBy: 'DIVISION'">
-                        <span ng-show="c.divName">, </span> {{showDivName(c)}}
-                    </span><br />
+                    <!--
+                            <label ng-show="isEditing">Division:</label>&nbsp;
+                            <span editable-select="c.DivName" e-name="DivName" e-ng-change="getSecs($data)" e-form="rowform" e-ng-options="d.DIVISION_ID as d.DIVISION_NAME for d in alldivs | orderBy: 'DIVISION_NAME'">
+                                <span ng-show="c.DivName">, </span> {{showDivName(c)}}
+                            </span><br />
 
-                    <label ng-show="isEditing">Section:</label>&nbsp;
-                    <span editable-select="c.secName" e-name="secName" e-form="rowform" e-ng-change="secChosen($data)" e-ng-options="s.SECTION as s.SECTION for s in filtEDITSecs | orderBy: 'SECTION'">
-                        <span ng-show="c.secName">, </span> {{showSecName(c)}}
-                    </span><br />
-
+                            <label ng-show="isEditing">Section:</label>&nbsp;
+                            <span editable-select="c.SecName" e-name="SecName" e-form="rowform" e-ng-change="secChosen($data)" e-ng-options="s.SECTION_ID as s.SECTION_NAME for s in allsecs | orderBy: 'SECTION_NAME'">
+                                <span ng-show="c.SecName">, </span> {{showSecName(c)}}
+                            </span><br />
+        -->
                     <label ng-show="isEditing">Email:</label>&nbsp;
+
                     <span editable-text="c.EMAIL" e-style="width:25em;" e-required e-name="EMAIL" e-form="rowform">{{ c.EMAIL || '' }}</span><br />
 
                     <label ng-show="isEditing">Phone:</label>&nbsp;
-                    <span editable-text="c.PHONE" e-ui-mask="(999) 999-9999" e-style="width:25em;" e-name="PHONE" e-form="rowform">{{ c.PHONE || '' }}</span>
+                    <span editable-text="c.PHONE" e-ui-mask="(999) 999-9999" e-style="width:25em;" e-name="PHONE" e-form="rowform">{{ c.PHONE || '' }}</span><br />
+                    <div ng-show="isEditing" class="col-md-6">
+                        <span>
+                            <a href ng-click="addNewOrg()">Change Contact's Organization</a>
+                        </span>
+                    </div><br clear="all" />
+                    <label ng-show="isEditing">Organization:</label>&nbsp;
+                    <span>{{c.OrgName}}</span><span ng-if="c.DivName">, {{c.DivName}}</span><span ng-if="c.SecName">, {{c.SecName}}</span>
+                    </span>
                 </td>
             </tr>
         </tbody>
@@ -60,6 +67,7 @@
 <hr />
 
 <form class="form-horizontal" name="projectForm.Contact">
+    
     <fieldset ng-disabled="isEditing">
         <div>Add new contact</div>
         <!-- NAME -->
@@ -68,68 +76,54 @@
             <div class="col-md-6">
                 <input class="form-control" id="inputNAME" name="NAME" type="text" placeholder="" ng-model="newContact.NAME" required />
             </div>&nbsp;
-            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                  title="Enter the contact's first and last name."
-                  data-placement="right" tooltip>
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Enter the contact's first and last name." data-placement="right" tooltip>
             </span>
         </div>
-
+        <div class="form-group">
+            <label class="col-md-3 control-label"></label>
+            <div class="col-md-6">
+                <span>
+                    Don't see the Organization Name, Division or Section?
+                    <a href ng-click="addNewOrg()"> Click here to add it.</a>
+                </span>
+            </div>
+        </div>
         <!-- ORG section -->
         <div class="form-group required">
             <label class="col-md-3 control-label">Organization</label>
             <div class="col-md-6">
-                <select class="form-control" id="inputORGANIZATION_N" name="NAME"
-                        ng-model="selectedOrgName.value" ng-change="filterDivs($data)"
-                        ng-options="o.ORGANIZATION_ID as o.NAME for o in OrgNameArray | orderBy: 'NAME'" required>
-                    <option value=""></option>
-                </select>
+                <select class="form-control" name="NAME" ng-model="selectedOrgID" ng-options="o.ORGANIZATION_ID as o.ORGANIZATION_NAME for o in allOrganizations | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)" required></select>
             </div>
-            <a href ng-click="AddOrgName()">Add a new organization</a>
         </div>
 
         <div class="form-group">
             <label class="col-md-3 control-label">Division</label>
             <div class="col-md-6">
-                <select class="form-control" id="inputORGANIZATION_DIV" name="DIVISION"
-                        ng-model="selectedOrgDiv.value" ng-change="filterSecs($data)"
-                        ng-options="d.ORGANIZATION_ID as d.DIVISION for d in filteredDivs | orderBy: 'DIVISION'">
-                    <option value=""></option>
-                </select>
+                <select class="form-control" ng-model="selectedDivID" ng-options="d.DIVISION_ID as d.DIVISION_NAME for d in alldivs | orderBy: 'DIVISION_NAME'" ng-change="getSecs(selectedDivID)"></select>
             </div>
-            <a href ng-click="AddDivName()" ng-show="selectedOrgName.value > 0">Add a new division</a>
         </div>
 
         <div class="form-group">
             <label class="col-md-3 control-label">Section</label>
             <div class="col-md-6">
-                <select class="form-control" id="inputORGANIZATION_SEC" name="SECTION"
-                        ng-model="selectedOrgSec.value"
-                        ng-options="s.ORGANIZATION_ID as s.SECTION for s in filteredSecs | orderBy: 'SECTION'">
-                    <option value=""></option>
-                </select>
+                <select class="form-control" ng-model="selectedSecID" ng-options="s.SECTION_ID as s.SECTION_NAME for s in allsecs | orderBy: 'SECTION_NAME'"></select>
             </div>
-            <a href ng-hide="selectedOrgDiv.value == '' || selectedOrgDiv.value == null" ng-show="selectedOrgDiv.value" ng-click="AddSecName()">Add a new section</a>
         </div>
 
         <!-- Email -->
         <div class="form-group required">
             <label class="col-md-3 control-label req" for="inputEMAIL">Email:</label>
             <div class="col-md-6">
-                <input class="form-control" id="inputEMAIL" name="EMAIL" type="email" placeholder="" ng-model="newContact.EMAIL" required />
+                <input class="form-control" type="email" placeholder="" ng-model="newContact.EMAIL" required />
             </div>&nbsp;
-            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                  title="Enter the contact's email address."
-                  data-placement="right" tooltip>
-            </span>
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Enter the contact's email address." data-placement="right" tooltip></span>
         </div>
 
         <!-- Phone -->
         <div class="form-group">
             <label class="col-md-3 control-label req" for="inputPHONE">Phone:</label>
             <div class="col-md-6">
-                <input class="form-control" id="inputPHONE" name="PHONE"
-                       type="text" my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}"
-                       ng-model="newContact.PHONE" />
+                <input class="form-control" type="text" my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}" ng-model="newContact.PHONE" />
 
             </div>&nbsp;
             <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
@@ -143,9 +137,7 @@
         <div class="form-group">
             <div class="col-md-4 col-md-offset-2">
                 <span>
-                    <button class="btn btn-primary"
-                            style="width:80px;margin-right:10px"
-                            ng-click="AddContact(projectForm.Contact.$valid)">
+                    <button class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="AddContact(projectForm.Contact.$valid)">
                         Save
                     </button>
                 </span>
