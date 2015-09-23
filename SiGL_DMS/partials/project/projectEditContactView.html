@@ -9,7 +9,7 @@
                 <!--<td><button ng-click="RemoveContact(c)"><i class="glyphicon glyphicon-remove"></i></button></td>-->
                 <td style="white-space: nowrap;width:12%">
                     <!-- form -->
-                    <form editable-form name="rowform" onshow="EditRowClicked()" onhide="CancelEditRowClick()" onbeforesave="checkRequiredFields($data)" onaftersave="saveContact($data, c.CONTACT_ID)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == c">
+                    <form editable-form name="rowform" onshow="EditRowClicked($index)" onhide="CancelEditRowClick()" onbeforesave="checkRequiredFields($data)" onaftersave="saveContact($data, c.CONTACT_ID)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == c">
                         <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
                             save
                         </button>
@@ -24,40 +24,34 @@
                 </td>
                 <td>
                     <div style="display:none">
-                        <span editable-text="c.CONTACT_ID" e-form="rowform" e-name="CONTACT_ID">{c.CONTACT_ID}}</span>
-                        <span editable-text="c.SCIENCE_BASE_ID" e-form="rowform" e-name="SCIENCE_BASE_ID">{c.SCIENCE_BASE_ID}}</span>
-                        <span editable-text="c.ORGANIZATION_SYSTEM_ID" e-form="rowform" e-name="ORGANIZATION_SYSTEM_ID">{c.ORGANIZATION_SYSTEM_ID}}</span>
+                        <span editable-text="c.CONTACT_ID" e-form="rowform" e-name="CONTACT_ID">{{c.CONTACT_ID}}</span>
+                        <span editable-text="c.SCIENCE_BASE_ID" e-form="rowform" e-name="SCIENCE_BASE_ID">{{c.SCIENCE_BASE_ID}}</span>
+                        <span editable-text="c.ORGANIZATION_SYSTEM_ID" e-form="rowform" e-name="ORGANIZATION_SYSTEM_ID">{{c.ORGANIZATION_SYSTEM_ID}}</span>
                     </div>
-
-                    <label ng-show="isEditing">Name:</label>&nbsp;
+                    <!--ng-show="isEditing"-->
+                    <label>Name:</label>&nbsp;
                     <span editable-text="c.NAME" e-required e-style="width:25em;" e-name="NAME" e-form="rowform">{{ c.NAME }}</span><br />
 
-
-                    <!--
-                            <label ng-show="isEditing">Division:</label>&nbsp;
-                            <span editable-select="c.DivName" e-name="DivName" e-ng-change="getSecs($data)" e-form="rowform" e-ng-options="d.DIVISION_ID as d.DIVISION_NAME for d in alldivs | orderBy: 'DIVISION_NAME'">
-                                <span ng-show="c.DivName">, </span> {{showDivName(c)}}
-                            </span><br />
-
-                            <label ng-show="isEditing">Section:</label>&nbsp;
-                            <span editable-select="c.SecName" e-name="SecName" e-form="rowform" e-ng-change="secChosen($data)" e-ng-options="s.SECTION_ID as s.SECTION_NAME for s in allsecs | orderBy: 'SECTION_NAME'">
-                                <span ng-show="c.SecName">, </span> {{showSecName(c)}}
-                            </span><br />
-        -->
-                    <label ng-show="isEditing">Email:</label>&nbsp;
-
+                    <label>Email:</label>&nbsp;
                     <span editable-text="c.EMAIL" e-style="width:25em;" e-required e-name="EMAIL" e-form="rowform">{{ c.EMAIL || '' }}</span><br />
 
-                    <label ng-show="isEditing">Phone:</label>&nbsp;
-                    <span editable-text="c.PHONE" e-ui-mask="(999) 999-9999" e-style="width:25em;" e-name="PHONE" e-form="rowform">{{ c.PHONE || '' }}</span><br />
-                    <div ng-show="isEditing" class="col-md-6">
+                    <label>Phone:</label>&nbsp;
+                    <span editable-text="c.PHONE" e-my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}" e-style="width:25em;" e-name="PHONE" e-form="rowform">{{ c.PHONE || '' }}</span><br />
+                    <!--<div ng-show="isEditing" class="col-md-6"> e-ui-mask="{{'(999) 999-9999'}}"
+                        <span>
+                            <a href ng-click="addNewOrg()">Change Contact's Organization</a>                            
+                        </span>
+                    </div>-->
+                    <div class="col-md-6 showHide">
                         <span>
                             <a href ng-click="addNewOrg()">Change Contact's Organization</a>
                         </span>
-                    </div><br clear="all" />
-                    <label ng-show="isEditing">Organization:</label>&nbsp;
-                    <span>{{c.OrgName}}</span><span ng-if="c.DivName">, {{c.DivName}}</span><span ng-if="c.SecName">, {{c.SecName}}</span>
-                    </span>
+                    </div>
+                    <div class="col-md-12" style="padding-left: 0;">
+                        <label>Organization:</label>&nbsp;
+                        <span>{{c.OrgName}}</span><span ng-if="c.DivName">, {{c.DivName}}</span><span ng-if="c.SecName">, {{c.SecName}}</span>
+                        </span>
+                    </div>
                 </td>
             </tr>
         </tbody>
@@ -147,3 +141,8 @@
 
     </fieldset>
 </form>
+<style type="text/css">
+    .showHide {
+        display: none;
+    }
+</style>
