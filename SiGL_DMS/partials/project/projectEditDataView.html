@@ -21,7 +21,7 @@
                     </div>
                 </td>
                 <td><div style="display:none"><span editable-text="d.PROJECT_ID" e-form="rowform" e-name="PROJECT_ID">{{d.PROJECT_ID}}</span></div>
-                    <span editable-text="d.DESCRIPTION" e-name="DESCRIPTION" e-form="rowform">{{ d.DESCRIPTION || '' }}</span>
+                    <span editable-textarea="d.DESCRIPTION" e-rows="5" e-cols="40" e-name="DESCRIPTION" e-form="rowform">{{ d.DESCRIPTION || '' }}</span>
                 </td>
                 <td>
                     <span editable-text="d.HOST_NAME" e-name="HOST_NAME" e-form="rowform">{{ d.HOST_NAME || '' }}</span>
@@ -41,7 +41,7 @@
         <div class="form-group">
             <label class="col-md-3 control-label req" for="inputDESCRIPTION">Data management system or data description:</label>
             <div class="col-md-6">
-                <input class="form-control" id="inputDESCRIPTION" name="DESCRIPTION"
+                <textarea class="form-control" id="inputDESCRIPTION" rows="3"
                        type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                        ng-model="newData.DESCRIPTION" />
             </div>&nbsp;
@@ -70,7 +70,7 @@
             <label class="col-md-3 control-label req" for="inputPORTAL_URL">Online Data Location:</label>
             <div class="col-md-6">
                 <input class="form-control" id="inputPORTAL_URL" name="PORTAL_URL"
-                       type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
+                       type="url" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                        ng-model="newData.PORTAL_URL" />
             </div>&nbsp;
             <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"

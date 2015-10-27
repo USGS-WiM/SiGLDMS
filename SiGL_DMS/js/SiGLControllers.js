@@ -275,8 +275,8 @@
     }
 
     //#region Data Manager
-    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'allOrgRes', 'roleList', 'allOrgs', 'allDivs', 'allSecs', 'allProj', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
-    function dataManagerCtrl($scope, $http, DATA_MANAGER, allOrgRes, roleList, allOrgs, allDivs, allSecs, allProj, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
+    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allProj', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
+    function dataManagerCtrl($scope, $http, DATA_MANAGER, allOrgRes, allOrgs, allDivs, allSecs, allProj, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
         //get all datamanagers once here to ensure passing auth
         if (!checkCreds()) {
             $scope.auth = false;
@@ -289,7 +289,12 @@
             $scope.allSECs = allSecs;
 
             $scope.loggedInUser = {};
-            $scope.allROLEs = roleList;
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+            $http.defaults.headers.common['Accept'] = 'application/json';
+            ROLE.getAll().$promise.then(function (response) {
+                $scope.allROLEs = response;
+            });
+
             $scope.loggedInUser.Name = getUsersNAME(); //User's NAME
             $scope.loggedInUser.ID = getUserID();
             $scope.loggedInUser.Role = getUserRole();
@@ -327,14 +332,20 @@
         }//end auth user logged in
     }//end resourceCtrl
 
-    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$location', '$http', '$modal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'roleList', 'thisDM', 'dmProjects', 'checkCreds', 'getCreds', 'setCreds', 'getUserRole', 'getUsersNAME', 'getUserID', dataManagerInfoCtrl]);
-    function dataManagerInfoCtrl($scope, $location, $http, $modal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, roleList, thisDM, dmProjects, checkCreds, getCreds, setCreds) {
+    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$location', '$http', '$modal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'thisDM', 'dmProjects', 'checkCreds', 'getCreds', 'setCreds', 'getUserRole', 'getUsersNAME', 'getUserID', dataManagerInfoCtrl]);
+    function dataManagerInfoCtrl($scope, $location, $http, $modal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, thisDM, dmProjects, checkCreds, getCreds, setCreds) {
             if (!checkCreds()) {
                 $scope.auth = false;
                 $location.path('/login');
             } else {
                 $scope.DMProjects = dmProjects; //All their Projects            
-                $scope.RoleList = roleList;
+
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                ROLE.getAll().$promise.then(function (response) {
+                    $scope.RoleList = response;
+                });
+
                 $scope.pass = {
                     newP: '',
                     confirmP: ''
@@ -411,7 +422,7 @@
                     $scope.matchingUsers = $stateParams.id == $scope.$parent.loggedInUser.ID ? true : false;
 
                     $scope.DM = thisDM;
-                    $scope.DM.roleName = $scope.RoleList.filter(function (rl) { return rl.ROLE_ID == thisDM.ROLE_ID; })[0].ROLE_NAME;
+                    
 
                     $scope.dmOrg = $scope.$parent.allORG_RES.filter(function (o) { return o.OrganizationSystemID == $scope.DM.ORGANIZATION_SYSTEM_ID })[0];
 
@@ -570,6 +581,7 @@
                         $scope.pass.confirmP = '';
                     }; //end DontChangePass
 
+                    $scope.DM.roleName = $scope.RoleList.filter(function (rl) { return rl.ROLE_ID == thisDM.ROLE_ID; })[0].ROLE_NAME;
                 }//end if thisDM != undefined
                 else {
                     //this is a new dm being created
@@ -580,24 +592,30 @@
                             $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
                             $http.defaults.headers.common['Accept'] = 'application/json';
                             //see if they created an org or just chose an existing one
-                            var divID = $scope.selectedDivID == "" ? 0 : $scope.selectedDivID;
-                            var secID = $scope.selectedSecID == "" ? 0 : $scope.selectedSecID;
-                            var existingOrgRes = $scope.allORG_RES.filter(function (or) { return or.OrganizationID == $scope.selectedOrgID && or.DivisionID == divID && or.SectionID == secID; })[0];
-                            if (existingOrgRes != undefined) {
-                                //they didn't create a new one so we don't have to. just add the orgsysId to the dm and post
-                                $scope.DM.ORGANIZATION_SYSTEM_ID = existingOrgRes.OrganizationSystemID;
-                                $scope.postNewDM();
-                            } else {
-                                //they created a new orgsys, post that first then post the new dm
-                                var newOrgSys = { ORG_ID: $scope.selectedOrgID, DIV_ID: divID, SEC_ID: secID };
-                                ORGANIZATION_SYSTEM.save(newOrgSys, function success(response) {
-                                    $scope.DM.ORGANIZATION_SYSTEM_ID = response.ORGANIZATION_SYSTEM_ID;
+                            if ($scope.selectedOrgID != "") {
+                                var divID = $scope.selectedDivID == "" ? 0 : $scope.selectedDivID;
+                                var secID = $scope.selectedSecID == "" ? 0 : $scope.selectedSecID;
+                                var existingOrgRes = $scope.allORG_RES.filter(function (or) { return or.OrganizationID == $scope.selectedOrgID && or.DivisionID == divID && or.SectionID == secID; })[0];
+                                if (existingOrgRes != undefined) {
+                                    //they didn't create a new one so we don't have to. just add the orgsysId to the dm and post
+                                    $scope.DM.ORGANIZATION_SYSTEM_ID = existingOrgRes.OrganizationSystemID;
                                     $scope.postNewDM();
-                                }, function error(errorResponse) {
-                                    $(".page-loading").addClass("hidden");
-                                    toastr.error("Error: " + errorResponse.statusText);
-                                });
-                            }//end else (new Orgsys)
+                                } else {
+                                    //they created a new orgsys, post that first then post the new dm
+                                    var newOrgSys = { ORG_ID: $scope.selectedOrgID, DIV_ID: divID, SEC_ID: secID };
+                                    ORGANIZATION_SYSTEM.save(newOrgSys, function success(response) {
+                                        $scope.DM.ORGANIZATION_SYSTEM_ID = response.ORGANIZATION_SYSTEM_ID;
+                                        $scope.postNewDM();
+                                    }, function error(errorResponse) {
+                                        $(".page-loading").addClass("hidden");
+                                        toastr.error("Error: " + errorResponse.statusText);
+                                    });
+                                }//end else (new Orgsys)
+                            } else {
+                                //they didn't choose an org
+                                $scope.postNewDM();
+                            }
+
                         }//end if valid
                         else {
                             alert("Please provide all required information.");
@@ -610,7 +628,8 @@
                             toastr.success("Data Manager Created");
                             //push this new dm into the dmList
                             var nm = response;
-                            nm.OrgName = $scope.allORG_RES.filter(function (or) { return or.OrganizationSystemID == nm.ORGANIZATION_SYSTEM_ID; })[0].OrganizationName;
+                            var org = $scope.allORG_RES.filter(function (or) { return or.OrganizationSystemID == nm.ORGANIZATION_SYSTEM_ID; })[0];
+                            nm.OrgName = org != undefined ? org.OrganizationName : "";
                             nm.FULLNAME = response.FNAME + " " + response.LNAME;
                             nm.roleName = $scope.$parent.allROLEs.filter(function (r) { return r.ROLE_ID == nm.ROLE_ID; })[0].ROLE_NAME;
                             nm.projCont = 0;
@@ -1684,7 +1703,7 @@
                     }
                     $scope.newURL = {};
                 } else {
-                    alert("Please type a valid URL in first.");
+                    alert("Make sure your URL follows this format: http://www.exampleurl.com");
                 }
             }
             //#endregion ADD/REMOVE URLS
@@ -1948,7 +1967,10 @@
                 else {
                     PROJECT.addProjOrg({ id: thisProject.PROJECT_ID, organizationId: orgID, divisionId: divID, sectionId: secID }, function success(response) {
                         //array of all the ORGANIZATION_RESOURCES for this project                    
-                        $scope.ProjOrgs = response;
+                        var postedORG = response.filter(function (postedO) { return postedO.OrganizationID == orgID && postedO.DivisionID == divID && postedO.SectionID == secID })[0];
+                        $scope.ProjOrgs.push(postedORG);
+
+                        //$scope.ProjOrgs = response;
                         $scope.coopCount.total = $scope.coopCount.total + 1;
                         $scope.alldivs = {}; $scope.allsecs = {}; $scope.selectedOrgID = ""; $scope.selectedDivID = ""; $scope.selectedSecID = "";
                         $scope.projectForm.Coop.$setPristine(true);
@@ -2024,7 +2046,12 @@
                     toastr.error("Error: " + errorResponse.statusText);
                 });
             } else {
-                alert("You must populate at least one field before adding the data.");
+                if ($scope.projectForm.Data.PORTAL_URL.$viewValue == "") {
+                    alert("You must populate at least one field before adding the data.");
+                }
+                if ($scope.projectForm.Data.PORTAL_URL.$valid == false && $scope.projectForm.Data.PORTAL_URL.$viewValue != "") {
+                    alert("Make sure your URL follows this format: http://www.exampleurl.com");
+                }
             }
         }//end addData
         //#endregion POST Data click
@@ -2956,7 +2983,6 @@
                     return p.PARAMETER_GROUP == "Toxicological"
                 }));
 
-
                 //$scope.Parameterdata = allParams;
 
                 //#endregion siteParameters
@@ -3615,6 +3641,7 @@
                     $scope.selectedOrgID.id = response.ORGANIZATION_ID;
                     //they added it, so update the originalOrgID too 
                     $scope.originalOrgId = response.ORGANIZATION_ID;
+                    $scope.orgsBeenChosen = true;
 
                     //clear input, hide input
                     $scope.OrgName.value = "";
@@ -3643,6 +3670,7 @@
                     $scope.selectedDivID.id = response.DIVISION_ID;
                     //they added it, so update the originalDivID with it
                     $scope.originalDivId = response.DIVISION_ID;
+                    $scope.divsBeenChosen = true; //show "add section" button text
 
                     //clear input, hide input
                     $scope.divisionName.value = "";
