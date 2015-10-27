@@ -49,7 +49,11 @@
                 <input class="form-control" id="inputTITLE" name="TITLE"
                        type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.DESCRIPTION.length || newPub.URL.length)"
                        ng-model="newPub.TITLE" />
-            </div>
+            </div>&nbsp;
+            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  title="Enter the title of your publication in this field. Do not include any other information."
+                  data-placement="right" tooltip>
+            </span>
         </div>
 
         <!-- Publication description -->
@@ -61,7 +65,7 @@
                           ng-model="newPub.DESCRIPTION" />
             </div>&nbsp;
             <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                  title="Briefly describe the content and format of the publication. Include publication number (if applicable)."
+                  title="Enter the citation or briefly describe the content and format of your publication."
                   data-placement="right" tooltip>
             </span>
         </div>

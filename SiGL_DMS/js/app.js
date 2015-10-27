@@ -80,10 +80,6 @@
                          p: 'PROJECT',
                          allProj: function (p) {
                              return p.getAll().$promise;
-                         },
-                         r: 'ROLE',
-                         roleList: function (r) {
-                             return r.getAll().$promise;
                          }
                       }
                  })
@@ -390,11 +386,7 @@
                         prStats: 'PROJ_STATUS',
                         allStatsList: function (prStats) {
                             return prStats.getAll().$promise;
-                        },
-                        r: 'ROLE',
-                        roleList: function(r){
-                            r.getAll().$promise;
-                        },                        
+                        },                       
                         allOrgs: 'ORGANIZATION',
                         allOrgList: function (allOrgs) {
                             return allOrgs.getAll().$promise;
