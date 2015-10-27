@@ -275,8 +275,8 @@
     }
 
     //#region Data Manager
-    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allProj', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
-    function dataManagerCtrl($scope, $http, DATA_MANAGER, allOrgRes, allOrgs, allDivs, allSecs, allProj, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
+    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'ROLE', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allProj', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
+    function dataManagerCtrl($scope, $http, DATA_MANAGER, ROLE, allOrgRes, allOrgs, allDivs, allSecs, allProj, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
         //get all datamanagers once here to ensure passing auth
         if (!checkCreds()) {
             $scope.auth = false;
@@ -289,10 +289,23 @@
             $scope.allSECs = allSecs;
 
             $scope.loggedInUser = {};
+
+            //get all the roles and data managers
             $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
             $http.defaults.headers.common['Accept'] = 'application/json';
             ROLE.getAll().$promise.then(function (response) {
                 $scope.allROLEs = response;
+                //NAME, Organization, Role, # of Projects
+                DATA_MANAGER.getAll().$promise.then(function (result) {
+                    for (var x = 0; x < result.length; x++) {
+                        var orgName = allOrgRes.filter(function (or) { return or.OrganizationSystemID == result[x].ORGANIZATION_SYSTEM_ID; })[0];
+                        result[x].OrgName = orgName != undefined ? orgName.OrganizationName : "";
+                        result[x].roleName = $scope.allROLEs.filter(function (ro) { return ro.ROLE_ID == result[x].ROLE_ID; })[0].ROLE_NAME
+                        var theseProjs = allProj.filter(function (p) { return p.DATA_MANAGER_ID == result[x].DATA_MANAGER_ID; });
+                        result[x].projCount = theseProjs.length;
+                    }
+                    $scope.allDMs = result;
+                });
             });
 
             $scope.loggedInUser.Name = getUsersNAME(); //User's NAME
@@ -315,20 +328,6 @@
                     $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
                 }
             };
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
-            $http.defaults.headers.common['Accept'] = 'application/json';
-            //NAME, Organization, Role, # of Projects
-
-            DATA_MANAGER.getAll().$promise.then(function (result) {
-                for (var x = 0; x < result.length; x++) {
-                    var orgName = allOrgRes.filter(function (or) { return or.OrganizationSystemID == result[x].ORGANIZATION_SYSTEM_ID; })[0];
-                    result[x].OrgName = orgName != undefined ? orgName.OrganizationName : "";
-                    result[x].roleName = $scope.allROLEs.filter(function (ro) { return ro.ROLE_ID == result[x].ROLE_ID; })[0].ROLE_NAME
-                    var theseProjs = allProj.filter(function (p) { return p.DATA_MANAGER_ID == result[x].DATA_MANAGER_ID; });
-                    result[x].projCount = theseProjs.length;
-                }
-                $scope.allDMs = result;
-            });
         }//end auth user logged in
     }//end resourceCtrl
 
