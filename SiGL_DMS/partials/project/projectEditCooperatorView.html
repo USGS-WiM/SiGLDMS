@@ -1,24 +1,15 @@
 ﻿<legend>Organizations</legend>
 <div class="form-group" ng-if="ProjOrgs.length > 0">
-    <table class="table">
-        <thead><tr><th></th><th>Organization name</th><th>Division</th><th>Section</th></tr></thead>
-        <tbody>
-            <tr ng-repeat="o in ProjOrgs">
-                <td style="white-space: nowrap">
-                    <div class="buttons">
-                        <button class="btn" ng-click="RemoveOrgFromProj(o)"><i class="glyphicon glyphicon-remove"></i></button>
-                    </div>
-                </td>
-                <td><span>{{ o.OrganizationName }}</span></td>
-                <td><span>{{ o.DivisionName || '' }}</span></td>
-                <td><span>{{ o.SectionName || ''}}</span></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="org-list" ng-repeat="o in ProjOrgs">
+        <button class="icon" ng-click="RemoveOrgFromProj(o)"><i class="glyphicon glyphicon-remove"></i></button>
+        {{ o.OrganizationName }},
+        {{ o.DivisionName || '' }},
+        {{ o.SectionName || ''}}
+    </div>
 </div>
 
 <hr /><!---->
-<div>Add New Organization</div>
+<div class="subheader">Add New Organization</div>
 <form class="form-horizontal" name="projectForm.Coop">
 
     <div>
@@ -30,33 +21,37 @@
 
     <fieldset>
         <div class="form-group required">
-            <label class="col-md-3 control-label">Organization</label>
-            <div class="col-md-6">
+            <label class="col-md-4 control-label">
+              Organization
+              <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                    title="After selecting your Organization (and Division/Office and Section, if applicable) in the drop-down menu, click the “Add Organization” button to save. Repeat if multiple organizations apply."
+                    data-placement="right" tooltip>
+              </span>
+            </label>
+            <div class="col-md-8">
                 <select class="form-control" ng-model="selectedOrgID" ng-options="org.ORGANIZATION_ID as org.ORGANIZATION_NAME for org in allOrgs | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)"></select>
-            </div>&nbsp;
-            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                  title="After selecting your Organization (and Division/Office and Section, if applicable) in the drop-down menu, click the “Add Organization” button to save. Repeat if multiple organizations apply."
-                  data-placement="right" tooltip>
-            </span>
+            </div>
+
 
         </div>
 
         <div class="form-group">
-            <label class="col-md-3 control-label">Division</label>
-            <div class="col-md-6">
+            <label class="col-md-4 control-label">Division</label>
+            <div class="col-md-8">
                 <select class="form-control" ng-model="selectedDivID" ng-options="div.DIVISION_ID as div.DIVISION_NAME for div in alldivs | orderBy: 'DIVISION_NAME'" ng-change="getSecs(selectedDivID)"></select>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-md-3 control-label">Section</label>
-            <div class="col-md-6">
+            <label class="col-md-4 control-label">Section</label>
+            <div class="col-md-8">
                 <select class="form-control" ng-model="selectedSecID" ng-options="sec.SECTION_ID as sec.SECTION_NAME for sec in allsecs | orderBy: 'SECTION_NAME'"></select>
             </div>
         </div>
         <!--submit button-->
+        <br/>
         <div class="form-group">
-            <div class="col-md-4 col-md-offset-2">
+            <div class="col-md-4 col-md-offset-4">
                 <span>
                     <button class="btn btn-primary" ng-click="AddOrgToProj(projectForm.Coop.$valid)">
                         Add this Organization to the Project

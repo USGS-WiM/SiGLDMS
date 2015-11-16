@@ -6,8 +6,12 @@
         border-right: 2px solid #ddd;
         background-color: #fff;
   }
+  #edit-right{
+    padding: 0;
+    margin: 0;
+  }
 </style>
-<div class="panel panel-primary">
+<div id="site-list-wrapper" class="panel panel-primary">
     <div class="panel-body">
         <button ui-sref="projectEdit.site.siteInfo({id:thisProject.PROJECT_ID, siteId:0})" class="btn btn-primary">
             <span>Create new Site</span>

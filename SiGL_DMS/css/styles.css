@@ -156,51 +156,59 @@ p{
 ===============================================
 */
 /*Navigation bar*/
-#app_nav{
+.navbar-default{
     background-color: #525352;
     border-bottom:2px solid ;
     height:65px;
     border-bottom:2px solid #3c3d3c;
     margin-bottom:15px;
+    color: #e7e3cf;
 }
-    #app_nav .container-fluid{
+    .navbar-default .container-fluid{
         padding:0; margin:0 auto;
     }
 
 /*Logo Branding*/
-#app_nav_logo{
-    height:65px;
-    border-top:5px solid #000;
-    border-bottom:5px solid #000;
-    border-left:10px solid #000;
-    border-right:10px solid #000;
+.navbar-header{
+  background-color: #000;
+  height: 64px;
+  box-sizing: border-box;
+  padding: 8px 25px 10px 35px;
+}
+.navbar-header a{
+  padding:0;
+}
+.navbar-header img{
+    height:100%;
     display:inline-block;
 }
-#app_nav h2{
+.navbar-default h2{
     margin:0 auto;
     padding:0;
     display: inline-block;
-    position:relative; top:7px;
     margin-left:25px;
     color:#E5E4C8;
     font-family: 'Nunito', sans-serif;
+    height: 64px; line-height: 64px;
 }
-    #app_nav h2 i{
+    .navbar-default h2 i{
         font-style:normal;
         color:#F56938;
     }
 
-#nav_welcome{
+#nav-welcome{
     color:#fff;
     box-sizing:border-box;
-    padding:6px 35px 6px 0;
-    font-weight:300;
+    padding:7px 35px 6px 0;
+    font-weight: 400;
     text-align:center;
+    letter-spacing: 1px;
+
 }
-    #nav_welcome button{
+    #nav-welcome button{
         display:block;
         font-size:8pt;
-        padding: 5px 10px 5px 10px;
+        padding: 4px 10px 4px 10px;
         float:right;
         margin-top:3px;
     }

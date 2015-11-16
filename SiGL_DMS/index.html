@@ -16,7 +16,8 @@
     <link href="css/ui-grid-unstable.css" rel="stylesheet" />
 
     <!-- Custom Style - Samuels -->
-    <link href="css/styles.css" rel="stylesheet" />
+    <!-- <link href="css/styles.css" rel="stylesheet" /> -->
+    <link href="css/overwrite.css" rel="stylesheet" />
     <link href="http://fonts.googleapis.com/css?family=Valera+Round" type="text/css" rel="stylesheet" />
     <link href="http://fonts.googleapis.com/css?family=Nunito:400,300,700" type="text/css" rel="stylesheet" />
     <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" type="text/css" rel="stylesheet" />
@@ -60,7 +61,7 @@
     <!--<div ng-include src="'partials/header.html'"></div>-->
     <!--HEADER START-->
     <div ng-controller="mainCtrl" class="navbar navbar-default">
-        <div class="container-fluid" style="background-color:gray;">
+        <div class="container-fluid" style="padding: 0;">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">
                     <img alt="Brand" src="images/usgsLogo.png">
@@ -68,7 +69,7 @@
             </div>
             <div>
                 <div style="width:60%;float:left;">
-                    <h2>SiGL: Data Management System (DMS)</h2>
+                    <h2><b>SiGL</b><em>:</em>Data Management System (DMS)</h2>
                 </div>
                 <div class="pull-right" ng-show="isAuth.val">
                     <div><span>Welcome, <a ui-sref="dataManagers.DMInfo({id: userID})">{{usersName}}</a></span></div>
@@ -76,14 +77,14 @@
                 </div>
             </div>
             <br clear="all" />
-            <div ng-show="isAuth.val" class="container">
+            <div ng-show="isAuth.val" class="container" style="padding: 0;">
 
                 <div class="collapse navbar-collapse" id="">
                     <ul class="nav navbar-nav">
-                        <li><a style="color:#000" ui-sref="home" ui-sref-active="active">Home</a></li>
-                        <li><a style="color:#000" ui-sref="settings" ui-sref-active="active">Settings</a></li>
+                        <li><a ui-sref="home" ui-sref-active="active">Home</a></li>
+                        <li><a ui-sref="settings" ui-sref-active="active">Settings</a></li>
                         <!--<li><a style="color:#000" ui-sref="account({uID:userID})" ui-sref-active="active">Your account</a></li>-->
-                        <li><a style="color:#000" ui-sref="help" ui-sref-active="active">FAQs/Help</a></li>
+                        <li><a ui-sref="help" ui-sref-active="active">FAQs/Help</a></li>
 
                     </ul>
                 </div>
@@ -259,4 +260,3 @@
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
-
