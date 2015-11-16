@@ -1,11 +1,8 @@
 ﻿<legend>Data Sources</legend>
 
 <div class="form-group" ng-if="ProjData.length > 0">
-    <table class="table">
-        <thead><tr><th></th><th>Data management system or data description</th><th>Data hosting entity</th><th>Online data location</th></tr></thead>
-        <tbody>
-            <tr ng-repeat="d in ProjData">
-                <td style="white-space: nowrap">
+
+            <div class="data-list" ng-repeat="d in ProjData">
                     <!-- form -->
                     <form editable-form name="rowform" onshow="EditRowClicked()" onhide="CancelEditRowClick()" onaftersave="saveData($data, d.DATA_HOST_ID)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == d">
                         <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
@@ -15,68 +12,72 @@
                             cancel
                         </button>
                     </form>
-                    <div class="buttons" ng-show="!rowform.$visible">
-                        <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
-                        <button class="btn btn-danger" ng-click="RemoveData(d)">del</button>
-                    </div>
-                </td>
-                <td><div style="display:none"><span editable-text="d.PROJECT_ID" e-form="rowform" e-name="PROJECT_ID">{{d.PROJECT_ID}}</span></div>
-                    <span editable-textarea="d.DESCRIPTION" e-rows="5" e-cols="40" e-name="DESCRIPTION" e-form="rowform">{{ d.DESCRIPTION || '' }}</span>
-                </td>
-                <td>
-                    <span editable-text="d.HOST_NAME" e-name="HOST_NAME" e-form="rowform">{{ d.HOST_NAME || '' }}</span>
-                </td>
-                <td>
-                    <span editable-text="d.PORTAL_URL" e-name="PORTAL_URL" e-form="rowform">{{d.PORTAL_URL || ''}}</span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+
+                    <div style="display:none"><span editable-text="d.PROJECT_ID" e-form="rowform" e-name="PROJECT_ID">{{d.PROJECT_ID}}</span></div>
+                    <span class="data-list-item" editable-textarea="d.DESCRIPTION" e-rows="5" e-cols="40" e-name="DESCRIPTION" e-form="rowform"><b>{{ d.DESCRIPTION || '' }}</b></span>
+
+                    <span class="data-list-item" editable-text="d.HOST_NAME" e-name="HOST_NAME" e-form="rowform">{{ d.HOST_NAME || '' }}</span>
+                    <span class="data-list-item" editable-text="d.PORTAL_URL" e-name="PORTAL_URL" e-form="rowform">{{d.PORTAL_URL || ''}}</span>
+
+                  <div class="buttons" ng-show="!rowform.$visible">
+                      <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+                      <button class="btn btn-danger" ng-click="RemoveData(d)">del</button>
+                  </div>
+            </div>
 </div>
 <hr />
 <form class="form-horizontal" name="projectForm.Data">
     <fieldset ng-disabled="isEditing">
-        <div>Add New Data Source</div>
+        <div class="subheader">Add New Data Source</div>
         <!-- Data Management System   (taken from form tag above == not sure what it does   novalidate) -->
         <div class="form-group">
-            <label class="col-md-3 control-label req" for="inputDESCRIPTION">Data management system or data description:</label>
-            <div class="col-md-6">
+            <label class="col-md-4 control-label req" for="inputDESCRIPTION">
+              Data management system or data description:
+              <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                    title="Describe your project data and where it resides (USGS NWIS, the Water Quality Portal, Access database, Excel spreadsheet, etc.). If your project uses multiple systems at different locations, enter each as a separate Data entry."
+                    data-placement="right" tooltip>
+              </span>
+            </label>
+            <div class="col-md-8">
                 <textarea class="form-control" id="inputDESCRIPTION" rows="3"
                        type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                        ng-model="newData.DESCRIPTION" />
             </div>&nbsp;
-            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                  title="Describe your project data and where it resides (USGS NWIS, the Water Quality Portal, Access database, Excel spreadsheet, etc.). If your project uses multiple systems at different locations, enter each as a separate Data entry."
-                  data-placement="right" tooltip>
-            </span>
+
         </div>
 
         <!-- Data Hosting Entity -->
         <div class="form-group">
-            <label class="col-md-3 control-label req" for="inputHOST_NAME">Data Hosting Entity:</label>
-            <div class="col-md-6">
+            <label class="col-md-4 control-label req" for="inputHOST_NAME">
+              Data Hosting Entity:
+              <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                    title="Enter the entity, person, or organization that hosts or holds your data."
+                    data-placement="right" tooltip>
+              </span>
+            </label>
+            <div class="col-md-8">
                 <input class="form-control" id="inputHOST_NAME" name="HOST_NAME"
                        type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                        ng-model="newData.HOST_NAME" />
             </div>&nbsp;
-            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                  title="Enter the entity, person, or organization that hosts or holds your data."
-                  data-placement="right" tooltip>
-            </span>
+
         </div>
 
         <!-- Online Data Location -->
         <div class="form-group">
-            <label class="col-md-3 control-label req" for="inputPORTAL_URL">Online Data Location:</label>
-            <div class="col-md-6">
+            <label class="col-md-4 control-label req" for="inputPORTAL_URL">
+              Online Data Location:
+              <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                    title="If data is available online, provide the entire URL of the data’s location (be sure to include the ' http://'). Only enter one address."
+                    data-placement="right" tooltip>
+              </span>
+            </label>
+            <div class="col-md-8">
                 <input class="form-control" id="inputPORTAL_URL" name="PORTAL_URL"
                        type="url" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                        ng-model="newData.PORTAL_URL" />
             </div>&nbsp;
-            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                  title="If data is available online, provide the entire URL of the data’s location (be sure to include the ' http://'). Only enter one address."
-                  data-placement="right" tooltip>
-            </span>
+
         </div>
 
         <!--submit button-->
