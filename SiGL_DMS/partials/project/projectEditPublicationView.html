@@ -3,11 +3,11 @@
 <div class="form-group" ng-if="ProjPubs.length > 0">
             <div class="publication-list-item" ng-repeat="p in ProjPubs">
                     <form editable-form name="rowform" onshow="EditRowClicked()" onhide="CancelEditRowClick()" onaftersave="savePub($data, p.PUBLICATION_ID)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == p">
-                        <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
-                            save
+                        <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary btn-edit-delete">
+                            Save
                         </button>
-                        <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
-                            cancel
+                        <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default btn-edit-delete">
+                            Cancel
                         </button>
                     </form>
 
@@ -22,8 +22,8 @@
                     <span class="publication-list-item-text" editable-text="p.URL" e-name="URL" e-form="rowform">{{ p.URL || '' }}</span>
 
                   <div class="buttons" ng-show="!rowform.$visible">
-                      <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
-                      <button class="btn btn-danger" ng-click="RemovePub(p)">del</button>
+                      <button class="btn btn-primary btn-edit-delete" ng-click="rowform.$show()">Edit</button>
+                      <button class="btn btn-danger btn-edit-delete" ng-click="RemovePub(p)">Delete</button>
                   </div>
 
               </div>
