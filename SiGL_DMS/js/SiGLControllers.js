@@ -331,8 +331,8 @@
         }//end auth user logged in
     }//end resourceCtrl
 
-    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$location', '$http', '$modal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'thisDM', 'dmProjects', 'checkCreds', 'getCreds', 'setCreds', 'getUserRole', 'getUsersNAME', 'getUserID', dataManagerInfoCtrl]);
-    function dataManagerInfoCtrl($scope, $location, $http, $modal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, thisDM, dmProjects, checkCreds, getCreds, setCreds) {
+    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$location', '$http', '$modal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'ROLE', 'thisDM', 'dmProjects', 'checkCreds', 'getCreds', 'setCreds', 'getUserRole', 'getUsersNAME', 'getUserID', dataManagerInfoCtrl]);
+    function dataManagerInfoCtrl($scope, $location, $http, $modal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, ROLE, thisDM, dmProjects, checkCreds, getCreds, setCreds) {
             if (!checkCreds()) {
                 $scope.auth = false;
                 $location.path('/login');
@@ -580,7 +580,10 @@
                         $scope.pass.confirmP = '';
                     }; //end DontChangePass
 
-                    $scope.DM.roleName = $scope.RoleList.filter(function (rl) { return rl.ROLE_ID == thisDM.ROLE_ID; })[0].ROLE_NAME;
+                    setTimeout(function () {
+                        $scope.DM.roleName = $scope.RoleList.filter(function (rl) { return rl.ROLE_ID == thisDM.ROLE_ID; })[0].ROLE_NAME;
+                    }, 3000);
+
                 }//end if thisDM != undefined
                 else {
                     //this is a new dm being created
@@ -3581,8 +3584,8 @@
         //set selected parts based on what they choose from main page before hitting button to open modal
         $scope.selectedOrgID = {};
         $scope.selectedOrgID.id = chosenParts[0] != "" ? Number(chosenParts[0]) : "";
-        $scope.divList = {}; //what the select uses, based on org chosen
-        $scope.secList = {}; //what the select uses, based on div chosen
+        $scope.divList = []; //what the select uses, based on org chosen
+        $scope.secList = []; //what the select uses, based on div chosen
 
         //if they did choose an org before opening modal, go get the divs for this org
         if ($scope.selectedOrgID.id != "") {
@@ -3603,11 +3606,11 @@
         //ng-change event on org select: they selected an org name, get those divs
         $scope.getDivs = function (orgID) {
             $scope.selectedOrgID.id = orgID;
-            $scope.divList = {}; $scope.selectedDivID.id = ""; $scope.selectedSecID.id = "";
-            $scope.divList = $scope.allDivList.filter(function (d) {
-                return d.ORG_ID == orgID;
-            });
-            $scope.secList = { };
+            $scope.selectedDivID.id = ""; $scope.selectedSecID.id = "";
+            $scope.divList = []; 
+            $scope.divList = $scope.allDivList.filter(function (d) { return d.ORG_ID == orgID; });
+            
+            $scope.secList = [];
             $scope.orgsBeenChosen = true;
             $scope.divsBeenChosen = false;
         };
