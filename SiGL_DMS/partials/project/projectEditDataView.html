@@ -17,7 +17,7 @@
                     <span class="data-list-item" editable-textarea="d.DESCRIPTION" e-rows="5" e-cols="40" e-name="DESCRIPTION" e-form="rowform"><b>{{ d.DESCRIPTION || '' }}</b></span>
 
                     <span class="data-list-item" editable-text="d.HOST_NAME" e-name="HOST_NAME" e-form="rowform">{{ d.HOST_NAME || '' }}</span>
-                    <span class="data-list-item" editable-text="d.PORTAL_URL" e-name="PORTAL_URL" e-form="rowform">{{d.PORTAL_URL || ''}}</span>
+                    <span class="data-list-item" editable-text="d.PORTAL_URL" e-http-prefix onbeforesave="validateUrl($data)" e-name="PORTAL_URL" e-form="rowform">{{d.PORTAL_URL || ''}}</span>
 
                   <div class="buttons" ng-show="!rowform.$visible">
                       <button class="btn btn-primary btn-edit-delete" ng-click="rowform.$show()">Edit</button>
@@ -75,7 +75,7 @@
             <div class="col-md-8">
                 <input class="form-control" id="inputPORTAL_URL" name="PORTAL_URL"
                        type="url" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
-                       ng-model="newData.PORTAL_URL" />
+                       ng-model="newData.PORTAL_URL" http-prefix />
             </div>&nbsp;
 
         </div>

@@ -239,15 +239,36 @@
             });
         };
     });
-
+   
+    //adding 'http://' to url inputs http://stackoverflow.com/questions/19482000/angularjs-add-http-prefix-to-url-input-field
+    siGLControllers.directive('httpPrefix', function () {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, controller) {
+                function ensureHttpPrefix(value) {
+                    // Need to add prefix if we don't have http:// prefix already AND we don't have part of it
+                    if (value && !/^(https?):\/\//i.test(value)
+                       && 'http://'.indexOf(value) !== 0 && 'https://'.indexOf(value) !== 0) {
+                        controller.$setViewValue('http://' + value);
+                        controller.$render();
+                        return 'http://' + value;
+                    }
+                    else
+                        return value;
+                }
+                controller.$formatters.push(ensureHttpPrefix);
+                controller.$parsers.splice(0, 0, ensureHttpPrefix);
+            }
+        };
+    });
     //#endregion DIRECTIVES
 
     //#region MAIN Controller
-    siGLControllers.controller('mainCtrl', ['$scope', '$rootScope', '$location', '$state', 'checkCreds', 'getUsersNAME', 'getUserID', mainCtrl]);
-    function mainCtrl($scope, $rootScope, $location, $state, checkCreds, getUsersNAME, getUserID) {
+    siGLControllers.controller('mainCtrl', ['$scope', '$rootScope', '$location', '$state', 'checkCreds', 'getUsersNAME', 'getUserID', 'getUserRole', mainCtrl]);
+    function mainCtrl($scope, $rootScope, $location, $state, checkCreds, getUsersNAME, getUserID, getUserRole) {
         $scope.logo = 'images/usgsLogo.png';
         $rootScope.isAuth = {};
-
         if (!checkCreds()) {
             $rootScope.isAuth.val = false;
             $location.path('/login');
@@ -255,6 +276,8 @@
             $rootScope.isAuth.val = true;
             $rootScope.usersName = getUsersNAME();
             $rootScope.userID = getUserID();
+            $rootScope.Role = getUserRole();
+
             $state.go('projectList');
 
         }
@@ -275,8 +298,8 @@
     }
 
     //#region Data Manager
-    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'ROLE', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allProj', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
-    function dataManagerCtrl($scope, $http, DATA_MANAGER, ROLE, allOrgRes, allOrgs, allDivs, allSecs, allProj, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
+    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'ROLE', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allProj', 'allRoles', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
+    function dataManagerCtrl($scope, $http, DATA_MANAGER, ROLE, allOrgRes, allOrgs, allDivs, allSecs, allProj, allRoles, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
         //get all datamanagers once here to ensure passing auth
         if (!checkCreds()) {
             $scope.auth = false;
@@ -289,25 +312,24 @@
             $scope.allSECs = allSecs;
 
             $scope.loggedInUser = {};
-
+            $scope.allROLEs = allRoles;
             //get all the roles and data managers
             $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
             $http.defaults.headers.common['Accept'] = 'application/json';
-            ROLE.getAll().$promise.then(function (response) {
-                $scope.allROLEs = response;
-                //NAME, Organization, Role, # of Projects
-                DATA_MANAGER.getAll().$promise.then(function (result) {
-                    for (var x = 0; x < result.length; x++) {
-                        var orgName = allOrgRes.filter(function (or) { return or.OrganizationSystemID == result[x].ORGANIZATION_SYSTEM_ID; })[0];
-                        result[x].OrgName = orgName != undefined ? orgName.OrganizationName : "";
-                        result[x].roleName = $scope.allROLEs.filter(function (ro) { return ro.ROLE_ID == result[x].ROLE_ID; })[0].ROLE_NAME
-                        var theseProjs = allProj.filter(function (p) { return p.DATA_MANAGER_ID == result[x].DATA_MANAGER_ID; });
-                        result[x].projCount = theseProjs.length;
-                    }
-                    $scope.allDMs = result;
-                });
+                
+            //NAME, Organization, Role, # of Projects
+            DATA_MANAGER.getAll().$promise.then(function (result) {
+                for (var x = 0; x < result.length; x++) {
+                    var orgName = allOrgRes.filter(function (or) { return or.OrganizationSystemID == result[x].ORGANIZATION_SYSTEM_ID; })[0];
+                    result[x].OrgName = orgName != undefined ? orgName.OrganizationName : "";
+                    result[x].roleName = $scope.allROLEs.filter(function (ro) { return ro.ROLE_ID == result[x].ROLE_ID; })[0].ROLE_NAME;
+                    result[x].FULLNAME = result[x].FNAME + " " + result[x].LNAME;
+                    var theseProjs = allProj.filter(function (p) { return p.DATA_MANAGER_ID == result[x].DATA_MANAGER_ID; });
+                    result[x].projCount = theseProjs.length;
+                }
+                $scope.allDMs = result;
             });
-
+            
             $scope.loggedInUser.Name = getUsersNAME(); //User's NAME
             $scope.loggedInUser.ID = getUserID();
             $scope.loggedInUser.Role = getUserRole();
@@ -331,19 +353,32 @@
         }//end auth user logged in
     }//end resourceCtrl
 
-    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$location', '$http', '$modal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'ROLE', 'thisDM', 'dmProjects', 'checkCreds', 'getCreds', 'setCreds', 'getUserRole', 'getUsersNAME', 'getUserID', dataManagerInfoCtrl]);
-    function dataManagerInfoCtrl($scope, $location, $http, $modal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, ROLE, thisDM, dmProjects, checkCreds, getCreds, setCreds) {
+    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$location', '$http', '$modal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'ROLE', 'allRoles', 'thisDM', 'dmProjects', 'checkCreds', 'getCreds', 'setCreds', 'getUserRole', 'getUsersNAME', 'getUserID', dataManagerInfoCtrl]);
+    function dataManagerInfoCtrl($scope, $location, $http, $modal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, ROLE, allRoles, thisDM, dmProjects, checkCreds, getCreds, setCreds) {
             if (!checkCreds()) {
                 $scope.auth = false;
                 $location.path('/login');
             } else {
                 $scope.DMProjects = dmProjects; //All their Projects            
-
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
-                $http.defaults.headers.common['Accept'] = 'application/json';
-                ROLE.getAll().$promise.then(function (response) {
-                    $scope.RoleList = response;
-                });
+                $scope.RoleList = allRoles;
+                
+                // change sorting order
+                $scope.sort_by = function (newSortingOrder) {
+                    if ($scope.sortingOrder == newSortingOrder) {
+                        $scope.reverse = !$scope.reverse;
+                    }
+                    $scope.sortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.reverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
 
                 $scope.pass = {
                     newP: '',
@@ -421,7 +456,7 @@
                     $scope.matchingUsers = $stateParams.id == $scope.$parent.loggedInUser.ID ? true : false;
 
                     $scope.DM = thisDM;
-                    
+                    $scope.DM.roleName = $scope.RoleList.filter(function (rl) { return rl.ROLE_ID == $scope.DM.ROLE_ID; })[0].ROLE_NAME;
 
                     $scope.dmOrg = $scope.$parent.allORG_RES.filter(function (o) { return o.OrganizationSystemID == $scope.DM.ORGANIZATION_SYSTEM_ID })[0];
 
@@ -454,6 +489,8 @@
                         } else {
                             //is undefined, so they created a new one, so post the ORGANIZATION_SYSTEM then update the DM
                             var newORG_SYS = { ORG_ID: orgID, DIV_ID: divID, SEC_ID: secID };
+                            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                            $http.defaults.headers.common['Accept'] = 'application/json';
                             ORGANIZATION_SYSTEM.save(newORG_SYS, function success(response) {
                                 $scope.DM.ORGANIZATION_SYSTEM_ID = response.ORGANIZATION_SYSTEM_ID;
                                 //need to update $scope.dmOrg which is an ORGANIZATION_RESOURCE
@@ -510,11 +547,11 @@
 
                     //#region all DMs for dropdown in case they want to change the dm on the project (WHEN THE CLICK TO EDIT Project)
                     setTimeout(function () {
-                        for (var x = 0; x < $scope.$parent.allDMs.length; x++) {
-                            $scope.$parent.allDMs[x].FULLNAME = $scope.$parent.allDMs[x].FNAME + " " + $scope.$parent.allDMs[x].LNAME;
-                        };
-                        $scope.allDMs = $scope.$parent.allDMs;
-
+                    //    for (var x = 0; x < $scope.$parent.allDMs.length; x++) {
+                    //        $scope.$parent.allDMs[x].FULLNAME = $scope.$parent.allDMs[x].FNAME + " " + $scope.$parent.allDMs[x].LNAME;
+                    //    };
+                        $scope.allDMs = $scope.$parent.allDMs; 
+                        $scope.$apply;
                         //used in xeditable to show dm for project in dropdown
                         $scope.showDMs = function (project) {
                             var selected = [];
@@ -546,6 +583,38 @@
                         delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                         return retur;
                     }; //end updateDMonProj
+
+                    //delete this project and related stuff
+                    $scope.RemoveProject = function (proj) {
+                        //modal
+                        var modalInstance = $modal.open({
+                            templateUrl: 'removemodal.html',
+                            controller: 'ConfirmModalCtrl',
+                            size: 'sm',
+                            resolve: {
+                                keyToRemove: function () {
+                                    return proj;
+                                },
+                                what: function () {
+                                    return "Project";
+                                }
+                            }
+                        });
+                        modalInstance.result.then(function (keyToRemove) {
+                            //yes, remove this keyword
+                            var index = $scope.DMProjects.indexOf(proj);
+                            //DELETE it
+                            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                            PROJECT.delete({ id: proj.PROJECT_ID }, proj, function success(response) {
+                                $scope.DMProjects.splice(index, 1);
+                                toastr.success("Project Removed");
+                            }, function error(errorResponse) {
+                                toastr.error("Error: " + errorResponse.statusText);
+                            });
+                        }, function () {
+                            //logic for cancel
+                        });//end modal                        
+                    }
 
                     //password update section
                     $scope.changeMyPassBtn = function (evt) {
@@ -579,10 +648,6 @@
                         $scope.pass.newP = '';
                         $scope.pass.confirmP = '';
                     }; //end DontChangePass
-
-                    setTimeout(function () {
-                        $scope.DM.roleName = $scope.RoleList.filter(function (rl) { return rl.ROLE_ID == thisDM.ROLE_ID; })[0].ROLE_NAME;
-                    }, 3000);
 
                 }//end if thisDM != undefined
                 else {
@@ -750,7 +815,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return ft;
                         },
                         what: function () {
@@ -826,7 +891,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return lt;
                         },
                         what: function () {
@@ -900,7 +965,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return mt;
                         },
                         what: function () {
@@ -978,7 +1043,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return ot;
                         },
                         what: function () {
@@ -1054,7 +1119,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return pt;
                         },
                         what: function () {
@@ -1128,7 +1193,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return rt
                         },
                         what: function () {
@@ -1206,7 +1271,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return pd;
                         },
                         what: function () {
@@ -1282,7 +1347,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return ps;
                         },
                         what: function () {
@@ -1356,7 +1421,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return ss;
                         },
                         what: function () {
@@ -1471,9 +1536,9 @@
     //#region ABSTRACT PROJECT EDIT Controller
     //ProjectEditCtrl
     siGLControllers.controller('projectEditCtrl', ['$scope', '$rootScope', '$location', '$state', '$http', '$filter', '$modal', 'checkCreds', 'getCreds', 'thisProject', 'projOrgs',
-        'projDatum', 'projContacts', 'projPubs', 'projSites', 'projObjectives', 'projKeywords', 'PROJECT', 'allDurationList', 'allStatsList', 'allObjList', projectEditCtrl]);
+        'projDatum', 'projContacts', 'projPubs', 'projSites', 'projObjectives', 'projKeywords', 'PROJECT', 'SITE', 'allDurationList', 'allStatsList', 'allObjList', projectEditCtrl]);
     function projectEditCtrl($scope, $rootScope, $location, $state, $http, $filter, $modal, checkCreds, getCreds, thisProject, projOrgs, projDatum, projContacts, projPubs,
-            projSites, projObjectives, projKeywords, PROJECT, allDurationList, allStatsList, allObjList) {
+            projSites, projObjectives, projKeywords, PROJECT, SITE, allDurationList, allStatsList, allObjList) {
         //model needed for ProjectEdit Info tab: ( Counts for Cooperators, Datum, Contacts, Publications and Sites) 1. thisProject, 2. parsed urls, 3. project Keywords, 4. all objectives, 5. all statuses, 6. all durations 
 
         if (!checkCreds()) {
@@ -1554,8 +1619,28 @@
                 $scope.pubCount = { total: projPubs.length };
                 $scope.sitesCount = { total: projSites.length };
 
+                //deal with site url formatting here
+                var neededUpdating = false; //if url isn't formatted, flag so know to PUT after fix
+                //if any ProjSites, make sure the url (if one) is formatted properly
+                for (var psu = 0; psu < projSites.length; psu++) {
+                    var ind = psu;
+                    if (projSites[ind].URL != null && !projSites[ind].URL.startsWith('http')) {
+                        //there is a url and it's not formatted
+                        neededUpdating = true;
+                        projSites[ind].URL = 'http://' + projSites[ind].URL;
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Accept'] = 'application/json';
+                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+
+                        SITE.save({ id: projSites[ind].SITE_ID }, projSites[ind]).$promise.then(function () {
+                            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                        });
+                    }
+                }
+
                 //1. aProject
                 $scope.aProject = thisProject;
+                
                 $scope.title = "Project: " + $scope.aProject.NAME;
                 $scope.readyFlagModel = thisProject.READY_FLAG > 0 ? "Yes" : "No";
 
@@ -1564,15 +1649,40 @@
                     $scope.undetermined = true;
                 };
 
-                //put string ProjURLs into array by '|'
+                //put string ProjURLs into array by '|' and then ensure proper url format
                 if ($scope.aProject.URL) {
+                    //split string into an array
                     if (($scope.aProject.URL).indexOf('|') > -1) {
                         $scope.urls = ($scope.aProject.URL).split("|");
                     } else {
                         $scope.urls[0] = $scope.aProject.URL;
                     }
-                }
-
+                    //make sure they are formatted.. if not, format and PUT 
+                    var neededUpdating = false;
+                    for (var u = 0; u < $scope.urls.length; u++) {
+                        if (!$scope.urls[u].startsWith('http')) {
+                            neededUpdating = true;
+                            $scope.urls[u] = 'http://' + $scope.urls[u];
+                        }
+                    }
+                    //if they needed updating, PUT the project
+                    if (neededUpdating) {
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Accept'] = 'application/json';
+                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                        $scope.aProject.URL = ($scope.urls).join('|');
+                        PROJECT.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject).$promise.then(function (response) {
+                            $scope.aProject = response;
+                            //split string into an array
+                            if (($scope.aProject.URL).indexOf('|') > -1) {
+                                $scope.urls = ($scope.aProject.URL).split("|");
+                            } else {
+                                $scope.urls[0] = $scope.aProject.URL;
+                            }
+                            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                        });                        
+                    }
+                } //end there's a url
                 $scope.ProjectKeywords = projKeywords;
 
                 //#region add new property to OBJECTIVE_TYPES (selected:true/false)
@@ -2025,6 +2135,23 @@
     siGLControllers.controller('projectEditDataCtrl', ['$scope', '$http', '$modal', 'PROJECT', 'DATA_HOST', 'thisProject', 'projDatum', 'getCreds', projectEditDataCtrl]);
     function projectEditDataCtrl($scope, $http, $modal, PROJECT, DATA_HOST, thisProject, projDatum, getCreds) {
         $scope.ProjData = projDatum;
+        var neededUpdating = false; //if the url isn't formatted, flag so know to PUT it after fixing
+        //if any ProjDatum, make sure the url (if one) is formatted properly
+        for (var pdu = 0; pdu < $scope.ProjData.length; pdu++) {
+            var ind = pdu;
+            if ($scope.ProjData[ind].PORTAL_URL != null && !$scope.ProjData[ind].PORTAL_URL.startsWith('http')) {
+                //there is a url and it's not formatted
+                neededUpdating = true;
+                $scope.ProjData[ind].PORTAL_URL = 'http://' + $scope.ProjData[ind].PORTAL_URL;
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                
+                DATA_HOST.save({ id: $scope.ProjData[ind].DATA_HOST_ID }, $scope.ProjData[ind]).$promise.then(function () {
+                    delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                });
+            }
+        }
         $scope.isEditing = false; //disables form inputs while user is editing existing data up top
         $scope.newData = {
         };
@@ -2110,25 +2237,33 @@
             $scope.isEditing = false;
         };
 
-
+        $scope.validateUrl = function (data) {
+            if (data != null && !data.startsWith('http')) {
+                return "Please provide a properly formatted url. Example: http://www.google.com";
+            }
+        }
         //#region Edit existing Data        
         $scope.saveData = function (data, id) {
-            var test;
-            var retur = false;
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
-            $http.defaults.headers.common['Accept'] = 'application/json';
-            $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+            if (this.rowform.$valid) {
+                var retur = false;
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
 
-            DATA_HOST.save({ id: id }, data, function success(response) {
-                retur = response; //maybe need to update the projData that this controller gets from resolve, for returning to this tab later
-                $scope.projectForm.Data.$setPristine(true);
-                toastr.success("Data Updated");
-            }, function error(errorResponse) {
-                retur = false;
-                toastr.error("Error: " + errorResponse.statusText);
-            });
-            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-            return retur;
+                DATA_HOST.save({ id: id }, data, function success(response) {
+                    retur = response; //maybe need to update the projData that this controller gets from resolve, for returning to this tab later
+                    $scope.projectForm.Data.$setPristine(true);
+                    toastr.success("Data Updated");
+                }, function error(errorResponse) {
+                    retur = false;
+                    toastr.error("Error: " + errorResponse.statusText);
+                });
+                delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                return retur;
+            } else {
+                //not valid
+
+            }
         };//end saveData
 
         //#endregion Edit existing Data
@@ -2145,6 +2280,25 @@
     siGLControllers.controller('projectEditContactCtrl', ['$scope', '$http', '$filter', '$modal', 'PROJECT', 'CONTACT', 'ORGANIZATION_SYSTEM', 'projContacts', 'thisProject', 'orgResources', 'allOrgList', 'allDivisionList', 'allSectionList', 'getCreds', projectEditContactCtrl]);
     function projectEditContactCtrl($scope, $http, $filter, $modal, PROJECT, CONTACT, ORGANIZATION_SYSTEM, projContacts, thisProject, orgResources, allOrgList, allDivisionList, allSectionList, getCreds) {
         $scope.ProjContacts = projContacts;
+        //make sure phone is formatted
+        for (var p = 0; p < $scope.ProjContacts.length; p++) {
+            var theI = p;
+            if ($scope.ProjContacts[theI].PHONE != null && !$scope.ProjContacts[theI].PHONE.startsWith("(")) {
+                //not formatted..remove any spaces, dashes or parenthesis to then do it properly
+                var phNo = $scope.ProjContacts[theI].PHONE.replace("[()\\s-]+", "");
+                if (phNo.length >= 10) {
+                    //format it
+                    $scope.ProjContacts[theI].PHONE = "(" + phNo.substring(0, 3) + ") " + phNo.substring(3, 6) + "-" + phNo.substring(6);
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                    CONTACT.save({ id: $scope.ProjContacts[theI].CONTACT_ID }, $scope.ProjContacts[theI]).$promise.then(function (response) {
+                        delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                    });
+                }
+            }
+        }
+
         $scope.allOrgResources = orgResources; //ORGANIZATION_RESOURCE
         $scope.allOrganizations = allOrgList; //ORGANIZATION
         $scope.allDivisions = allDivisionList; //DIVISION
@@ -2595,8 +2749,13 @@
 
     siGLControllers.controller('projectEditSiteListCtrl', ['$scope', '$location', '$modal', '$http', 'getCreds', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE', projectEditSiteListCtrl]);
     function projectEditSiteListCtrl($scope, $location, $modal, $http, getCreds, projS, thisProject, siteStatList, lakeList, stateList, resourceList, mediaList, frequencyList, parameterList, SITE) {
-
         $scope.projectSites = projS;
+        for (var psu = 0; psu < $scope.projectSites.length; psu++) {
+            var ind = psu;
+            if ($scope.projectSites[ind].URL != null && !$scope.projectSites[ind].URL.startsWith('http')) {
+                $scope.projectSites[ind].URL = 'http://' + $scope.projectSites[ind].URL;
+            }
+        }
         $scope.thisProject = thisProject;
         $scope.LakeList = lakeList; $scope.StatusList = siteStatList; $scope.ResourceList = resourceList; $scope.MediaList = mediaList; $scope.FreqList = frequencyList; $scope.ParamList = parameterList;
         $scope.FrequenciesToAdd = []; $scope.MediaToAdd = []; $scope.ParameterToAdd = []; $scope.ResourceToAdd = [];
@@ -2886,7 +3045,7 @@
             }; //trigger to show/hide save button for additional info change
             $scope.showParams = false;// div containing all parameters (toggles show/hide)
             $scope.showHide = "Show"; //button text for show/hide parameters
-
+            
             //all the dropdowns
             $scope.allCountries = CountryList;
             $scope.allStates = stateList;
@@ -3286,7 +3445,10 @@
                     else {
                         //not valid.. is url invalid
                         if (!$scope.projectForm.SiteInfo.URL.$valid) {
-                            alert("Please enter a valid url. Example: 'http://www.google.com'");
+                            //undo change they made and focus on url field
+                            $("#URL").focus();
+                            
+                            alert("Please enter a valid url before making any edits to this Site. Example: 'http://www.google.com'");
                         }
                         else {
                             alert("Required fields must be populated.");
@@ -3544,6 +3706,9 @@
             case "Status Type":
                 $scope.keyToRmv = keyToRemove.STATUS;
                 break;
+            case "Project":
+                $scope.keyToRmv = keyToRemove.NAME;
+                break;
             default:
                 $scope.keyToRmv = "error";
         }
@@ -3560,8 +3725,8 @@
     }
 
     //org popup to add to org db
-    siGLControllers.controller('AddOrgModalCtrl', ['$scope', '$modalInstance', 'chosenParts', 'allOrgs', 'allDivs', 'allSecs', 'ORGANIZATION', 'DIVISION', 'SECTION', AddOrgModalCtrl]);
-    function AddOrgModalCtrl($scope, $modalInstance, chosenParts, allOrgs, allDivs, allSecs, ORGANIZATION, DIVISION, SECTION) {
+    siGLControllers.controller('AddOrgModalCtrl', ['$scope', '$modalInstance', '$http', 'getCreds', 'chosenParts', 'allOrgs', 'allDivs', 'allSecs', 'ORGANIZATION', 'DIVISION', 'SECTION', AddOrgModalCtrl]);
+    function AddOrgModalCtrl($scope, $modalInstance, $http, getCreds, chosenParts, allOrgs, allDivs, allSecs, ORGANIZATION, DIVISION, SECTION) {
         //globals
         $scope.OrgName = {}; //new org name input ng-model
         $scope.divisionName = {}; //new div name input ng-model
@@ -3636,6 +3801,8 @@
                 var orgToPost = {
                     ORGANIZATION_NAME: nameToAdd
                 };
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
                 ORGANIZATION.save(orgToPost, function success(response) {
                     //add this new one to the lists
                     $scope.orgList.push(response);
@@ -3665,6 +3832,8 @@
         $scope.addThisDivision = function (divToAdd, orgID) {
             if (divToAdd != "" && orgID != "") {
                 var divToPost = { DIVISION_NAME: divToAdd, ORG_ID: orgID };
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
                 DIVISION.save(divToPost, function success(response) {
                     $scope.allDivList.push(response);
                     $scope.divList.push(response); //push to the dropdown (these divs for this org)
@@ -3693,7 +3862,9 @@
         //this is the one they want to add
         $scope.addThisSection = function (secToAdd, divID) {
             if (secToAdd != "" && divID != "") {
-                var secToPost = {SECTION_NAME: secToAdd, DIV_ID: divID};
+                var secToPost = { SECTION_NAME: secToAdd, DIV_ID: divID };
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
                 SECTION.save(secToPost, function success(response) {
                     $scope.allSecList.push(response); //push to all sections 
                     $scope.secList.push(response); //push to the dropdown (these secs for this div)
@@ -3718,14 +3889,23 @@
         }
 
         //want to close input for adding new part
-        $scope.neverMind = function () {
-            //clear all inputs and hide all input divs
-            $scope.OrgName.value = ""; $scope.showAddNAMEinput = false;
-            $scope.divisionName.value = ""; $scope.showAddDIVISIONinput = false;
-            $scope.sectionName.value = ""; $scope.showAddSECTIONinput = false;
-            $scope.disableOrgSelect = false; $scope.disableDivSelect = false; $scope.disableSecSelect = false;
-            //set values back to what they were
-            $scope.selectedOrgID.id = $scope.originalOrgId; $scope.selectedDivID.id = $scope.originalDivId; $scope.selectedSecID.id = $scope.originalSecId;
+        $scope.neverMind = function (which) {
+            //clear 'which' input and hide all input divs
+            if (which == "org") {
+                $scope.OrgName.value = ""; $scope.showAddNAMEinput = false;
+                $scope.disableOrgSelect = false;
+                $scope.selectedOrgID.id = $scope.originalOrgId;
+            }
+            if (which == "div") {
+                $scope.divisionName.value = ""; $scope.showAddDIVISIONinput = false;
+                $scope.disableDivSelect = false;
+                $scope.selectedDivID.id = $scope.originalDivId;
+            }
+            if (which == "sec") {
+                $scope.sectionName.value = ""; $scope.showAddSECTIONinput = false;
+                $scope.disableSecSelect = false;
+                $scope.selectedSecID.id = $scope.originalSecId;
+            } 
         };
 
         $scope.ok = function () {
@@ -3739,8 +3919,8 @@
 
     //#region LOGIN/OUT
     //login 'setLoggedIn',
-    siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', '$rootScope', 'LOGIN', 'setCreds', LoginCtrl]);
-    function LoginCtrl($scope, $state, $http, $rootScope, LOGIN, setCreds) {
+    siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', '$rootScope', 'LOGIN', 'setCreds', 'getUserRole', LoginCtrl]);
+    function LoginCtrl($scope, $state, $http, $rootScope, LOGIN, setCreds, getUserRole) {
 
         //#region CAP lock Check
         $('[type=password]').keypress(function (e) {
@@ -3783,6 +3963,7 @@
                         $rootScope.isAuth.val = true;
                         $rootScope.usersName = usersNAME;
                         $rootScope.userID = user.DATA_MANAGER_ID;
+                        $rootScope.Role = getUserRole();
                         $state.go('projectList');
                     }
                     else {

@@ -19,12 +19,13 @@
                         $("#userNameFocus").focus();
                     };
                 });
-
         $rootScope
             .$on('$stateChangeSuccess',
                 function (event, toState, toParams, fromState, fromParams) {
+                    window.scrollTo(0, 0);
                     $(".page-loading").addClass("hidden");
                 });
+       
     });
 
     //app.config(function that defines the config code. 'ui.select', 'ngSanitize',
@@ -80,6 +81,10 @@
                          p: 'PROJECT',
                          allProj: function (p) {
                              return p.getAll().$promise;
+                         },
+                         r: 'ROLE',
+                         allRoles: function (r) {                             
+                             return r.getAll().$promise;
                          }
                       }
                  })
