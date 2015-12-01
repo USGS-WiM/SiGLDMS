@@ -26,7 +26,7 @@
          <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.LATITUDE.$invalid && projectForm.SiteInfo.LATITUDE.$dirty}">
              <label class="col-md-3 control-label req" for="inputLATITUDE">Latitude:</label>
              <div class="col-md-6">
-                 <input class="form-control" ng-keypress="isNum($event)" name="LATITUDE" id="inputLATITUDE" ng-model="thisSite.LATITUDE"
+                 <input class="form-control" ng-keypress="isNum($event)" name="LATITUDE" id="LATITUDE" ng-model="thisSite.LATITUDE"
                         type="text" placeholder="Latitude" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
                         required />
              </div>&nbsp;
@@ -40,7 +40,7 @@
          <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.LONGITUDE.$invalid && projectForm.SiteInfo.LONGITUDE.$dirty}">
              <label class="col-md-3 control-label req" for="inputLONGITUDE">Longitude:</label>
              <div class="col-md-6">
-                 <input class="form-control" ng-keypress="isNum($event)" id="inputLONGITUDE" name="LONGITUDE" ng-model="thisSite.LONGITUDE"
+                 <input class="form-control" ng-keypress="isNum($event)" id="LONGITUDE" name="LONGITUDE" ng-model="thisSite.LONGITUDE"
                         type="text" placeholder="Longitude" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
                         required />
              </div>&nbsp;

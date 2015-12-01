@@ -29,7 +29,7 @@
                 </span>
             </label>
             <div class="col-md-8">
-                <select class="form-control" ng-model="selectedOrgID" ng-options="org.ORGANIZATION_ID as org.ORGANIZATION_NAME for org in allOrgs | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)"></select>
+                <select class="form-control" id="OrgName" name="OrgName" ng-model="selectedOrgID" ng-options="org.ORGANIZATION_ID as org.ORGANIZATION_NAME for org in allOrgs | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)"></select>
                 <button class="btn btn-primary" ng-click="addNewOrg()">
                     Add New
                 </button>

@@ -624,7 +624,23 @@
                     $scope.ChangePassword = function () {
                         //change User's password
                         if ($scope.pass.newP == "" || $scope.pass.confirmP == "") {
-                            alert("You must first enter a new password");
+                            //modal for entering a password first
+                            var modalInstance = $modal.open({
+                                template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                          '<div class="modal-body"><p>You must first enter a new Password.</p></div>' +
+                                          '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                                controller: function ($scope, $modalInstance) {
+                                    $scope.ok = function() {
+                                        $modalInstance.close('password');
+                                    }
+                                },
+                                size: 'sm'
+                            });
+                            modalInstance.result.then(function (fieldFocus) {
+                                if (fieldFocus == "password") {
+                                    $("#inputNPASSWORD").focus();
+                                }
+                            });
                         } else {
                             DATA_MANAGER.changePW({ username: $scope.DM.USERNAME, newP: $scope.pass.newP },
                                 function success(response) {
@@ -1565,6 +1581,7 @@
             //#region changing tabs handler /////////////////////
             $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
                 //var formNameModified = false;
+                
                 var formNamePristine = true;
                 switch (fromState.url) {
                     case '/info':
@@ -1587,6 +1604,36 @@
                         break;
                 }
                 if (!formNamePristine) {
+                    var yesOrNo = false;
+                    //modal for changing states.. goes before user clicks ok or cancel... think because modal.open isn't async
+//                    var modalInstance = $modal.open({ 
+//                        template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+//                                    '<div class="modal-body"><p>Are you sure you want to change tabs? Any unsaved information will be lost.</p></div>' +
+//                                    '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button>' +
+//                                    '<button class="btn btn-primary" ng-click="cancel()">Cancel</button></div>',
+//                        controller: function ($scope, $modalInstance) {
+//                            $scope.ok = function () {
+//                                $modalInstance.dismiss();
+////                                $state.go(toState.name, toParams);
+//                            }
+//                            $scope.cancel = function () {
+//                                $(".page-loading").addClass("hidden");
+//                                $modalInstance.close('stay');
+//                                //event.preventDefault();
+//                                //$modalInstance.dismiss();
+//                            }
+//                        },
+//                        size: 'sm'
+//                    });
+//                    modalInstance.result.then(function (stayOrGo) {
+//                        //do nothing..let them go
+//                        if (stayOrGo == "stay") {
+//                            $(".page-loading").addClass("hidden");
+//                            event.preventDefault();
+//                        }
+//                    });
+
+
                     if (confirm("Are you sure you want to change tabs? Any unsaved information will be lost.")) {
                         console.log('go to: ' + toState.name);
                     } else {
@@ -1815,7 +1862,23 @@
                     }
                     $scope.newURL = {};
                 } else {
-                    alert("Make sure your URL follows this format: http://www.exampleurl.com");
+                    //modal for entering a password first
+                    var modalInstance = $modal.open({
+                        template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                   '<div class="modal-body"><p>Please type a url in first.</p></div>' +
+                                   '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                        controller: function ($scope, $modalInstance) {
+                            $scope.ok = function () {
+                                $modalInstance.close('url');
+                            }
+                        },
+                        size: 'sm'
+                    });
+                    modalInstance.result.then(function (fieldFocus) {
+                        if(fieldFocus == "url") {
+                            $("#inputURL").focus();
+                        }
+                    });
                 }
             }
             //#endregion ADD/REMOVE URLS
@@ -1848,7 +1911,23 @@
                     $scope.newKey = {};
                 } else {
                     // the value is empty
-                    alert("Please type a keyword in first.");
+                    //modal for entering a password first
+                    var modalInstance = $modal.open({
+                        template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                    '<div class="modal-body"><p>Please type a keyword in first.</p></div>' +
+                                    '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                        controller: function ($scope, $modalInstance) {
+                            $scope.ok = function () {
+                                $modalInstance.close('keyword');
+                            }
+                        },
+                        size: 'sm'
+                    });
+                    modalInstance.result.then(function (fieldFocus) {
+                        if(fieldFocus == "keyword") {
+                            $("#inputKEYWORD").focus();
+                        }
+                    });
                 }
             }
 
@@ -1965,10 +2044,10 @@
             }
 
             //change to the aProject made, put it .. fired on each blur after change made to field
-            $scope.SaveOnBlur = function (id) {
+            $scope.SaveOnBlur = function (valid, id) {                
                 if ($scope.aProject.PROJECT_ID != undefined) {
                     //ensure they don't delete required field values
-                    if ($scope.aProject.NAME != null) {
+                    if (valid) {
                         $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
                         $http.defaults.headers.common['Accept'] = 'application/json';
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
@@ -1979,10 +2058,27 @@
                         }, function error(errorResponse) {
                             toastr.error("Error: " + errorResponse.statusText);
                         });
-
                         delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                        } else {
+                        //modal for enter all required fields
+                        var modalInstance = $modal.open({
+                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                        '<div class="modal-body"><p>Please populate all required fields.</p></div>' +
+                                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                            controller: function ($scope, $modalInstance) {
+                                $scope.ok = function () {
+                                    $modalInstance.close('required');
+                                }
+                            },
+                            size: 'sm'
+                        });
+                        modalInstance.result.then(function (fieldFocus) {
+                            if (fieldFocus == "required") {
+                               angular.element("[name='" + $scope.projectForm.Info.$name + "']").find('.ng-invalid:visible:first').focus();
+                            }
+                        });
+                        toastr.error("Project not updated.");
                     }
-                    //else {alert("Project Name is required.")}
                 }
                 if (id > 0) {
                     $scope.selectedStat(id);
@@ -2067,7 +2163,23 @@
         //adding a new organization to this project (need to check if a new ORGANIZATION_SYSTEM needs to be posted first
         $scope.AddOrgToProj = function () {
             if ($scope.selectedOrgID == "") {
-                alert("You must choose an Organization Name to add.");
+                //modal for enter all required fields
+                var modalInstance = $modal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                '<div class="modal-body"><p>You must choose an Organization Name to add.</p></div>' +
+                                '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.ok = function () {
+                            $modalInstance.close('org');
+                        }
+                    },
+                    size: 'sm'
+                });
+                modalInstance.result.then(function (fieldFocus) {
+                    if (fieldFocus == "org") {
+                        $("#OrgName").focus();
+                    }
+                });                
             } else {
                 var secID = $scope.selectedSecID != "" ? $scope.selectedSecID : "0";
                 var divID = $scope.selectedDivID != "" ? $scope.selectedDivID : "0";
@@ -2136,6 +2248,10 @@
     function projectEditDataCtrl($scope, $http, $modal, PROJECT, DATA_HOST, thisProject, projDatum, getCreds) {
         $scope.ProjData = projDatum;
         var neededUpdating = false; //if the url isn't formatted, flag so know to PUT it after fixing
+        $scope.isEditing = false; //disables form inputs while user is editing existing data up top
+        $scope.newData = {}; //holder
+        var thisProjID = thisProject.PROJECT_ID; //projectID
+
         //if any ProjDatum, make sure the url (if one) is formatted properly
         for (var pdu = 0; pdu < $scope.ProjData.length; pdu++) {
             var ind = pdu;
@@ -2152,12 +2268,28 @@
                 });
             }
         }
-        $scope.isEditing = false; //disables form inputs while user is editing existing data up top
-        $scope.newData = {
+       
+        //modal for required at least 1 field..
+        var openModal = function () {
+           var modalInstance = $modal.open({
+                template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                    '<div class="modal-body"><p>You must populate at least one field.</p></div>' +
+                    '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                controller: function ($scope, $modalInstance) {
+                    $scope.ok = function () {
+                         $modalInstance.close('req');
+                    }
+                },
+                size: 'sm'
+           });
+           modalInstance.result.then(function (fieldFocus) {
+                if (fieldFocus == "req") {
+                    $("#DESCRIPTION").focus();
+                }
+          });
         };
-        var thisProjID = thisProject.PROJECT_ID;
 
-        //#region POST Data click
+        //POST Data click
         $scope.AddData = function (valid, d) {
             if (valid) {
                 //add it
@@ -2175,17 +2307,12 @@
                     toastr.error("Error: " + errorResponse.statusText);
                 });
             } else {
-                if ($scope.projectForm.Data.PORTAL_URL.$viewValue == "") {
-                    alert("You must populate at least one field before adding the data.");
-                }
-                if ($scope.projectForm.Data.PORTAL_URL.$valid == false && $scope.projectForm.Data.PORTAL_URL.$viewValue != "") {
-                    alert("Make sure your URL follows this format: http://www.exampleurl.com");
-                }
+                //modal for enter all required fields
+                openModal();                
             }
         }//end addData
-        //#endregion POST Data click
 
-        //#region DELETE Data click
+        //DELETE Data click
         $scope.RemoveData = function (dataH) {
             //modal
             var modalInstance = $modal.open({
@@ -2222,34 +2349,35 @@
             });
             //end modal
         };
-        //#endregion DELETE Data click
 
-        $scope.EditRowClicked = function () {
-            //make sure form is not pristine in case they change tabs before hitting save/cancel
-            $scope.projectForm.Data.$pristine = false;
-            //disable create new fields until they hit save/cancel
-            $scope.isEditing = true;
-        };
-        $scope.CancelEditRowClick = function () {
-            //make sure form is not pristine in case they change tabs before hitting save/cancel
-            $scope.projectForm.Data.$setPristine(true);
-            //disable create new fields until they hit save/cancel
-            $scope.isEditing = false;
-        };
-
-        $scope.validateUrl = function (data) {
-            if (data != null && !data.startsWith('http')) {
-                return "Please provide a properly formatted url. Example: http://www.google.com";
+        //validate that at least 1 field is populated before saving edit
+        $scope.ValidateAtLeastOne = function (d) {
+            if ((d.DESCRIPTION == "" || d.DESCRIPTION == null) && (d.HOST_NAME == "" || d.HOST_NAME == null) && (d.PORTAL_URL == "" || d.PORTAL_URL == null)) {
+                toastr.error("Data Source not updated.")
+                openModal();
+                return "You need to populate at least one field."; //way to stop it from closing edit..just return something cuz modal is opening                
             }
         }
-        //#region Edit existing Data        
+
+        //editing, disable create parts
+        $scope.EditRowClicked = function () {    
+            $scope.projectForm.Data.$pristine = false; //make sure form is not pristine in case they change tabs before hitting save/cancel            
+            $scope.isEditing = true; //disable create new fields until they hit save/cancel
+        };
+
+        //cancel edit
+        $scope.CancelEditRowClick = function () {            
+            $scope.projectForm.Data.$setPristine(true);//make sure form is pristine             
+            $scope.isEditing = false;//enable create new fields
+        };
+
+        //Edit existing Data        
         $scope.saveData = function (data, id) {
             if (this.rowform.$valid) {
                 var retur = false;
                 $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-
                 DATA_HOST.save({ id: id }, data, function success(response) {
                     retur = response; //maybe need to update the projData that this controller gets from resolve, for returning to this tab later
                     $scope.projectForm.Data.$setPristine(true);
@@ -2266,12 +2394,6 @@
             }
         };//end saveData
 
-        //#endregion Edit existing Data
-
-        $scope.cancel = function () {
-            //navigate to a different state
-            $state.go('projectList');
-        };//end cancel
     }
     //#endregion DATA Controller
 
@@ -2280,6 +2402,7 @@
     siGLControllers.controller('projectEditContactCtrl', ['$scope', '$http', '$filter', '$modal', 'PROJECT', 'CONTACT', 'ORGANIZATION_SYSTEM', 'projContacts', 'thisProject', 'orgResources', 'allOrgList', 'allDivisionList', 'allSectionList', 'getCreds', projectEditContactCtrl]);
     function projectEditContactCtrl($scope, $http, $filter, $modal, PROJECT, CONTACT, ORGANIZATION_SYSTEM, projContacts, thisProject, orgResources, allOrgList, allDivisionList, allSectionList, getCreds) {
         $scope.ProjContacts = projContacts;
+
         //make sure phone is formatted
         for (var p = 0; p < $scope.ProjContacts.length; p++) {
             var theI = p;
@@ -2398,7 +2521,7 @@
                     });
                 }
             } else {
-                toastr.error("Something went wrong. Make sure all required fields are populated");
+                toastr.error("Contact not added");
             }
         };
 
@@ -2414,6 +2537,35 @@
             showAtag.style.display = "none";
             $scope.isEditing = false;
         };
+        $scope.checkRequiredFields = function (which, data) {
+            //            if null -- you must populate, else if which== email .. valid email
+            if (data == null) {
+                return "You must populate all required fields";
+            } else {
+                if (which == "email") {
+                    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+                    if (re.test(data) == false)
+                        return "You must provide a valid email address";
+                }
+            }
+            ////modal for enter all required fields
+            //var modalInstance = $modal.open({
+            //    template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+            //                '<div class="modal-body"><p>You must populate all required fields.</p></div>' +
+            //                '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+            //    controller: function ($scope, $modalInstance) {
+            //        $scope.ok = function () {
+            //            $modalInstance.close(errorField);
+            //        }
+            //    },
+            //    size: 'sm'
+            //});
+            //modalInstance.result.then(function (fieldFocus) {
+            //    var test = "#" + fieldFocus;
+            //    $(test).focus;
+                //});
+            
+        }
 
         //edit contact done, save clicked
         $scope.saveContact = function (contact, id) {
@@ -2636,6 +2788,26 @@
         };
         var thisProjID = thisProject.PROJECT_ID;
 
+        //modal for required at least 1 field..
+        var openModal = function () {
+            var modalInstance = $modal.open({
+                template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                    '<div class="modal-body"><p>You must populate at least one field.</p></div>' +
+                    '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                controller: function ($scope, $modalInstance) {
+                    $scope.ok = function () {
+                        $modalInstance.close('req');
+                    }
+                },
+                size: 'sm'
+            });
+            modalInstance.result.then(function (fieldFocus) {
+                if (fieldFocus == "req") {
+                    $("#TITLE").focus();
+                }
+            });
+        };
+
         //#region POST Pub click
         $scope.AddPub = function (valid, p) {
             if (valid) {
@@ -2658,7 +2830,8 @@
                 });
 
             } else {
-                alert("You must populate at least one field before adding the publication.");
+                //modal for enter all required fields
+                openModal();
             }
         }
         //#endregion POST Pub click
@@ -2702,12 +2875,22 @@
         }
         //#endregion DELETE Pub click
 
+        //validate that at least 1 field is populated before saving edit
+        $scope.ValidateAtLeastOne = function (d) {
+            if ((d.TITLE == "" || d.TITLE == null) && (d.DESCRIPTION == "" || d.DESCRIPTION == null) && (d.URL == "" || d.URL == null)) {
+                toastr.error("Publication not updated.")
+                openModal();
+                return "You need to populate at least one field."; //way to stop it from closing edit..just return something cuz modal is opening                
+            }
+        }
+
         $scope.EditRowClicked = function () {
             //make sure form is not pristine in case they change tabs before hitting save/cancel
             $scope.projectForm.Pubs.$pristine = false;
             //disable create new fields until they hit save/cancel
             $scope.isEditing = true;
         };
+
         $scope.CancelEditRowClick = function () {
             //make sure form is not pristine in case they change tabs before hitting save/cancel
             $scope.projectForm.Pubs.$setPristine(true);
@@ -2737,11 +2920,6 @@
             return retur;
         };
         //#endregion Edit existing Data
-
-        $scope.cancel = function () {
-            //navigate to a different state
-            $state.go('projectList');
-        };
     }
     //#endregion PUBLICATION Controller
 
@@ -3415,6 +3593,45 @@
                     if (theEvent.preventDefault) theEvent.preventDefault();
                 }
             };
+
+            //lat modal 
+            var openLatModal = function () {
+                var latModal = $modal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                        '<div class="modal-body"><p>The Latitude must be between 0 and 73.0</p></div>' +
+                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.ok = function () {
+                            $modalInstance.close('lat');
+                        }
+                    },
+                    size: 'sm'
+                });
+                latModal.result.then(function (fieldFocus) {
+                    if (fieldFocus == "lat")
+                        $("#LATITUDE").focus();
+                });
+            };
+
+            //long modal
+            var openLongModal = function () {
+                var longModal = $modal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                        '<div class="modal-body"><p>The Longitude must be between -175.0 and -60.0</p></div>' +
+                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.ok = function () {
+                            $modalInstance.close('long');
+                        }
+                    },
+                    size: 'sm'
+                });
+                longModal.result.then(function (fieldFocus) {
+                    if (fieldFocus == "long")
+                        $("#LONGITUDE").focus();
+                });
+            };
+
             //change to the thisSite made, put it .. fired on each blur after change made to field
             $scope.SaveOnBlur = function (valid, da) {
                 if ($scope.thisSite.SITE_ID != undefined) {
@@ -3436,26 +3653,32 @@
                             delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                         }
                         else if ($scope.thisSite.LATITUDE < 0 || $scope.thisSite.LATITUDE > 73) {
-                            alert("The Latitude must be between 0 and 73.0");
+                            openLatModal();
                         }
                         else if ($scope.thisSite.LONGITUDE < -175 || $scope.thisSite.LONGITUDE > -60) {
-                            alert("The Longitude must be between -175.0 and -60.0");
+                            openLongModal();
                         }
                     }
                     else {
-                        //not valid.. is url invalid
-                        if (!$scope.projectForm.SiteInfo.URL.$valid) {
-                            //undo change they made and focus on url field
-                            $("#URL").focus();
-                            
-                            alert("Please enter a valid url before making any edits to this Site. Example: 'http://www.google.com'");
-                        }
-                        else {
-                            alert("Required fields must be populated.");
-                        }
+                        //not valid.. modal for enter all required fields
+                        var modalInstance = $modal.open({
+                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                        '<div class="modal-body"><p>Please populate all required fields.</p></div>' +
+                                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                            controller: function ($scope, $modalInstance) {
+                                $scope.ok = function () {
+                                    $modalInstance.close('required');
+                                }
+                            },
+                            size: 'sm'
+                        });
+                        modalInstance.result.then(function (fieldFocus) {
+                            if (fieldFocus == "required")
+                                angular.element("[name='" + $scope.projectForm.SiteInfo.$name + "']").find('.ng-invalid:visible:first').focus();
+                        });
+                        toastr.error("Site not updated.");                            
                     }
                 }
-
             }//end SaveOnBlur
 
             //save NEW SITE and then frequencies, media, parameters, and resources
@@ -3495,8 +3718,7 @@
                                 },
                                 function error(errorResponse) {
                                     toastr.error("Error: " + errorResponse.statusText);
-                                }
-                        );
+                                });
                         };
                         //post parameters
                         for (var k = $scope.ParameterToAdd.length; k--;) {
@@ -3532,13 +3754,14 @@
                         $location.path('/project/edit/' + thisProject.PROJECT_ID + '/site/siteList').replace();//.notify(false);
                         $scope.apply;
                     });
-                }
-                if ($scope.thisSite.LATITUDE < 0 || $scope.thisSite.LATITUDE > 73.0) {
-                    alert("The Latitude must be between 0 and 73.0");
-                }
-                if ($scope.thisSite.LONGITUDE < -175 || $scope.thisSite.LONGITUDE > -60) {
-                    alert("The Longitude must be between -175.0 and -60.0");
-                }
+                } else {
+                    if ($scope.thisSite.LATITUDE < 0 || $scope.thisSite.LATITUDE > 73.0)
+                        openLatModal();
+
+                    if ($scope.thisSite.LONGITUDE < -175 || $scope.thisSite.LONGITUDE > -60)
+                        openLongModal();
+
+                } //end else valid
             }//end save
 
         }//end CheckCreds() passed
