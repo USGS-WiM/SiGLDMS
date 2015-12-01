@@ -12,33 +12,37 @@
 <div class="subheader">Add New Organization</div>
 <form class="form-horizontal" name="projectForm.Coop">
 
-    <div>
+    <!--<div>
         <span>
             Don't see the Organization Name, Division or Section?
             <a href ng-click="addNewOrg()"> Click here to add it.</a>
         </span>
-    </div>
+    </div>-->
 
     <fieldset>
         <div class="form-group required">
             <label class="col-md-4 control-label">
-              Organization
-              <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                    title="After selecting your Organization (and Division/Office and Section, if applicable) in the drop-down menu, click the “Add Organization” button to save. Repeat if multiple organizations apply."
-                    data-placement="right" tooltip>
-              </span>
+                Organization
+                <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                      title="After selecting your Organization (and Division/Office and Section, if applicable) in the drop-down menu, click the “Add Organization” button to save. Repeat if multiple organizations apply."
+                      data-placement="right" tooltip>
+                </span>
             </label>
             <div class="col-md-8">
-                <select class="form-control" ng-model="selectedOrgID" ng-options="org.ORGANIZATION_ID as org.ORGANIZATION_NAME for org in allOrgs | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)"></select>
+                <select class="form-control" id="OrgName" name="OrgName" ng-model="selectedOrgID" ng-options="org.ORGANIZATION_ID as org.ORGANIZATION_NAME for org in allOrgs | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)"></select>
+                <button class="btn btn-primary" ng-click="addNewOrg()">
+                    Add New
+                </button>
             </div>
-
-
         </div>
 
         <div class="form-group">
             <label class="col-md-4 control-label">Division</label>
             <div class="col-md-8">
                 <select class="form-control" ng-model="selectedDivID" ng-options="div.DIVISION_ID as div.DIVISION_NAME for div in alldivs | orderBy: 'DIVISION_NAME'" ng-change="getSecs(selectedDivID)"></select>
+                <button class="btn btn-primary" ng-click="addNewOrg()">
+                    Add New
+                </button>
             </div>
         </div>
 
@@ -46,10 +50,15 @@
             <label class="col-md-4 control-label">Section</label>
             <div class="col-md-8">
                 <select class="form-control" ng-model="selectedSecID" ng-options="sec.SECTION_ID as sec.SECTION_NAME for sec in allsecs | orderBy: 'SECTION_NAME'"></select>
+                <button class="btn btn-primary" ng-click="addNewOrg()">
+                    Add New
+                </button>
             </div>
         </div>
+
+        </div>
         <!--submit button-->
-        <br/>
+        <br />
         <div class="form-group">
             <div class="col-md-4 col-md-offset-4">
                 <span>

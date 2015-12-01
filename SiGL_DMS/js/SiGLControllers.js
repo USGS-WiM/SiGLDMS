@@ -239,15 +239,36 @@
             });
         };
     });
-
+   
+    //adding 'http://' to url inputs http://stackoverflow.com/questions/19482000/angularjs-add-http-prefix-to-url-input-field
+    siGLControllers.directive('httpPrefix', function () {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, controller) {
+                function ensureHttpPrefix(value) {
+                    // Need to add prefix if we don't have http:// prefix already AND we don't have part of it
+                    if (value && !/^(https?):\/\//i.test(value)
+                       && 'http://'.indexOf(value) !== 0 && 'https://'.indexOf(value) !== 0) {
+                        controller.$setViewValue('http://' + value);
+                        controller.$render();
+                        return 'http://' + value;
+                    }
+                    else
+                        return value;
+                }
+                controller.$formatters.push(ensureHttpPrefix);
+                controller.$parsers.splice(0, 0, ensureHttpPrefix);
+            }
+        };
+    });
     //#endregion DIRECTIVES
 
     //#region MAIN Controller
-    siGLControllers.controller('mainCtrl', ['$scope', '$rootScope', '$location', '$state', 'checkCreds', 'getUsersNAME', 'getUserID', mainCtrl]);
-    function mainCtrl($scope, $rootScope, $location, $state, checkCreds, getUsersNAME, getUserID) {
+    siGLControllers.controller('mainCtrl', ['$scope', '$rootScope', '$location', '$state', 'checkCreds', 'getUsersNAME', 'getUserID', 'getUserRole', mainCtrl]);
+    function mainCtrl($scope, $rootScope, $location, $state, checkCreds, getUsersNAME, getUserID, getUserRole) {
         $scope.logo = 'images/usgsLogo.png';
         $rootScope.isAuth = {};
-
         if (!checkCreds()) {
             $rootScope.isAuth.val = false;
             $location.path('/login');
@@ -255,6 +276,8 @@
             $rootScope.isAuth.val = true;
             $rootScope.usersName = getUsersNAME();
             $rootScope.userID = getUserID();
+            $rootScope.Role = getUserRole();
+
             $state.go('projectList');
 
         }
@@ -275,8 +298,8 @@
     }
 
     //#region Data Manager
-    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'ROLE', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allProj', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
-    function dataManagerCtrl($scope, $http, DATA_MANAGER, ROLE, allOrgRes, allOrgs, allDivs, allSecs, allProj, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
+    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'ROLE', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allProj', 'allRoles', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
+    function dataManagerCtrl($scope, $http, DATA_MANAGER, ROLE, allOrgRes, allOrgs, allDivs, allSecs, allProj, allRoles, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
         //get all datamanagers once here to ensure passing auth
         if (!checkCreds()) {
             $scope.auth = false;
@@ -289,25 +312,24 @@
             $scope.allSECs = allSecs;
 
             $scope.loggedInUser = {};
-
+            $scope.allROLEs = allRoles;
             //get all the roles and data managers
             $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
             $http.defaults.headers.common['Accept'] = 'application/json';
-            ROLE.getAll().$promise.then(function (response) {
-                $scope.allROLEs = response;
-                //NAME, Organization, Role, # of Projects
-                DATA_MANAGER.getAll().$promise.then(function (result) {
-                    for (var x = 0; x < result.length; x++) {
-                        var orgName = allOrgRes.filter(function (or) { return or.OrganizationSystemID == result[x].ORGANIZATION_SYSTEM_ID; })[0];
-                        result[x].OrgName = orgName != undefined ? orgName.OrganizationName : "";
-                        result[x].roleName = $scope.allROLEs.filter(function (ro) { return ro.ROLE_ID == result[x].ROLE_ID; })[0].ROLE_NAME
-                        var theseProjs = allProj.filter(function (p) { return p.DATA_MANAGER_ID == result[x].DATA_MANAGER_ID; });
-                        result[x].projCount = theseProjs.length;
-                    }
-                    $scope.allDMs = result;
-                });
+                
+            //NAME, Organization, Role, # of Projects
+            DATA_MANAGER.getAll().$promise.then(function (result) {
+                for (var x = 0; x < result.length; x++) {
+                    var orgName = allOrgRes.filter(function (or) { return or.OrganizationSystemID == result[x].ORGANIZATION_SYSTEM_ID; })[0];
+                    result[x].OrgName = orgName != undefined ? orgName.OrganizationName : "";
+                    result[x].roleName = $scope.allROLEs.filter(function (ro) { return ro.ROLE_ID == result[x].ROLE_ID; })[0].ROLE_NAME;
+                    result[x].FULLNAME = result[x].FNAME + " " + result[x].LNAME;
+                    var theseProjs = allProj.filter(function (p) { return p.DATA_MANAGER_ID == result[x].DATA_MANAGER_ID; });
+                    result[x].projCount = theseProjs.length;
+                }
+                $scope.allDMs = result;
             });
-
+            
             $scope.loggedInUser.Name = getUsersNAME(); //User's NAME
             $scope.loggedInUser.ID = getUserID();
             $scope.loggedInUser.Role = getUserRole();
@@ -331,19 +353,32 @@
         }//end auth user logged in
     }//end resourceCtrl
 
-    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$location', '$http', '$modal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'ROLE', 'thisDM', 'dmProjects', 'checkCreds', 'getCreds', 'setCreds', 'getUserRole', 'getUsersNAME', 'getUserID', dataManagerInfoCtrl]);
-    function dataManagerInfoCtrl($scope, $location, $http, $modal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, ROLE, thisDM, dmProjects, checkCreds, getCreds, setCreds) {
+    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$location', '$http', '$modal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'ROLE', 'allRoles', 'thisDM', 'dmProjects', 'checkCreds', 'getCreds', 'setCreds', 'getUserRole', 'getUsersNAME', 'getUserID', dataManagerInfoCtrl]);
+    function dataManagerInfoCtrl($scope, $location, $http, $modal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, ROLE, allRoles, thisDM, dmProjects, checkCreds, getCreds, setCreds) {
             if (!checkCreds()) {
                 $scope.auth = false;
                 $location.path('/login');
             } else {
                 $scope.DMProjects = dmProjects; //All their Projects            
-
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
-                $http.defaults.headers.common['Accept'] = 'application/json';
-                ROLE.getAll().$promise.then(function (response) {
-                    $scope.RoleList = response;
-                });
+                $scope.RoleList = allRoles;
+                
+                // change sorting order
+                $scope.sort_by = function (newSortingOrder) {
+                    if ($scope.sortingOrder == newSortingOrder) {
+                        $scope.reverse = !$scope.reverse;
+                    }
+                    $scope.sortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.reverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
 
                 $scope.pass = {
                     newP: '',
@@ -421,7 +456,7 @@
                     $scope.matchingUsers = $stateParams.id == $scope.$parent.loggedInUser.ID ? true : false;
 
                     $scope.DM = thisDM;
-                    
+                    $scope.DM.roleName = $scope.RoleList.filter(function (rl) { return rl.ROLE_ID == $scope.DM.ROLE_ID; })[0].ROLE_NAME;
 
                     $scope.dmOrg = $scope.$parent.allORG_RES.filter(function (o) { return o.OrganizationSystemID == $scope.DM.ORGANIZATION_SYSTEM_ID })[0];
 
@@ -454,6 +489,8 @@
                         } else {
                             //is undefined, so they created a new one, so post the ORGANIZATION_SYSTEM then update the DM
                             var newORG_SYS = { ORG_ID: orgID, DIV_ID: divID, SEC_ID: secID };
+                            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                            $http.defaults.headers.common['Accept'] = 'application/json';
                             ORGANIZATION_SYSTEM.save(newORG_SYS, function success(response) {
                                 $scope.DM.ORGANIZATION_SYSTEM_ID = response.ORGANIZATION_SYSTEM_ID;
                                 //need to update $scope.dmOrg which is an ORGANIZATION_RESOURCE
@@ -510,11 +547,11 @@
 
                     //#region all DMs for dropdown in case they want to change the dm on the project (WHEN THE CLICK TO EDIT Project)
                     setTimeout(function () {
-                        for (var x = 0; x < $scope.$parent.allDMs.length; x++) {
-                            $scope.$parent.allDMs[x].FULLNAME = $scope.$parent.allDMs[x].FNAME + " " + $scope.$parent.allDMs[x].LNAME;
-                        };
-                        $scope.allDMs = $scope.$parent.allDMs;
-
+                    //    for (var x = 0; x < $scope.$parent.allDMs.length; x++) {
+                    //        $scope.$parent.allDMs[x].FULLNAME = $scope.$parent.allDMs[x].FNAME + " " + $scope.$parent.allDMs[x].LNAME;
+                    //    };
+                        $scope.allDMs = $scope.$parent.allDMs; 
+                        $scope.$apply;
                         //used in xeditable to show dm for project in dropdown
                         $scope.showDMs = function (project) {
                             var selected = [];
@@ -547,6 +584,38 @@
                         return retur;
                     }; //end updateDMonProj
 
+                    //delete this project and related stuff
+                    $scope.RemoveProject = function (proj) {
+                        //modal
+                        var modalInstance = $modal.open({
+                            templateUrl: 'removemodal.html',
+                            controller: 'ConfirmModalCtrl',
+                            size: 'sm',
+                            resolve: {
+                                keyToRemove: function () {
+                                    return proj;
+                                },
+                                what: function () {
+                                    return "Project";
+                                }
+                            }
+                        });
+                        modalInstance.result.then(function (keyToRemove) {
+                            //yes, remove this keyword
+                            var index = $scope.DMProjects.indexOf(proj);
+                            //DELETE it
+                            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                            PROJECT.delete({ id: proj.PROJECT_ID }, proj, function success(response) {
+                                $scope.DMProjects.splice(index, 1);
+                                toastr.success("Project Removed");
+                            }, function error(errorResponse) {
+                                toastr.error("Error: " + errorResponse.statusText);
+                            });
+                        }, function () {
+                            //logic for cancel
+                        });//end modal                        
+                    }
+
                     //password update section
                     $scope.changeMyPassBtn = function (evt) {
                         $scope.changePass == false ? $scope.changePass = true : $scope.changePass = false;
@@ -555,7 +624,23 @@
                     $scope.ChangePassword = function () {
                         //change User's password
                         if ($scope.pass.newP == "" || $scope.pass.confirmP == "") {
-                            alert("You must first enter a new password");
+                            //modal for entering a password first
+                            var modalInstance = $modal.open({
+                                template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                          '<div class="modal-body"><p>You must first enter a new Password.</p></div>' +
+                                          '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                                controller: function ($scope, $modalInstance) {
+                                    $scope.ok = function() {
+                                        $modalInstance.close('password');
+                                    }
+                                },
+                                size: 'sm'
+                            });
+                            modalInstance.result.then(function (fieldFocus) {
+                                if (fieldFocus == "password") {
+                                    $("#inputNPASSWORD").focus();
+                                }
+                            });
                         } else {
                             DATA_MANAGER.changePW({ username: $scope.DM.USERNAME, newP: $scope.pass.newP },
                                 function success(response) {
@@ -579,10 +664,6 @@
                         $scope.pass.newP = '';
                         $scope.pass.confirmP = '';
                     }; //end DontChangePass
-
-                    setTimeout(function () {
-                        $scope.DM.roleName = $scope.RoleList.filter(function (rl) { return rl.ROLE_ID == thisDM.ROLE_ID; })[0].ROLE_NAME;
-                    }, 3000);
 
                 }//end if thisDM != undefined
                 else {
@@ -750,7 +831,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return ft;
                         },
                         what: function () {
@@ -826,7 +907,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return lt;
                         },
                         what: function () {
@@ -900,7 +981,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return mt;
                         },
                         what: function () {
@@ -978,7 +1059,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return ot;
                         },
                         what: function () {
@@ -1054,7 +1135,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return pt;
                         },
                         what: function () {
@@ -1128,7 +1209,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return rt
                         },
                         what: function () {
@@ -1206,7 +1287,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return pd;
                         },
                         what: function () {
@@ -1282,7 +1363,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return ps;
                         },
                         what: function () {
@@ -1356,7 +1437,7 @@
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
                     resolve: {
-                        nameToRemove: function () {
+                        keyToRemove: function () {
                             return ss;
                         },
                         what: function () {
@@ -1471,9 +1552,9 @@
     //#region ABSTRACT PROJECT EDIT Controller
     //ProjectEditCtrl
     siGLControllers.controller('projectEditCtrl', ['$scope', '$rootScope', '$location', '$state', '$http', '$filter', '$modal', 'checkCreds', 'getCreds', 'thisProject', 'projOrgs',
-        'projDatum', 'projContacts', 'projPubs', 'projSites', 'projObjectives', 'projKeywords', 'PROJECT', 'allDurationList', 'allStatsList', 'allObjList', projectEditCtrl]);
+        'projDatum', 'projContacts', 'projPubs', 'projSites', 'projObjectives', 'projKeywords', 'PROJECT', 'SITE', 'allDurationList', 'allStatsList', 'allObjList', projectEditCtrl]);
     function projectEditCtrl($scope, $rootScope, $location, $state, $http, $filter, $modal, checkCreds, getCreds, thisProject, projOrgs, projDatum, projContacts, projPubs,
-            projSites, projObjectives, projKeywords, PROJECT, allDurationList, allStatsList, allObjList) {
+            projSites, projObjectives, projKeywords, PROJECT, SITE, allDurationList, allStatsList, allObjList) {
         //model needed for ProjectEdit Info tab: ( Counts for Cooperators, Datum, Contacts, Publications and Sites) 1. thisProject, 2. parsed urls, 3. project Keywords, 4. all objectives, 5. all statuses, 6. all durations 
 
         if (!checkCreds()) {
@@ -1500,6 +1581,7 @@
             //#region changing tabs handler /////////////////////
             $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
                 //var formNameModified = false;
+                
                 var formNamePristine = true;
                 switch (fromState.url) {
                     case '/info':
@@ -1522,6 +1604,36 @@
                         break;
                 }
                 if (!formNamePristine) {
+                    var yesOrNo = false;
+                    //modal for changing states.. goes before user clicks ok or cancel... think because modal.open isn't async
+//                    var modalInstance = $modal.open({ 
+//                        template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+//                                    '<div class="modal-body"><p>Are you sure you want to change tabs? Any unsaved information will be lost.</p></div>' +
+//                                    '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button>' +
+//                                    '<button class="btn btn-primary" ng-click="cancel()">Cancel</button></div>',
+//                        controller: function ($scope, $modalInstance) {
+//                            $scope.ok = function () {
+//                                $modalInstance.dismiss();
+////                                $state.go(toState.name, toParams);
+//                            }
+//                            $scope.cancel = function () {
+//                                $(".page-loading").addClass("hidden");
+//                                $modalInstance.close('stay');
+//                                //event.preventDefault();
+//                                //$modalInstance.dismiss();
+//                            }
+//                        },
+//                        size: 'sm'
+//                    });
+//                    modalInstance.result.then(function (stayOrGo) {
+//                        //do nothing..let them go
+//                        if (stayOrGo == "stay") {
+//                            $(".page-loading").addClass("hidden");
+//                            event.preventDefault();
+//                        }
+//                    });
+
+
                     if (confirm("Are you sure you want to change tabs? Any unsaved information will be lost.")) {
                         console.log('go to: ' + toState.name);
                     } else {
@@ -1554,8 +1666,28 @@
                 $scope.pubCount = { total: projPubs.length };
                 $scope.sitesCount = { total: projSites.length };
 
+                //deal with site url formatting here
+                var neededUpdating = false; //if url isn't formatted, flag so know to PUT after fix
+                //if any ProjSites, make sure the url (if one) is formatted properly
+                for (var psu = 0; psu < projSites.length; psu++) {
+                    var ind = psu;
+                    if (projSites[ind].URL != null && !projSites[ind].URL.startsWith('http')) {
+                        //there is a url and it's not formatted
+                        neededUpdating = true;
+                        projSites[ind].URL = 'http://' + projSites[ind].URL;
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Accept'] = 'application/json';
+                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+
+                        SITE.save({ id: projSites[ind].SITE_ID }, projSites[ind]).$promise.then(function () {
+                            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                        });
+                    }
+                }
+
                 //1. aProject
                 $scope.aProject = thisProject;
+                
                 $scope.title = "Project: " + $scope.aProject.NAME;
                 $scope.readyFlagModel = thisProject.READY_FLAG > 0 ? "Yes" : "No";
 
@@ -1564,15 +1696,40 @@
                     $scope.undetermined = true;
                 };
 
-                //put string ProjURLs into array by '|'
+                //put string ProjURLs into array by '|' and then ensure proper url format
                 if ($scope.aProject.URL) {
+                    //split string into an array
                     if (($scope.aProject.URL).indexOf('|') > -1) {
                         $scope.urls = ($scope.aProject.URL).split("|");
                     } else {
                         $scope.urls[0] = $scope.aProject.URL;
                     }
-                }
-
+                    //make sure they are formatted.. if not, format and PUT 
+                    var neededUpdating = false;
+                    for (var u = 0; u < $scope.urls.length; u++) {
+                        if (!$scope.urls[u].startsWith('http')) {
+                            neededUpdating = true;
+                            $scope.urls[u] = 'http://' + $scope.urls[u];
+                        }
+                    }
+                    //if they needed updating, PUT the project
+                    if (neededUpdating) {
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Accept'] = 'application/json';
+                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                        $scope.aProject.URL = ($scope.urls).join('|');
+                        PROJECT.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject).$promise.then(function (response) {
+                            $scope.aProject = response;
+                            //split string into an array
+                            if (($scope.aProject.URL).indexOf('|') > -1) {
+                                $scope.urls = ($scope.aProject.URL).split("|");
+                            } else {
+                                $scope.urls[0] = $scope.aProject.URL;
+                            }
+                            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                        });                        
+                    }
+                } //end there's a url
                 $scope.ProjectKeywords = projKeywords;
 
                 //#region add new property to OBJECTIVE_TYPES (selected:true/false)
@@ -1705,7 +1862,23 @@
                     }
                     $scope.newURL = {};
                 } else {
-                    alert("Make sure your URL follows this format: http://www.exampleurl.com");
+                    //modal for entering a password first
+                    var modalInstance = $modal.open({
+                        template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                   '<div class="modal-body"><p>Please type a url in first.</p></div>' +
+                                   '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                        controller: function ($scope, $modalInstance) {
+                            $scope.ok = function () {
+                                $modalInstance.close('url');
+                            }
+                        },
+                        size: 'sm'
+                    });
+                    modalInstance.result.then(function (fieldFocus) {
+                        if(fieldFocus == "url") {
+                            $("#inputURL").focus();
+                        }
+                    });
                 }
             }
             //#endregion ADD/REMOVE URLS
@@ -1738,7 +1911,23 @@
                     $scope.newKey = {};
                 } else {
                     // the value is empty
-                    alert("Please type a keyword in first.");
+                    //modal for entering a password first
+                    var modalInstance = $modal.open({
+                        template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                    '<div class="modal-body"><p>Please type a keyword in first.</p></div>' +
+                                    '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                        controller: function ($scope, $modalInstance) {
+                            $scope.ok = function () {
+                                $modalInstance.close('keyword');
+                            }
+                        },
+                        size: 'sm'
+                    });
+                    modalInstance.result.then(function (fieldFocus) {
+                        if(fieldFocus == "keyword") {
+                            $("#inputKEYWORD").focus();
+                        }
+                    });
                 }
             }
 
@@ -1855,10 +2044,10 @@
             }
 
             //change to the aProject made, put it .. fired on each blur after change made to field
-            $scope.SaveOnBlur = function (id) {
+            $scope.SaveOnBlur = function (valid, id) {                
                 if ($scope.aProject.PROJECT_ID != undefined) {
                     //ensure they don't delete required field values
-                    if ($scope.aProject.NAME != null) {
+                    if (valid) {
                         $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
                         $http.defaults.headers.common['Accept'] = 'application/json';
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
@@ -1869,10 +2058,27 @@
                         }, function error(errorResponse) {
                             toastr.error("Error: " + errorResponse.statusText);
                         });
-
                         delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                        } else {
+                        //modal for enter all required fields
+                        var modalInstance = $modal.open({
+                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                        '<div class="modal-body"><p>Please populate all required fields.</p></div>' +
+                                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                            controller: function ($scope, $modalInstance) {
+                                $scope.ok = function () {
+                                    $modalInstance.close('required');
+                                }
+                            },
+                            size: 'sm'
+                        });
+                        modalInstance.result.then(function (fieldFocus) {
+                            if (fieldFocus == "required") {
+                               angular.element("[name='" + $scope.projectForm.Info.$name + "']").find('.ng-invalid:visible:first').focus();
+                            }
+                        });
+                        toastr.error("Project not updated.");
                     }
-                    //else {alert("Project Name is required.")}
                 }
                 if (id > 0) {
                     $scope.selectedStat(id);
@@ -1957,7 +2163,23 @@
         //adding a new organization to this project (need to check if a new ORGANIZATION_SYSTEM needs to be posted first
         $scope.AddOrgToProj = function () {
             if ($scope.selectedOrgID == "") {
-                alert("You must choose an Organization Name to add.");
+                //modal for enter all required fields
+                var modalInstance = $modal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                '<div class="modal-body"><p>You must choose an Organization Name to add.</p></div>' +
+                                '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.ok = function () {
+                            $modalInstance.close('org');
+                        }
+                    },
+                    size: 'sm'
+                });
+                modalInstance.result.then(function (fieldFocus) {
+                    if (fieldFocus == "org") {
+                        $("#OrgName").focus();
+                    }
+                });                
             } else {
                 var secID = $scope.selectedSecID != "" ? $scope.selectedSecID : "0";
                 var divID = $scope.selectedDivID != "" ? $scope.selectedDivID : "0";
@@ -2025,12 +2247,49 @@
     siGLControllers.controller('projectEditDataCtrl', ['$scope', '$http', '$modal', 'PROJECT', 'DATA_HOST', 'thisProject', 'projDatum', 'getCreds', projectEditDataCtrl]);
     function projectEditDataCtrl($scope, $http, $modal, PROJECT, DATA_HOST, thisProject, projDatum, getCreds) {
         $scope.ProjData = projDatum;
+        var neededUpdating = false; //if the url isn't formatted, flag so know to PUT it after fixing
         $scope.isEditing = false; //disables form inputs while user is editing existing data up top
-        $scope.newData = {
-        };
-        var thisProjID = thisProject.PROJECT_ID;
+        $scope.newData = {}; //holder
+        var thisProjID = thisProject.PROJECT_ID; //projectID
 
-        //#region POST Data click
+        //if any ProjDatum, make sure the url (if one) is formatted properly
+        for (var pdu = 0; pdu < $scope.ProjData.length; pdu++) {
+            var ind = pdu;
+            if ($scope.ProjData[ind].PORTAL_URL != null && !$scope.ProjData[ind].PORTAL_URL.startsWith('http')) {
+                //there is a url and it's not formatted
+                neededUpdating = true;
+                $scope.ProjData[ind].PORTAL_URL = 'http://' + $scope.ProjData[ind].PORTAL_URL;
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                
+                DATA_HOST.save({ id: $scope.ProjData[ind].DATA_HOST_ID }, $scope.ProjData[ind]).$promise.then(function () {
+                    delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                });
+            }
+        }
+       
+        //modal for required at least 1 field..
+        var openModal = function () {
+           var modalInstance = $modal.open({
+                template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                    '<div class="modal-body"><p>You must populate at least one field.</p></div>' +
+                    '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                controller: function ($scope, $modalInstance) {
+                    $scope.ok = function () {
+                         $modalInstance.close('req');
+                    }
+                },
+                size: 'sm'
+           });
+           modalInstance.result.then(function (fieldFocus) {
+                if (fieldFocus == "req") {
+                    $("#DESCRIPTION").focus();
+                }
+          });
+        };
+
+        //POST Data click
         $scope.AddData = function (valid, d) {
             if (valid) {
                 //add it
@@ -2048,17 +2307,12 @@
                     toastr.error("Error: " + errorResponse.statusText);
                 });
             } else {
-                if ($scope.projectForm.Data.PORTAL_URL.$viewValue == "") {
-                    alert("You must populate at least one field before adding the data.");
-                }
-                if ($scope.projectForm.Data.PORTAL_URL.$valid == false && $scope.projectForm.Data.PORTAL_URL.$viewValue != "") {
-                    alert("Make sure your URL follows this format: http://www.exampleurl.com");
-                }
+                //modal for enter all required fields
+                openModal();                
             }
         }//end addData
-        //#endregion POST Data click
 
-        //#region DELETE Data click
+        //DELETE Data click
         $scope.RemoveData = function (dataH) {
             //modal
             var modalInstance = $modal.open({
@@ -2095,48 +2349,51 @@
             });
             //end modal
         };
-        //#endregion DELETE Data click
 
-        $scope.EditRowClicked = function () {
-            //make sure form is not pristine in case they change tabs before hitting save/cancel
-            $scope.projectForm.Data.$pristine = false;
-            //disable create new fields until they hit save/cancel
-            $scope.isEditing = true;
+        //validate that at least 1 field is populated before saving edit
+        $scope.ValidateAtLeastOne = function (d) {
+            if ((d.DESCRIPTION == "" || d.DESCRIPTION == null) && (d.HOST_NAME == "" || d.HOST_NAME == null) && (d.PORTAL_URL == "" || d.PORTAL_URL == null)) {
+                toastr.error("Data Source not updated.")
+                openModal();
+                return "You need to populate at least one field."; //way to stop it from closing edit..just return something cuz modal is opening                
+            }
+        }
+
+        //editing, disable create parts
+        $scope.EditRowClicked = function () {    
+            $scope.projectForm.Data.$pristine = false; //make sure form is not pristine in case they change tabs before hitting save/cancel            
+            $scope.isEditing = true; //disable create new fields until they hit save/cancel
         };
-        $scope.CancelEditRowClick = function () {
-            //make sure form is not pristine in case they change tabs before hitting save/cancel
-            $scope.projectForm.Data.$setPristine(true);
-            //disable create new fields until they hit save/cancel
-            $scope.isEditing = false;
+
+        //cancel edit
+        $scope.CancelEditRowClick = function () {            
+            $scope.projectForm.Data.$setPristine(true);//make sure form is pristine             
+            $scope.isEditing = false;//enable create new fields
         };
 
-
-        //#region Edit existing Data        
+        //Edit existing Data        
         $scope.saveData = function (data, id) {
-            var test;
-            var retur = false;
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
-            $http.defaults.headers.common['Accept'] = 'application/json';
-            $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+            if (this.rowform.$valid) {
+                var retur = false;
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                DATA_HOST.save({ id: id }, data, function success(response) {
+                    retur = response; //maybe need to update the projData that this controller gets from resolve, for returning to this tab later
+                    $scope.projectForm.Data.$setPristine(true);
+                    toastr.success("Data Updated");
+                }, function error(errorResponse) {
+                    retur = false;
+                    toastr.error("Error: " + errorResponse.statusText);
+                });
+                delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                return retur;
+            } else {
+                //not valid
 
-            DATA_HOST.save({ id: id }, data, function success(response) {
-                retur = response; //maybe need to update the projData that this controller gets from resolve, for returning to this tab later
-                $scope.projectForm.Data.$setPristine(true);
-                toastr.success("Data Updated");
-            }, function error(errorResponse) {
-                retur = false;
-                toastr.error("Error: " + errorResponse.statusText);
-            });
-            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-            return retur;
+            }
         };//end saveData
 
-        //#endregion Edit existing Data
-
-        $scope.cancel = function () {
-            //navigate to a different state
-            $state.go('projectList');
-        };//end cancel
     }
     //#endregion DATA Controller
 
@@ -2145,6 +2402,26 @@
     siGLControllers.controller('projectEditContactCtrl', ['$scope', '$http', '$filter', '$modal', 'PROJECT', 'CONTACT', 'ORGANIZATION_SYSTEM', 'projContacts', 'thisProject', 'orgResources', 'allOrgList', 'allDivisionList', 'allSectionList', 'getCreds', projectEditContactCtrl]);
     function projectEditContactCtrl($scope, $http, $filter, $modal, PROJECT, CONTACT, ORGANIZATION_SYSTEM, projContacts, thisProject, orgResources, allOrgList, allDivisionList, allSectionList, getCreds) {
         $scope.ProjContacts = projContacts;
+
+        //make sure phone is formatted
+        for (var p = 0; p < $scope.ProjContacts.length; p++) {
+            var theI = p;
+            if ($scope.ProjContacts[theI].PHONE != null && !$scope.ProjContacts[theI].PHONE.startsWith("(")) {
+                //not formatted..remove any spaces, dashes or parenthesis to then do it properly
+                var phNo = $scope.ProjContacts[theI].PHONE.replace("[()\\s-]+", "");
+                if (phNo.length >= 10) {
+                    //format it
+                    $scope.ProjContacts[theI].PHONE = "(" + phNo.substring(0, 3) + ") " + phNo.substring(3, 6) + "-" + phNo.substring(6);
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                    CONTACT.save({ id: $scope.ProjContacts[theI].CONTACT_ID }, $scope.ProjContacts[theI]).$promise.then(function (response) {
+                        delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                    });
+                }
+            }
+        }
+
         $scope.allOrgResources = orgResources; //ORGANIZATION_RESOURCE
         $scope.allOrganizations = allOrgList; //ORGANIZATION
         $scope.allDivisions = allDivisionList; //DIVISION
@@ -2244,7 +2521,7 @@
                     });
                 }
             } else {
-                toastr.error("Something went wrong. Make sure all required fields are populated");
+                toastr.error("Contact not added");
             }
         };
 
@@ -2260,6 +2537,35 @@
             showAtag.style.display = "none";
             $scope.isEditing = false;
         };
+        $scope.checkRequiredFields = function (which, data) {
+            //            if null -- you must populate, else if which== email .. valid email
+            if (data == null) {
+                return "You must populate all required fields";
+            } else {
+                if (which == "email") {
+                    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+                    if (re.test(data) == false)
+                        return "You must provide a valid email address";
+                }
+            }
+            ////modal for enter all required fields
+            //var modalInstance = $modal.open({
+            //    template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+            //                '<div class="modal-body"><p>You must populate all required fields.</p></div>' +
+            //                '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+            //    controller: function ($scope, $modalInstance) {
+            //        $scope.ok = function () {
+            //            $modalInstance.close(errorField);
+            //        }
+            //    },
+            //    size: 'sm'
+            //});
+            //modalInstance.result.then(function (fieldFocus) {
+            //    var test = "#" + fieldFocus;
+            //    $(test).focus;
+                //});
+            
+        }
 
         //edit contact done, save clicked
         $scope.saveContact = function (contact, id) {
@@ -2482,6 +2788,26 @@
         };
         var thisProjID = thisProject.PROJECT_ID;
 
+        //modal for required at least 1 field..
+        var openModal = function () {
+            var modalInstance = $modal.open({
+                template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                    '<div class="modal-body"><p>You must populate at least one field.</p></div>' +
+                    '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                controller: function ($scope, $modalInstance) {
+                    $scope.ok = function () {
+                        $modalInstance.close('req');
+                    }
+                },
+                size: 'sm'
+            });
+            modalInstance.result.then(function (fieldFocus) {
+                if (fieldFocus == "req") {
+                    $("#TITLE").focus();
+                }
+            });
+        };
+
         //#region POST Pub click
         $scope.AddPub = function (valid, p) {
             if (valid) {
@@ -2504,7 +2830,8 @@
                 });
 
             } else {
-                alert("You must populate at least one field before adding the publication.");
+                //modal for enter all required fields
+                openModal();
             }
         }
         //#endregion POST Pub click
@@ -2548,12 +2875,22 @@
         }
         //#endregion DELETE Pub click
 
+        //validate that at least 1 field is populated before saving edit
+        $scope.ValidateAtLeastOne = function (d) {
+            if ((d.TITLE == "" || d.TITLE == null) && (d.DESCRIPTION == "" || d.DESCRIPTION == null) && (d.URL == "" || d.URL == null)) {
+                toastr.error("Publication not updated.")
+                openModal();
+                return "You need to populate at least one field."; //way to stop it from closing edit..just return something cuz modal is opening                
+            }
+        }
+
         $scope.EditRowClicked = function () {
             //make sure form is not pristine in case they change tabs before hitting save/cancel
             $scope.projectForm.Pubs.$pristine = false;
             //disable create new fields until they hit save/cancel
             $scope.isEditing = true;
         };
+
         $scope.CancelEditRowClick = function () {
             //make sure form is not pristine in case they change tabs before hitting save/cancel
             $scope.projectForm.Pubs.$setPristine(true);
@@ -2583,11 +2920,6 @@
             return retur;
         };
         //#endregion Edit existing Data
-
-        $scope.cancel = function () {
-            //navigate to a different state
-            $state.go('projectList');
-        };
     }
     //#endregion PUBLICATION Controller
 
@@ -2595,8 +2927,13 @@
 
     siGLControllers.controller('projectEditSiteListCtrl', ['$scope', '$location', '$modal', '$http', 'getCreds', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE', projectEditSiteListCtrl]);
     function projectEditSiteListCtrl($scope, $location, $modal, $http, getCreds, projS, thisProject, siteStatList, lakeList, stateList, resourceList, mediaList, frequencyList, parameterList, SITE) {
-
         $scope.projectSites = projS;
+        for (var psu = 0; psu < $scope.projectSites.length; psu++) {
+            var ind = psu;
+            if ($scope.projectSites[ind].URL != null && !$scope.projectSites[ind].URL.startsWith('http')) {
+                $scope.projectSites[ind].URL = 'http://' + $scope.projectSites[ind].URL;
+            }
+        }
         $scope.thisProject = thisProject;
         $scope.LakeList = lakeList; $scope.StatusList = siteStatList; $scope.ResourceList = resourceList; $scope.MediaList = mediaList; $scope.FreqList = frequencyList; $scope.ParamList = parameterList;
         $scope.FrequenciesToAdd = []; $scope.MediaToAdd = []; $scope.ParameterToAdd = []; $scope.ResourceToAdd = [];
@@ -2886,7 +3223,7 @@
             }; //trigger to show/hide save button for additional info change
             $scope.showParams = false;// div containing all parameters (toggles show/hide)
             $scope.showHide = "Show"; //button text for show/hide parameters
-
+            
             //all the dropdowns
             $scope.allCountries = CountryList;
             $scope.allStates = stateList;
@@ -3256,6 +3593,45 @@
                     if (theEvent.preventDefault) theEvent.preventDefault();
                 }
             };
+
+            //lat modal 
+            var openLatModal = function () {
+                var latModal = $modal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                        '<div class="modal-body"><p>The Latitude must be between 0 and 73.0</p></div>' +
+                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.ok = function () {
+                            $modalInstance.close('lat');
+                        }
+                    },
+                    size: 'sm'
+                });
+                latModal.result.then(function (fieldFocus) {
+                    if (fieldFocus == "lat")
+                        $("#LATITUDE").focus();
+                });
+            };
+
+            //long modal
+            var openLongModal = function () {
+                var longModal = $modal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                        '<div class="modal-body"><p>The Longitude must be between -175.0 and -60.0</p></div>' +
+                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.ok = function () {
+                            $modalInstance.close('long');
+                        }
+                    },
+                    size: 'sm'
+                });
+                longModal.result.then(function (fieldFocus) {
+                    if (fieldFocus == "long")
+                        $("#LONGITUDE").focus();
+                });
+            };
+
             //change to the thisSite made, put it .. fired on each blur after change made to field
             $scope.SaveOnBlur = function (valid, da) {
                 if ($scope.thisSite.SITE_ID != undefined) {
@@ -3277,23 +3653,32 @@
                             delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                         }
                         else if ($scope.thisSite.LATITUDE < 0 || $scope.thisSite.LATITUDE > 73) {
-                            alert("The Latitude must be between 0 and 73.0");
+                            openLatModal();
                         }
                         else if ($scope.thisSite.LONGITUDE < -175 || $scope.thisSite.LONGITUDE > -60) {
-                            alert("The Longitude must be between -175.0 and -60.0");
+                            openLongModal();
                         }
                     }
                     else {
-                        //not valid.. is url invalid
-                        if (!$scope.projectForm.SiteInfo.URL.$valid) {
-                            alert("Please enter a valid url. Example: 'http://www.google.com'");
-                        }
-                        else {
-                            alert("Required fields must be populated.");
-                        }
+                        //not valid.. modal for enter all required fields
+                        var modalInstance = $modal.open({
+                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                        '<div class="modal-body"><p>Please populate all required fields.</p></div>' +
+                                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                            controller: function ($scope, $modalInstance) {
+                                $scope.ok = function () {
+                                    $modalInstance.close('required');
+                                }
+                            },
+                            size: 'sm'
+                        });
+                        modalInstance.result.then(function (fieldFocus) {
+                            if (fieldFocus == "required")
+                                angular.element("[name='" + $scope.projectForm.SiteInfo.$name + "']").find('.ng-invalid:visible:first').focus();
+                        });
+                        toastr.error("Site not updated.");                            
                     }
                 }
-
             }//end SaveOnBlur
 
             //save NEW SITE and then frequencies, media, parameters, and resources
@@ -3333,8 +3718,7 @@
                                 },
                                 function error(errorResponse) {
                                     toastr.error("Error: " + errorResponse.statusText);
-                                }
-                        );
+                                });
                         };
                         //post parameters
                         for (var k = $scope.ParameterToAdd.length; k--;) {
@@ -3370,13 +3754,14 @@
                         $location.path('/project/edit/' + thisProject.PROJECT_ID + '/site/siteList').replace();//.notify(false);
                         $scope.apply;
                     });
-                }
-                if ($scope.thisSite.LATITUDE < 0 || $scope.thisSite.LATITUDE > 73.0) {
-                    alert("The Latitude must be between 0 and 73.0");
-                }
-                if ($scope.thisSite.LONGITUDE < -175 || $scope.thisSite.LONGITUDE > -60) {
-                    alert("The Longitude must be between -175.0 and -60.0");
-                }
+                } else {
+                    if ($scope.thisSite.LATITUDE < 0 || $scope.thisSite.LATITUDE > 73.0)
+                        openLatModal();
+
+                    if ($scope.thisSite.LONGITUDE < -175 || $scope.thisSite.LONGITUDE > -60)
+                        openLongModal();
+
+                } //end else valid
             }//end save
 
         }//end CheckCreds() passed
@@ -3544,6 +3929,9 @@
             case "Status Type":
                 $scope.keyToRmv = keyToRemove.STATUS;
                 break;
+            case "Project":
+                $scope.keyToRmv = keyToRemove.NAME;
+                break;
             default:
                 $scope.keyToRmv = "error";
         }
@@ -3560,8 +3948,8 @@
     }
 
     //org popup to add to org db
-    siGLControllers.controller('AddOrgModalCtrl', ['$scope', '$modalInstance', 'chosenParts', 'allOrgs', 'allDivs', 'allSecs', 'ORGANIZATION', 'DIVISION', 'SECTION', AddOrgModalCtrl]);
-    function AddOrgModalCtrl($scope, $modalInstance, chosenParts, allOrgs, allDivs, allSecs, ORGANIZATION, DIVISION, SECTION) {
+    siGLControllers.controller('AddOrgModalCtrl', ['$scope', '$modalInstance', '$http', 'getCreds', 'chosenParts', 'allOrgs', 'allDivs', 'allSecs', 'ORGANIZATION', 'DIVISION', 'SECTION', AddOrgModalCtrl]);
+    function AddOrgModalCtrl($scope, $modalInstance, $http, getCreds, chosenParts, allOrgs, allDivs, allSecs, ORGANIZATION, DIVISION, SECTION) {
         //globals
         $scope.OrgName = {}; //new org name input ng-model
         $scope.divisionName = {}; //new div name input ng-model
@@ -3636,6 +4024,8 @@
                 var orgToPost = {
                     ORGANIZATION_NAME: nameToAdd
                 };
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
                 ORGANIZATION.save(orgToPost, function success(response) {
                     //add this new one to the lists
                     $scope.orgList.push(response);
@@ -3665,6 +4055,8 @@
         $scope.addThisDivision = function (divToAdd, orgID) {
             if (divToAdd != "" && orgID != "") {
                 var divToPost = { DIVISION_NAME: divToAdd, ORG_ID: orgID };
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
                 DIVISION.save(divToPost, function success(response) {
                     $scope.allDivList.push(response);
                     $scope.divList.push(response); //push to the dropdown (these divs for this org)
@@ -3693,7 +4085,9 @@
         //this is the one they want to add
         $scope.addThisSection = function (secToAdd, divID) {
             if (secToAdd != "" && divID != "") {
-                var secToPost = {SECTION_NAME: secToAdd, DIV_ID: divID};
+                var secToPost = { SECTION_NAME: secToAdd, DIV_ID: divID };
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Accept'] = 'application/json';
                 SECTION.save(secToPost, function success(response) {
                     $scope.allSecList.push(response); //push to all sections 
                     $scope.secList.push(response); //push to the dropdown (these secs for this div)
@@ -3718,14 +4112,23 @@
         }
 
         //want to close input for adding new part
-        $scope.neverMind = function () {
-            //clear all inputs and hide all input divs
-            $scope.OrgName.value = ""; $scope.showAddNAMEinput = false;
-            $scope.divisionName.value = ""; $scope.showAddDIVISIONinput = false;
-            $scope.sectionName.value = ""; $scope.showAddSECTIONinput = false;
-            $scope.disableOrgSelect = false; $scope.disableDivSelect = false; $scope.disableSecSelect = false;
-            //set values back to what they were
-            $scope.selectedOrgID.id = $scope.originalOrgId; $scope.selectedDivID.id = $scope.originalDivId; $scope.selectedSecID.id = $scope.originalSecId;
+        $scope.neverMind = function (which) {
+            //clear 'which' input and hide all input divs
+            if (which == "org") {
+                $scope.OrgName.value = ""; $scope.showAddNAMEinput = false;
+                $scope.disableOrgSelect = false;
+                $scope.selectedOrgID.id = $scope.originalOrgId;
+            }
+            if (which == "div") {
+                $scope.divisionName.value = ""; $scope.showAddDIVISIONinput = false;
+                $scope.disableDivSelect = false;
+                $scope.selectedDivID.id = $scope.originalDivId;
+            }
+            if (which == "sec") {
+                $scope.sectionName.value = ""; $scope.showAddSECTIONinput = false;
+                $scope.disableSecSelect = false;
+                $scope.selectedSecID.id = $scope.originalSecId;
+            } 
         };
 
         $scope.ok = function () {
@@ -3739,8 +4142,8 @@
 
     //#region LOGIN/OUT
     //login 'setLoggedIn',
-    siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', '$rootScope', 'LOGIN', 'setCreds', LoginCtrl]);
-    function LoginCtrl($scope, $state, $http, $rootScope, LOGIN, setCreds) {
+    siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', '$rootScope', 'LOGIN', 'setCreds', 'getUserRole', LoginCtrl]);
+    function LoginCtrl($scope, $state, $http, $rootScope, LOGIN, setCreds, getUserRole) {
 
         //#region CAP lock Check
         $('[type=password]').keypress(function (e) {
@@ -3783,6 +4186,7 @@
                         $rootScope.isAuth.val = true;
                         $rootScope.usersName = usersNAME;
                         $rootScope.userID = user.DATA_MANAGER_ID;
+                        $rootScope.Role = getUserRole();
                         $state.go('projectList');
                     }
                     else {

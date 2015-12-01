@@ -1,6 +1,6 @@
 ﻿<div ng-show="matchingUsers">{{loggedInUser.Name}} : Your Account</div>
 
-<h2></h2>
+
 <!-- If this is the user logged -->
 <form ng-show="matchingUsers || loggedInUser.Role == 'Admin'" editable-form class="form-horizontal" name="accountForm">
     <fieldset>
@@ -24,12 +24,16 @@
         <!-- Username-->
         <div class="form-group required">
             <label class="col-md-3 control-label req" for="inputUSERNAME">Username:</label>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <input ng-show="DM.DATA_MANAGER_ID == undefined" class="form-control" id="inputUSERNAME" name="USERNAME" ng-model="DM.USERNAME"
                        type="text" placeholder="User Name" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur()"
                        required />
                 <span ng-show="DM.DATA_MANAGER_ID != undefined">{{DM.USERNAME}}</span>
-            </div>
+            </div>&nbsp;
+            <span ng-show="DM.DATA_MANAGER_ID != undefined" class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                  title="Usernames cannot be modified. If you need to request a different username, contact Jen Bruce at jlbruce@usgs.gov"
+                  data-placement="right" tooltip>
+            </span>
         </div>
 
         <!-- Organization-->
@@ -38,7 +42,7 @@
             <div class="col-md-6">
                 <span>{{dmOrg.OrganizationName}}</span><span ng-show="dmOrg.DivisionName">, {{dmOrg.DivisionName}}</span><span ng-show="dmOrg.SectionName">, {{dmOrg.SectionName}}</span>
             </div>
-            <button ng-show="!changeOrg" ng-click="changeMyOrgBtn($event)">
+            <button type="button" ng-show="!changeOrg" ng-click="changeMyOrgBtn($event)">
                 Change My Organization
             </button>
         </div>
@@ -49,6 +53,9 @@
                 <label class="col-md-3 control-label">Organization:</label>
                 <div class="col-md-6">
                     <select class="form-control" ng-model="selectedOrgID" ng-options="org.ORGANIZATION_ID as org.ORGANIZATION_NAME for org in allOrgs | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)"></select>
+                    <button class="btn btn-primary" ng-click="AddNewOrg()">
+                        Add New
+                    </button>
                 </div>&nbsp;
                 <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                       title="After selecting your Organization (and Division/Office and Section, if applicable) in the drop-down menu, click the “Add Organization” button to save. Repeat if multiple organizations apply."
@@ -60,6 +67,9 @@
                 <label class="col-md-3 control-label">Division</label>
                 <div class="col-md-6">
                     <select class="form-control" ng-model="selectedDivID" ng-options="div.DIVISION_ID as div.DIVISION_NAME for div in alldivs | orderBy: 'DIVISION_NAME'" ng-change="getSecs(selectedDivID)"></select>
+                    <button class="btn btn-primary" ng-click="AddNewOrg()">
+                        Add New
+                    </button>
                 </div>
             </div>
 
@@ -67,6 +77,9 @@
                 <label class="col-md-3 control-label">Section</label>
                 <div class="col-md-6">
                     <select class="form-control" ng-model="selectedSecID" ng-options="sec.SECTION_ID as sec.SECTION_NAME for sec in allsecs | orderBy: 'SECTION_NAME'"></select>
+                    <button class="btn btn-primary" ng-click="AddNewOrg()">
+                        Add New
+                    </button>
                 </div>
             </div>
             <!--update button (only show for existing data manager view, not new dm)-->
@@ -87,10 +100,10 @@
                             Cancel
                         </button>
                     </span>
-                    <span>
+                    <!--<span>
                         Don't see the Organization Name, Division or Section?
                         <a href ng-click="AddNewOrg()"> Click here to add it.</a>
-                    </span>
+                    </span>-->
                 </div>
             </div>
         </div>
@@ -134,9 +147,6 @@
                 <span ng-show="DM.DATA_MANAGER_ID != undefined">{{DM.roleName}}</span>
             </div>
         </div>
-        <span>{{DM.roleName}}</span>
-        </div>
-        </div>
 
         <!-- start Update password section -->
         <div class="form-group" ng-hide="DM.DATA_MANAGER_ID == undefined">
@@ -148,7 +158,7 @@
                 <!--START new password inputs-->
                 <div class="col-md-12" ng-show="changePass">
                     <div style="margin-bottom:10px">
-                        <span class="glyphicon glyphicon-question-sign">&nbsp;Password must be at least 8 characters long, contain at least 1 uppercase, 1 lowercase and 1 numeric. Passwords may contain any of these special characters ONLY: "_", "$", "#"</span>
+                        <span>Password must be at least 8 characters long, contain at least 1 uppercase, 1 lowercase and 1 numeric. Passwords may contain any of these special characters ONLY: "_", "$", "#"</span>
                     </div>
                     <div class="col-md-10">
                         <label class="col-md-5 control-label" for="NewPassword">New Password:</label>
@@ -203,7 +213,9 @@
                 <span class="ui-state-error h5-message" ng-show="(accountForm.inputCPASSWORD.$error.passwordValidate)"><span class="h5-arrow"></span><span class="h5-content">For password requirement, see the '?' icon above.</span></span>
                 <span class="ui-state-error h5-message" ng-show="(accountForm.inputCPASSWORD.$error.passwordMismatch)"><span class="h5-arrow"></span><span class="h5-conent">Mismatch password</span></span>
             </div>
-        </div> <!--end new member password section-->
+        </div>
+        <!--end new member password section-->
+
         <!--submit and cancel buttons-->
         <div class="form-group">
             <div class="col-md-4 col-md-offset-2">
@@ -265,11 +277,20 @@
 
 <div class="form-group" ng-if="DMProjects.length > 0">
     <legend>YOUR PROJECTS</legend>
-    <table class="table">
-        <thead><tr><th></th><th></th><th></th></tr></thead>
-        <tbody>
-            <tr ng-repeat="p in DMProjects">
+    <script>
+        var sortingOrder = 'NAME';
+    </script>
 
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="Name">Project Name&nbsp;<a ng-click="sort_by('NAME')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th>Data Manager</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="p in DMProjects| orderBy:sortingOrder:reverse">
                 <td>
                     <div style="display:none">
                         <span editable-text="p.PROJECT_ID" e-form="rowform" e-name="PROJECT_ID">{{d.PROJECT_ID}}</span>
@@ -288,10 +309,10 @@
                 </td>
                 <td>
                     <span editable-select="p.DATA_MANAGER_ID" e-name="DATA_MANAGER_ID" e-form="rowform" e-ng-options="d.DATA_MANAGER_ID as d.FULLNAME for d in allDMs | orderBy: 'LNAME'">
-                        {{showDMs(p)}}
+                        {{ (allDMs | filter: {DATA_MANAGER_ID: p.DATA_MANAGER_ID})[0].FULLNAME || '' }}
                     </span>
                 </td>
-                <td ng-show="matchingUsers" style="white-space: nowrap">
+                <td ng-show="matchingUsers || loggedInUser.Role == 'Admin'" style="white-space: nowrap">
                     <!-- form -->
                     <form editable-form name="rowform" onaftersave="updateDMonProj($data, p.PROJECT_ID)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == p">
                         <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
@@ -303,6 +324,7 @@
                     </form>
                     <div class="buttons" ng-show="!rowform.$visible">
                         <button class="btn btn-primary" ng-click="rowform.$show()">Reassign Project</button>
+                        <button class="btn btn-danger btn-edit-delete" ng-click="RemoveProject(p)">Delete</button>
                     </div>
                 </td>
                 <td ng-show="!matchUsers"></td>
@@ -310,8 +332,9 @@
         </tbody>
     </table>
 </div>
+
 <div style="margin-bottom:10px">
     <button class="btn btn-primary" back-button>
-        <span>Go Back</span>
+        <span>Back to Data Manager List</span>
     </button>
 </div>

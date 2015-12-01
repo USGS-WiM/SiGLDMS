@@ -6,6 +6,7 @@
     .orange {
     color: orange;
 }
+   
 </style>
  <form editable-form class="form-horizontal" name="projectForm.SiteInfo">
      <fieldset>
@@ -25,7 +26,7 @@
          <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.LATITUDE.$invalid && projectForm.SiteInfo.LATITUDE.$dirty}">
              <label class="col-md-3 control-label req" for="inputLATITUDE">Latitude:</label>
              <div class="col-md-6">
-                 <input class="form-control" ng-keypress="isNum($event)" name="LATITUDE" id="inputLATITUDE" ng-model="thisSite.LATITUDE"
+                 <input class="form-control" ng-keypress="isNum($event)" name="LATITUDE" id="LATITUDE" ng-model="thisSite.LATITUDE"
                         type="text" placeholder="Latitude" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
                         required />
              </div>&nbsp;
@@ -39,7 +40,7 @@
          <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.LONGITUDE.$invalid && projectForm.SiteInfo.LONGITUDE.$dirty}">
              <label class="col-md-3 control-label req" for="inputLONGITUDE">Longitude:</label>
              <div class="col-md-6">
-                 <input class="form-control" ng-keypress="isNum($event)" id="inputLONGITUDE" name="LONGITUDE" ng-model="thisSite.LONGITUDE"
+                 <input class="form-control" ng-keypress="isNum($event)" id="LONGITUDE" name="LONGITUDE" ng-model="thisSite.LONGITUDE"
                         type="text" placeholder="Longitude" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
                         required />
              </div>&nbsp;
@@ -69,9 +70,9 @@
          <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.STATE_PROVINCE.$invalid && projectForm.SiteInfo.STATE_PROVINCE.$dirty}">
              <label class="col-md-3 control-label req" for="inputSTATE_PROVINCE">State/Province:</label>
              <div class="col-md-6">
-                 <select class ="form-control" id="inputSTATE_PROVINCE" name="STATE_PROVINCE" ng-model="thisSite.STATE_PROVINCE"
-                              ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
-                              ng-options="s for s in allStates" required>
+                 <select class="form-control" id="inputSTATE_PROVINCE" name="STATE_PROVINCE" ng-model="thisSite.STATE_PROVINCE"
+                         ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
+                         ng-options="s for s in allStates" required>
                      <option value="">Choose a State/Province</option>
                  </select>
              </div>&nbsp;
@@ -302,11 +303,11 @@
          </div>
 
          <!--Site URL-->
-         <div class="form-group">
+         <div class="form-group" ng-class="{'has-error':projectForm.SiteInfo.URL.$invalid}">
              <label class="col-md-3 control-label" for="inputURL">Site URL:</label>
              <div class="col-md-6">
-                 <input class="form-control" id="inputURL" name="URL" ng-model="thisSite.URL"
-                        type="url" placeholder="http://www.exampleurl.com" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)" />
+                 <input class="form-control" id="URL" name="URL" ng-model="thisSite.URL" type="url" placeholder="http://www.exampleurl.com" 
+                        ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)" http-prefix />
              </div>&nbsp;
              <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                    title="If site-specific data is available online, enter URL here."
