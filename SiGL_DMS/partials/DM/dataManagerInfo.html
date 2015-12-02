@@ -142,7 +142,7 @@
                 <select ng-show="DM.DATA_MANAGER_ID == undefined" class=" form-control" id="selectROLE" name="ROLE_ID" ng-model="DM.ROLE_ID"
                         ng-options="r.ROLE_ID as r.ROLE_NAME for r in RoleList | orderBy: 'ROLE_NAME'" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur()"
                         required>
-                    <option value="">Select Role</option>
+                    <option value=""></option>
                 </select>
                 <span ng-show="DM.DATA_MANAGER_ID != undefined">{{DM.roleName}}</span>
             </div>

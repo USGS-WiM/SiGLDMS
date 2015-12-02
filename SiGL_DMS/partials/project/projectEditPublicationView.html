@@ -17,7 +17,7 @@
                     </div>
                     <span class="publication-list-item-text" editable-text="p.TITLE" e-name="TITLE" e-form="rowform"><b>{{ p.TITLE || '' }}</b></span>
 
-                    <span class="publication-list-item-text" editable-textarea="p.DESCRIPTION" e-rows="5" e-cols="40" e-name="DESCRIPTION" e-form="rowform">{{ p.DESCRIPTION || '' }}</span>
+                    <span class="publication-list-item-text" editable-textarea="p.DESCRIPTION" e-elastic e-rows="5" e-cols="40" e-name="DESCRIPTION" e-form="rowform">{{ p.DESCRIPTION || '' }}</span>
 
                     <span class="publication-list-item-text" editable-text="p.URL" e-name="URL" e-form="rowform">{{ p.URL || '' }}</span>
 
@@ -61,7 +61,7 @@
               </span>
             </label>
             <div class="col-md-8">
-                <textarea class="form-control" id="inputDESCRIPTION" rows="3"
+                <textarea class="form-control" id="inputDESCRIPTION" rows="3" elastic
                           type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.DESCRIPTION.length || newPub.URL.length)"
                           ng-model="newPub.DESCRIPTION" />
             </div>&nbsp;

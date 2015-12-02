@@ -14,7 +14,7 @@
                     </form>
 
                     <div style="display:none"><span editable-text="d.PROJECT_ID" e-form="rowform" e-name="PROJECT_ID">{{d.PROJECT_ID}}</span></div>
-                    <span class="data-list-item" editable-textarea="d.DESCRIPTION" e-rows="5" e-cols="40" e-name="DESCRIPTION" e-form="rowform"><b>{{ d.DESCRIPTION || '' }}</b></span>
+                    <span class="data-list-item" editable-textarea="d.DESCRIPTION" e-rows="5" e-cols="40" e-elastic e-name="DESCRIPTION" e-form="rowform"><b>{{ d.DESCRIPTION || '' }}</b></span>
 
                     <span class="data-list-item" editable-text="d.HOST_NAME" e-name="HOST_NAME" e-form="rowform">{{ d.HOST_NAME || '' }}</span>
                     <span class="data-list-item" editable-text="d.PORTAL_URL" e-http-prefix e-name="PORTAL_URL" e-form="rowform">{{d.PORTAL_URL || ''}}</span>
@@ -39,7 +39,7 @@
               </span>
             </label>
             <div class="col-md-8">
-                <textarea class="form-control" id="DESCRIPTION" rows="3" name="DESCRIPTION"
+                <textarea class="form-control" id="DESCRIPTION" rows="3" name="DESCRIPTION" elastic
                        type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                        ng-model="newData.DESCRIPTION" />
             </div>&nbsp;

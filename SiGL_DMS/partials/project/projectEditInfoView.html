@@ -27,7 +27,7 @@
                         ng-model="aProject.PROJ_DURATION_ID"
                         ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.Info.$valid, 0)"
                         ng-options="d.PROJ_DURATION_ID as d.DURATION_VALUE for d in DurationList" required>
-                    <option value="">Select Project Duration</option>
+                    <option value=""></option>
                 </select>                
             </div>
         </div>
@@ -45,7 +45,7 @@
                         ng-model="aProject.PROJ_STATUS_ID"
                         ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.Info.$valid, aProject.PROJ_STATUS_ID)"
                         ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList" required>
-                    <option value="">Select Project Status</option>
+                    <option value=""></option>
                 </select>
             </div>
         </div>
@@ -123,12 +123,12 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="inputDESCRIPTION">
                 Description:
-                <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" 
                       title="Briefly describe the goals and/or details of your project."
                       data-placement="right" tooltip></span>
             </label>
             <div class="col-md-8">
-                <textarea class="form-control" id="inputDESCRIPTION" type="text" rows="3" placeholder="Project Description"
+                <textarea class="form-control" id="inputDESCRIPTION" type="text" rows="3" placeholder="Project Description" elastic
                           ng-model="aProject.DESCRIPTION" ng-change="isProjDescChanged.bool = true" />&nbsp;
 
                 <span ng-show="aProject.PROJECT_ID > 0 && isProjDescChanged.bool && aProject.DESCRIPTION.length">
@@ -187,7 +187,7 @@
                       data-placement="right" tooltip></span>
             </label>
             <div class="col-md-8">
-                <textarea class="form-control" id="inputADDITIONAL_INFO" type="text" rows="3" placeholder="Additional Information"
+                <textarea class="form-control" id="inputADDITIONAL_INFO" type="text" rows="3" placeholder="Additional Information" elastic
                           ng-change="isProjAddInfoChanged.bool = true" ng-model="aProject.ADDITIONAL_INFO" />&nbsp;
 
                 <span ng-show="aProject.PROJECT_ID > 0 && isProjAddInfoChanged.bool && aProject.ADDITIONAL_INFO.length">

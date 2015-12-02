@@ -57,7 +57,7 @@
                  <select class="form-control" id="inputCOUNTRY" name="COUNTRY" ng-model="thisSite.COUNTRY"
                               ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
                               ng-options="c for c in allCountries" required>
-                     <option value="">Choose a Country</option>
+                     <option value=""></option>
                  </select>
              </div>&nbsp;
              <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
@@ -73,7 +73,7 @@
                  <select class="form-control" id="inputSTATE_PROVINCE" name="STATE_PROVINCE" ng-model="thisSite.STATE_PROVINCE"
                          ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
                          ng-options="s for s in allStates" required>
-                     <option value="">Choose a State/Province</option>
+                     <option value=""></option>
                  </select>
              </div>&nbsp;
              <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
@@ -89,7 +89,7 @@
                  <select class="form-control" id="inputLAKE_TYPE_ID" name="LAKE_TYPE_ID" ng-model="thisSite.LAKE_TYPE_ID"
                          ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
                          ng-options="l.LAKE_TYPE_ID as l.LAKE for l in allLakes" required>
-                     <option value="">Choose a Lake</option>
+                     <option value=""></option>
                  </select>
              </div>&nbsp;
              <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
@@ -128,7 +128,7 @@
          <div class="form-group">
              <label class="col-md-3 control-label" for="inputDESCRIPTION">Site Description:</label>
              <div class="col-md-6">
-                 <textarea class="form-control" id="inputDESCRIPTION" type="text" rows="3" placeholder="Site Description"
+                 <textarea class="form-control" id="inputDESCRIPTION" type="text" rows="3" placeholder="Site Description" elastic
                            ng-change="isSiteDescChanged.bool = true" ng-model="thisSite.DESCRIPTION" />&nbsp;
                  <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                        title="Include any site description or additional location information here."
@@ -149,7 +149,7 @@
                  <select class="form-control" id="inputSTATUS_TYPE_ID" name="STATUS_TYPE_ID" ng-model="thisSite.STATUS_TYPE_ID"
                          ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)"
                          ng-options="st.STATUS_ID as st.STATUS for st in allStats">
-                     <option value="0">Choose a Status</option>
+                     <option value="0"></option>
                  </select>
              </div>&nbsp;
              <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
@@ -288,7 +288,7 @@
              <label class="col-md-3 control-label" for="inputADDITIONAL_INFO">Additional Site Information:</label>
              <div class="col-md-6">
                  <textarea class="form-control" id="inputADDITIONAL_INFO" type="text" rows="3"
-                           placeholder="Additional Information"
+                           placeholder="Additional Information" elastic
                            ng-change="isSiteAddInfoChanged.bool = true" ng-model="thisSite.ADDITIONAL_INFO" />&nbsp;
                  <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                        title="Include any other sampling or site-specific information here."
