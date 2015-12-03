@@ -314,9 +314,9 @@
         }
     }
 
-    //#region Data Manager
-    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'ROLE', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allProj', 'allRoles', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
-    function dataManagerCtrl($scope, $http, DATA_MANAGER, ROLE, allOrgRes, allOrgs, allDivs, allSecs, allProj, allRoles, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
+    //#region Data ManagerallProj
+    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'ROLE', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allRoles', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
+    function dataManagerCtrl($scope, $http, DATA_MANAGER, ROLE, allOrgRes, allOrgs, allDivs, allSecs, allRoles, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
         //get all datamanagers once here to ensure passing auth
         if (!checkCreds()) {
             $scope.auth = false;
@@ -341,8 +341,8 @@
                     result[x].OrgName = orgName != undefined ? orgName.OrganizationName : "";
                     result[x].roleName = $scope.allROLEs.filter(function (ro) { return ro.ROLE_ID == result[x].ROLE_ID; })[0].ROLE_NAME;
                     result[x].FULLNAME = result[x].FNAME + " " + result[x].LNAME;
-                    var theseProjs = allProj.filter(function (p) { return p.DATA_MANAGER_ID == result[x].DATA_MANAGER_ID; });
-                    result[x].projCount = theseProjs.length;
+                    //var theseProjs = allProj.filter(function (p) { return p.DATA_MANAGER_ID == result[x].DATA_MANAGER_ID; });
+                    //result[x].projCount = theseProjs.length;
                 }
                 $scope.allDMs = result;
             });
@@ -381,7 +381,7 @@
             $scope.RoleList = allRoles;
                 
             // change sorting order
-            $scope.sortingOrder = 'NAME';
+            $scope.sortingOrder = 'Name';
             $scope.sort_by = function (newSortingOrder) {
                 if ($scope.sortingOrder == newSortingOrder) {
                     $scope.reverse = !$scope.reverse;
@@ -586,13 +586,14 @@
                 //#endregion all DMs for dropdown in case they want to change the dm on the project (WHEN THE CLICK TO EDIT Project)
 
                 //reassign this project to a different data manager
-                $scope.updateDMonProj = function (data, id) {
+                $scope.updateDMonProj = function (data, ProjID) {
                     $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
                     $http.defaults.headers.common['Accept'] = 'application/json';
-                    $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                    //$http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
 
                     var retur = false;
-                    PROJECT.save({ id: data.PROJECT_ID }, data, function success(response) {
+                    PROJECT.updateDM({ id: ProjID, DataManager: data.DataManagerID }, function success(response) {
+                    //PROJECT.save({ id: data.PROJECT_ID }, data, function success(response) {
                         toastr.success("Project Updated");
                         retur = response;
                     }, function error(errorResponse) {
@@ -3212,7 +3213,41 @@
             });
         }//end CopyToNew
 
-
+        //#region DELETE Site
+        $scope.DeleteSite = function (site) {
+            //modal
+            var modalInstance = $modal.open({
+                templateUrl: 'removemodal.html',
+                controller: 'ConfirmModalCtrl',
+                size: 'sm',
+                resolve: {
+                    keyToRemove: function () {
+                        return site;
+                    },
+                    what: function () {
+                        return "Site";
+                    }
+                }
+            });
+            modalInstance.result.then(function (keyToRemove) {
+                //yes, remove this keyword
+                var index = $scope.projectSites.indexOf(site);
+                //DELETE it
+                
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                SITE.delete({ id: site.SiteId }, function success(response) {
+                    $scope.projectSites.splice(index, 1);
+                    $scope.sitesCount.total = $scope.sitesCount.total - 1;
+                    toastr.success("Site Removed");
+                }, function error(errorResponse) {
+                    toastr.error("Error: " + errorResponse.statusText);
+                });
+            }, function () {
+                //logic for cancel
+            });
+            //end modal
+        }
+        //#endregion DELETE Pub click
     };
 
     //projectEditSiteInfoCtrl ( CREATE / EDIT page)    
@@ -3952,7 +3987,10 @@
                 $scope.keyToRmv = keyToRemove.STATUS;
                 break;
             case "Project":
-                $scope.keyToRmv = keyToRemove.NAME;
+                $scope.keyToRmv = keyToRemove.Name;
+                break;
+            case "Site":
+                $scope.keyToRmv = keyToRemove.Name;
                 break;
             default:
                 $scope.keyToRmv = "error";

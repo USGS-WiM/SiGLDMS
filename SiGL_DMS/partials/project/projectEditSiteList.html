@@ -21,8 +21,7 @@
             <table style="display:inline-block;overflow:auto;width:100%;" class="table table-striped table-condensed">
                 <thead>
                     <tr>
-                        <th></th>
-                        <th></th>
+                        <th></th>                        
                         <th class="Name">Site Name&nbsp;<a ng-click="sort_by('Name')"><i class="glyphicon glyphicon-sort"></i></a></th>
                         <th class="Latitude">Latitude&nbsp;<a ng-click="sort_by('latitude')"><i class="glyphicon glyphicon-sort"></i></a></th>
                         <th class="Longitude">Longitude&nbsp;<a ng-click="sort_by('longitude')"><i class="glyphicon glyphicon-sort"></i></a></th>
@@ -44,11 +43,16 @@
                         <th class="Parameters">Site Parameters</th>
                     </tr>
                 </thead>
-
+                
                 <tbody>
                     <tr ng-repeat="s in projectSites | orderBy:sortingOrder:reverse">
-                        <td><button class="btn btn-primary" ui-sref="projectEdit.site.siteInfo({id:thisProject.PROJECT_ID, siteId:s.SiteId})">Edit</button></td>
-                        <td><button class="btn btn-primary" ng-click="CopyToNew(s.SiteId)">Duplicate</button></td>
+                        <td>
+                            <div style="width:65px">
+                                <a title="Edit" ui-sref="projectEdit.site.siteInfo({id:thisProject.PROJECT_ID, siteId:s.SiteId})"><i class="glyphicon glyphicon-pencil"></i></a>
+                                <a title="Duplicate" href="" ng-click="CopyToNew(s.SiteId)"><img alt="Duplicate" src="images/copy_icon_sm.png" /></a>
+                                <a title="Delete" href="" ng-click="DeleteSite(s)"><i class="glyphicon glyphicon-remove"></i></a>
+                            </div>
+                        </td>
                         <td>{{s.Name}}</td>
                         <td>{{s.latitude}}</td>
                         <td>{{s.longitude}}</td>
