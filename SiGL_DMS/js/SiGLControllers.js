@@ -1,9 +1,9 @@
 ﻿(function () {
-    /* controllers.js*/
+    /* controllers.js 'ui.unique',*/
     'use strict';
 
     var siGLControllers = angular.module('siGLControllers',
-        ['ngInputModified', 'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.edit', 'ui.grid.cellNav', 'ui.unique', 'ui.validate', 'angular.filter', 'xeditable']);
+        ['ngInputModified', 'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.edit', 'ui.grid.cellNav', 'ui.validate', 'angular.filter', 'xeditable']);
 
     //#region FILTERS
     siGLControllers.filter('mapLakes', function () {
@@ -281,30 +281,33 @@
     }]);
     //#endregion DIRECTIVES
 
+    //#region $cookie names
+    //'siGLCreds', 'siGLUsername', 'usersName', 'dmID'
+    //#endregion $cookie names
+
     //#region MAIN Controller
-    siGLControllers.controller('mainCtrl', ['$scope', '$rootScope', '$location', '$state', 'checkCreds', 'getUsersNAME', 'getUserID', 'getUserRole', mainCtrl]);
-    function mainCtrl($scope, $rootScope, $location, $state, checkCreds, getUsersNAME, getUserID, getUserRole) {
+    siGLControllers.controller('mainCtrl', ['$scope', '$rootScope', '$cookies', '$location', '$state', mainCtrl]);
+    function mainCtrl($scope, $rootScope, $cookies, $location, $state) {
         $scope.logo = 'images/usgsLogo.png';
         $rootScope.isAuth = {};
-        if (!checkCreds()) {
-            $rootScope.isAuth.val = false;
+        if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
+            $scope.auth = false;
             $location.path('/login');
         } else {
             $rootScope.isAuth.val = true;
-            $rootScope.usersName = getUsersNAME();
-            $rootScope.userID = getUserID();
-            $rootScope.Role = getUserRole();
+            $rootScope.usersName = $cookies.get('usersName');
+            $rootScope.userID = $cookies.get('dmID'); 
+            $rootScope.Role = $cookies.get('usersRole');
 
             $state.go('projectList');
-
         }
     }
     //#endregion MAIN Controller
 
     //#region settings
-    siGLControllers.controller('settingsCtrl', ['$scope', '$location', '$state', 'checkCreds', settingsCtrl]);
-    function settingsCtrl($scope, $location, $state, checkCreds) {
-        if (!checkCreds()) {
+    siGLControllers.controller('settingsCtrl', ['$scope', '$location', '$state', '$cookies', settingsCtrl]);
+    function settingsCtrl($scope, $location, $state, $cookies) {
+        if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
             $location.path('/login');
         } else {
@@ -315,10 +318,10 @@
     }
 
     //#region Data Manager
-    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'ROLE', 'allProj', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allRoles', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
-    function dataManagerCtrl($scope, $http, DATA_MANAGER, ROLE, allProj, allOrgRes, allOrgs, allDivs, allSecs, allRoles, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
+    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', '$cookies', 'DATA_MANAGER', 'ROLE', 'allProj', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allRoles', dataManagerCtrl]);
+    function dataManagerCtrl($scope, $http, $cookies, DATA_MANAGER, ROLE, allProj, allOrgRes, allOrgs, allDivs, allSecs, allRoles) {
         //get all datamanagers once here to ensure passing auth
-        if (!checkCreds()) {
+        if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
             $location.path('/login');
         } else {
@@ -331,7 +334,7 @@
             $scope.loggedInUser = {};
             $scope.allROLEs = allRoles;
             //get all the roles and data managers
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
             $http.defaults.headers.common['Accept'] = 'application/json';
                 
             //NAME, Organization, Role, # of Projects
@@ -347,9 +350,9 @@
                 $scope.allDMs = result;
             });
             
-            $scope.loggedInUser.Name = getUsersNAME(); //User's NAME
-            $scope.loggedInUser.ID = getUserID();
-            $scope.loggedInUser.Role = getUserRole();
+            $scope.loggedInUser.Name = $cookies.get('usersName'); //User's NAME
+            $scope.loggedInUser.ID = $cookies.get('dmID'); 
+            $scope.loggedInUser.Role = $cookies.get('usersRole'); 
             // change sorting order
             $scope.sortingOrder = 'LNAME';
             $scope.sort_by = function (newSortingOrder) {
@@ -371,9 +374,9 @@
         }//end auth user logged in
     }//end resourceCtrl
 
-    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$location', '$http', '$modal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'ROLE', 'allRoles', 'thisDM', 'dmProjects', 'checkCreds', 'getCreds', 'setCreds', 'getUserRole', 'getUsersNAME', 'getUserID', dataManagerInfoCtrl]);
-    function dataManagerInfoCtrl($scope, $location, $http, $modal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, ROLE, allRoles, thisDM, dmProjects, checkCreds, getCreds, setCreds) {
-        if (!checkCreds()) {
+    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$cookies', '$location', '$http', '$modal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'ROLE', 'allRoles', 'thisDM', 'dmProjects', dataManagerInfoCtrl]);
+    function dataManagerInfoCtrl($scope, $cookies, $location, $http, $modal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, ROLE, allRoles, thisDM, dmProjects) {
+        if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
             $location.path('/login');
         } else {
@@ -508,7 +511,7 @@
                     } else {
                         //is undefined, so they created a new one, so post the ORGANIZATION_SYSTEM then update the DM
                         var newORG_SYS = { ORG_ID: orgID, DIV_ID: divID, SEC_ID: secID };
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common['Accept'] = 'application/json';
                         ORGANIZATION_SYSTEM.save(newORG_SYS, function success(response) {
                             $scope.DM.ORGANIZATION_SYSTEM_ID = response.ORGANIZATION_SYSTEM_ID;
@@ -542,7 +545,7 @@
                     if ($scope.DM) {
                         //ensure they don't delete required field values
                         if ($scope.DM.FNAME != null) {
-                            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                            $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                             $http.defaults.headers.common['Accept'] = 'application/json';
                             $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                             var DM_PUT = {};
@@ -587,7 +590,7 @@
 
                 //reassign this project to a different data manager
                 $scope.updateDMonProj = function (data, ProjID) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     //$http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
 
@@ -624,7 +627,7 @@
                         //yes, remove this keyword
                         var index = $scope.DMProjects.indexOf(proj);
                         //DELETE it
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                         PROJECT.delete({ id: proj.PROJECT_ID }, proj, function success(response) {
                             $scope.DMProjects.splice(index, 1);
                             toastr.success("Project Removed");
@@ -665,8 +668,27 @@
                         DATA_MANAGER.changePW({ username: $scope.DM.USERNAME, newP: $scope.pass.newP },
                             function success(response) {
                                 toastr.success("Password Updated");
-                                //update creds
-                                setCreds($scope.DM.USERNAME, $scope.pass.newP, $scope.$parent.loggedInUser.Name, $scope.DM.ROLE_ID, $scope.DM.DATA_MANAGER_ID);
+                                //update creds                               
+                                var enc = btoa($scope.DM.USERNAME.concat(":", $scope.pass.newP));
+                                $cookies.put('siGLCreds', enc);
+                                $cookies.put('siGLUsername', $scope.aMember.USERNAME);
+                                $cookies.put('usersName', $scope.$parent.loggedInUser.Name);
+                                $cookies.put('mID', $scope.DM.DATA_MANAGER_ID);
+                                var roleName;
+                                switch ($scope.DM.ROLE_ID) {
+                                    case 1:
+                                        roleName = "Admin";
+                                        break;
+                                    case 2:
+                                        roleName = "Manager";
+                                        break;
+                                    default:
+                                        roleName = "Public";
+                                        break;
+                                }
+                                $cookies.put('usersRole', roleName);
+
+
                                 $scope.changePass = false;
                                 $scope.pass.newP = '';
                                 $scope.pass.confirmP = '';
@@ -692,7 +714,7 @@
                 $scope.save = function (valid) {
                     if (valid) {
                         $(".page-loading").removeClass("hidden");
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common['Accept'] = 'application/json';
                         //see if they created an org or just chose an existing one
                         if ($scope.selectedOrgID != "") {
@@ -764,17 +786,16 @@
     //#endregion Organizations
 
     //#region resource Controller (abstract)
-    siGLControllers.controller('resourcesCtrl', ['$scope', '$location', '$state', '$http', '$filter', '$modal', 'FREQUENCY_TYPE', 'LAKE_TYPE', 'MEDIA_TYPE', 'OBJECTIVE_TYPE',
+    siGLControllers.controller('resourcesCtrl', ['$scope', '$cookies', '$location', '$state', '$http', '$filter', '$modal', 'FREQUENCY_TYPE', 'LAKE_TYPE', 'MEDIA_TYPE', 'OBJECTIVE_TYPE',
         'PARAMETER_TYPE', 'RESOURCE_TYPE', 'PROJ_DURATION', 'PROJ_STATUS', 'STATUS_TYPE', 'allFreqs', 'allLakes', 'allMedias', 'allObjectives', 'allParams', 'allResources',
-        'allProjDurations', 'allProjStats', 'allSiteStats', 'checkCreds', 'getCreds', 'getUserRole', resourcesCtrl]);
-    function resourcesCtrl($scope, $location, $state, $http, $filter, $modal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, PARAMETER_TYPE, RESOURCE_TYPE,
-        PROJ_DURATION, PROJ_STATUS, STATUS_TYPE, allFreqs, allLakes, allMedias, allObjectives, allParams, allResources, allProjDurations, allProjStats, allSiteStats,
-        checkCreds, getCreds, getUserRole) {
-        if (!checkCreds()) {
+        'allProjDurations', 'allProjStats', 'allSiteStats', resourcesCtrl]);
+    function resourcesCtrl($scope, $cookies, $location, $state, $http, $filter, $modal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, PARAMETER_TYPE, RESOURCE_TYPE,
+        PROJ_DURATION, PROJ_STATUS, STATUS_TYPE, allFreqs, allLakes, allMedias, allObjectives, allParams, allResources, allProjDurations, allProjStats, allSiteStats) {
+        if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
             $location.path('/login');
         } else {
-            $scope.accountRole = getUserRole();
+            $scope.accountRole = $cookies.get('usersRole');
             // change sorting order
             $scope.sortingOrder = ''; // TODO :: SET THIS
             $scope.sort_by = function (newSortingOrder) {
@@ -817,7 +838,7 @@
 
             $scope.AddFrequencyType = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     FREQUENCY_TYPE.save($scope.newFT, function success(response) {
                         $scope.freqTypeList.push(response);
@@ -833,7 +854,7 @@
 
             $scope.saveFrequencyType = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization']= 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 FREQUENCY_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
@@ -864,7 +885,7 @@
                     //yes, remove this keyword
                     var index = $scope.freqTypeList.indexOf(ft);
                     //DELETE it
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     FREQUENCY_TYPE.delete({ id: ct.FREQUENCY_TYPE_ID }, ft, function success(response) {
                         $scope.freqTypeList.splice(index, 1);
                         toastr.success("Frequency Type Removed");
@@ -896,7 +917,7 @@
             };
             $scope.AddLakeType = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     LAKE_TYPE.save($scope.newLT, function success(response) {
                         $scope.lakeTypeList.push(response);
@@ -911,7 +932,7 @@
             };
             $scope.saveLakeType = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 LAKE_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
@@ -938,7 +959,7 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     var index = $scope.lakeTypeList.indexOf(lt);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     LAKE_TYPE.delete({ id: lt.LAKE_TYPE_ID }, lt, function success(response) {
                         $scope.lakeTypeList.splice(index, 1);
                         toastr.success("Lake Type Removed");
@@ -970,7 +991,7 @@
             };
             $scope.AddMediaType = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     MEDIA_TYPE.save($scope.newMT, function success(response) {
                         $scope.mediaTypeList.push(response);
@@ -985,7 +1006,7 @@
             };
             $scope.saveMediaType = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 MEDIA_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
@@ -1012,7 +1033,7 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     var index = $scope.mediaTypeList.indexOf(mt);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     MEDIA_TYPE.delete({ id: mt.MEDIA_TYPE_ID }, mt, function success(response) {
                         $scope.mediaTypeList.splice(index, 1);
                         toastr.success("Media Type Removed");
@@ -1045,7 +1066,7 @@
 
             $scope.AddObjectiveType = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     OBJECTIVE_TYPE.save($scope.newOT, function success(response) {
                         $scope.objTypeList.push(response);
@@ -1061,7 +1082,7 @@
 
             $scope.saveObjectiveType = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 OBJECTIVE_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
@@ -1092,7 +1113,7 @@
                     //yes, remove this keyword
                     var index = $scope.objTypeList.indexOf(ot);
                     //DELETE it
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization']= 'Basic ' + $cookies.get('siGLCreds');
                     OBJECTIVE_TYPE.delete({ id: ot.OBJECTIVE_TYPE_ID }, ot, function success(response) {
                         $scope.objTypeList.splice(index, 1);
                         toastr.success("Objective Type Removed");
@@ -1124,7 +1145,7 @@
             };
             $scope.AddParameterType = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     PARAMETER_TYPE.save($scope.newPT, function success(response) {
                         $scope.paramTypeList.push(response);
@@ -1139,7 +1160,7 @@
             };
             $scope.saveParameterType = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 PARAMETER_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
@@ -1166,7 +1187,7 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     var index = $scope.fileTypeList.indexOf(pt);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     PARAMETER_TYPE.delete({ id: pt.PARAMETER_TYPE_ID }, pt, function success(response) {
                         $scope.paramTypeList.splice(index, 1);
                         toastr.success("Parameter Type Removed");
@@ -1198,7 +1219,7 @@
             };
             $scope.AddResourceType = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     RESOURCE_TYPE.save($scope.newRT, function success(response) {
                         $scope.resourceTypeList.push(response);
@@ -1213,7 +1234,7 @@
             };
             $scope.saveResourcType = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 RESOURCE_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
@@ -1240,7 +1261,7 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     var index = $scope.resourceTypeList.indexOf(rt);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     RESOURCE_TYPE.delete({ id: rt.RESOURCE_TYPE_ID }, rt, function success(response) {
                         $scope.resourceTypeList.splice(index, 1);
                         toastr.success("Resource Type Removed");
@@ -1273,7 +1294,7 @@
 
             $scope.AddProjDuration = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     PROJ_DURATION.save($scope.newPD, function success(response) {
                         $scope.projDurationList.push(response);
@@ -1289,7 +1310,7 @@
 
             $scope.saveProjDuration = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 PROJ_DURATION.update({ id: id }, data, function success(response) {
                     retur = response;
@@ -1320,7 +1341,7 @@
                     //yes, remove this keyword
                     var index = $scope.projDurationList.indexOf(pd);
                     //DELETE it
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     PROJ_DURATION.delete({ id: pd.PROJ_DURATION_ID }, pd, function success(response) {
                         $scope.projDurationList.splice(index, 1);
                         toastr.success("Project Duration Removed");
@@ -1352,7 +1373,7 @@
             };
             $scope.AddProjStatus = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     PROJ_STATUS.save($scope.newPS, function success(response) {
                         $scope.projStatusList.push(response);
@@ -1367,7 +1388,7 @@
             };
             $scope.saveProjStatus = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 PROJ_STATUS.update({ id: id }, data, function success(response) {
                     retur = response;
@@ -1394,7 +1415,7 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     var index = $scope.projStatusList.indexOf(ps);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization']= 'Basic ' + $cookies.get('siGLCreds');
                     HOUSING_TYPE.delete({ id: ps.HOUSING_TYPE_ID }, ps, function success(response) {
                         $scope.projStatusList.splice(index, 1);
                         toastr.success("Project Status Removed");
@@ -1426,7 +1447,7 @@
             };
             $scope.AddSiteStatus = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     STATUS_TYPE.save($scope.newSS, function success(response) {
                         $scope.siteStatusList.push(response);
@@ -1441,7 +1462,7 @@
             };
             $scope.saveSiteStatus = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 STATUS_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
@@ -1468,7 +1489,7 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     var index = $scope.siteStatusList.indexOf(ss);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     STATUS_TYPE.delete({ id: ss.STATUS_ID }, hwmq, function success(response) {
                         $scope.siteStatusList.splice(index, 1);
                         toastr.success("Site Status Type Removed");
@@ -1497,10 +1518,13 @@
     //#endregion HELP Controller
 
     //#region NAV Controller
-    siGLControllers.controller('navCtrl', ['$scope', '$location', '$rootScope', 'deleteCreds', navCtrl]);
-    function navCtrl($scope, $location, $rootScope, deleteCreds) {
+    siGLControllers.controller('navCtrl', ['$scope', '$cookies', '$location', '$rootScope', navCtrl]);
+    function navCtrl($scope, $cookies, $location, $rootScope) {
         $scope.logout = function () {
-            deleteCreds();
+            $cookies.remove('siGLCreds');
+            $cookies.remove('siGLUsername');
+            $cookies.remove('usersName');
+            $cookies.remove('usersRole');
             $rootScope.isAuth.val = false;
             $location.path('/login');
         }
@@ -1509,14 +1533,14 @@
 
     //#region PROJECT LIST Controller
     //ProjectListCtrl
-    siGLControllers.controller('projectListCtrl', ['$scope', 'PROJECT', '$location', '$http', 'checkCreds', 'getCreds', 'getUserRole', 'getUsersNAME', projectListCtrl]);
-    function projectListCtrl($scope, PROJECT, $location, $http, checkCreds, getCreds, getUserRole, getUsersNAME) {
-        if (!checkCreds()) {
+    siGLControllers.controller('projectListCtrl', ['$scope', '$cookies', 'PROJECT', '$location', '$http', projectListCtrl]);
+    function projectListCtrl($scope, $cookies, PROJECT, $location, $http) {
+        if($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
             $location.path('/login');
         } else {
             //array of projects 
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+            $http.defaults.headers.common['Authorization']= 'Basic ' + $cookies.get('siGLCreds');
             $(".page-loading").removeClass("hidden");
             //get the projects to list
             PROJECT.getIndexProjects(function success(data) {
@@ -1528,7 +1552,7 @@
                         return 1;
                     return 0;
                 });
-                $scope.userRole = getUserRole();
+                $scope.userRole = $cookies.get('usersRole');
 
                 //test stuff to make it faster for now
                 //$scope.projects = {Name: 'John Doe', Manager: 'Sam Smith', ManagerOrg: 'USGS', SiteCount: '9'};
@@ -1565,7 +1589,7 @@
                 }
             };
 
-            $scope.User = getUsersNAME();
+            $scope.User = $cookies.get('usersName');
         }
     }
     //end projectListCtrl    
@@ -1573,14 +1597,13 @@
 
     //#region ABSTRACT PROJECT EDIT Controller
     //ProjectEditCtrl
-    siGLControllers.controller('projectEditCtrl', ['$scope', '$rootScope', '$location', '$state', '$http', '$filter', '$modal', 'checkCreds', 'getCreds', 'thisProject', 'projOrgs',
+    siGLControllers.controller('projectEditCtrl', ['$scope', '$rootScope', '$cookies', '$location', '$state', '$http', '$filter', '$modal', 'thisProject', 'projOrgs',
         'projDatum', 'projContacts', 'projPubs', 'projSites', 'projObjectives', 'projKeywords', 'PROJECT', 'SITE', 'allDurationList', 'allStatsList', 'allObjList', projectEditCtrl]);
-    function projectEditCtrl($scope, $rootScope, $location, $state, $http, $filter, $modal, checkCreds, getCreds, thisProject, projOrgs, projDatum, projContacts, projPubs,
+    function projectEditCtrl($scope, $rootScope, $cookies, $location, $state, $http, $filter, $modal, thisProject, projOrgs, projDatum, projContacts, projPubs,
             projSites, projObjectives, projKeywords, PROJECT, SITE, allDurationList, allStatsList, allObjList) {
         //model needed for ProjectEdit Info tab: ( Counts for Cooperators, Datum, Contacts, Publications and Sites) 1. thisProject, 2. parsed urls, 3. project Keywords, 4. all objectives, 5. all statuses, 6. all durations 
-
-        if (!checkCreds()) {
-            //not creds, go log in        
+        if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
+            $scope.auth = false;
             $location.path('/login');
         } else {
             $scope.projectForm = {};
@@ -1697,7 +1720,7 @@
                         //there is a url and it's not formatted
                         neededUpdating = true;
                         projSites[ind].URL = 'http://' + projSites[ind].URL;
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common['Accept'] = 'application/json';
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
 
@@ -1736,7 +1759,7 @@
                     }
                     //if they needed updating, PUT the project
                     if (neededUpdating) {
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common['Accept'] = 'application/json';
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                         $scope.aProject.URL = ($scope.urls).join('|');
@@ -1801,7 +1824,7 @@
 
             //an OBJECTIVE_TYPE was clicked - if added POST, if removed DELETE - for edit view or store for create view
             $scope.ObjClick = function (data) {
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
 
                 if ($scope.aProject.PROJECT_ID != undefined) {
@@ -1917,7 +1940,7 @@
                         //this is an edit, go ahead and post PROJ_KEYWORD
                         $http.defaults.headers.common['Accept'] = 'application/json';
                         //POST it                            
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                         PROJECT.addProjKeyword({ id: $scope.aProject.PROJECT_ID }, newKEY, function success(response) {
                             $scope.ProjectKeywords.push({ TERM: globalKeyHolder });
                             toastr.success("Keyword Added");
@@ -1974,7 +1997,7 @@
                     var index1 = $scope.ProjectKeywords.indexOf(key);
                     if ($scope.aProject.PROJECT_ID != undefined) {
                         //DELETE it
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common['Accept'] = 'application/json';
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
@@ -2025,8 +2048,8 @@
             $scope.save = function (valid) {
                 //check if they filled in all required fields
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common['Accept']= 'application/json';
                     $scope.aProject.URL = ($scope.urls).join('|');
                     var projID;
                     $(".page-loading").removeClass("hidden");
@@ -2070,7 +2093,7 @@
                 if ($scope.aProject.PROJECT_ID != undefined) {
                     //ensure they don't delete required field values
                     if (valid) {
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common['Accept'] = 'application/json';
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                         PROJECT.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject, function success(response) {
@@ -2117,8 +2140,8 @@
 
     //#region COOPERATOR Controller
     //ProjectEditCoopCtrl
-    siGLControllers.controller('projectEditCoopCtrl', ['$scope', '$http', '$filter', '$modal', 'thisProject', 'projOrgs', 'allOrgList', 'allDivisionList', 'allSectionList', 'PROJECT', 'getCreds', projectEditCoopCtrl]);
-    function projectEditCoopCtrl($scope, $http, $filter, $modal, thisProject, projOrgs, allOrgList, allDivisionList, allSectionList, PROJECT, getCreds) {
+    siGLControllers.controller('projectEditCoopCtrl', ['$scope', '$http', '$cookies', '$filter', '$modal', 'thisProject', 'projOrgs', 'allOrgList', 'allDivisionList', 'allSectionList', 'PROJECT', projectEditCoopCtrl]);
+    function projectEditCoopCtrl($scope, $http, $cookies, $filter, $modal, thisProject, projOrgs, allOrgList, allDivisionList, allSectionList, PROJECT) {
         $scope.ProjOrgs = projOrgs; // ORGANIZATION_RESOURCE        
         $scope.allOrgs = allOrgList; //ORGANIZATION
         $scope.allDivisions = allDivisionList; //DIVISION
@@ -2247,7 +2270,7 @@
                 //yes, remove this keyword
                 var index = $scope.ProjOrgs.indexOf(org);
                 //DELETE it
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 PROJECT.deleteProjOrg({ id: thisProject.PROJECT_ID, orgId: org.OrganizationSystemID }, function success(response) {
                     $scope.ProjOrgs.splice(index, 1);
@@ -2266,8 +2289,8 @@
 
     //#region DATA Controller
     //ProjectEditDataCtrl
-    siGLControllers.controller('projectEditDataCtrl', ['$scope', '$http', '$modal', 'PROJECT', 'DATA_HOST', 'thisProject', 'projDatum', 'getCreds', projectEditDataCtrl]);
-    function projectEditDataCtrl($scope, $http, $modal, PROJECT, DATA_HOST, thisProject, projDatum, getCreds) {
+    siGLControllers.controller('projectEditDataCtrl', ['$scope', '$cookies', '$http', '$modal', 'PROJECT', 'DATA_HOST', 'thisProject', 'projDatum', projectEditDataCtrl]);
+    function projectEditDataCtrl($scope, $cookies, $http, $modal, PROJECT, DATA_HOST, thisProject, projDatum) {
         $scope.ProjData = projDatum;
         var neededUpdating = false; //if the url isn't formatted, flag so know to PUT it after fixing
         $scope.isEditing = false; //disables form inputs while user is editing existing data up top
@@ -2281,7 +2304,7 @@
                 //there is a url and it's not formatted
                 neededUpdating = true;
                 $scope.ProjData[ind].PORTAL_URL = 'http://' + $scope.ProjData[ind].PORTAL_URL;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                 
@@ -2315,7 +2338,7 @@
         $scope.AddData = function (valid, d) {
             if (valid) {
                 //add it
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 PROJECT.addProjData({ id: thisProjID }, d, function success(response) {
                     var postedDATA = response.filter(function (postedD) { return postedD.DESCRIPTION == d.DESCRIPTION && postedD.PORTAL_URL == d.PORTAL_URL && postedD.HOST_NAME == d.HOST_NAME })[0];
@@ -2354,7 +2377,7 @@
                 //yes, remove this keyword
                 var index = $scope.ProjData.indexOf(dataH);
                 //DELETE it
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
@@ -2397,7 +2420,7 @@
         $scope.saveData = function (data, id) {
             if (this.rowform.$valid) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                 DATA_HOST.save({ id: id }, data, function success(response) {
@@ -2421,8 +2444,8 @@
 
     //#region CONTACT Controller
     //projectEditContactCtrl
-    siGLControllers.controller('projectEditContactCtrl', ['$scope', '$http', '$filter', '$modal', 'PROJECT', 'CONTACT', 'ORGANIZATION_SYSTEM', 'projContacts', 'thisProject', 'orgResources', 'allOrgList', 'allDivisionList', 'allSectionList', 'getCreds', projectEditContactCtrl]);
-    function projectEditContactCtrl($scope, $http, $filter, $modal, PROJECT, CONTACT, ORGANIZATION_SYSTEM, projContacts, thisProject, orgResources, allOrgList, allDivisionList, allSectionList, getCreds) {
+    siGLControllers.controller('projectEditContactCtrl', ['$scope', '$cookies', '$http', '$filter', '$modal', 'PROJECT', 'CONTACT', 'ORGANIZATION_SYSTEM', 'projContacts', 'thisProject', 'orgResources', 'allOrgList', 'allDivisionList', 'allSectionList', projectEditContactCtrl]);
+    function projectEditContactCtrl($scope, $cookies, $http, $filter, $modal, PROJECT, CONTACT, ORGANIZATION_SYSTEM, projContacts, thisProject, orgResources, allOrgList, allDivisionList, allSectionList) {
         $scope.ProjContacts = projContacts;
 
         //make sure phone is formatted
@@ -2434,7 +2457,7 @@
                 if (phNo.length >= 10) {
                     //format it
                     $scope.ProjContacts[theI].PHONE = "(" + phNo.substring(0, 3) + ") " + phNo.substring(3, 6) + "-" + phNo.substring(6);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                     CONTACT.save({ id: $scope.ProjContacts[theI].CONTACT_ID }, $scope.ProjContacts[theI]).$promise.then(function (response) {
@@ -2483,7 +2506,7 @@
 
         //post this contact to the project and then format the list of projContacts with org info
         function postProjContact(orgSys) {
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
             $http.defaults.headers.common['Accept'] = 'application/json';
             PROJECT.addProjContact({ id: thisProject.PROJECT_ID }, $scope.newContact, function success(response) {
                 $scope.ProjContacts = response;
@@ -2626,7 +2649,7 @@
         function PUTcontact(contactToUpdate, id) {
             //PUT
             var retur = false;
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
             $http.defaults.headers.common['Accept'] = 'application/json';
             $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
             CONTACT.save({ id: id }, contactToUpdate, function success(response) {
@@ -2779,7 +2802,7 @@
                     SCIENCE_BASE_ID: con.SCIENCE_BASE_ID
                 };
                 //DELETE it
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
@@ -2802,8 +2825,8 @@
     //#endregion CONTACT Controller
 
     //#region PUBLICATION Controller
-    siGLControllers.controller('projectEditPubCtrl', ['$scope', '$http', '$modal', 'PROJECT', 'thisProject', 'PUBLICATION', 'projPubs', 'getCreds', projectEditPubCtrl]);
-    function projectEditPubCtrl($scope, $http, $modal, PROJECT, thisProject, PUBLICATION, projPubs, getCreds) {
+    siGLControllers.controller('projectEditPubCtrl', ['$scope', '$cookies', '$http', '$modal', 'PROJECT', 'thisProject', 'PUBLICATION', 'projPubs', projectEditPubCtrl]);
+    function projectEditPubCtrl($scope, $cookies, $http, $modal, PROJECT, thisProject, PUBLICATION, projPubs) {
         $scope.ProjPubs = projPubs;
         $scope.isEditing = false; //disables form inputs while user is editing existing data up top
         $scope.newPub = {
@@ -2834,7 +2857,7 @@
         $scope.AddPub = function (valid, p) {
             if (valid) {
                 //add it
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 PROJECT.addProjPublication({ id: thisProjID }, p, function success(response) {
                     var postedPUB = response.filter(function (postedP) {
@@ -2878,7 +2901,7 @@
                 //yes, remove this keyword
                 var index = $scope.ProjPubs.indexOf(pub);
                 //DELETE it
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
@@ -2924,7 +2947,7 @@
         $scope.savePub = function (data, id) {
             var test;
             var retur = false;
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+            $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
             $http.defaults.headers.common['Accept'] = 'application/json';
             $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
 
@@ -2947,8 +2970,8 @@
 
     //#region SITE Controller
 
-    siGLControllers.controller('projectEditSiteListCtrl', ['$scope', '$location', '$modal', '$http', 'getCreds', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE', projectEditSiteListCtrl]);
-    function projectEditSiteListCtrl($scope, $location, $modal, $http, getCreds, projS, thisProject, siteStatList, lakeList, stateList, resourceList, mediaList, frequencyList, parameterList, SITE) {
+    siGLControllers.controller('projectEditSiteListCtrl', ['$scope', '$location', '$cookies', '$modal', '$http', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE', projectEditSiteListCtrl]);
+    function projectEditSiteListCtrl($scope, $location, $cookies, $modal, $http, projS, thisProject, siteStatList, lakeList, stateList, resourceList, mediaList, frequencyList, parameterList, SITE) {
         $scope.projectSites = projS;
         for (var psu = 0; psu < $scope.projectSites.length; psu++) {
             var ind = psu;
@@ -3143,7 +3166,7 @@
                         }
                     }
                 }
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 var siteId = "";
                 SITE.save({}, aSITE, function success(response) {
@@ -3234,7 +3257,7 @@
                 var index = $scope.projectSites.indexOf(site);
                 //DELETE it
                 
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 SITE.delete({ id: site.SiteId }, function success(response) {
                     $scope.projectSites.splice(index, 1);
                     $scope.sitesCount.total = $scope.sitesCount.total - 1;
@@ -3251,14 +3274,12 @@
     };
 
     //projectEditSiteInfoCtrl ( CREATE / EDIT page)    
-    siGLControllers.controller('projectEditSiteInfoCtrl', ['$scope', '$location', '$http', '$modal', '$state', 'checkCreds', 'getCreds',
-        'thisProject', 'thisSite', 'SITE', 'projSites', 'siteFrequencies', 'siteMedium', 'siteParameters', 'siteResources',
-        'CountryList', 'lakeList', 'stateList', 'siteStatList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', projectEditSiteInfoCtrl]);
-    function projectEditSiteInfoCtrl($scope, $location, $http, $modal, $state, checkCreds, getCreds,
-        thisProject, thisSite, SITE, projSites, siteFrequencies, siteMedium, siteParameters, siteResources,
-        CountryList, lakeList, stateList, siteStatList, resourceList, mediaList, frequencyList, parameterList) {
-        if (!checkCreds()) {
-            //not creds, go log in        
+    siGLControllers.controller('projectEditSiteInfoCtrl', ['$scope', '$location', '$cookies', '$http', '$modal', '$state', 'thisProject', 'thisSite', 'SITE', 'projSites', 'siteFrequencies', 'siteMedium',
+             'siteParameters', 'siteResources', 'CountryList', 'lakeList', 'stateList', 'siteStatList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', projectEditSiteInfoCtrl]);
+             function projectEditSiteInfoCtrl($scope, $location, $cookies, $http, $modal, $state, thisProject, thisSite, SITE, projSites, siteFrequencies, siteMedium,
+        siteParameters, siteResources, CountryList, lakeList, stateList, siteStatList, resourceList, mediaList, frequencyList, parameterList) {
+        if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
+            $scope.auth = false;
             $location.path('/login');
         } else {
             $scope.thisSite = {
@@ -3468,7 +3489,7 @@
 
             //#region a FREQUENCY was clicked - if added POST, if removed DELETE - for edit view or store for create view
             $scope.FreqClick = function (data) {
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
 
                 if ($scope.thisSite.SITE_ID != undefined) {
@@ -3510,7 +3531,7 @@
 
             //#region a MEDIA was clicked - if added POST, if removed DELETE - for edit view or store for create view
             $scope.MedClick = function (data) {
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
 
                 if ($scope.thisSite.SITE_ID != undefined) {
@@ -3552,7 +3573,7 @@
 
             //#region a PARAMETER was clicked - if added POST, if removed DELETE - for edit view or store for create view
             $scope.ParamClick = function (data) {
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 var Param = {
                 };
@@ -3600,7 +3621,7 @@
 
             //#region a RESOURCE was clicked - if added POST, if removed DELETE - for edit view or store for create view
             $scope.ResClick = function (data) {
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
 
                 if ($scope.thisSite.SITE_ID != undefined) {
@@ -3695,7 +3716,7 @@
                     if (valid) {
                         //ensure they don't delete required field values
                         if (($scope.thisSite.LATITUDE > 0 && $scope.thisSite.LATITUDE < 73.0) && ($scope.thisSite.LONGITUDE > -175 && $scope.thisSite.LONGITUDE < -60)) {
-                            $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                            $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                             $http.defaults.headers.common['Accept'] = 'application/json';
                             $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                             SITE.save({
@@ -3743,7 +3764,7 @@
                 //check if they filled in all required fields
                 if (valid && ($scope.thisSite.LATITUDE > 0 && $scope.thisSite.LATITUDE < 73.0) && ($scope.thisSite.LONGITUDE > -175 && $scope.thisSite.LONGITUDE < -60)) {
                     $(".page-loading").removeClass("hidden");
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common['Accept'] = 'application/json';
                     $scope.thisSite.PROJECT_ID = thisProject.PROJECT_ID;
                     var siteID;
@@ -3825,9 +3846,9 @@
     }//end projectEditSiteInfoCtrl
 
     //projectEditALL Sites
-    siGLControllers.controller('projectEditAllSitesCtrl', ['$scope', '$location', '$http', '$state', 'thisProject', 'SITE', 'projSites',
+    siGLControllers.controller('projectEditAllSitesCtrl', ['$scope', '$cookies', '$location', '$http', '$state', 'thisProject', 'SITE', 'projSites',
         'lakeList', 'CountryList', 'stateList', 'siteStatList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', projectEditAllSitesCtrl]);
-    function projectEditAllSitesCtrl($scope, $location, $http, $state, thisProject, SITE, projSites,
+    function projectEditAllSitesCtrl($scope, $cookies, $location, $http, $state, thisProject, SITE, projSites,
         lakeList, CountryList, stateList, siteStatList, resourceList, mediaList, frequencyList, parameterList) {
         //need id/value format for ui-grid
         $scope.formatArray = function (o) {
@@ -4008,8 +4029,8 @@
     }
 
     //org popup to add to org db
-    siGLControllers.controller('AddOrgModalCtrl', ['$scope', '$modalInstance', '$http', 'getCreds', 'chosenParts', 'allOrgs', 'allDivs', 'allSecs', 'ORGANIZATION', 'DIVISION', 'SECTION', AddOrgModalCtrl]);
-    function AddOrgModalCtrl($scope, $modalInstance, $http, getCreds, chosenParts, allOrgs, allDivs, allSecs, ORGANIZATION, DIVISION, SECTION) {
+    siGLControllers.controller('AddOrgModalCtrl', ['$scope', '$cookies', '$modalInstance', '$http', 'chosenParts', 'allOrgs', 'allDivs', 'allSecs', 'ORGANIZATION', 'DIVISION', 'SECTION', AddOrgModalCtrl]);
+    function AddOrgModalCtrl($scope, $cookies, $modalInstance, $http, chosenParts, allOrgs, allDivs, allSecs, ORGANIZATION, DIVISION, SECTION) {
         //globals
         $scope.OrgName = {}; //new org name input ng-model
         $scope.divisionName = {}; //new div name input ng-model
@@ -4084,7 +4105,7 @@
                 var orgToPost = {
                     ORGANIZATION_NAME: nameToAdd
                 };
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 ORGANIZATION.save(orgToPost, function success(response) {
                     //add this new one to the lists
@@ -4115,7 +4136,7 @@
         $scope.addThisDivision = function (divToAdd, orgID) {
             if (divToAdd != "" && orgID != "") {
                 var divToPost = { DIVISION_NAME: divToAdd, ORG_ID: orgID };
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 DIVISION.save(divToPost, function success(response) {
                     $scope.allDivList.push(response);
@@ -4146,7 +4167,7 @@
         $scope.addThisSection = function (secToAdd, divID) {
             if (secToAdd != "" && divID != "") {
                 var secToPost = { SECTION_NAME: secToAdd, DIV_ID: divID };
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common['Accept'] = 'application/json';
                 SECTION.save(secToPost, function success(response) {
                     $scope.allSecList.push(response); //push to all sections 
@@ -4201,9 +4222,9 @@
     //#endregion MODALS
 
     //#region LOGIN/OUT
-    //login 'setLoggedIn',
-    siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', '$rootScope', 'LOGIN', 'setCreds', 'getUserRole', LoginCtrl]);
-    function LoginCtrl($scope, $state, $http, $rootScope, LOGIN, setCreds, getUserRole) {
+    //login 
+    siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', '$rootScope', '$cookies', 'LOGIN', LoginCtrl]);
+    function LoginCtrl($scope, $state, $http, $rootScope, $cookies, LOGIN) {
 
         //#region CAP lock Check
         $('[type=password]').keypress(function (e) {
@@ -4235,18 +4256,43 @@
             $http.defaults.headers.common['Authorization'] = 'Basic ' + btoa(up);
             $http.defaults.headers.common['Accept'] = 'application/json';
 
+            Date.prototype.addHours = function (h) {
+                this.setHours(this.getHours() + h);
+                return this;
+            };
+
             LOGIN.login({}, postData,
                 function success(response) {
                     var user = response;
                     if (user != undefined) {
                         //set user cookies (cred, username, name, role
                         var usersNAME = user.FNAME + " " + user.LNAME;
-                        setCreds($scope.username, $scope.password, usersNAME, user.ROLE_ID, user.DATA_MANAGER_ID);
-                        //setLoggedIn.changeLoggedIn(true);
+                        var enc = btoa($scope.username.concat(":", $scope.password));
+                        //set expiration on cookies
+                        var expireDate = new Date().addHours(1);                        
+                        $cookies.put('siGLCreds', enc, { 'expires': expireDate });
+                        $cookies.put('siGLUsername', $scope.username);
+                        $cookies.put('usersName', usersNAME);
+                        $cookies.put('dmID', user.DATA_MANAGER_ID);
+                        var roleName;
+                        switch (user.ROLE_ID) {
+                            case 1:
+                                roleName = "Admin";
+                                break;
+                            case 2:
+                                roleName = "Manager";
+                                break;
+                            default:
+                                roleName = "Public";
+                                break;
+                        }
+                        $cookies.put('usersRole', roleName);
+                        
+
                         $rootScope.isAuth.val = true;
                         $rootScope.usersName = usersNAME;
                         $rootScope.userID = user.DATA_MANAGER_ID;
-                        $rootScope.Role = getUserRole();
+                        $rootScope.Role = roleName;
                         $state.go('projectList');
                     }
                     else {
@@ -4261,10 +4307,13 @@
     }
 
     //logOut
-    siGLControllers.controller('LogoutCtrl', ['$scope', '$location', 'deleteCreds', LogoutCtrl]);
-    function LogoutCtrl($scope, $location, deleteCreds) {
+    siGLControllers.controller('LogoutCtrl', ['$scope', '$cookies', '$location', LogoutCtrl]);
+    function LogoutCtrl($scope, $cookies, $location) {
         $scope.logout = function () {
-            deleteCreds();
+            $cookies.remove('siGLCreds');
+            $cookies.remove('siGLUsername');
+            $cookies.remove('usersName');
+            $cookies.remove('usersRole');
             $location.path('/login');
         }
     };
