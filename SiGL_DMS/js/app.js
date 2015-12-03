@@ -78,10 +78,10 @@
                          allSecs: function (secs) {
                              return secs.getAll().$promise;
                          },                         
-                         p: 'PROJECT',
-                         allProj: function (p) {
-                             return p.getAll().$promise;
-                         },
+                         //p: 'PROJECT',
+                         //allProj: function (p) {
+                         //    return p.getAll().$promise;
+                         //},
                          r: 'ROLE',
                          allRoles: function (r) {                             
                              return r.getAll().$promise;
@@ -115,7 +115,7 @@
                         },
                         dmProjects: function (dm, $stateParams) {
                             if ($stateParams.id > 0) {
-                                return dm.getDMProject({ id: $stateParams.id }).$promise;
+                                return dm.getDMProject({ DataManager: $stateParams.id }).$promise;
                             }
                         }
                     }
@@ -312,7 +312,7 @@
                                     var useID = getUserID();
                                     var dmProjs = [];
                                     DATA_MANAGER.getDMProject({ id: useID }, function sucess(response) {
-                                        dmProjs = response.filter(function (p) { return p.PROJECT_ID == $stateParams.id });
+                                        dmProjs = response.filter(function (p) { return p.ProjId == $stateParams.id });
                                         if (dmProjs.length > 0) {
                                             defer.resolve();
                                         } else {

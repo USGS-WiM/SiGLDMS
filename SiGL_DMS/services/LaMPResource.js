@@ -34,7 +34,7 @@
             {}, {
                 query: {},
                 addDataManager: { method: 'POST', cache: false, isArray: false, url: rootURL + '/dataManagers/:pass/addDataManager' },
-                getDMProject: { method: 'GET', isArray: true, url: rootURL + '/dataManagers/:id/projects.json' },     
+                getDMProject: { method: 'GET', isArray: true, url: rootURL + '/projects/IndexProjects.json' }, //?DataManager={dmID}     
                 getAll: { method: 'GET', isArray: true },
                 changePW: {method:'GET', isArray:false, url: rootURL + '/dataManagers.json'},
                 save: { method: 'POST', cache: false, isArray: false },
@@ -172,6 +172,7 @@
                 deleteProjPublication: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/RemoveProjectPublication' },
                 getProjSites: { isArray: true, url: rootURL + '/projects/:id/sites.json' },
                 getFullSiteList: { isArray: true, url: rootURL + '/Sites/FullSiteInfo/:projId.json' },
+                updateDM: {isArray: false, cache: false, url: rootURL + '/projects/:id/ReassignProject'}, // ?DataManager={dataManagerId}
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false },
             });

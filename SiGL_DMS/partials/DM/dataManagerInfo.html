@@ -278,43 +278,39 @@
 <div class="form-group" ng-if="DMProjects.length > 0">
     <legend>YOUR PROJECTS</legend>
     <script>
-        var sortingOrder = 'NAME';
+        var sortingOrder = 'Name';
     </script>
 
     <table class="table">
         <thead>
             <tr>
-                <th class="Name">Project Name&nbsp;<a ng-click="sort_by('NAME')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Name">Project Name&nbsp;<a ng-click="sort_by('Name')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="SiteCount">Site Count&nbsp;<a ng-click="sort_by('SiteCount')"><i class="glyphicon glyphicon-sort"></i></a></th>
                 <th>Data Manager</th>
+                <th>Organization</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
+           
             <tr ng-repeat="p in DMProjects| orderBy:sortingOrder:reverse">
                 <td>
-                    <div style="display:none">
-                        <span editable-text="p.PROJECT_ID" e-form="rowform" e-name="PROJECT_ID">{{d.PROJECT_ID}}</span>
-                        <span editable-text="p.NAME" e-form="rowform" e-name="NAME">{{d.NAME}}</span>
-                        <span editable-text="p.START_DATE" e-form="rowform" e-name="START_DATE">{{d.START_DATE}}</span>
-                        <span editable-text="p.END_DATE" e-form="rowform" e-name="END_DATE">{{d.END_DATE}}</span>
-                        <span editable-text="p.URL" e-form="rowform" e-name="URL">{{d.URL}}</span>
-                        <span editable-text="p.ADDITIONAL_INFO" e-form="rowform" e-name="ADDITIONAL_INFO">{{d.ADDITIONAL_INFO}}</span>
-                        <span editable-text="p.SCIENCE_BASE_ID" e-form="rowform" e-name="SCIENCE_BASE_ID">{{d.SCIENCE_BASE_ID}}</span>
-                        <span editable-text="p.DESCRIPTION" e-form="rowform" e-name="DESCRIPTION">{{d.DESCRIPTION}}</span>
-                        <span editable-text="p.PROJ_STATUS_ID" e-form="rowform" e-name="PROJ_STATUS_ID">{{d.PROJ_STATUS_ID}}</span>
-                        <span editable-text="p.PROJ_DURATION_ID" e-form="rowform" e-name="PROJ_DURATION_ID">{{d.PROJ_DURATION_ID}}</span>
-                        <span editable-text="p.READY_FLAG" e-form="rowform" e-name="READY_FLAG">{{d.READY_FLAG}}</span>
-                    </div>
-                    <span text="p.NAME" name="NAME" e-form="rowform">{{ p.NAME }}</span>
+                    <span text="p.Name" name="Name" e-form="rowform">{{ p.Name }}</span>
                 </td>
                 <td>
-                    <span editable-select="p.DATA_MANAGER_ID" e-name="DATA_MANAGER_ID" e-form="rowform" e-ng-options="d.DATA_MANAGER_ID as d.FULLNAME for d in allDMs | orderBy: 'LNAME'">
-                        {{ (allDMs | filter: {DATA_MANAGER_ID: p.DATA_MANAGER_ID})[0].FULLNAME || '' }}
+                    <span text="p.SiteCount" name="SiteCount" e-form="rowform">{{p.SiteCount}}</span>
+                </td>
+                <td>
+                    <span editable-select="p.DataManagerID" e-name="DataManagerID" e-form="rowform" e-ng-options="d.DATA_MANAGER_ID as d.FULLNAME for d in allDMs | orderBy: 'LNAME'">
+                        {{ (allDMs | filter: {DATA_MANAGER_ID: p.DataManagerID})[0].FULLNAME || '' }}
                     </span>
+                </td>
+                <td>
+                    <span text="p.ManagerOrg" name="ManagerOrg" e-form="rowform">{{p.ManagerOrg}}</span>
                 </td>
                 <td ng-show="matchingUsers || loggedInUser.Role == 'Admin'" style="white-space: nowrap">
                     <!-- form -->
-                    <form editable-form name="rowform" onaftersave="updateDMonProj($data, p.PROJECT_ID)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == p">
+                    <form editable-form name="rowform" onaftersave="updateDMonProj($data, p.ProjId)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == p">
                         <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
                             save
                         </button>

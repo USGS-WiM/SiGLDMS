@@ -67,6 +67,8 @@
     <Content Include="css\ui-grid-unstable.css" />
     <Content Include="css\ui-grid.svg" />
     <Content Include="css\xeditable.css" />
+    <Content Include="images\copy_icon_sm.png" />
+    <Content Include="images\copy_icon_v2.png" />
     <Content Include="images\loading1.gif" />
     <Content Include="images\Members1.png" />
     <Content Include="images\reports.png" />
