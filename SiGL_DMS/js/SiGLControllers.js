@@ -314,9 +314,9 @@
         }
     }
 
-    //#region Data ManagerallProj
-    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'ROLE', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allRoles', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
-    function dataManagerCtrl($scope, $http, DATA_MANAGER, ROLE, allOrgRes, allOrgs, allDivs, allSecs, allRoles, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
+    //#region Data Manager
+    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', 'DATA_MANAGER', 'ROLE', 'allProj', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allRoles', 'checkCreds', 'getCreds', 'getUsersNAME', 'getUserID', 'getUserRole', dataManagerCtrl]);
+    function dataManagerCtrl($scope, $http, DATA_MANAGER, ROLE, allProj, allOrgRes, allOrgs, allDivs, allSecs, allRoles, checkCreds, getCreds, getUsersNAME, getUserID, getUserRole) {
         //get all datamanagers once here to ensure passing auth
         if (!checkCreds()) {
             $scope.auth = false;
@@ -341,8 +341,8 @@
                     result[x].OrgName = orgName != undefined ? orgName.OrganizationName : "";
                     result[x].roleName = $scope.allROLEs.filter(function (ro) { return ro.ROLE_ID == result[x].ROLE_ID; })[0].ROLE_NAME;
                     result[x].FULLNAME = result[x].FNAME + " " + result[x].LNAME;
-                    //var theseProjs = allProj.filter(function (p) { return p.DATA_MANAGER_ID == result[x].DATA_MANAGER_ID; });
-                    //result[x].projCount = theseProjs.length;
+                    var theseProjs = allProj.filter(function (p) { return p.DataManagerID == result[x].DATA_MANAGER_ID; });
+                    result[x].projCount = theseProjs.length;
                 }
                 $scope.allDMs = result;
             });

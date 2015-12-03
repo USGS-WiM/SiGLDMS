@@ -78,10 +78,10 @@
                          allSecs: function (secs) {
                              return secs.getAll().$promise;
                          },                         
-                         //p: 'PROJECT',
-                         //allProj: function (p) {
-                         //    return p.getAll().$promise;
-                         //},
+                         p: 'PROJECT',
+                         allProj: function (p) {
+                             return p.getAll().$promise;
+                         },
                          r: 'ROLE',
                          allRoles: function (r) {                             
                              return r.getAll().$promise;
