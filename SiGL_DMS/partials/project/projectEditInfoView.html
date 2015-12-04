@@ -58,7 +58,7 @@
                 <div class="input-group">
                     <input class="form-control" id="START_DATE" name="sd" type="text" datepicker-popup="MMM dd, yyyy"
                            is-open="datepickrs.sd" ng-model-options="{ updateOn: 'blur' }"
-                           ng-change="SaveOnBlur(projectForm.Info.$valid, 0)" ng-model="aProject.START_DATE" />
+                           ng-change="SaveOnBlur(projectForm.Info.$valid, -1)" ng-model="aProject.START_DATE" />
                     <span class="input-group-btn">
                         <button class="btn btn-default" ng-click="open($event, 'sd')">
                             <i class="glyphicon glyphicon-calendar" />
@@ -81,7 +81,7 @@
                 <div class="input-group">
                     <input class="form-control" id="inputEND_DATE" name="ed" ng-disabled="undetermined"
                            type="text" datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
-                           ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.Info.$valid, 0)"
+                           ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur(projectForm.Info.$valid, -1)"
                            ng-model="aProject.END_DATE" />
                     <span class="input-group-btn">
                         <button class="btn btn-default" ng-click="open($event, 'ed')">

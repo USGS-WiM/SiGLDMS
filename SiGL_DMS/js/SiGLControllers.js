@@ -2089,8 +2089,32 @@
             }
 
             //change to the aProject made, put it .. fired on each blur after change made to field
-            $scope.SaveOnBlur = function (valid, id) {                
-                if ($scope.aProject.PROJECT_ID != undefined) {
+            $scope.SaveOnBlur = function (valid, id) {
+                if (id < 0) {
+                    //they changed end date, compare to make sure it comes after start date
+                    if (new Date($scope.aProject.END_DATE) < new Date($scope.aProject.START_DATE)) {
+                        var dateModal = $modal.open({
+                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                        '<div class="modal-body"><p>Completion date must come after Start date.</p></div>' +
+                                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                            controller: function ($scope, $modalInstance) {
+                                $scope.ok = function () {
+                                    $modalInstance.close('startDate');
+                                }
+                            },
+                            size: 'sm'
+                        });
+                        dateModal.result.then(function (d) {
+                            if (d == "startDate") {
+                               // $scope.aProject.END_DATE = "";
+                                angular.element("#END_DATE").focus();
+                            }
+                        });
+                        if ($scope.aProject.PROJECT_ID != undefined) toastr.error("Project not updated.");
+                        return;
+                    }
+                }
+                if ($scope.aProject.PROJECT_ID != undefined) {                    
                     //ensure they don't delete required field values
                     if (valid) {
                         $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
@@ -2104,7 +2128,7 @@
                             toastr.error("Error: " + errorResponse.statusText);
                         });
                         delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-                        } else {
+                    } else {
                         //modal for enter all required fields
                         var modalInstance = $modal.open({
                             template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
@@ -2119,15 +2143,15 @@
                         });
                         modalInstance.result.then(function (fieldFocus) {
                             if (fieldFocus == "required") {
-                               angular.element("[name='" + $scope.projectForm.Info.$name + "']").find('.ng-invalid:visible:first').focus();
+                                angular.element("[name='" + $scope.projectForm.Info.$name + "']").find('.ng-invalid:visible:first').focus();
                             }
                         });
                         toastr.error("Project not updated.");
                     }
-                }
+                }                
                 if (id > 0) {
                     $scope.selectedStat(id);
-                }
+                }                
             }//end SaveOnBlur
 
             $scope.cancel = function () {
@@ -3712,6 +3736,30 @@
 
             //change to the thisSite made, put it .. fired on each blur after change made to field
             $scope.SaveOnBlur = function (valid, da) {
+                if (da < 0) {
+                    //they changed end date, compare to make sure it comes after start date
+                    if (new Date($scope.thisSite.END_DATE) < new Date($scope.thisSite.START_DATE)) {
+                        var dateModal = $modal.open({
+                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                        '<div class="modal-body"><p>Sampling end date must come after start date.</p></div>' +
+                                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                            controller: function ($scope, $modalInstance) {
+                                $scope.ok = function () {
+                                    $modalInstance.close('startDate');
+                                }
+                            },
+                            size: 'sm'
+                        });
+                        dateModal.result.then(function (d) {
+                            if (d == "startDate") {
+                                // $scope.aProject.END_DATE = "";
+                                angular.element("#END_DATE").focus();
+                            }
+                        });
+                        if ($scope.thisSite.SITE_ID != undefined) toastr.error("Site not updated.");
+                        return;
+                    }
+                }
                 if ($scope.thisSite.SITE_ID != undefined) {
                     if (valid) {
                         //ensure they don't delete required field values
@@ -4223,8 +4271,8 @@
 
     //#region LOGIN/OUT
     //login 
-    siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', '$rootScope', '$cookies', 'LOGIN', LoginCtrl]);
-    function LoginCtrl($scope, $state, $http, $rootScope, $cookies, LOGIN) {
+    siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', '$rootScope', '$cookies', '$modal', 'LOGIN', LoginCtrl]);
+    function LoginCtrl($scope, $state, $http, $rootScope, $cookies, $modal, LOGIN) {
 
         //#region CAP lock Check
         $('[type=password]').keypress(function (e) {
@@ -4246,6 +4294,32 @@
             });
         });
         //#endregion CAP lock Check
+
+        //forgot password
+        $scope.forgotPassword = function () {
+            //modal for required at least 1 field..Please enter the email address for your account. An email will be sent to you with your new generic password.
+            var modalInstance = $modal.open({
+                template: '<div class="modal-header"><h3 class="modal-title">Forgot your password?</h3></div>' +
+                    '<div class="modal-body"><p>Not working yet......</p></div>' +
+                    '<form name="newSiteName"><div class="form-group"><label class="col-md-2 control-label req" for="EMAIL">Email:</label>' +
+                    '<div class="col-md-8" style="margin-bottom:20px"><input class="form-control" id="EMAIL" name="EMAIL" ng-enter="ok()" ng-model="EMAIL" type="text" required /></div></div></form><br clear="all" />' +
+                    '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">Reset</button></div>',
+                controller: function ($scope, $modalInstance) {
+                    $scope.EMAIL = "";
+                    $scope.ok = function () {
+                        $modalInstance.close($scope.EMAIL);
+                    }
+                },
+                size: 'md'
+            });
+            modalInstance.result.then(function (email) {
+                if (email == "reset") {
+                    //need to send creds to hit the reset endpoint and change their password to default OWNERPROFILE_EDITPASSWORD requires OWNERPROFILE..
+                }
+            });
+            
+
+        }
         $scope.submit = function () {
             //$scope.sub = true;
             var postData = {
@@ -4269,7 +4343,7 @@
                         var usersNAME = user.FNAME + " " + user.LNAME;
                         var enc = btoa($scope.username.concat(":", $scope.password));
                         //set expiration on cookies
-                        var expireDate = new Date().addHours(1);                        
+                        var expireDate = new Date().addHours(8);                        
                         $cookies.put('siGLCreds', enc, { 'expires': expireDate });
                         $cookies.put('siGLUsername', $scope.username);
                         $cookies.put('usersName', usersNAME);

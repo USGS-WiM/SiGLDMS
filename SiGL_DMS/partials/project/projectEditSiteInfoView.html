@@ -235,9 +235,9 @@
                     for="inputSTART_DATE">Sampling Start Date:</label>
              <div class="col-md-6">
                  <div class="input-group">
-                     <input class="form-control" id="inputSTART_DATE" name="sd" type="text" datepicker-popup="MMM dd, yyyy"
+                     <input class="form-control" id="START_DATE" name="sd" type="text" datepicker-popup="MMM dd, yyyy"
                             is-open="datepickrs.sd" ng-model-options="{ updateOn: 'blur' }"
-                            ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)" ng-model="thisSite.START_DATE" />
+                            ng-change="SaveOnBlur(projectForm.SiteInfo.$valid, -1)" ng-model="thisSite.START_DATE" />
                      <span class="input-group-btn">
                          <button class="btn btn-default" ng-click="open($event, 'sd')">
                              <i class="glyphicon glyphicon-calendar" />
@@ -253,9 +253,9 @@
                     for="inputEND_DATE">Sampling End Date:</label>
              <div class="col-md-6">
                  <div class="input-group">
-                     <input class="form-control" id="inputEND_DATE" name="ed" type="text" datepicker-popup="MMM dd, yyyy"
+                     <input class="form-control" id="END_DATE" name="ed" type="text" datepicker-popup="MMM dd, yyyy"
                             is-open="datepickrs.ed" ng-model-options="{ updateOn: 'blur' }"
-                            ng-change="SaveOnBlur(projectForm.SiteInfo.$valid)" ng-model="thisSite.END_DATE" />
+                            ng-change="SaveOnBlur(projectForm.SiteInfo.$valid, -1)" ng-model="thisSite.END_DATE" />
                      <span class="input-group-btn">
                          <button class="btn btn-default" ng-click="open($event, 'ed')">
                              <i class="glyphicon glyphicon-calendar" />
