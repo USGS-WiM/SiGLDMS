@@ -2,29 +2,23 @@
     "use strict"; 
     var app = angular.module('app',
         ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'isteven-multi-select',
-            'laMPResource', 'siGLControllers', 'siGLBusinessServices']);
+            'laMPResource', 'siGLControllers']);
     
     app.run(function ($rootScope) {
-        
-        $rootScope
-            .$on('$stateChangeStart',
-                function (event, toState, toParams, fromState, fromParams) {
-                    
-                    $("#ui-view").html("");
-                    $(".page-loading").removeClass("hidden");
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {                    
+            $("#ui-view").html("");
+            $(".page-loading").removeClass("hidden");
 
-                    //check to see if they are going to project info
-                    if (toState.url == "/") {
-                        //make username focus
-                        $("#userNameFocus").focus();
-                    };
-                });
-        $rootScope
-            .$on('$stateChangeSuccess',
-                function (event, toState, toParams, fromState, fromParams) {
-                    window.scrollTo(0, 0);
-                    $(".page-loading").addClass("hidden");
-                });
+            //check to see if they are going to project info
+            if (toState.url == "/") {
+                //make username focus
+                $("#userNameFocus").focus();
+            };
+        });
+        $rootScope.$on('$stateChangeSuccess', function () {
+            window.scrollTo(0, 0);
+            $(".page-loading").addClass("hidden");
+        });
        
     });
 
@@ -104,10 +98,10 @@
                     controller: "dataManagerInfoCtrl",
                     resolve: {
                         dm: 'DATA_MANAGER',
-                        thisDM: function (dm, $stateParams, $http, getCreds) {                           
+                        thisDM: function (dm, $stateParams, $http, $cookies) {                           
                             var dmId = $stateParams.id;
                             if (dmId > 0) {
-                                $http.defaults.headers.common['Authorization'] = 'Basic ' + getCreds();
+                                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
                                 $http.defaults.headers.common['Accept'] = 'application/json';
                                 return dm.query(
                                     { id: dmId }).$promise;
@@ -303,13 +297,13 @@
                     controller: "projectEditCtrl",
                     resolve: {
                         //check to see if they are going to project info
-                        validate: function ($q, $timeout, $location, $stateParams, getUserRole, getUserID, DATA_MANAGER) {
+                        validate: function ($q, $timeout, $location, $stateParams, $cookies, DATA_MANAGER) {
                             if ($stateParams.id > 0) {
                                 var defer = $q.defer();
-                                var roleID = getUserRole();
+                                var roleID = $cookies.get('usersRole');
                                 if (roleID == "Manager") {
                                     //make sure they can come here
-                                    var useID = getUserID();
+                                    var useID = $cookies.get('dmID');
                                     var dmProjs = [];
                                     DATA_MANAGER.getDMProject({ id: useID }, function sucess(response) {
                                         dmProjs = response.filter(function (p) { return p.ProjId == $stateParams.id });
