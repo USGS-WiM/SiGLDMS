@@ -282,7 +282,7 @@
     //#endregion DIRECTIVES
 
     //#region $cookie names
-    //'siGLCreds', 'siGLUsername', 'usersName', 'dmID'
+    //'siGLCreds', 'siGLUsername', 'usersName', 'dmID', 'projListSortOrder', 'pl_reverse', 'siteListSortOrder', 'sl_reverse', 'DMListSortOrder', 'dml_reverse', 'DMprojectsSortOrder', 'dmpl_reverse'
     //#endregion $cookie names
 
     //#region MAIN Controller
@@ -353,11 +353,14 @@
             $scope.loggedInUser.Name = $cookies.get('usersName'); //User's NAME
             $scope.loggedInUser.ID = $cookies.get('dmID'); 
             $scope.loggedInUser.Role = $cookies.get('usersRole'); 
-            // change sorting order
-            $scope.sortingOrder = 'LNAME';
+            //see if sorting order has already been set, preserve if so, otherwise set to 'LNAME'
+            $scope.sortingOrder = $cookies.get('DMListSortOrder') != undefined ? $cookies.get('DMListSortOrder') : 'LNAME';
+            $scope.reverse = $cookies.get('dml_reverse') != undefined ? $cookies.get('dml_reverse') : true;
             $scope.sort_by = function (newSortingOrder) {
+                $cookies.put('DMListSortOrder', newSortingOrder);
                 if ($scope.sortingOrder == newSortingOrder) {
                     $scope.reverse = !$scope.reverse;
+                    $cookies.put('dml_reverse', $scope.reverse);
                 }
                 $scope.sortingOrder = newSortingOrder;
                 // icon setup
@@ -383,11 +386,14 @@
             $scope.DMProjects = dmProjects; //All their Projects            
             $scope.RoleList = allRoles;
                 
-            // change sorting order
-            $scope.sortingOrder = 'Name';
+            //see if sorting order has already been set, preserve if so, otherwise set to 'Name'
+            $scope.sortingOrder = $cookies.get('DMprojectsSortOrder') != undefined ? $cookies.get('DMprojectsSortOrder') : 'Name';
+            $scope.reverse = $cookies.get('dmpl_reverse') != undefined ? $cookies.get('dmpl_reverse') : true;
             $scope.sort_by = function (newSortingOrder) {
+                $cookies.put('DMprojectsSortOrder', newSortingOrder);
                 if ($scope.sortingOrder == newSortingOrder) {
                     $scope.reverse = !$scope.reverse;
+                    $cookies.put('dmpl_reverse', $scope.reverse);
                 }
                 $scope.sortingOrder = newSortingOrder;
                 // icon setup
@@ -1524,6 +1530,11 @@
             $cookies.remove('siGLUsername');
             $cookies.remove('usersName');
             $cookies.remove('usersRole');
+            $cookies.remove('projListSortOrder');
+            $cookies.remove('siteListSortOrder');
+            $cookies.remove('DMListSortOrder');
+            $cookies.remove('DMprojectsSortOrder');
+
             $rootScope.isAuth.val = false;
             $location.path('/login');
         };
@@ -1569,11 +1580,15 @@
             }
             ).$promise;
 
-            // change sorting order
-            $scope.sortingOrder = 'Name';
+            //see if sorting order has already been set, preserve if so, otherwise set to 'Name'
+            $scope.sortingOrder = $cookies.get('projListSortOrder') != undefined ? $cookies.get('projListSortOrder') : 'Name';
+            $scope.reverse = $cookies.get('pl_reverse') != undefined ? $cookies.get('pl_reverse'): true;
+                                
             $scope.sort_by = function (newSortingOrder) {
+                $cookies.put('projListSortOrder', newSortingOrder);
                 if ($scope.sortingOrder == newSortingOrder) {
                     $scope.reverse = !$scope.reverse;
+                    $cookies.put('plreverse', $scope.reverse);
                 }
                 $scope.sortingOrder = newSortingOrder;
                 // icon setup
@@ -3005,10 +3020,13 @@
         $scope.LakeList = lakeList; $scope.StatusList = siteStatList; $scope.ResourceList = resourceList; $scope.MediaList = mediaList; $scope.FreqList = frequencyList; $scope.ParamList = parameterList;
         $scope.FrequenciesToAdd = []; $scope.MediaToAdd = []; $scope.ParameterToAdd = []; $scope.ResourceToAdd = [];
         // change sorting order
-        $scope.sortingOrder = 'Name';
+        $scope.sortingOrder = $cookies.get('siteListSortOrder') != undefined ? $cookies.get('siteListSortOrder') : 'Name';
+        $scope.reverse = $cookies.get('sl_reverse') != undefined ? $cookies.get('sl_reverse') : true;
         $scope.sort_by = function (newSortingOrder) {
+            $cookies.put('siteListSortOrder', newSortingOrder);
             if ($scope.sortingOrder == newSortingOrder) {
                 $scope.reverse = !$scope.reverse;
+                $cookies.put('sl_reverse', $scope.reverse);
             }
             $scope.sortingOrder = newSortingOrder;
             // icon setup
@@ -4386,6 +4404,10 @@
             $cookies.remove('siGLUsername');
             $cookies.remove('usersName');
             $cookies.remove('usersRole');
+            $cookies.remove('projListSortOrder');
+            $cookies.remove('siteListSortOrder');
+            $cookies.remove('DMListSortOrder');
+            $cookies.remove('DMprojectsSortOrder');
             $location.path('/login');
         };
     }
