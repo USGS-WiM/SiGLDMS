@@ -13,7 +13,7 @@
             if (toState.url == "/") {
                 //make username focus
                 $("#userNameFocus").focus();
-            };
+            }
         });
         $rootScope.$on('$stateChangeSuccess', function () {
             window.scrollTo(0, 0);
@@ -101,8 +101,8 @@
                         thisDM: function (dm, $stateParams, $http, $cookies) {                           
                             var dmId = $stateParams.id;
                             if (dmId > 0) {
-                                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                                $http.defaults.headers.common['Accept'] = 'application/json';
+                                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                                $http.defaults.headers.common.Accept = 'application/json';
                                 return dm.query(
                                     { id: dmId }).$promise;
                             }
@@ -306,7 +306,7 @@
                                     var useID = $cookies.get('dmID');
                                     var dmProjs = [];
                                     DATA_MANAGER.getDMProject({ id: useID }, function sucess(response) {
-                                        dmProjs = response.filter(function (p) { return p.ProjId == $stateParams.id });
+                                        dmProjs = response.filter(function (p) { return p.ProjId == $stateParams.id; });
                                         if (dmProjs.length > 0) {
                                             defer.resolve();
                                         } else {
@@ -585,8 +585,8 @@
                 });
 
               
-            $locationProvider.html5Mode(false).hashPrefix('!');
-            //$locationProvider.html5Mode({ enabled: true, requireBase: false });
+           // $locationProvider.html5Mode(false).hashPrefix('!');
+            $locationProvider.html5Mode(false);
         }
     ]);
 

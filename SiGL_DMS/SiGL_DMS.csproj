@@ -74,12 +74,9 @@
     <Content Include="images\reports.png" />
     <Content Include="images\Tables1.png" />
     <Content Include="images\usgsLogo.png" />
-    <Content Include="js\vendor\angular-input-modified.min.js" />
-    <Content Include="js\vendor\handsontable.full.js" />
     <Content Include="js\vendor\inputmask.min.js" />
     <Content Include="js\vendor\jquery.inputmask.js" />
     <Content Include="js\vendor\ui-grid-unstable.js" />
-    <Content Include="js\vendor\xeditable.min.js" />
     <Content Include="partials\Org\OrgInfo.html" />
     <Content Include="partials\Org\orgHolderView.html" />
     <Content Include="partials\Org\OrgList.html" />
@@ -108,10 +105,6 @@
     <Content Include="Scripts\angular-ui\ui-utils.js" />
     <Content Include="Scripts\angular-ui\ui-utils.min.js" />
     <Content Include="services\businessServices.js" />
-    <Content Include="js\datePickrCtrl.js" />
-    <Content Include="js\vendor\bootstrap-multiselect.js" />
-    <Content Include="js\vendor\isteven-multi-select.js" />
-    <Content Include="js\vendor\jquery-1.10.2.min.js" />
     <Content Include="partials\login.html" />
     <Content Include="partials\project\projectEditCooperatorView.html" />
     <Content Include="partials\project\projectEditDataView.html" />
@@ -128,29 +121,7 @@
     <Content Include="css\bootstrap_3.1.1.css" />
     <Content Include="css\bootstrap-table.css" />
     <Content Include="css\toastr.css" />
-    <Content Include="js\vendor\angular-cookies.js" />
-    <Content Include="js\vendor\angular-cookies.min.js" />
-    <Content Include="js\vendor\angular-route.js" />
-    <Content Include="js\vendor\angular-route.min.js" />
-    <Content Include="js\vendor\angular-sanitize.js" />
-    <Content Include="js\vendor\angular-sanitize.min.js" />
-    <Content Include="js\vendor\marked.js" />
-    <Content Include="js\vendor\angular-ui-router.js" />
-    <Content Include="js\vendor\angular.min.js">
-      <DependentUpon>angular.js</DependentUpon>
-    </Content>
-    <Content Include="js\vendor\toastr.js" />
-    <Content Include="js\vendor\ui-bootstrap-tpls-0.11.0.js" />
-    <Content Include="js\vendor\ui-utils.js" />
-    <Content Include="js\vendor\version.json" />
-    <Content Include="js\vendor\errors.json" />
     <Content Include="packages.config" />
-    <Content Include="js\vendor\angular.min.js.map">
-      <DependentUpon>angular.min.js</DependentUpon>
-    </Content>
-    <Content Include="js\vendor\angular-route.min.js.map" />
-    <Content Include="js\vendor\angular-cookies.min.js.map" />
-    <Content Include="js\vendor\angular-sanitize.min.js.map" />
     <Content Include="css\ui-grid.eot" />
     <Content Include="css\ui-grid.ttf" />
     <Content Include="css\ui-grid.woff" />
@@ -166,7 +137,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="partials\frequencyP.html" />
     <Content Include="js\app.js" />
     <Content Include="index.html" />
     <Content Include="css\bootstrap-theme.css" />
@@ -174,11 +144,6 @@
     <Content Include="css\bootstrap.css" />
     <Content Include="css\bootstrap.min.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="js\vendor\angular-mocks.js" />
-    <Content Include="js\vendor\angular-resource.js" />
-    <Content Include="js\vendor\angular.js" />
-    <Content Include="js\vendor\bootstrap.js" />
-    <Content Include="js\vendor\bootstrap.min.js" />
     <Content Include="js\i18n\angular-locale_aa-dj.js" />
     <Content Include="js\i18n\angular-locale_aa-er.js" />
     <Content Include="js\i18n\angular-locale_aa-et.js" />
@@ -928,9 +893,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="css\bootstrap-theme.css.map" />
     <Content Include="css\bootstrap.css.map" />
-    <Content Include="js\vendor\lodash.min.js" />
-    <Content Include="js\vendor\npm.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -941,9 +906,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Content Include="js\vendor\bootstrap-table.js" />
-  </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="js\typings\angularjs\angular-animate.d.ts" />
     <TypeScriptCompile Include="js\typings\angularjs\angular-cookies.d.ts" />
