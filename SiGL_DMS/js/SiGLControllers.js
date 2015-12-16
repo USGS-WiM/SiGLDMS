@@ -1530,10 +1530,10 @@
             $cookies.remove('siGLUsername');
             $cookies.remove('usersName');
             $cookies.remove('usersRole');
-            $cookies.remove('projListSortOrder');
-            $cookies.remove('siteListSortOrder');
-            $cookies.remove('DMListSortOrder');
-            $cookies.remove('DMprojectsSortOrder');
+            $cookies.remove('projListSortOrder'); $cookies.remove('pl_reverse');
+            $cookies.remove('siteListSortOrder'); $cookies.remove('sl_reverse');
+            $cookies.remove('DMListSortOrder'); $cookies.remove('dml_reverse');
+            $cookies.remove('DMprojectsSortOrder'); $cookies.remove('dmpl_reverse');
 
             $rootScope.isAuth.val = false;
             $location.path('/login');
@@ -4404,10 +4404,10 @@
             $cookies.remove('siGLUsername');
             $cookies.remove('usersName');
             $cookies.remove('usersRole');
-            $cookies.remove('projListSortOrder');
-            $cookies.remove('siteListSortOrder');
-            $cookies.remove('DMListSortOrder');
-            $cookies.remove('DMprojectsSortOrder');
+            $cookies.remove('projListSortOrder'); $cookies.remove('pl_reverse');
+            $cookies.remove('siteListSortOrder'); $cookies.remove('sl_reverse');
+            $cookies.remove('DMListSortOrder'); $cookies.remove('dml_reverse');
+            $cookies.remove('DMprojectsSortOrder'); $cookies.remove('dmpl_reverse');
             $location.path('/login');
         };
     }
