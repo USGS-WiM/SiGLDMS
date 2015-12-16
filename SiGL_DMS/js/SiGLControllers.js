@@ -3322,6 +3322,7 @@
             $scope.auth = false;
             $location.path('/login');
         } else {
+            angular.element('a#siteTab').addClass('active'); //make sure that tab still stays active
             $scope.thisSite = {
             }; //holder for project (either coming in for edit, or being created on POST )
             $scope.Frequencymodel = {

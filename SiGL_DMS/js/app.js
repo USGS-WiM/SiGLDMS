@@ -297,7 +297,7 @@
                     controller: "projectEditCtrl",
                     resolve: {
                         //check to see if they are going to project info
-                        validate: function ($q, $timeout, $location, $stateParams, $cookies, DATA_MANAGER) {
+                        validate: function ($q, $timeout, $http, $location, $stateParams, $cookies, DATA_MANAGER) {
                             if ($stateParams.id > 0) {
                                 var defer = $q.defer();
                                 var roleID = $cookies.get('usersRole');
@@ -305,6 +305,8 @@
                                     //make sure they can come here
                                     var useID = $cookies.get('dmID');
                                     var dmProjs = [];
+                                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                                    $http.defaults.headers.common.Accept = 'application/json';
                                     DATA_MANAGER.getDMProject({ id: useID }, function sucess(response) {
                                         dmProjs = response.filter(function (p) { return p.ProjId == $stateParams.id; });
                                         if (dmProjs.length > 0) {

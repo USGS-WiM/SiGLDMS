@@ -24,7 +24,7 @@
             <a ui-sref=".data" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Data Sources<span class="badge pull-right">{{datumCount.total}}</span></a>
             <a ui-sref=".contact" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Contacts<span class="badge pull-right">{{contactCount.total}}</span></a>
             <a ui-sref=".publication" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Publications<span class="badge pull-right">{{pubCount.total}}</span></a>
-            <a ui-sref=".site.siteList" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Sites<span class="badge pull-right">{{sitesCount.total}}</span></a>
+            <a ui-sref=".site.siteList" id="siteTab" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Sites<span class="badge pull-right">{{sitesCount.total}}</span></a>
 
         </div>
 
