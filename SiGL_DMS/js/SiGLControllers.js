@@ -100,7 +100,7 @@
                 return resourceHash[input];
             }
         };
-    })
+    });
 
     //#endregion FILTERS
 
@@ -116,7 +116,7 @@
                     scope.$apply();
                 }
             }
-        }
+        };
     });
 
     //regular expression for a password requirement of at least 8 characters long and at least 3 of 4 character categories used (upper, lower, digit, special
@@ -130,7 +130,7 @@
     siGLControllers.directive('focus', function () {
         return function (scope, element, attributes) {
             element[0].focus();
-        }
+        };
     });
 
     //validate password
@@ -154,7 +154,7 @@
                 });
             }
         };
-    }])
+    }]);
 
     siGLControllers.directive('sameAs', function ($parse) {
         return {
@@ -224,7 +224,7 @@
                     // or scope[attrs.ngModel] = el.val() if your expression doesn't contain dot.
                 });
             }
-        }
+        };
     });
 
     //This directive allows us to pass a function in on an enter key to do what we want.
@@ -313,13 +313,13 @@
         } else {
             $scope.changeView = function (view) {
                 $state.go(view);
-            }
+            };
         }
     }
 
     //#region Data Manager
-    siGLControllers.controller('dataManagerCtrl', ['$scope', '$http', '$cookies', 'DATA_MANAGER', 'ROLE', 'allProj', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allRoles', dataManagerCtrl]);
-    function dataManagerCtrl($scope, $http, $cookies, DATA_MANAGER, ROLE, allProj, allOrgRes, allOrgs, allDivs, allSecs, allRoles) {
+    siGLControllers.controller('dataManagerCtrl', ['$scope', '$location', '$http', '$cookies', 'DATA_MANAGER', 'ROLE', 'allProj', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allRoles', dataManagerCtrl]);
+    function dataManagerCtrl($scope, $location, $http, $cookies, DATA_MANAGER, ROLE, allProj, allOrgRes, allOrgs, allDivs, allSecs, allRoles) {
         //get all datamanagers once here to ensure passing auth
         if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
@@ -334,10 +334,10 @@
             $scope.loggedInUser = {};
             $scope.allROLEs = allRoles;
             //get all the roles and data managers
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-            $http.defaults.headers.common['Accept'] = 'application/json';
+            $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+            $http.defaults.headers.common.Accept = 'application/json';
                 
-            //NAME, Organization, Role, # of Projects
+            //TODO:::: Make this a VIEW so that I don't have to get all the projects again. NAME, Organization, Role, # of Projects
             DATA_MANAGER.getAll().$promise.then(function (result) {
                 for (var x = 0; x < result.length; x++) {
                     var orgName = allOrgRes.filter(function (or) { return or.OrganizationSystemID == result[x].ORGANIZATION_SYSTEM_ID; })[0];
@@ -448,7 +448,6 @@
                 });
                 modalInstance.result.then(function (updatedOrgDivSec) {
                     //make sure parent. are all updated
-                    var test;
                     $scope.$parent.allORGs = updatedOrgDivSec[0]; //allOrgs updated
                     $scope.$parent.allDIVs = updatedOrgDivSec[1]; //allDivs updated
                     $scope.$parent.allSECs = updatedOrgDivSec[2]; //allSecs updated
@@ -480,14 +479,14 @@
                 $scope.DM = thisDM;
                 $scope.DM.roleName = $scope.RoleList.filter(function (rl) { return rl.ROLE_ID == $scope.DM.ROLE_ID; })[0].ROLE_NAME;
 
-                $scope.dmOrg = $scope.$parent.allORG_RES.filter(function (o) { return o.OrganizationSystemID == $scope.DM.ORGANIZATION_SYSTEM_ID })[0];
+                $scope.dmOrg = $scope.$parent.allORG_RES.filter(function (o) { return o.OrganizationSystemID == $scope.DM.ORGANIZATION_SYSTEM_ID; })[0];
 
                 $scope.changePass = false;
                 $scope.changeOrg = false;
                 $scope.newPass = "";
 
                 //user wants to change his organization
-                $scope.changeMyOrgBtn = function (evt) {
+                $scope.changeMyOrgBtn = function () {
                     $scope.changeOrg == false ? $scope.changeOrg = true : $scope.changeOrg = false;
                     //preset selects with org they  currently have
                     $scope.selectedOrgID = $scope.dmOrg.OrganizationID;
@@ -511,8 +510,8 @@
                     } else {
                         //is undefined, so they created a new one, so post the ORGANIZATION_SYSTEM then update the DM
                         var newORG_SYS = { ORG_ID: orgID, DIV_ID: divID, SEC_ID: secID };
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                        $http.defaults.headers.common['Accept'] = 'application/json';
+                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                        $http.defaults.headers.common.Accept = 'application/json';
                         ORGANIZATION_SYSTEM.save(newORG_SYS, function success(response) {
                             $scope.DM.ORGANIZATION_SYSTEM_ID = response.ORGANIZATION_SYSTEM_ID;
                             //need to update $scope.dmOrg which is an ORGANIZATION_RESOURCE
@@ -545,8 +544,8 @@
                     if ($scope.DM) {
                         //ensure they don't delete required field values
                         if ($scope.DM.FNAME != null) {
-                            $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                            $http.defaults.headers.common['Accept'] = 'application/json';
+                            $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                            $http.defaults.headers.common.Accept = 'application/json';
                             $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                             var DM_PUT = {};
                             DM_PUT.DATA_MANAGER_ID = $scope.DM.DATA_MANAGER_ID; DM_PUT.EMAIL = $scope.DM.EMAIL;
@@ -565,7 +564,7 @@
                             delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                         }
                     }
-                }//end SaveOnBlur
+                };//end SaveOnBlur
 
                 //#region all DMs for dropdown in case they want to change the dm on the project (WHEN THE CLICK TO EDIT Project)
                 setTimeout(function () {
@@ -590,8 +589,8 @@
 
                 //reassign this project to a different data manager
                 $scope.updateDMonProj = function (data, ProjID) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     //$http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
 
                     var retur = false;
@@ -627,7 +626,7 @@
                         //yes, remove this keyword
                         var index = $scope.DMProjects.indexOf(proj);
                         //DELETE it
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
+                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         PROJECT.delete({ id: proj.PROJECT_ID }, proj, function success(response) {
                             $scope.DMProjects.splice(index, 1);
                             toastr.success("Project Removed");
@@ -637,7 +636,7 @@
                     }, function () {
                         //logic for cancel
                     });//end modal                        
-                }
+                };
 
                 //password update section
                 $scope.changeMyPassBtn = function (evt) {
@@ -653,9 +652,9 @@
                                         '<div class="modal-body"><p>You must first enter a new Password.</p></div>' +
                                         '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
                             controller: function ($scope, $modalInstance) {
-                                $scope.ok = function() {
+                                $scope.ok = function () {
                                     $modalInstance.close('password');
-                                }
+                                };
                             },
                             size: 'sm'
                         });
@@ -697,8 +696,8 @@
                                 toastr.error("Error: " + errorResponse.statusText);
                             }
                         );//end DATA_MANAGER.changePW
-                    }; //end else
-                } //end ChangePassword
+                    } //end else
+                }; //end ChangePassword
 
                 $scope.DontChangePass = function () {
                     //nevermind, clear input
@@ -714,8 +713,8 @@
                 $scope.save = function (valid) {
                     if (valid) {
                         $(".page-loading").removeClass("hidden");
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                        $http.defaults.headers.common['Accept'] = 'application/json';
+                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                        $http.defaults.headers.common.Accept = 'application/json';
                         //see if they created an org or just chose an existing one
                         if ($scope.selectedOrgID != "") {
                             var divID = $scope.selectedDivID == "" ? 0 : $scope.selectedDivID;
@@ -745,7 +744,7 @@
                     else {
                         alert("Please provide all required information.");
                     } //end else (not valid)
-                }//end save
+                };//end save
 
                 //called from within save of new dm 
                 $scope.postNewDM = function () {
@@ -787,9 +786,9 @@
 
     //#region resource Controller (abstract)
     siGLControllers.controller('resourcesCtrl', ['$scope', '$cookies', '$location', '$state', '$http', '$filter', '$modal', 'FREQUENCY_TYPE', 'LAKE_TYPE', 'MEDIA_TYPE', 'OBJECTIVE_TYPE',
-        'PARAMETER_TYPE', 'RESOURCE_TYPE', 'PROJ_DURATION', 'PROJ_STATUS', 'STATUS_TYPE', 'allFreqs', 'allLakes', 'allMedias', 'allObjectives', 'allParams', 'allResources',
+        'PARAMETER_TYPE', 'RESOURCE_TYPE', 'HOUSING_TYPE', 'PROJ_DURATION', 'PROJ_STATUS', 'STATUS_TYPE', 'allFreqs', 'allLakes', 'allMedias', 'allObjectives', 'allParams', 'allResources',
         'allProjDurations', 'allProjStats', 'allSiteStats', resourcesCtrl]);
-    function resourcesCtrl($scope, $cookies, $location, $state, $http, $filter, $modal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, PARAMETER_TYPE, RESOURCE_TYPE,
+    function resourcesCtrl($scope, $cookies, $location, $state, $http, $filter, $modal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, PARAMETER_TYPE, RESOURCE_TYPE, HOUSING_TYPE,
         PROJ_DURATION, PROJ_STATUS, STATUS_TYPE, allFreqs, allLakes, allMedias, allObjectives, allParams, allResources, allProjDurations, allProjStats, allSiteStats) {
         if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
@@ -838,8 +837,8 @@
 
             $scope.AddFrequencyType = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     FREQUENCY_TYPE.save($scope.newFT, function success(response) {
                         $scope.freqTypeList.push(response);
                         $scope.newFT = {};
@@ -854,8 +853,8 @@
 
             $scope.saveFrequencyType = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization']= 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization= 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 FREQUENCY_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
                     toastr.success("Frequency Type Updated");
@@ -885,8 +884,8 @@
                     //yes, remove this keyword
                     var index = $scope.freqTypeList.indexOf(ft);
                     //DELETE it
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    FREQUENCY_TYPE.delete({ id: ct.FREQUENCY_TYPE_ID }, ft, function success(response) {
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    FREQUENCY_TYPE.delete({ id: ft.FREQUENCY_TYPE_ID }, ft, function success(response) {
                         $scope.freqTypeList.splice(index, 1);
                         toastr.success("Frequency Type Removed");
                     }, function error(errorResponse) {
@@ -895,7 +894,7 @@
                 }, function () {
                     //logic for cancel
                 });//end modal
-            }
+            };
             //#endregion Frequency Types Add/Update/Delete
 
             //#region Lake Type Add/Update/Delete
@@ -917,8 +916,8 @@
             };
             $scope.AddLakeType = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     LAKE_TYPE.save($scope.newLT, function success(response) {
                         $scope.lakeTypeList.push(response);
                         $scope.newLT = {};
@@ -932,8 +931,8 @@
             };
             $scope.saveLakeType = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 LAKE_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
                     toastr.success("Lake Type Updated");
@@ -959,7 +958,7 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     var index = $scope.lakeTypeList.indexOf(lt);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     LAKE_TYPE.delete({ id: lt.LAKE_TYPE_ID }, lt, function success(response) {
                         $scope.lakeTypeList.splice(index, 1);
                         toastr.success("Lake Type Removed");
@@ -969,7 +968,7 @@
                 }, function () {
                     //logic for cancel
                 });//end modal
-            }
+            };
             //#endregion Lake Type Add/Update/Delete
 
             //#region Media Type Add/Update/Delete
@@ -991,8 +990,8 @@
             };
             $scope.AddMediaType = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     MEDIA_TYPE.save($scope.newMT, function success(response) {
                         $scope.mediaTypeList.push(response);
                         $scope.newMT = {};
@@ -1006,8 +1005,8 @@
             };
             $scope.saveMediaType = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 MEDIA_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
                     toastr.success("Media Type Updated");
@@ -1033,7 +1032,7 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     var index = $scope.mediaTypeList.indexOf(mt);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     MEDIA_TYPE.delete({ id: mt.MEDIA_TYPE_ID }, mt, function success(response) {
                         $scope.mediaTypeList.splice(index, 1);
                         toastr.success("Media Type Removed");
@@ -1043,7 +1042,7 @@
                 }, function () {
                     //logic for cancel
                 });//end modal
-            }
+            };
             //#endregion Media Type Add/Update/Delete
 
             //#region Objective Type Add/Update/Delete
@@ -1066,8 +1065,8 @@
 
             $scope.AddObjectiveType = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     OBJECTIVE_TYPE.save($scope.newOT, function success(response) {
                         $scope.objTypeList.push(response);
                         $scope.newOT = {};
@@ -1082,8 +1081,8 @@
 
             $scope.saveObjectiveType = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 OBJECTIVE_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
                     toastr.success("Objective Type Updated");
@@ -1113,7 +1112,7 @@
                     //yes, remove this keyword
                     var index = $scope.objTypeList.indexOf(ot);
                     //DELETE it
-                    $http.defaults.headers.common['Authorization']= 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     OBJECTIVE_TYPE.delete({ id: ot.OBJECTIVE_TYPE_ID }, ot, function success(response) {
                         $scope.objTypeList.splice(index, 1);
                         toastr.success("Objective Type Removed");
@@ -1123,7 +1122,7 @@
                 }, function () {
                     //logic for cancel
                 });//end modal
-            }
+            };
             //#endregion Objective Type Add/Update/Delete
 
             //#region Parameter Type Add/Update/Delete
@@ -1145,8 +1144,8 @@
             };
             $scope.AddParameterType = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     PARAMETER_TYPE.save($scope.newPT, function success(response) {
                         $scope.paramTypeList.push(response);
                         $scope.newPT = {};
@@ -1160,8 +1159,8 @@
             };
             $scope.saveParameterType = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 PARAMETER_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
                     toastr.success("Parameter Type Updated");
@@ -1187,7 +1186,7 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     var index = $scope.fileTypeList.indexOf(pt);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     PARAMETER_TYPE.delete({ id: pt.PARAMETER_TYPE_ID }, pt, function success(response) {
                         $scope.paramTypeList.splice(index, 1);
                         toastr.success("Parameter Type Removed");
@@ -1197,7 +1196,7 @@
                 }, function () {
                     //logic for cancel
                 });//end modal
-            }
+            };
             //#endregion Parameter Type Add/Update/Delete
 
             //#region Resource Type Add/Update/Delete
@@ -1219,8 +1218,8 @@
             };
             $scope.AddResourceType = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     RESOURCE_TYPE.save($scope.newRT, function success(response) {
                         $scope.resourceTypeList.push(response);
                         $scope.newRT = {};
@@ -1234,8 +1233,8 @@
             };
             $scope.saveResourcType = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 RESOURCE_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
                     toastr.success("Resource Type Updated");
@@ -1252,7 +1251,7 @@
                     size: 'sm',
                     resolve: {
                         keyToRemove: function () {
-                            return rt
+                            return rt;
                         },
                         what: function () {
                             return "Resource Type";
@@ -1261,7 +1260,7 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     var index = $scope.resourceTypeList.indexOf(rt);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     RESOURCE_TYPE.delete({ id: rt.RESOURCE_TYPE_ID }, rt, function success(response) {
                         $scope.resourceTypeList.splice(index, 1);
                         toastr.success("Resource Type Removed");
@@ -1271,7 +1270,7 @@
                 }, function () {
                     //logic for cancel
                 });//end modal
-            }
+            };
             //#endregion Resource Type Add/Update/Delete
 
             //#region Proj Duration Add/Update/Delete
@@ -1294,8 +1293,8 @@
 
             $scope.AddProjDuration = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     PROJ_DURATION.save($scope.newPD, function success(response) {
                         $scope.projDurationList.push(response);
                         $scope.newPD = {};
@@ -1310,8 +1309,8 @@
 
             $scope.saveProjDuration = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 PROJ_DURATION.update({ id: id }, data, function success(response) {
                     retur = response;
                     toastr.success("Project Duration Updated");
@@ -1341,7 +1340,7 @@
                     //yes, remove this keyword
                     var index = $scope.projDurationList.indexOf(pd);
                     //DELETE it
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     PROJ_DURATION.delete({ id: pd.PROJ_DURATION_ID }, pd, function success(response) {
                         $scope.projDurationList.splice(index, 1);
                         toastr.success("Project Duration Removed");
@@ -1351,7 +1350,7 @@
                 }, function () {
                     //logic for cancel
                 });//end modal
-            }
+            };
             //#endregion Proj Duration Add/Update/Delete
 
             //#region Proj Status Add/Update/Delete
@@ -1373,8 +1372,8 @@
             };
             $scope.AddProjStatus = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     PROJ_STATUS.save($scope.newPS, function success(response) {
                         $scope.projStatusList.push(response);
                         $scope.newPS = {};
@@ -1388,8 +1387,8 @@
             };
             $scope.saveProjStatus = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 PROJ_STATUS.update({ id: id }, data, function success(response) {
                     retur = response;
                     toastr.success("Project Status Updated");
@@ -1415,7 +1414,7 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     var index = $scope.projStatusList.indexOf(ps);
-                    $http.defaults.headers.common['Authorization']= 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     HOUSING_TYPE.delete({ id: ps.HOUSING_TYPE_ID }, ps, function success(response) {
                         $scope.projStatusList.splice(index, 1);
                         toastr.success("Project Status Removed");
@@ -1425,7 +1424,7 @@
                 }, function () {
                     //logic for cancel
                 });//end modal
-            }
+            };
             //#endregion Proj Status Add/Update/Delete
 
             //#region Site Status Add/Update/Delete
@@ -1447,8 +1446,8 @@
             };
             $scope.AddSiteStatus = function (valid) {
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     STATUS_TYPE.save($scope.newSS, function success(response) {
                         $scope.siteStatusList.push(response);
                         $scope.newSS = {};
@@ -1462,8 +1461,8 @@
             };
             $scope.saveSiteStatus = function (data, id) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 STATUS_TYPE.update({ id: id }, data, function success(response) {
                     retur = response;
                     toastr.success("Site Status Type Updated");
@@ -1489,8 +1488,8 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     var index = $scope.siteStatusList.indexOf(ss);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    STATUS_TYPE.delete({ id: ss.STATUS_ID }, hwmq, function success(response) {
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    STATUS_TYPE.delete({ id: ss.STATUS_ID }, ss, function success(response) {
                         $scope.siteStatusList.splice(index, 1);
                         toastr.success("Site Status Type Removed");
                     }, function error(errorResponse) {
@@ -1499,7 +1498,7 @@
                 }, function () {
                     //logic for cancel
                 });//end modal
-            }
+            };
             //#endregion Site Status Add/Update/Delete
 
             //#endregion ALL LOOKUPS (add/update/delete)
@@ -1527,7 +1526,7 @@
             $cookies.remove('usersRole');
             $rootScope.isAuth.val = false;
             $location.path('/login');
-        }
+        };
     }
     //#endregion NAV Controller
 
@@ -1540,7 +1539,7 @@
             $location.path('/login');
         } else {
             //array of projects 
-            $http.defaults.headers.common['Authorization']= 'Basic ' + $cookies.get('siGLCreds');
+            $http.defaults.headers.common.Authorization= 'Basic ' + $cookies.get('siGLCreds');
             $(".page-loading").removeClass("hidden");
             //get the projects to list
             PROJECT.getIndexProjects(function success(data) {
@@ -1613,7 +1612,7 @@
             $scope.datepickrs = {
                 projStDate: false,
                 projEndDate: false
-            }
+            };
             $scope.open = function ($event, which) {
                 $event.preventDefault();
                 $event.stopPropagation();
@@ -1649,7 +1648,7 @@
                         break;
                 }
                 if (!formNamePristine) {
-                    var yesOrNo = false;
+                   // var yesOrNo = false;
                     //modal for changing states.. goes before user clicks ok or cancel... think because modal.open isn't async
 //                    var modalInstance = $modal.open({ 
 //                        template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
@@ -1720,8 +1719,8 @@
                         //there is a url and it's not formatted
                         neededUpdating = true;
                         projSites[ind].URL = 'http://' + projSites[ind].URL;
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                        $http.defaults.headers.common['Accept'] = 'application/json';
+                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                        $http.defaults.headers.common.Accept = 'application/json';
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
 
                         SITE.save({ id: projSites[ind].SITE_ID }, projSites[ind]).$promise.then(function () {
@@ -1739,7 +1738,7 @@
                 //check status for disabling of end date
                 if ($scope.aProject.PROJ_STATUS_ID == 1) {
                     $scope.undetermined = true;
-                };
+                }
 
                 //put string ProjURLs into array by '|' and then ensure proper url format
                 if ($scope.aProject.URL) {
@@ -1750,17 +1749,17 @@
                         $scope.urls[0] = $scope.aProject.URL;
                     }
                     //make sure they are formatted.. if not, format and PUT 
-                    var neededUpdating = false;
+                    var neededUpdating1 = false;
                     for (var u = 0; u < $scope.urls.length; u++) {
                         if (!$scope.urls[u].startsWith('http')) {
-                            neededUpdating = true;
+                            neededUpdating1 = true;
                             $scope.urls[u] = 'http://' + $scope.urls[u];
                         }
                     }
                     //if they needed updating, PUT the project
-                    if (neededUpdating) {
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                        $http.defaults.headers.common['Accept'] = 'application/json';
+                    if (neededUpdating1) {
+                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                        $http.defaults.headers.common.Accept = 'application/json';
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                         $scope.aProject.URL = ($scope.urls).join('|');
                         PROJECT.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject).$promise.then(function (response) {
@@ -1812,7 +1811,7 @@
             if (thisProject == undefined) {
                 for (var a = allObjList.length; a--;) {
                     allObjList[a].selected = false;
-                };
+                }
                 $scope.Objectivesdata = allObjList;
             }
 
@@ -1824,14 +1823,14 @@
 
             //an OBJECTIVE_TYPE was clicked - if added POST, if removed DELETE - for edit view or store for create view
             $scope.ObjClick = function (data) {
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
 
                 if ($scope.aProject.PROJECT_ID != undefined) {
                     //this is an edit page and there is a project
                     if (data.selected == true) {
                         //post it
-                        delete data['selected'];
+                        delete data.selected;
                         PROJECT.addProjObjective({ id: $scope.aProject.PROJECT_ID }, data,
                             function success(response) {
                                 toastr.success("Project Objectives added");
@@ -1842,7 +1841,7 @@
                         );
                     } else {
                         //delete it
-                        delete data['selected']; // remove the selected flag first
+                        delete data.selected; // remove the selected flag first
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
                         PROJECT.deleteProjObjective({ id: $scope.aProject.PROJECT_ID }, data,
                             function success(response) {
@@ -1856,12 +1855,12 @@
                 } else {
                     //this is a create project and need to store this to handle after project is POSTed
                     if (data.selected == true) {
-                        delete data['selected'];
+                        delete data.selected;
                         //only care if true since this is a new project and nothing to delete
                         $scope.ObjectivesToAdd.push(data);
                     }
                 }
-            }//end ObjClick
+            };//end ObjClick
 
             $scope.newURL = {}; //model binding to return newUrl.value to ADD/REMOVE functions                
 
@@ -1915,17 +1914,17 @@
                         controller: function ($scope, $modalInstance) {
                             $scope.ok = function () {
                                 $modalInstance.close('url');
-                            }
+                            };
                         },
                         size: 'sm'
                     });
                     modalInstance.result.then(function (fieldFocus) {
-                        if(fieldFocus == "url") {
+                        if (fieldFocus == "url") {
                             $("#inputURL").focus();
                         }
                     });
                 }
-            }
+            };
             //#endregion ADD/REMOVE URLS
 
             $scope.newKey = {}; //model binding to return keys to ADD/REMOVE functions
@@ -1938,9 +1937,9 @@
                     globalKeyHolder = $scope.newKey.value;  //store value of key
                     if ($scope.aProject.PROJECT_ID != undefined) {
                         //this is an edit, go ahead and post PROJ_KEYWORD
-                        $http.defaults.headers.common['Accept'] = 'application/json';
+                        $http.defaults.headers.common.Accept = 'application/json';
                         //POST it                            
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
+                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         PROJECT.addProjKeyword({ id: $scope.aProject.PROJECT_ID }, newKEY, function success(response) {
                             $scope.ProjectKeywords.push({ TERM: globalKeyHolder });
                             toastr.success("Keyword Added");
@@ -1964,17 +1963,17 @@
                         controller: function ($scope, $modalInstance) {
                             $scope.ok = function () {
                                 $modalInstance.close('keyword');
-                            }
+                            };
                         },
                         size: 'sm'
                     });
                     modalInstance.result.then(function (fieldFocus) {
-                        if(fieldFocus == "keyword") {
+                        if (fieldFocus == "keyword") {
                             $("#inputKEYWORD").focus();
                         }
                     });
                 }
-            }
+            };
 
             //remove keyword click (passed confirm)
             $scope.removeKey = function (key, index) {
@@ -1997,8 +1996,8 @@
                     var index1 = $scope.ProjectKeywords.indexOf(key);
                     if ($scope.aProject.PROJECT_ID != undefined) {
                         //DELETE it
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                        $http.defaults.headers.common['Accept'] = 'application/json';
+                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                        $http.defaults.headers.common.Accept = 'application/json';
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
                         PROJECT.deleteProjKeyword({ id: $scope.aProject.PROJECT_ID }, key, function success(response) {
@@ -2040,7 +2039,7 @@
                 $scope.aProject.READY_FLAG = data == "Yes" ? 1 : 0;
 
                 if ($scope.aProject.PROJECT_ID != undefined) {
-                    $scope.SaveOnBlur($scope.aProject.PROJECT_ID)
+                    $scope.SaveOnBlur($scope.aProject.PROJECT_ID);
                 }
             };
 
@@ -2048,8 +2047,8 @@
             $scope.save = function (valid) {
                 //check if they filled in all required fields
                 if (valid) {
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept']= 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     $scope.aProject.URL = ($scope.urls).join('|');
                     var projID;
                     $(".page-loading").removeClass("hidden");
@@ -2066,7 +2065,7 @@
                                     toastr.error("Error: " + errorResponse.statusText);
                                 }
                             );
-                        };
+                        }
                         //post keywords
                         for (var k = $scope.KeywordsToAdd.length; k--;) {
                             PROJECT.addProjKeyword({ id: projID }, $scope.KeywordsToAdd[k],
@@ -2086,7 +2085,7 @@
                         $scope.apply;
                     });
                 }
-            }
+            };
 
             //change to the aProject made, put it .. fired on each blur after change made to field
             $scope.SaveOnBlur = function (valid, id) {
@@ -2100,13 +2099,13 @@
                             controller: function ($scope, $modalInstance) {
                                 $scope.ok = function () {
                                     $modalInstance.close('startDate');
-                                }
+                                };
                             },
                             size: 'sm'
                         });
                         dateModal.result.then(function (d) {
                             if (d == "startDate") {
-                               // $scope.aProject.END_DATE = "";
+                                // $scope.aProject.END_DATE = "";
                                 angular.element("#END_DATE").focus();
                             }
                         });
@@ -2114,11 +2113,11 @@
                         return;
                     }
                 }
-                if ($scope.aProject.PROJECT_ID != undefined) {                    
+                if ($scope.aProject.PROJECT_ID != undefined) {
                     //ensure they don't delete required field values
                     if (valid) {
-                        $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                        $http.defaults.headers.common['Accept'] = 'application/json';
+                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                        $http.defaults.headers.common.Accept = 'application/json';
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                         PROJECT.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject, function success(response) {
                             toastr.success("Project Updated");
@@ -2137,7 +2136,7 @@
                             controller: function ($scope, $modalInstance) {
                                 $scope.ok = function () {
                                     $modalInstance.close('required');
-                                }
+                                };
                             },
                             size: 'sm'
                         });
@@ -2148,11 +2147,11 @@
                         });
                         toastr.error("Project not updated.");
                     }
-                }                
+                }
                 if (id > 0) {
                     $scope.selectedStat(id);
-                }                
-            }//end SaveOnBlur
+                }
+            };//end SaveOnBlur
 
             $scope.cancel = function () {
                 //navigate to a different state
@@ -2177,15 +2176,16 @@
 
         $scope.getDivs = function (orgID) {
             $scope.alldivs = {}; $scope.selectedDivID = ""; $scope.selectedSecID = "";
-            $scope.alldivs = $scope.allDivisions.filter(function (d) { return d.ORG_ID == orgID;
-        });
+            $scope.alldivs = $scope.allDivisions.filter(function (d) {
+                return d.ORG_ID == orgID;
+            });
             $scope.allsecs = {};
-        }
+        };
 
         $scope.getSecs = function (divID) {
             $scope.selectedSecID = "";
             $scope.allsecs = $scope.allSections.filter(function (s) { return s.DIV_ID == divID; });
-        }
+        };
 
         //ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)                
         $scope.addNewOrg = function () {
@@ -2240,7 +2240,7 @@
                     controller: function ($scope, $modalInstance) {
                         $scope.ok = function () {
                             $modalInstance.close('org');
-                        }
+                        };
                     },
                     size: 'sm'
                 });
@@ -2253,14 +2253,14 @@
                 var secID = $scope.selectedSecID != "" ? $scope.selectedSecID : "0";
                 var divID = $scope.selectedDivID != "" ? $scope.selectedDivID : "0";
                 var orgID = $scope.selectedOrgID != "" ? $scope.selectedOrgID : "0";
-                var alreadyExist = $scope.ProjOrgs.filter(function (po) { return po.OrganizationID == orgID && po.DivisionID == divID && po.SectionID == secID })[0];
+                var alreadyExist = $scope.ProjOrgs.filter(function (po) { return po.OrganizationID == orgID && po.DivisionID == divID && po.SectionID == secID; })[0];
                 if (alreadyExist != undefined) {
                     alert("This Organization is already a part of this Project.");
                 } //end this project doesn't already have this org
                 else {
                     PROJECT.addProjOrg({ id: thisProject.PROJECT_ID, organizationId: orgID, divisionId: divID, sectionId: secID }, function success(response) {
                         //array of all the ORGANIZATION_RESOURCES for this project                    
-                        var postedORG = response.filter(function (postedO) { return postedO.OrganizationID == orgID && postedO.DivisionID == divID && postedO.SectionID == secID })[0];
+                        var postedORG = response.filter(function (postedO) { return postedO.OrganizationID == orgID && postedO.DivisionID == divID && postedO.SectionID == secID; })[0];
                         $scope.ProjOrgs.push(postedORG);
 
                         //$scope.ProjOrgs = response;
@@ -2294,8 +2294,8 @@
                 //yes, remove this keyword
                 var index = $scope.ProjOrgs.indexOf(org);
                 //DELETE it
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 PROJECT.deleteProjOrg({ id: thisProject.PROJECT_ID, orgId: org.OrganizationSystemID }, function success(response) {
                     $scope.ProjOrgs.splice(index, 1);
                     $scope.coopCount.total = $scope.coopCount.total - 1;
@@ -2328,8 +2328,8 @@
                 //there is a url and it's not formatted
                 neededUpdating = true;
                 $scope.ProjData[ind].PORTAL_URL = 'http://' + $scope.ProjData[ind].PORTAL_URL;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                 
                 DATA_HOST.save({ id: $scope.ProjData[ind].DATA_HOST_ID }, $scope.ProjData[ind]).$promise.then(function () {
@@ -2346,8 +2346,8 @@
                     '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
                 controller: function ($scope, $modalInstance) {
                     $scope.ok = function () {
-                         $modalInstance.close('req');
-                    }
+                        $modalInstance.close('req');
+                    };
                 },
                 size: 'sm'
            });
@@ -2362,10 +2362,10 @@
         $scope.AddData = function (valid, d) {
             if (valid) {
                 //add it
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 PROJECT.addProjData({ id: thisProjID }, d, function success(response) {
-                    var postedDATA = response.filter(function (postedD) { return postedD.DESCRIPTION == d.DESCRIPTION && postedD.PORTAL_URL == d.PORTAL_URL && postedD.HOST_NAME == d.HOST_NAME })[0];
+                    var postedDATA = response.filter(function (postedD) { return postedD.DESCRIPTION == d.DESCRIPTION && postedD.PORTAL_URL == d.PORTAL_URL && postedD.HOST_NAME == d.HOST_NAME; })[0];
                     $scope.ProjData.push(postedDATA);
 
                     $scope.datumCount.total = $scope.datumCount.total + 1;
@@ -2377,9 +2377,9 @@
                 });
             } else {
                 //modal for enter all required fields
-                openModal();                
+                openModal();
             }
-        }//end addData
+        };//end addData
 
         //DELETE Data click
         $scope.RemoveData = function (dataH) {
@@ -2401,8 +2401,8 @@
                 //yes, remove this keyword
                 var index = $scope.ProjData.indexOf(dataH);
                 //DELETE it
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
                 PROJECT.deleteProjData({ id: thisProjID }, dataH, function success(response) {
@@ -2422,11 +2422,11 @@
         //validate that at least 1 field is populated before saving edit
         $scope.ValidateAtLeastOne = function (d) {
             if ((d.DESCRIPTION == "" || d.DESCRIPTION == null) && (d.HOST_NAME == "" || d.HOST_NAME == null) && (d.PORTAL_URL == "" || d.PORTAL_URL == null)) {
-                toastr.error("Data Source not updated.")
+                toastr.error("Data Source not updated.");
                 openModal();
                 return "You need to populate at least one field."; //way to stop it from closing edit..just return something cuz modal is opening                
             }
-        }
+        };
 
         //editing, disable create parts
         $scope.EditRowClicked = function () {    
@@ -2444,8 +2444,8 @@
         $scope.saveData = function (data, id) {
             if (this.rowform.$valid) {
                 var retur = false;
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                 DATA_HOST.save({ id: id }, data, function success(response) {
                     retur = response; //maybe need to update the projData that this controller gets from resolve, for returning to this tab later
@@ -2457,9 +2457,6 @@
                 });
                 delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                 return retur;
-            } else {
-                //not valid
-
             }
         };//end saveData
 
@@ -2481,8 +2478,8 @@
                 if (phNo.length >= 10) {
                     //format it
                     $scope.ProjContacts[theI].PHONE = "(" + phNo.substring(0, 3) + ") " + phNo.substring(3, 6) + "-" + phNo.substring(6);
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                     CONTACT.save({ id: $scope.ProjContacts[theI].CONTACT_ID }, $scope.ProjContacts[theI]).$promise.then(function (response) {
                         delete $http.defaults.headers.common['X-HTTP-Method-Override'];
@@ -2524,14 +2521,15 @@
         //div was chosen, go get the secs
         $scope.getSecs = function (divID) {
             $scope.selectedSecID = "";
-            $scope.allsecs = $scope.allSections.filter(function (s) { return s.DIV_ID == divID;
-    });
-    }
+            $scope.allsecs = $scope.allSections.filter(function (s) {
+                return s.DIV_ID == divID;
+            });
+        };
 
         //post this contact to the project and then format the list of projContacts with org info
         function postProjContact(orgSys) {
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-            $http.defaults.headers.common['Accept'] = 'application/json';
+            $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+            $http.defaults.headers.common.Accept = 'application/json';
             PROJECT.addProjContact({ id: thisProject.PROJECT_ID }, $scope.newContact, function success(response) {
                 $scope.ProjContacts = response;
                 for (var pc = 0; pc < $scope.ProjContacts.length; pc++) {
@@ -2582,7 +2580,7 @@
                             DivisionName: div != null ? div.DIVISION_NAME : null,
                             SectionID: sec != null ? sec.SECTION_ID : 0,
                             SectionName: sec != null ? sec.SECTION_NAME : null
-                        }
+                        };
                         $scope.allOrgResources.push(newOrgRes);
                         postProjContact(newOrgRes);
                     }, function error(errorResponse) {
@@ -2632,9 +2630,9 @@
             //modalInstance.result.then(function (fieldFocus) {
             //    var test = "#" + fieldFocus;
             //    $(test).focus;
-                //});
-            
-        }
+            //});
+
+        };
 
         //edit contact done, save clicked
         $scope.saveContact = function (contact, id) {
@@ -2673,8 +2671,8 @@
         function PUTcontact(contactToUpdate, id) {
             //PUT
             var retur = false;
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-            $http.defaults.headers.common['Accept'] = 'application/json';
+            $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+            $http.defaults.headers.common.Accept = 'application/json';
             $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
             CONTACT.save({ id: id }, contactToUpdate, function success(response) {
                 var projContact = response;
@@ -2689,7 +2687,7 @@
                 toastr.error("Error: " + errorResponse.statusText);
             });
             return retur;
-        };
+        }
 
         $scope.secChosen = function (s) {
             var test;
@@ -2712,7 +2710,7 @@
                 var secId = editingContact.SecName != undefined ? $scope.allSections.filter(function (s) { return s.SECTION_NAME == editingContact.SecName; })[0].SECTION_ID : 0;
                 chosenparts.push(orgId);
                 chosenparts.push(divId);
-                chosenparts.push(secId)
+                chosenparts.push(secId);
             } else {
                 chosenparts.push($scope.selectedOrgID);
                 chosenparts.push($scope.selectedDivID);
@@ -2744,7 +2742,7 @@
                     var chosenSecID = updatedOrgDivSec[5] != "" ? updatedOrgDivSec[5] : 0;
 
                     var thisContact = editingContact;
-                    $scope.updatedContactOrg = true
+                    $scope.updatedContactOrg = true;
 
                     var i = $scope.ProjContacts.indexOf(thisContact);
                     //update this contact's binded org info
@@ -2772,7 +2770,7 @@
                             };
                             $scope.allOrgResources.push(orgResToAdd);
                             $scope.ProjContacts[i].ORGANIZATION_SYSTEM_ID = response.ORGANIZATION_SYSTEM_ID;
-                        }, function error (errorResponse) { toastr.error(errorResponse.statusText)}).$promise;
+                        }, function error(errorResponse) { toastr.error(errorResponse.statusText);}).$promise;
                        
                     }
                     
@@ -2826,8 +2824,8 @@
                     SCIENCE_BASE_ID: con.SCIENCE_BASE_ID
                 };
                 //DELETE it
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
                 PROJECT.deleteProjContact({ id: thisProject.PROJECT_ID }, aCONTACT, function success(response) {
@@ -2866,7 +2864,7 @@
                 controller: function ($scope, $modalInstance) {
                     $scope.ok = function () {
                         $modalInstance.close('req');
-                    }
+                    };
                 },
                 size: 'sm'
             });
@@ -2881,11 +2879,11 @@
         $scope.AddPub = function (valid, p) {
             if (valid) {
                 //add it
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 PROJECT.addProjPublication({ id: thisProjID }, p, function success(response) {
                     var postedPUB = response.filter(function (postedP) {
-                        return postedP.URL == p.URL && postedP.TITLE == p.TITLE && postedP.DESCRIPTION == p.DESCRIPTION
+                        return postedP.URL == p.URL && postedP.TITLE == p.TITLE && postedP.DESCRIPTION == p.DESCRIPTION;
                     })[0];
                     $scope.ProjPubs.push(postedPUB);
 
@@ -2902,7 +2900,7 @@
                 //modal for enter all required fields
                 openModal();
             }
-        }
+        };
         //#endregion POST Pub click
 
         //#region DELETE Pub click
@@ -2925,8 +2923,8 @@
                 //yes, remove this keyword
                 var index = $scope.ProjPubs.indexOf(pub);
                 //DELETE it
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
                 PROJECT.deleteProjPublication({ id: thisProjID }, pub, function success(response) {
@@ -2941,17 +2939,17 @@
                 //logic for cancel
             });
             //end modal
-        }
+        };
         //#endregion DELETE Pub click
 
         //validate that at least 1 field is populated before saving edit
         $scope.ValidateAtLeastOne = function (d) {
             if ((d.TITLE == "" || d.TITLE == null) && (d.DESCRIPTION == "" || d.DESCRIPTION == null) && (d.URL == "" || d.URL == null)) {
-                toastr.error("Publication not updated.")
+                toastr.error("Publication not updated.");
                 openModal();
                 return "You need to populate at least one field."; //way to stop it from closing edit..just return something cuz modal is opening                
             }
-        }
+        };
 
         $scope.EditRowClicked = function () {
             //make sure form is not pristine in case they change tabs before hitting save/cancel
@@ -2971,8 +2969,8 @@
         $scope.savePub = function (data, id) {
             var test;
             var retur = false;
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-            $http.defaults.headers.common['Accept'] = 'application/json';
+            $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+            $http.defaults.headers.common.Accept = 'application/json';
             $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
 
             PUBLICATION.save({
@@ -3110,14 +3108,14 @@
             modalInstance.result.then(function (newSiteName) {
                 //go use this (newSiteName.name and newSiteName.id) (new with this new name and duplicate everything and then direct to it
                 var thisSite = $scope.projectSites.filter(function (s) {
-                    return s.SiteId == newSiteName.id
+                    return s.SiteId == newSiteName.id;
                 });
                 thisSite[0].ProjID = $scope.thisProject.PROJECT_ID;
                 thisSite[0].Name = newSiteName.name;
                 thisSite[0].StatType = $scope.StatusList.filter(function (st) {
-                    return st.STATUS == thisSite[0].Status
+                    return st.STATUS == thisSite[0].Status;
                 });
-                thisSite[0].LakeType = $scope.LakeList.filter(function (st) { return st.LAKE == thisSite[0].GreatLake });
+                thisSite[0].LakeType = $scope.LakeList.filter(function (st) { return st.LAKE == thisSite[0].GreatLake; });
                 //properly form the site
                 var aSITE = formatSite(thisSite[0]);
                 var freqSplit = thisSite[0].Frequency != undefined ? thisSite[0].Frequency.split(',') : [];
@@ -3164,11 +3162,11 @@
                     }
                 }
                 for (var sm = 0; sm < medSplit.length; sm++) {
-                    for (var m = 0; m < $scope.MediaList.length; m++) {
+                    for (var med = 0; med < $scope.MediaList.length; med++) {
                         //remove spaces for accurate compare with Replace
-                        if (medSplit[sm].replace(/\s/g, '') == $scope.MediaList[m].MEDIA.replace(/\s/g, '')) {
-                            $scope.MediaToAdd.push($scope.MediaList[m]);
-                            m = $scope.MediaList.length;
+                        if (medSplit[sm].replace(/\s/g, '') == $scope.MediaList[med].MEDIA.replace(/\s/g, '')) {
+                            $scope.MediaToAdd.push($scope.MediaList[med]);
+                            med = $scope.MediaList.length;
                         }
                     }
                 }
@@ -3182,16 +3180,16 @@
                     }
                 }
                 for (var sp = 0; sp < paramsSplit.length; sp++) {
-                    for (var p = 0; p < $scope.ParamList.length; p++) {
+                    for (var pa = 0; pa < $scope.ParamList.length; pa++) {
                         //remove spaces for accurate compare with Replace
-                        if (paramsSplit[sp].replace(/\s/g, '') == $scope.ParamList[p].PARAMETER.replace(/\s/g, '')) {
-                            $scope.ParameterToAdd.push($scope.ParamList[p]);
-                            p = $scope.ParamList.length;
+                        if (paramsSplit[sp].replace(/\s/g, '') == $scope.ParamList[pa].PARAMETER.replace(/\s/g, '')) {
+                            $scope.ParameterToAdd.push($scope.ParamList[pa]);
+                            pa = $scope.ParamList.length;
                         }
                     }
                 }
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 var siteId = "";
                 SITE.save({}, aSITE, function success(response) {
                     toastr.success("Site Created");
@@ -3210,7 +3208,7 @@
                                 toastr.error("Error: " + errorResponse.statusText);
                             }
                         );
-                    };
+                    }
                     //post media
                     for (var k = $scope.MediaToAdd.length; k--;) {
                         SITE.addSiteMedia({
@@ -3223,12 +3221,12 @@
                                 toastr.error("Error: " + errorResponse.statusText);
                             }
                         );
-                    };
+                    }
                     //post parameters
-                    for (var k = $scope.ParameterToAdd.length; k--;) {
+                    for (var pk = $scope.ParameterToAdd.length; pk--;) {
                         SITE.addSiteParameter({
                             id: siteId
-                        }, $scope.ParameterToAdd[k],
+                        }, $scope.ParameterToAdd[pk],
                             function success(response) {
                                 //                toastr.success("Site Parameter Added");
                             },
@@ -3236,12 +3234,12 @@
                                 toastr.error("Error: " + errorResponse.statusText);
                             }
                         );
-                    };
+                    }
                     //post resources
-                    for (var k = $scope.ResourceToAdd.length; k--;) {
+                    for (var rk = $scope.ResourceToAdd.length; rk--;) {
                         SITE.addSiteResource({
                             id: siteId
-                        }, $scope.ResourceToAdd[k],
+                        }, $scope.ResourceToAdd[rk],
                             function success(response) {
                                 //                toastr.success("Site Resource Added");
                             },
@@ -3249,7 +3247,7 @@
                                 toastr.error("Error: " + errorResponse.statusText);
                             }
                         );
-                    };
+                    }
                 }, function error(errorResponse) {
                     toastr.success("Error: " + errorResponse.statusText);
                 }).$promise.then(function () {
@@ -3258,7 +3256,7 @@
                 });
 
             });
-        }//end CopyToNew
+        };//end CopyToNew
 
         //#region DELETE Site
         $scope.DeleteSite = function (site) {
@@ -3280,8 +3278,8 @@
                 //yes, remove this keyword
                 var index = $scope.projectSites.indexOf(site);
                 //DELETE it
-                
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
+
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                 SITE.delete({ id: site.SiteId }, function success(response) {
                     $scope.projectSites.splice(index, 1);
                     $scope.sitesCount.total = $scope.sitesCount.total - 1;
@@ -3293,9 +3291,9 @@
                 //logic for cancel
             });
             //end modal
-        }
+        };
         //#endregion DELETE Pub click
-    };
+    }
 
     //projectEditSiteInfoCtrl ( CREATE / EDIT page)    
     siGLControllers.controller('projectEditSiteInfoCtrl', ['$scope', '$location', '$cookies', '$http', '$modal', '$state', 'thisProject', 'thisSite', 'SITE', 'projSites', 'siteFrequencies', 'siteMedium',
@@ -3370,19 +3368,19 @@
                 var siteMeds = siteMedium;
                 var allMeds = mediaList;
                 //go through allMeds and add selected property
-                for (var i = 0; i < allMeds.length; i++) {
+                for (var mi = 0; mi < allMeds.length; mi++) {
                     //for each one, if siteMeds has this id, add 'selected:true' else add 'selected:false'
-                    for (var y = 0; y < siteMeds.length; y++) {
-                        if (siteMeds[y].MEDIA_TYPE_ID == allMeds[i].MEDIA_TYPE_ID) {
-                            allMeds[i].selected = true;
-                            y = siteMeds.length;
+                    for (var sm = 0; sm < siteMeds.length; sm++) {
+                        if (siteMeds[sm].MEDIA_TYPE_ID == allMeds[mi].MEDIA_TYPE_ID) {
+                            allMeds[mi].selected = true;
+                            sm = siteMeds.length;
                         }
                         else {
-                            allMeds[i].selected = false;
+                            allMeds[mi].selected = false;
                         }
                     }
                     if (siteMeds.length == 0) {
-                        allMeds[i].selected = false;
+                        allMeds[mi].selected = false;
                     }
                 }
                 $scope.Mediadata = allMeds;
@@ -3392,36 +3390,36 @@
                 var siteParams = siteParameters;
                 var allParams = parameterList;
                 //go through siteParams and add selected property
-                for (var i = 0; i < allParams.length; i++) {
+                for (var pi = 0; pi < allParams.length; pi++) {
                     //for each one, if siteParams has this id, add 'selected:true' else add 'selected:false'
-                    for (var y = 0; y < siteParams.length; y++) {
-                        if (siteParams[y].PARAMETER_TYPE_ID == allParams[i].PARAMETER_TYPE_ID) {
-                            allParams[i].selected = true;
-                            y = siteParams.length;
+                    for (var sp = 0; sp < siteParams.length; sp++) {
+                        if (siteParams[sp].PARAMETER_TYPE_ID == allParams[pi].PARAMETER_TYPE_ID) {
+                            allParams[pi].selected = true;
+                            sp = siteParams.length;
                         }
                         else {
-                            allParams[i].selected = false;
+                            allParams[pi].selected = false;
                         }
                     }
                     if (siteParams.length == 0) {
-                        allParams[i].selected = false;
+                        allParams[pi].selected = false;
                     }
                 }
                 $scope.physParams = []; $scope.bioParams = []; $scope.chemParams = []; $scope.microBioParams = []; $scope.toxiParams = [];
                 $scope.physParams.push(allParams.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Physical"
+                    return p.PARAMETER_GROUP == "Physical";
                 }));
                 $scope.bioParams.push(allParams.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Biological"
+                    return p.PARAMETER_GROUP == "Biological";
                 }));
                 $scope.chemParams.push(allParams.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Chemical"
+                    return p.PARAMETER_GROUP == "Chemical";
                 }));
                 $scope.microBioParams.push(allParams.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Microbiological"
+                    return p.PARAMETER_GROUP == "Microbiological";
                 }));
                 $scope.toxiParams.push(allParams.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Toxicological"
+                    return p.PARAMETER_GROUP == "Toxicological";
                 }));
 
                 //$scope.Parameterdata = allParams;
@@ -3432,19 +3430,19 @@
                 var siteRes = siteResources;
                 var allRes = resourceList;
                 //go through allRes and add selected property
-                for (var i = 0; i < allRes.length; i++) {
+                for (var ri = 0; ri < allRes.length; ri++) {
                     //for each one, if siteRes has this id, add 'selected:true' else add 'selected:false'
-                    for (var y = 0; y < siteRes.length; y++) {
-                        if (siteRes[y].RESOURCE_TYPE_ID == allRes[i].RESOURCE_TYPE_ID) {
-                            allRes[i].selected = true;
-                            y = siteRes.length;
+                    for (var sr = 0; sr < siteRes.length; sr++) {
+                        if (siteRes[sr].RESOURCE_TYPE_ID == allRes[ri].RESOURCE_TYPE_ID) {
+                            allRes[ri].selected = true;
+                            sr = siteRes.length;
                         }
                         else {
-                            allRes[i].selected = false;
+                            allRes[ri].selected = false;
                         }
                     }
                     if (siteRes.length == 0) {
-                        allRes[i].selected = false;
+                        allRes[ri].selected = false;
                     }
                 }
                 $scope.Resourcedata = allRes;
@@ -3476,36 +3474,36 @@
                 //frequencies
                 for (var a = frequencyList.length; a--;) {
                     frequencyList[a].selected = false;
-                };
+                }
                 $scope.Frequencydata = frequencyList;
                 //media
-                for (var a = mediaList.length; a--;) {
-                    mediaList[a].selected = false;
-                };
+                for (var ma = mediaList.length; ma--;) {
+                    mediaList[ma].selected = false;
+                }
                 $scope.Mediadata = mediaList;
                 //parameters
-                for (var a = parameterList.length; a--;) {
-                    parameterList[a].selected = false;
-                };
+                for (var pa = parameterList.length; pa--;) {
+                    parameterList[pa].selected = false;
+                }
                 $scope.physParams = []; $scope.bioParams = []; $scope.chemParams = []; $scope.microBioParams = []; $scope.toxiParams = [];
                 $scope.physParams.push(parameterList.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Physical"
+                    return p.PARAMETER_GROUP == "Physical";
                 }));
                 $scope.bioParams.push(parameterList.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Biological"
+                    return p.PARAMETER_GROUP == "Biological";
                 }));
-                $scope.chemParams.push(parameterList.filter(function (p) { return p.PARAMETER_GROUP == "Chemical" }));
+                $scope.chemParams.push(parameterList.filter(function (p) { return p.PARAMETER_GROUP == "Chemical"; }));
                 $scope.microBioParams.push(parameterList.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Microbiological"
+                    return p.PARAMETER_GROUP == "Microbiological";
                 }));
                 $scope.toxiParams.push(parameterList.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Toxicological"
+                    return p.PARAMETER_GROUP == "Toxicological";
                 }));
                 // $scope.Parameterdata = parameterList;
                 //resources
-                for (var a = resourceList.length; a--;) {
-                    resourceList[a].selected = false;
-                };
+                for (var ra = resourceList.length; ra--;) {
+                    resourceList[ra].selected = false;
+                }
                 $scope.Resourcedata = resourceList;
                 //#endregion add selected property to all multiselects (need to set these if new site)
 
@@ -3513,14 +3511,14 @@
 
             //#region a FREQUENCY was clicked - if added POST, if removed DELETE - for edit view or store for create view
             $scope.FreqClick = function (data) {
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
 
                 if ($scope.thisSite.SITE_ID != undefined) {
                     //this is an edit page and there is a site
                     if (data.selected == true) {
                         //post it
-                        delete data['selected']; //need to remove the selected property first
+                        delete data.selected; //need to remove the selected property first
                         SITE.addSiteFrequency({ id: $scope.thisSite.SITE_ID }, data,
                             function success(response) {
                                 toastr.success("Site Frequency added");
@@ -3531,7 +3529,7 @@
                         );
                     } else {
                         //delete it
-                        delete data['selected']; // remove the selected flag first
+                        delete data.selected; // remove the selected flag first
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
                         SITE.deleteSiteFrequency({ id: $scope.thisSite.SITE_ID }, data,
                             function success(response) {
@@ -3545,24 +3543,24 @@
                 } else {
                     //this is a create Site and need to store this to handle after site is POSTed
                     if (data.selected == true) {
-                        delete data['selected'];
+                        delete data.selected;
                         //only care if true since this is a new site and nothing to delete
                         $scope.FrequenciesToAdd.push(data);
                     }
                 }
-            }//end FreqClick
+            };//end FreqClick
             //#endregion a FREQUENCY was clicked - if added POST, if removed DELETE - for edit view or store for create view
 
             //#region a MEDIA was clicked - if added POST, if removed DELETE - for edit view or store for create view
             $scope.MedClick = function (data) {
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
 
                 if ($scope.thisSite.SITE_ID != undefined) {
                     //this is an edit page and there is a site
                     if (data.selected == true) {
                         //post it
-                        delete data['selected']; //need to remove the selected property first
+                        delete data.selected; //need to remove the selected property first
                         SITE.addSiteMedia({ id: $scope.thisSite.SITE_ID }, data,
                             function success(response) {
                                 toastr.success("Site Media added");
@@ -3573,7 +3571,7 @@
                         );
                     } else {
                         //delete it
-                        delete data['selected']; // remove the selected flag first
+                        delete data.selected; // remove the selected flag first
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
                         SITE.deleteSiteMedia({ id: $scope.thisSite.SITE_ID }, data,
                             function success(response) {
@@ -3587,18 +3585,18 @@
                 } else {
                     //this is a create Site and need to store this to handle after site is POSTed
                     if (data.selected == true) {
-                        delete data['selected'];
+                        delete data.selected;
                         //only care if true since this is a new site and nothing to delete
                         $scope.MediaToAdd.push(data);
                     }
                 }
-            }//end MedClick
+            };//end MedClick
             //#endregion a MEDIA was clicked - if added POST, if removed DELETE - for edit view or store for create view
 
             //#region a PARAMETER was clicked - if added POST, if removed DELETE - for edit view or store for create view
             $scope.ParamClick = function (data) {
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 var Param = {
                 };
                 Param.PARAMETER_TYPE_ID = data.PARAMETER_TYPE_ID;
@@ -3630,7 +3628,7 @@
                                 toastr.error("Error: " + errorResponse.statusText);
                             }
             );
-                        delete $http.defaults.headers.common['X-HTTP-Method-Override']
+                        delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                     }
                 } else {
                     //this is a create Site and need to store this to handle after site is POSTed
@@ -3640,19 +3638,19 @@
                         $scope.ParameterToAdd.push(Param);
                     }
                 }
-            }//end ParamClick
+            };//end ParamClick
             //#endregion a PARAMETER was clicked - if added POST, if removed DELETE - for edit view or store for create view
 
             //#region a RESOURCE was clicked - if added POST, if removed DELETE - for edit view or store for create view
             $scope.ResClick = function (data) {
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
 
                 if ($scope.thisSite.SITE_ID != undefined) {
                     //this is an edit page and there is a site
                     if (data.selected == true) {
                         //post it
-                        delete data['selected']; //need to remove the selected property first
+                        delete data.selected; //need to remove the selected property first
                         SITE.addSiteResource({ id: $scope.thisSite.SITE_ID }, data,
                             function success(response) {
                                 toastr.success("Site Resource added");
@@ -3663,7 +3661,7 @@
                         );
                     } else {
                         //delete it
-                        delete data['selected']; // remove the selected flag first
+                        delete data.selected; // remove the selected flag first
                         $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
                         SITE.deleteSiteResource({ id: $scope.thisSite.SITE_ID }, data,
                             function success(response) {
@@ -3677,12 +3675,12 @@
                 } else {
                     //this is a create Site and need to store this to handle after site is POSTed
                     if (data.selected == true) {
-                        delete data['selected'];
+                        delete data.selected;
                         //only care if true since this is a new site and nothing to delete
                         $scope.ResourceToAdd.push(data);
                     }
                 }
-            }//end ResClick
+            };//end ResClick
             //#endregion a RESOURCE was clicked - if added POST, if removed DELETE - for edit view or store for create view
 
             $scope.isNum = function (evt) {
@@ -3705,7 +3703,7 @@
                     controller: function ($scope, $modalInstance) {
                         $scope.ok = function () {
                             $modalInstance.close('lat');
-                        }
+                        };
                     },
                     size: 'sm'
                 });
@@ -3724,7 +3722,7 @@
                     controller: function ($scope, $modalInstance) {
                         $scope.ok = function () {
                             $modalInstance.close('long');
-                        }
+                        };
                     },
                     size: 'sm'
                 });
@@ -3746,7 +3744,7 @@
                             controller: function ($scope, $modalInstance) {
                                 $scope.ok = function () {
                                     $modalInstance.close('startDate');
-                                }
+                                };
                             },
                             size: 'sm'
                         });
@@ -3764,8 +3762,8 @@
                     if (valid) {
                         //ensure they don't delete required field values
                         if (($scope.thisSite.LATITUDE > 0 && $scope.thisSite.LATITUDE < 73.0) && ($scope.thisSite.LONGITUDE > -175 && $scope.thisSite.LONGITUDE < -60)) {
-                            $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                            $http.defaults.headers.common['Accept'] = 'application/json';
+                            $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                            $http.defaults.headers.common.Accept = 'application/json';
                             $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                             SITE.save({
                                 id: $scope.thisSite.SITE_ID
@@ -3794,7 +3792,7 @@
                             controller: function ($scope, $modalInstance) {
                                 $scope.ok = function () {
                                     $modalInstance.close('required');
-                                }
+                                };
                             },
                             size: 'sm'
                         });
@@ -3802,18 +3800,18 @@
                             if (fieldFocus == "required")
                                 angular.element("[name='" + $scope.projectForm.SiteInfo.$name + "']").find('.ng-invalid:visible:first').focus();
                         });
-                        toastr.error("Site not updated.");                            
+                        toastr.error("Site not updated.");
                     }
                 }
-            }//end SaveOnBlur
+            };//end SaveOnBlur
 
             //save NEW SITE and then frequencies, media, parameters, and resources
             $scope.save = function (valid) {
                 //check if they filled in all required fields
                 if (valid && ($scope.thisSite.LATITUDE > 0 && $scope.thisSite.LATITUDE < 73.0) && ($scope.thisSite.LONGITUDE > -175 && $scope.thisSite.LONGITUDE < -60)) {
                     $(".page-loading").removeClass("hidden");
-                    $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common['Accept'] = 'application/json';
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
                     $scope.thisSite.PROJECT_ID = thisProject.PROJECT_ID;
                     var siteID;
                     SITE.save({}, $scope.thisSite, function success(response) {
@@ -3833,7 +3831,7 @@
                                     toastr.error("Error: " + errorResponse.statusText);
                                 }
                             );
-                        };
+                        }
                         //post media
                         for (var k = $scope.MediaToAdd.length; k--;) {
                             SITE.addSiteMedia({
@@ -3845,12 +3843,12 @@
                                 function error(errorResponse) {
                                     toastr.error("Error: " + errorResponse.statusText);
                                 });
-                        };
+                        }
                         //post parameters
-                        for (var k = $scope.ParameterToAdd.length; k--;) {
+                        for (var para = $scope.ParameterToAdd.length; para--;) {
                             SITE.addSiteParameter({
                                 id: siteID
-                            }, $scope.ParameterToAdd[k],
+                            }, $scope.ParameterToAdd[para],
                                 function success(response) {
                                     toastr.success("Site Parameter Added");
                                 },
@@ -3858,12 +3856,12 @@
                                     toastr.error("Error: " + errorResponse.statusText);
                                 }
                             );
-                        };
+                        }
                         //post resources
-                        for (var k = $scope.ResourceToAdd.length; k--;) {
+                        for (var res = $scope.ResourceToAdd.length; res--;) {
                             SITE.addSiteResource({
                                 id: siteID
-                            }, $scope.ResourceToAdd[k],
+                            }, $scope.ResourceToAdd[res],
                                 function success(response) {
                                     toastr.success("Site Resource Added");
                                 },
@@ -3871,7 +3869,7 @@
                                     toastr.error("Error: " + errorResponse.statusText);
                                 }
                             );
-                        };
+                        }
                     }, function error(errorResponse) {
                         toastr.success("Error: " + errorResponse.statusText);
                     }).$promise.then(function () {
@@ -3888,7 +3886,7 @@
                         openLongModal();
 
                 } //end else valid
-            }//end save
+            };//end save
 
         }//end CheckCreds() passed
     }//end projectEditSiteInfoCtrl
@@ -3906,9 +3904,9 @@
                     'id': x + 1, 'value': o[x]
                 };
                 newlyFormatted.push(thisone);
-            };
+            }
             return newlyFormatted;
-        }
+        };
 
         //dropdowns and multiselects
         $scope.countryArray = $scope.formatArray(CountryList);
@@ -3993,10 +3991,10 @@
             nameToSendBack.name = $scope.newSite.NAME;
             nameToSendBack.id = thisSiteID;
             $modalInstance.close(nameToSendBack);
-        }
+        };
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
-        }
+        };
     }
 
     //popup confirm box
@@ -4016,9 +4014,9 @@
                 $scope.keyToRmv = keyToRemove.OrganizationName;
                 break;
             case "Data":
-                var stringToUse = keyToRemove.DESCRIPTION != null ? keyToRemove.DESCRIPTION : keyToRemove.HOST_NAME;
-                stringToUse = stringToUse != null ? stringToUse : keyToRemove.PORTAL_URL;
-                $scope.keyToRmv = stringToUse;
+                var DstringToUse = keyToRemove.DESCRIPTION != null ? keyToRemove.DESCRIPTION : keyToRemove.HOST_NAME;
+                DstringToUse = DstringToUse != null ? DstringToUse : keyToRemove.PORTAL_URL;
+                $scope.keyToRmv = DstringToUse;
                 break;
             case "Contact":
                 $scope.keyToRmv = keyToRemove.NAME;
@@ -4153,8 +4151,8 @@
                 var orgToPost = {
                     ORGANIZATION_NAME: nameToAdd
                 };
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 ORGANIZATION.save(orgToPost, function success(response) {
                     //add this new one to the lists
                     $scope.orgList.push(response);
@@ -4184,8 +4182,8 @@
         $scope.addThisDivision = function (divToAdd, orgID) {
             if (divToAdd != "" && orgID != "") {
                 var divToPost = { DIVISION_NAME: divToAdd, ORG_ID: orgID };
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 DIVISION.save(divToPost, function success(response) {
                     $scope.allDivList.push(response);
                     $scope.divList.push(response); //push to the dropdown (these divs for this org)
@@ -4215,8 +4213,8 @@
         $scope.addThisSection = function (secToAdd, divID) {
             if (secToAdd != "" && divID != "") {
                 var secToPost = { SECTION_NAME: secToAdd, DIV_ID: divID };
-                $http.defaults.headers.common['Authorization'] = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common['Accept'] = 'application/json';
+                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                $http.defaults.headers.common.Accept = 'application/json';
                 SECTION.save(secToPost, function success(response) {
                     $scope.allSecList.push(response); //push to all sections 
                     $scope.secList.push(response); //push to the dropdown (these secs for this div)
@@ -4238,7 +4236,7 @@
 
         $scope.setSecs = function (secID) {
             $scope.selectedSecID.id = secID;
-        }
+        };
 
         //want to close input for adding new part
         $scope.neverMind = function (which) {
@@ -4308,7 +4306,7 @@
                     $scope.EMAIL = "";
                     $scope.ok = function () {
                         $modalInstance.close($scope.EMAIL);
-                    }
+                    };
                 },
                 size: 'md'
             });
@@ -4317,9 +4315,9 @@
                     //need to send creds to hit the reset endpoint and change their password to default OWNERPROFILE_EDITPASSWORD requires OWNERPROFILE..
                 }
             });
-            
 
-        }
+
+        };
         $scope.submit = function () {
             //$scope.sub = true;
             var postData = {
@@ -4327,8 +4325,8 @@
                 "password": $scope.password
             };
             var up = $scope.username + ":" + $scope.password;
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + btoa(up);
-            $http.defaults.headers.common['Accept'] = 'application/json';
+            $http.defaults.headers.common.Authorization = 'Basic ' + btoa(up);
+            $http.defaults.headers.common.Accept = 'application/json';
 
             Date.prototype.addHours = function (h) {
                 this.setHours(this.getHours() + h);
@@ -4389,8 +4387,8 @@
             $cookies.remove('usersName');
             $cookies.remove('usersRole');
             $location.path('/login');
-        }
-    };
+        };
+    }
     //#endregion LOGIN/OUT
 
 
