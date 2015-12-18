@@ -74,6 +74,8 @@
     <Content Include="images\reports.png" />
     <Content Include="images\Tables1.png" />
     <Content Include="images\usgsLogo.png" />
+    <Content Include="js\LogInOutCtrl.js" />
+    <Content Include="js\ModalsCtrl.js" />
     <Content Include="js\vendor\inputmask.min.js" />
     <Content Include="js\vendor\jquery.inputmask.js" />
     <Content Include="js\vendor\ui-grid-unstable.js" />

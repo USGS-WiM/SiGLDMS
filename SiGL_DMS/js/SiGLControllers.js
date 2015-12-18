@@ -377,8 +377,8 @@
         }//end auth user logged in
     }//end resourceCtrl
 
-    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$cookies', '$location', '$http', '$modal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'ROLE', 'allRoles', 'thisDM', 'dmProjects', dataManagerInfoCtrl]);
-    function dataManagerInfoCtrl($scope, $cookies, $location, $http, $modal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, ROLE, allRoles, thisDM, dmProjects) {
+    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$cookies', '$location', '$http', '$uibModal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'ROLE', 'allRoles', 'thisDM', 'dmProjects', dataManagerInfoCtrl]);
+    function dataManagerInfoCtrl($scope, $cookies, $location, $http, $uibModal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, ROLE, allRoles, thisDM, dmProjects) {
         if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
             $location.path('/login');
@@ -440,7 +440,7 @@
                 //modal
                 //pass array of chosen org/div so they will be prepopulated in modal
                 var chosenparts = [$scope.selectedOrgID, $scope.selectedDivID, $scope.selectedSecID];
-                var modalInstance = $modal.open({
+                var modalInstance = $uibModal.open({
                     templateUrl: 'AddOrganizationModal.html',
                     controller: 'AddOrgModalCtrl',
                     size: 'md',
@@ -615,7 +615,7 @@
                 //delete this project and related stuff
                 $scope.RemoveProject = function (proj) {
                     //modal
-                    var modalInstance = $modal.open({
+                    var modalInstance = $uibModal.open({
                         templateUrl: 'removemodal.html',
                         controller: 'ConfirmModalCtrl',
                         size: 'sm',
@@ -653,13 +653,13 @@
                     //change User's password
                     if ($scope.pass.newP == "" || $scope.pass.confirmP == "") {
                         //modal for entering a password first
-                        var modalInstance = $modal.open({
+                        var modalInstance = $uibModal.open({
                             template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                         '<div class="modal-body"><p>You must first enter a new Password.</p></div>' +
                                         '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                            controller: function ($scope, $modalInstance) {
+                            controller: function ($scope, $uibModalInstance) {
                                 $scope.ok = function () {
-                                    $modalInstance.close('password');
+                                    $uibModalInstance.close('password');
                                 };
                             },
                             size: 'sm'
@@ -791,10 +791,10 @@
     //#endregion Organizations
 
     //#region resource Controller (abstract)
-    siGLControllers.controller('resourcesCtrl', ['$scope', '$cookies', '$location', '$state', '$http', '$filter', '$modal', 'FREQUENCY_TYPE', 'LAKE_TYPE', 'MEDIA_TYPE', 'OBJECTIVE_TYPE',
+    siGLControllers.controller('resourcesCtrl', ['$scope', '$cookies', '$location', '$state', '$http', '$filter', '$uibModal', 'FREQUENCY_TYPE', 'LAKE_TYPE', 'MEDIA_TYPE', 'OBJECTIVE_TYPE',
         'PARAMETER_TYPE', 'RESOURCE_TYPE', 'HOUSING_TYPE', 'PROJ_DURATION', 'PROJ_STATUS', 'STATUS_TYPE', 'allFreqs', 'allLakes', 'allMedias', 'allObjectives', 'allParams', 'allResources',
         'allProjDurations', 'allProjStats', 'allSiteStats', resourcesCtrl]);
-    function resourcesCtrl($scope, $cookies, $location, $state, $http, $filter, $modal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, PARAMETER_TYPE, RESOURCE_TYPE, HOUSING_TYPE,
+    function resourcesCtrl($scope, $cookies, $location, $state, $http, $filter, $uibModal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, PARAMETER_TYPE, RESOURCE_TYPE, HOUSING_TYPE,
         PROJ_DURATION, PROJ_STATUS, STATUS_TYPE, allFreqs, allLakes, allMedias, allObjectives, allParams, allResources, allProjDurations, allProjStats, allSiteStats) {
         if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
@@ -873,7 +873,7 @@
 
             $scope.deleteFrequencyType = function (ft) {
                 //modal
-                var modalInstance = $modal.open({
+                var modalInstance = $uibModal.open({
                     templateUrl: 'removemodal.html',
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
@@ -949,7 +949,7 @@
                 return retur;
             };
             $scope.deleteLakeType = function (lt) {
-                var modalInstance = $modal.open({
+                var modalInstance = $uibModal.open({
                     templateUrl: 'removemodal.html',
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
@@ -1023,7 +1023,7 @@
                 return retur;
             };
             $scope.deleteMediaType = function (mt) {
-                var modalInstance = $modal.open({
+                var modalInstance = $uibModal.open({
                     templateUrl: 'removemodal.html',
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
@@ -1101,7 +1101,7 @@
 
             $scope.deleteObjectiveType = function (ot) {
                 //modal
-                var modalInstance = $modal.open({
+                var modalInstance = $uibModal.open({
                     templateUrl: 'removemodal.html',
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
@@ -1177,7 +1177,7 @@
                 return retur;
             };
             $scope.deleteParameterType = function (pt) {
-                var modalInstance = $modal.open({
+                var modalInstance = $uibModal.open({
                     templateUrl: 'removemodal.html',
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
@@ -1251,7 +1251,7 @@
                 return retur;
             };
             $scope.deleteResourceType = function (rt) {
-                var modalInstance = $modal.open({
+                var modalInstance = $uibModal.open({
                     templateUrl: 'removemodal.html',
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
@@ -1329,7 +1329,7 @@
 
             $scope.deleteProjDuration = function (pd) {
                 //modal
-                var modalInstance = $modal.open({
+                var modalInstance = $uibModal.open({
                     templateUrl: 'removemodal.html',
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
@@ -1405,7 +1405,7 @@
                 return retur;
             };
             $scope.deleteProjStatus = function (ps) {
-                var modalInstance = $modal.open({
+                var modalInstance = $uibModal.open({
                     templateUrl: 'removemodal.html',
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
@@ -1479,7 +1479,7 @@
                 return retur;
             };
             $scope.deleteSiteStatus = function (ss) {
-                var modalInstance = $modal.open({
+                var modalInstance = $uibModal.open({
                     templateUrl: 'removemodal.html',
                     controller: 'ConfirmModalCtrl',
                     size: 'sm',
@@ -1611,31 +1611,17 @@
 
     //#region ABSTRACT PROJECT EDIT Controller
     //ProjectEditCtrl
-    siGLControllers.controller('projectEditCtrl', ['$scope', '$rootScope', '$cookies', '$location', '$state', '$http', '$filter', '$modal', 'thisProject', 'projOrgs',
+    siGLControllers.controller('projectEditCtrl', ['$scope', '$rootScope', '$cookies', '$location', '$state', '$http', '$filter', '$uibModal', 'thisProject', 'projOrgs',
         'projDatum', 'projContacts', 'projPubs', 'projSites', 'projObjectives', 'projKeywords', 'PROJECT', 'SITE', 'allDurationList', 'allStatsList', 'allObjList', projectEditCtrl]);
-    function projectEditCtrl($scope, $rootScope, $cookies, $location, $state, $http, $filter, $modal, thisProject, projOrgs, projDatum, projContacts, projPubs,
-            projSites, projObjectives, projKeywords, PROJECT, SITE, allDurationList, allStatsList, allObjList) {
+    function projectEditCtrl($scope, $rootScope, $cookies, $location, $state, $http, $filter, $uibModal, thisProject, projOrgs, projDatum, projContacts, projPubs, projSites,
+        projObjectives, projKeywords, PROJECT, SITE, allDurationList, allStatsList, allObjList) {
         //model needed for ProjectEdit Info tab: ( Counts for Cooperators, Datum, Contacts, Publications and Sites) 1. thisProject, 2. parsed urls, 3. project Keywords, 4. all objectives, 5. all statuses, 6. all durations 
         if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
             $location.path('/login');
         } else {
-            $scope.projectForm = {};
+            $scope.projectForm = {}; //holder for all the forms
             $scope.readyFlagModel = "No";
-
-            //#region Datepicker
-            $scope.datepickrs = {
-                projStDate: false,
-                projEndDate: false
-            };
-            $scope.open = function ($event, which) {
-                $event.preventDefault();
-                $event.stopPropagation();
-
-                $scope.datepickrs[which] = true;
-            };
-            $scope.format = 'MMM dd, yyyy';
-            //#endregion Datepicker
 
             //#region changing tabs handler /////////////////////
             $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
@@ -1662,37 +1648,7 @@
                         formNamePristine = true;
                         break;
                 }
-                if (!formNamePristine) {
-                   // var yesOrNo = false;
-                    //modal for changing states.. goes before user clicks ok or cancel... think because modal.open isn't async
-//                    var modalInstance = $modal.open({ 
-//                        template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-//                                    '<div class="modal-body"><p>Are you sure you want to change tabs? Any unsaved information will be lost.</p></div>' +
-//                                    '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button>' +
-//                                    '<button class="btn btn-primary" ng-click="cancel()">Cancel</button></div>',
-//                        controller: function ($scope, $modalInstance) {
-//                            $scope.ok = function () {
-//                                $modalInstance.dismiss();
-////                                $state.go(toState.name, toParams);
-//                            }
-//                            $scope.cancel = function () {
-//                                $(".page-loading").addClass("hidden");
-//                                $modalInstance.close('stay');
-//                                //event.preventDefault();
-//                                //$modalInstance.dismiss();
-//                            }
-//                        },
-//                        size: 'sm'
-//                    });
-//                    modalInstance.result.then(function (stayOrGo) {
-//                        //do nothing..let them go
-//                        if (stayOrGo == "stay") {
-//                            $(".page-loading").addClass("hidden");
-//                            event.preventDefault();
-//                        }
-//                    });
-
-
+                if (!formNamePristine) {                   
                     if (confirm("Are you sure you want to change tabs? Any unsaved information will be lost.")) {
                         console.log('go to: ' + toState.name);
                     } else {
@@ -1704,28 +1660,72 @@
             });
             //#endregion changing tabs handler //////////////////////
 
+            //#region Datepicker
+            $scope.datepickrs = {
+                projStDate: false,
+                projEndDate: false
+            };
+            $scope.open = function ($event, which) {
+                $event.preventDefault();
+                $event.stopPropagation();
+
+                $scope.datepickrs[which] = true;
+            };
+            $scope.format = 'MMM dd, yyyy';
+            //#endregion Datepicker
+
             //#region GLOBALS
+            $scope.StatusList = allStatsList;
+            $scope.DurationList = allDurationList;
             $scope.aProject = {}; //holder for project (either coming in for edit, or being created on POST )
             $scope.Objectivesmodel = {}; //holder for new ProjObjs if they make any to multiselect
             $scope.urls = []; //holder for urls for future parsing back together ( | separated string)
-            $scope.undetermined = false; //ng-disabled on end date boolean..set to true if status = end date undefined
-            $scope.ObjectivesToAdd = []; //holder for create Project page and user adds Objective Types
-            $scope.ProjectKeywords = []; //add projKeywords if edit page, instantiate for create page to allow keys to be added
-            var globalKeyHolder; //store key passed so that once success from post comes back still have access to it
-            $scope.KeywordsToAdd = []; //holder for create Project page and user adds Keywords
-            $scope.isProjDescChanged = {}; //trigger to show/hide save button for description change
-            $scope.isProjAddInfoChanged = {}; //trigger to show/hide save button for additional info change
+                        
             //#endregion GLOBALS
 
+            //open modal to edit or create a project
+            $scope.openProjectCreate = function () {
+                var dropdownParts = [allDurationList, allStatsList, allObjList];
+                //modal
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'PROJECTmodal.html',
+                    controller: 'PROJECTmodalCtrl',
+                    size: 'lg',
+                    backdrop: 'static',
+                    windowClass: 'rep-dialog',
+                    resolve: {
+                        allDropDownParts: function () {
+                            return dropdownParts;
+                        },
+                        thisProjectStuff: function () {
+                            if ($scope.aProject.PROJECT_ID != undefined) {
+                                var projObjectives = projObjectives;
+                                var projKeywords = projKeywords;
+                                var projectRelatedStuff = [$scope.aProject, projObjectives, projKeywords];
+                                return projectRelatedStuff;
+                            }
+                        }
+                    }
+                });
+                modalInstance.result.then(function (r) {
+                    //nothing to do here
+                    $scope.aProject = r;
+                });
+            };
+
             if (thisProject != undefined) {
-                //this is an edit view
+                //this is an existing project = build for details view
+                $scope.aProject = thisProject;
+                $scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? "Yes" : "No";
                 $scope.coopCount = { total: projOrgs.length };
                 $scope.datumCount = { total: projDatum.length };
                 $scope.contactCount = { total: projContacts.length };
                 $scope.pubCount = { total: projPubs.length };
                 $scope.sitesCount = { total: projSites.length };
+                $scope.title = "Project: " + $scope.aProject.NAME;
+                $scope.ProjectKeywords = projKeywords;
 
-                //deal with site url formatting here
+                //#region deal with project SITES url formatting here
                 var neededUpdating = false; //if url isn't formatted, flag so know to PUT after fix
                 //if any ProjSites, make sure the url (if one) is formatted properly
                 for (var psu = 0; psu < projSites.length; psu++) {
@@ -1743,18 +1743,9 @@
                         });
                     }
                 }
+                //#endregion loop to put each site's url in proper way (http://)
 
-                //1. aProject
-                $scope.aProject = thisProject;
                 
-                $scope.title = "Project: " + $scope.aProject.NAME;
-                $scope.readyFlagModel = thisProject.READY_FLAG > 0 ? "Yes" : "No";
-
-                //check status for disabling of end date
-                if ($scope.aProject.PROJ_STATUS_ID == 1) {
-                    $scope.undetermined = true;
-                }
-
                 //put string ProjURLs into array by '|' and then ensure proper url format
                 if ($scope.aProject.URL) {
                     //split string into an array
@@ -1786,347 +1777,57 @@
                                 $scope.urls[0] = $scope.aProject.URL;
                             }
                             delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-                        });                        
+                        });
                     }
                 } //end there's a url
                 $scope.ProjectKeywords = projKeywords;
-
-                //#region add new property to OBJECTIVE_TYPES (selected:true/false)
-                //get projObjectives to use in making new prop in all objectives for multi select ('selected: true')
-                var projObjs = projObjectives;
-
-                var allObjectiveList = allObjList;
-
-                ////http://isteven.github.io/angular-multi-select/#/demo-minimum
-                ////go through allObjList and add selected Property.
-                for (var i = 0; i < allObjectiveList.length; i++) {
-                    //for each one, if projObjectives has this id, add 'selected:true' else add 'selected:false'
-                    for (var y = 0; y < projObjs.length; y++) {
-                        if (projObjs[y].OBJECTIVE_TYPE_ID == allObjectiveList[i].OBJECTIVE_TYPE_ID) {
-                            allObjectiveList[i].selected = true;
-                            y = projObjs.length; //ensures it doesn't set it as false after setting it as true
-                        }
-                        else {
-                            allObjectiveList[i].selected = false;
-                        }
-                    }
-                    if (projObjs.length == 0) {
-                        allObjectiveList[i].selected = false;
-                    }
-                }
-                //#endregion add new property to OBJECTIVE_TYPES (selected:true/false)
-
-                //all objectives (with new selected property)
-                $scope.Objectivesdata = allObjectiveList;
-            } else {
-                $scope.title = "New Project";
+            } //end existing project
+            else {
+                $scope.openProjectCreate();
             }
-
-            //get the objective types (need to set these if new project as well as existing project)
-            if (thisProject == undefined) {
-                for (var a = allObjList.length; a--;) {
-                    allObjList[a].selected = false;
-                }
-                $scope.Objectivesdata = allObjList;
-            }
-
-            //all project statuses 
-            $scope.StatusList = allStatsList;
-
-            //all durations
-            $scope.DurationList = allDurationList;
-
-            //an OBJECTIVE_TYPE was clicked - if added POST, if removed DELETE - for edit view or store for create view
-            $scope.ObjClick = function (data) {
-                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common.Accept = 'application/json';
-
-                if ($scope.aProject.PROJECT_ID != undefined) {
-                    //this is an edit page and there is a project
-                    if (data.selected == true) {
-                        //post it
-                        delete data.selected;
-                        PROJECT.addProjObjective({ id: $scope.aProject.PROJECT_ID }, data,
-                            function success(response) {
-                                toastr.success("Project Objectives added");
-                            },
-                            function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            }
-                        );
-                    } else {
-                        //delete it
-                        delete data.selected; // remove the selected flag first
-                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                        PROJECT.deleteProjObjective({ id: $scope.aProject.PROJECT_ID }, data,
-                            function success(response) {
-                                toastr.success("Project Objectives removed");
-                            },
-                            function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            }
-                        );
-                    }
-                } else {
-                    //this is a create project and need to store this to handle after project is POSTed
-                    if (data.selected == true) {
-                        delete data.selected;
-                        //only care if true since this is a new project and nothing to delete
-                        $scope.ObjectivesToAdd.push(data);
-                    }
-                }
-            };//end ObjClick
-
-            $scope.newURL = {}; //model binding to return newUrl.value to ADD/REMOVE functions                
-
-            //#region ADD/REMOVE URLS
-            $scope.removeUrl = function (key) {
+            
+            //flag radio clicked
+            $scope.Flagged = function (data) {                
                 //modal
-                var modalInstance = $modal.open({
-                    templateUrl: 'removemodal.html',
-                    controller: 'ConfirmModalCtrl',
-                    size: 'sm',
-                    resolve: {
-                        keyToRemove: function () {
-                            return key;
-                        },
-                        what: function () {
-                            return "URL";
+                var changeFlagModal = $uibModal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Publish Project</h3></div>' +
+                                '<div class="modal-body"><p>Are you sure this project is ready to publish on the SiGL Mapper?</p></div>' +
+                                '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>'+
+                                '<div class="modal-footer"><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>',
+                    controller: function ($scope, $uibModalInstance) {
+                        $scope.ok = function () {
+                            $scope.aProject.READY_FLAG = data == "Yes" ? 1 : 0;
+                            $uibModalInstance.close();
+                        };
+                        $scope.cancel = function () {
+                            //undo
+                            $scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? "Yes" : "No";
                         }
-                    }
+                    },
+                    size: 'sm'                    
                 });
-                modalInstance.result.then(function (keyToRemove) {
-                    //yes, remove this url
-                    var index = $scope.urls.indexOf(key);
-                    $scope.urls.splice(index, 1);
-                    if ($scope.aProject.PROJECT_ID != undefined) {
-                        //PUT the Project
-                        $scope.aProject.URL = ($scope.urls).join('|');
-                        $scope.SaveOnBlur(); //send to PUT
-                    }
-                }, function () {
-                    //logic to do on cancel
-                });
-                //end modal
-            };
-
-            $scope.addProjURL = function (form) {
-                if ($scope.newURL.value != undefined && form.inputURL.$valid) {
-                    //push to array of urls to show on view and store in model
-                    $scope.urls.push($scope.newURL.value);
-                    if ($scope.aProject.PROJECT_ID != undefined) {
-                        //PUT the Project
-                        $scope.aProject.URL = ($scope.urls).join('|');
-                        $scope.SaveOnBlur(); //send to PUT
-                    }
-                    $scope.newURL = {};
-                } else {
-                    //modal for entering a password first
-                    var modalInstance = $modal.open({
-                        template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                                   '<div class="modal-body"><p>Please type a url in first.</p></div>' +
-                                   '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                        controller: function ($scope, $modalInstance) {
-                            $scope.ok = function () {
-                                $modalInstance.close('url');
-                            };
-                        },
-                        size: 'sm'
+                changeFlagModal.result.then(function () {
+                    //yes, PUT the project with the updated flag set
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
+                    $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                    PROJECT.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject, function success(response) {
+                        toastr.success("Project Updated");
+                    }, function error(errorResponse) {
+                        toastr.error("Error: " + errorResponse.statusText);
                     });
-                    modalInstance.result.then(function (fieldFocus) {
-                        if (fieldFocus == "url") {
-                            $("#inputURL").focus();
-                        }
-                    });
-                }
-            };
-            //#endregion ADD/REMOVE URLS
-
-            $scope.newKey = {}; //model binding to return keys to ADD/REMOVE functions
-
-            //#region ADD/REMOVE KEYWORDS
-            //add keyword click
-            $scope.addThisKeyword = function () {
-                if ($scope.newKey.value != undefined) {
-                    var newKEY = { TERM: $scope.newKey.value }; //store object of KEYWORD
-                    globalKeyHolder = $scope.newKey.value;  //store value of key
-                    if ($scope.aProject.PROJECT_ID != undefined) {
-                        //this is an edit, go ahead and post PROJ_KEYWORD
-                        $http.defaults.headers.common.Accept = 'application/json';
-                        //POST it                            
-                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        PROJECT.addProjKeyword({ id: $scope.aProject.PROJECT_ID }, newKEY, function success(response) {
-                            $scope.ProjectKeywords.push({ TERM: globalKeyHolder });
-                            toastr.success("Keyword Added");
-                        }, function error(errorResponse) {
-                            toastr.error("Error: " + errorResponse.statusText);
-                        });
-                    } else {
-                        //this is a create, no projectid yet, store it
-                        $scope.KeywordsToAdd.push(newKEY);
-                        $scope.ProjectKeywords.push({ TERM: globalKeyHolder });
-                    }
-
-                    $scope.newKey = {};
-                } else {
-                    // the value is empty
-                    //modal for entering a password first
-                    var modalInstance = $modal.open({
-                        template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                                    '<div class="modal-body"><p>Please type a keyword in first.</p></div>' +
-                                    '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                        controller: function ($scope, $modalInstance) {
-                            $scope.ok = function () {
-                                $modalInstance.close('keyword');
-                            };
-                        },
-                        size: 'sm'
-                    });
-                    modalInstance.result.then(function (fieldFocus) {
-                        if (fieldFocus == "keyword") {
-                            $("#inputKEYWORD").focus();
-                        }
-                    });
-                }
-            };
-
-            //remove keyword click (passed confirm)
-            $scope.removeKey = function (key, index) {
-                //modal
-                var modalInstance = $modal.open({
-                    templateUrl: 'removemodal.html',
-                    controller: 'ConfirmModalCtrl',
-                    size: 'sm',
-                    resolve: {
-                        keyToRemove: function () {
-                            return key;
-                        },
-                        what: function () {
-                            return "Keyword";
-                        }
-                    }
-                });
-                modalInstance.result.then(function (keyToRemove) {
-                    //yes, remove this keyword
-                    var index1 = $scope.ProjectKeywords.indexOf(key);
-                    if ($scope.aProject.PROJECT_ID != undefined) {
-                        //DELETE it
-                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        $http.defaults.headers.common.Accept = 'application/json';
-                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-
-                        PROJECT.deleteProjKeyword({ id: $scope.aProject.PROJECT_ID }, key, function success(response) {
-                            $scope.ProjectKeywords.splice(index1, 1);
-                            toastr.success("Keyword Removed");
-                        }, function error(errorResponse) {
-                            toastr.error("Error: " + errorResponse.statusText);
-                        });
-                        delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-                    } else {
-                        //just remove it from the list (this is a create page)
-                        $scope.ProjectKeywords.splice(index1, 1);
-                        $scope.KeywordsToAdd.splice(index, 1);
-
-                    }
                 }, function () {
                     //logic for cancel
                 });
                 //end modal
             };
 
-            //#endregion ADD/REMOVE KEYWORDS
-
-            //disable end date if status has 'end date undetermined'
-            $scope.selectedStat = function (id) {
-                if (id == 1) {
-                    if ($scope.aProject != undefined && $scope.aProject.END_DATE != null) {
-                        $scope.aProject.END_DATE = "";
-                    }
-                    $scope.undetermined = true;
-                }
-                else {
-                    $scope.undetermined = false;
-                }
-            };
-
-            //flag radio clicked
-            $scope.Flagged = function (data) {
-                $scope.aProject.READY_FLAG = data == "Yes" ? 1 : 0;
-
-                if ($scope.aProject.PROJECT_ID != undefined) {
-                    $scope.SaveOnBlur($scope.aProject.PROJECT_ID);
-                }
-            };
-
-            //save NEW PROJECT and then Keywords and Objectives
-            $scope.save = function (valid) {
-                //check if they filled in all required fields
-                if (valid) {
-                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common.Accept = 'application/json';
-                    $scope.aProject.URL = ($scope.urls).join('|');
-                    var projID;
-                    $(".page-loading").removeClass("hidden");
-                    PROJECT.save({}, $scope.aProject, function success(response) {
-                        toastr.success("Project Created");
-                        projID = response.PROJECT_ID;
-                        //post objectives added
-                        for (var o = $scope.ObjectivesToAdd.length; o--;) {
-                            PROJECT.addProjObjective({ id: projID }, $scope.ObjectivesToAdd[o],
-                                function success(response) {
-                                    toastr.success("Project Objectives added");
-                                },
-                                function error(errorResponse) {
-                                    toastr.error("Error: " + errorResponse.statusText);
-                                }
-                            );
-                        }
-                        //post keywords
-                        for (var k = $scope.KeywordsToAdd.length; k--;) {
-                            PROJECT.addProjKeyword({ id: projID }, $scope.KeywordsToAdd[k],
-                                function success(response) {
-                                    toastr.success("Keyword Added");
-                                },
-                                function error(errorResponse) {
-                                    toastr.error("Error: " + errorResponse.statusText);
-                                }
-                            );
-                        }
-                    }, function error(errorResponse) {
-                        toastr.success("Error: " + errorResponse.statusText);
-                    }).$promise.then(function () {
-                        $(".page-loading").addClass("hidden");
-                        $location.path('/project/edit/' + projID + '/info').replace();//.notify(false);
-                        $scope.apply;
-                    });
-                }
-            };
 
             //change to the aProject made, put it .. fired on each blur after change made to field
             $scope.SaveOnBlur = function (valid, id) {
                 if (id < 0) {
                     //they changed end date, compare to make sure it comes after start date
-                    if (new Date($scope.aProject.END_DATE) < new Date($scope.aProject.START_DATE)) {
-                        var dateModal = $modal.open({
-                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                                        '<div class="modal-body"><p>Completion date must come after Start date.</p></div>' +
-                                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                            controller: function ($scope, $modalInstance) {
-                                $scope.ok = function () {
-                                    $modalInstance.close('startDate');
-                                };
-                            },
-                            size: 'sm'
-                        });
-                        dateModal.result.then(function (d) {
-                            if (d == "startDate") {
-                                // $scope.aProject.END_DATE = "";
-                                angular.element("#END_DATE").focus();
-                            }
-                        });
-                        if ($scope.aProject.PROJECT_ID != undefined) toastr.error("Project not updated.");
-                        return;
-                    }
+                    
                 }
                 if ($scope.aProject.PROJECT_ID != undefined) {
                     //ensure they don't delete required field values
@@ -2144,13 +1845,13 @@
                         delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                     } else {
                         //modal for enter all required fields
-                        var modalInstance = $modal.open({
+                        var modalInstance = $uibModal.open({
                             template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                         '<div class="modal-body"><p>Please populate all required fields.</p></div>' +
                                         '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                            controller: function ($scope, $modalInstance) {
+                            controller: function ($scope, $uibModalInstance) {
                                 $scope.ok = function () {
-                                    $modalInstance.close('required');
+                                    $uibModalInstance.close('required');
                                 };
                             },
                             size: 'sm'
@@ -2178,8 +1879,8 @@
 
     //#region COOPERATOR Controller
     //ProjectEditCoopCtrl
-    siGLControllers.controller('projectEditCoopCtrl', ['$scope', '$http', '$cookies', '$filter', '$modal', 'thisProject', 'projOrgs', 'allOrgList', 'allDivisionList', 'allSectionList', 'PROJECT', projectEditCoopCtrl]);
-    function projectEditCoopCtrl($scope, $http, $cookies, $filter, $modal, thisProject, projOrgs, allOrgList, allDivisionList, allSectionList, PROJECT) {
+    siGLControllers.controller('projectEditCoopCtrl', ['$scope', '$http', '$cookies', '$filter', '$uibModal', 'thisProject', 'projOrgs', 'allOrgList', 'allDivisionList', 'allSectionList', 'PROJECT', projectEditCoopCtrl]);
+    function projectEditCoopCtrl($scope, $http, $cookies, $filter, $uibModal, thisProject, projOrgs, allOrgList, allDivisionList, allSectionList, PROJECT) {
         $scope.ProjOrgs = projOrgs; // ORGANIZATION_RESOURCE        
         $scope.allOrgs = allOrgList; //ORGANIZATION
         $scope.allDivisions = allDivisionList; //DIVISION
@@ -2207,7 +1908,7 @@
             //modal
             //pass array of chosen org/div so they will be prepopulated in modal
             var chosenparts = [$scope.selectedOrgID, $scope.selectedDivID, $scope.selectedSecID];
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'AddOrganizationModal.html',
                 controller: 'AddOrgModalCtrl',
                 size: 'md',
@@ -2248,13 +1949,13 @@
         $scope.AddOrgToProj = function () {
             if ($scope.selectedOrgID == "") {
                 //modal for enter all required fields
-                var modalInstance = $modal.open({
+                var modalInstance = $uibModal.open({
                     template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                 '<div class="modal-body"><p>You must choose an Organization Name to add.</p></div>' +
                                 '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                    controller: function ($scope, $modalInstance) {
+                    controller: function ($scope, $uibModalInstance) {
                         $scope.ok = function () {
-                            $modalInstance.close('org');
+                            $uibModalInstance.close('org');
                         };
                     },
                     size: 'sm'
@@ -2292,7 +1993,7 @@
 
         $scope.RemoveOrgFromProj = function (org) {
             //modal
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'removemodal.html',
                 controller: 'ConfirmModalCtrl',
                 size: 'sm',
@@ -2328,8 +2029,8 @@
 
     //#region DATA Controller
     //ProjectEditDataCtrl
-    siGLControllers.controller('projectEditDataCtrl', ['$scope', '$cookies', '$http', '$modal', 'PROJECT', 'DATA_HOST', 'thisProject', 'projDatum', projectEditDataCtrl]);
-    function projectEditDataCtrl($scope, $cookies, $http, $modal, PROJECT, DATA_HOST, thisProject, projDatum) {
+    siGLControllers.controller('projectEditDataCtrl', ['$scope', '$cookies', '$http', '$uibModal', 'PROJECT', 'DATA_HOST', 'thisProject', 'projDatum', projectEditDataCtrl]);
+    function projectEditDataCtrl($scope, $cookies, $http, $uibModal, PROJECT, DATA_HOST, thisProject, projDatum) {
         $scope.ProjData = projDatum;
         var neededUpdating = false; //if the url isn't formatted, flag so know to PUT it after fixing
         $scope.isEditing = false; //disables form inputs while user is editing existing data up top
@@ -2355,13 +2056,13 @@
        
         //modal for required at least 1 field..
         var openModal = function () {
-           var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                     '<div class="modal-body"><p>You must populate at least one field.</p></div>' +
                     '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                controller: function ($scope, $modalInstance) {
+                controller: function ($scope, $uibModalInstance) {
                     $scope.ok = function () {
-                        $modalInstance.close('req');
+                        $uibModalInstance.close('req');
                     };
                 },
                 size: 'sm'
@@ -2399,7 +2100,7 @@
         //DELETE Data click
         $scope.RemoveData = function (dataH) {
             //modal
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'removemodal.html',
                 controller: 'ConfirmModalCtrl',
                 size: 'sm',
@@ -2480,8 +2181,8 @@
 
     //#region CONTACT Controller
     //projectEditContactCtrl
-    siGLControllers.controller('projectEditContactCtrl', ['$scope', '$cookies', '$http', '$filter', '$modal', 'PROJECT', 'CONTACT', 'ORGANIZATION_SYSTEM', 'projContacts', 'thisProject', 'orgResources', 'allOrgList', 'allDivisionList', 'allSectionList', projectEditContactCtrl]);
-    function projectEditContactCtrl($scope, $cookies, $http, $filter, $modal, PROJECT, CONTACT, ORGANIZATION_SYSTEM, projContacts, thisProject, orgResources, allOrgList, allDivisionList, allSectionList) {
+    siGLControllers.controller('projectEditContactCtrl', ['$scope', '$cookies', '$http', '$filter', '$uibModal', 'PROJECT', 'CONTACT', 'ORGANIZATION_SYSTEM', 'projContacts', 'thisProject', 'orgResources', 'allOrgList', 'allDivisionList', 'allSectionList', projectEditContactCtrl]);
+    function projectEditContactCtrl($scope, $cookies, $http, $filter, $uibModal, PROJECT, CONTACT, ORGANIZATION_SYSTEM, projContacts, thisProject, orgResources, allOrgList, allDivisionList, allSectionList) {
         $scope.ProjContacts = projContacts;
 
         //make sure phone is formatted
@@ -2631,13 +2332,13 @@
                 }
             }
             ////modal for enter all required fields
-            //var modalInstance = $modal.open({
+            //var modalInstance = $uibModal.open({
             //    template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
             //                '<div class="modal-body"><p>You must populate all required fields.</p></div>' +
             //                '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-            //    controller: function ($scope, $modalInstance) {
+            //    controller: function ($scope, $uibModalInstance) {
             //        $scope.ok = function () {
-            //            $modalInstance.close(errorField);
+            //            $uibModalInstance.close(errorField);
             //        }
             //    },
             //    size: 'sm'
@@ -2732,7 +2433,7 @@
                 chosenparts.push($scope.selectedSecID);
             }
 
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'AddOrganizationModal.html',
                 controller: 'AddOrgModalCtrl',
                 size: 'md',
@@ -2813,7 +2514,7 @@
 
         $scope.RemoveContact = function (con) {
             //modal
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'removemodal.html',
                 controller: 'ConfirmModalCtrl',
                 size: 'sm',
@@ -2862,8 +2563,8 @@
     //#endregion CONTACT Controller
 
     //#region PUBLICATION Controller
-    siGLControllers.controller('projectEditPubCtrl', ['$scope', '$cookies', '$http', '$modal', 'PROJECT', 'thisProject', 'PUBLICATION', 'projPubs', projectEditPubCtrl]);
-    function projectEditPubCtrl($scope, $cookies, $http, $modal, PROJECT, thisProject, PUBLICATION, projPubs) {
+    siGLControllers.controller('projectEditPubCtrl', ['$scope', '$cookies', '$http', '$uibModal', 'PROJECT', 'thisProject', 'PUBLICATION', 'projPubs', projectEditPubCtrl]);
+    function projectEditPubCtrl($scope, $cookies, $http, $uibModal, PROJECT, thisProject, PUBLICATION, projPubs) {
         $scope.ProjPubs = projPubs;
         $scope.isEditing = false; //disables form inputs while user is editing existing data up top
         $scope.newPub = {
@@ -2872,13 +2573,13 @@
 
         //modal for required at least 1 field..
         var openModal = function () {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                     '<div class="modal-body"><p>You must populate at least one field.</p></div>' +
                     '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                controller: function ($scope, $modalInstance) {
+                controller: function ($scope, $uibModalInstance) {
                     $scope.ok = function () {
-                        $modalInstance.close('req');
+                        $uibModalInstance.close('req');
                     };
                 },
                 size: 'sm'
@@ -2921,7 +2622,7 @@
         //#region DELETE Pub click
         $scope.RemovePub = function (pub) {
             //modal
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'removemodal.html',
                 controller: 'ConfirmModalCtrl',
                 size: 'sm',
@@ -3007,8 +2708,8 @@
 
     //#region SITE Controller
 
-    siGLControllers.controller('projectEditSiteListCtrl', ['$scope', '$location', '$cookies', '$modal', '$http', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE', projectEditSiteListCtrl]);
-    function projectEditSiteListCtrl($scope, $location, $cookies, $modal, $http, projS, thisProject, siteStatList, lakeList, stateList, resourceList, mediaList, frequencyList, parameterList, SITE) {
+    siGLControllers.controller('projectEditSiteListCtrl', ['$scope', '$location', '$cookies', '$uibModal', '$http', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE', projectEditSiteListCtrl]);
+    function projectEditSiteListCtrl($scope, $location, $cookies, $uibModal, $http, projS, thisProject, siteStatList, lakeList, stateList, resourceList, mediaList, frequencyList, parameterList, SITE) {
         $scope.projectSites = projS;
         for (var psu = 0; psu < $scope.projectSites.length; psu++) {
             var ind = psu;
@@ -3113,7 +2814,7 @@
         //copy to new site using this site's info, show edit page populated with create button
         $scope.CopyToNew = function (siteId) {
             //ask for new name: (modal)
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'newSiteNameModal.html',
                 controller: 'NewSiteNameModalCtrl',
                 size: 'sm',
@@ -3279,7 +2980,7 @@
         //#region DELETE Site
         $scope.DeleteSite = function (site) {
             //modal
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'removemodal.html',
                 controller: 'ConfirmModalCtrl',
                 size: 'sm',
@@ -3314,14 +3015,15 @@
     }
 
     //projectEditSiteInfoCtrl ( CREATE / EDIT page)    
-    siGLControllers.controller('projectEditSiteInfoCtrl', ['$scope', '$location', '$cookies', '$http', '$modal', '$state', 'thisProject', 'thisSite', 'SITE', 'projSites', 'siteFrequencies', 'siteMedium',
+    siGLControllers.controller('projectEditSiteInfoCtrl', ['$scope', '$location', '$cookies', '$http', '$uibModal', '$state', 'thisProject', 'thisSite', 'SITE', 'projSites', 'siteFrequencies', 'siteMedium',
              'siteParameters', 'siteResources', 'CountryList', 'lakeList', 'stateList', 'siteStatList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', projectEditSiteInfoCtrl]);
-             function projectEditSiteInfoCtrl($scope, $location, $cookies, $http, $modal, $state, thisProject, thisSite, SITE, projSites, siteFrequencies, siteMedium,
+    function projectEditSiteInfoCtrl($scope, $location, $cookies, $http, $uibModal, $state, thisProject, thisSite, SITE, projSites, siteFrequencies, siteMedium,
         siteParameters, siteResources, CountryList, lakeList, stateList, siteStatList, resourceList, mediaList, frequencyList, parameterList) {
         if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
             $location.path('/login');
         } else {
+            angular.element('a#siteTab').addClass('active'); //make sure that tab still stays active
             $scope.thisSite = {
             }; //holder for project (either coming in for edit, or being created on POST )
             $scope.Frequencymodel = {
@@ -3714,13 +3416,13 @@
 
             //lat modal 
             var openLatModal = function () {
-                var latModal = $modal.open({
+                var latModal = $uibModal.open({
                     template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                         '<div class="modal-body"><p>The Latitude must be between 0 and 73.0</p></div>' +
                         '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                    controller: function ($scope, $modalInstance) {
+                    controller: function ($scope, $uibModalInstance) {
                         $scope.ok = function () {
-                            $modalInstance.close('lat');
+                            $uibModalInstance.close('lat');
                         };
                     },
                     size: 'sm'
@@ -3733,13 +3435,13 @@
 
             //long modal
             var openLongModal = function () {
-                var longModal = $modal.open({
+                var longModal = $uibModal.open({
                     template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                         '<div class="modal-body"><p>The Longitude must be between -175.0 and -60.0</p></div>' +
                         '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                    controller: function ($scope, $modalInstance) {
+                    controller: function ($scope, $uibModalInstance) {
                         $scope.ok = function () {
-                            $modalInstance.close('long');
+                            $uibModalInstance.close('long');
                         };
                     },
                     size: 'sm'
@@ -3755,13 +3457,13 @@
                 if (da < 0) {
                     //they changed end date, compare to make sure it comes after start date
                     if (new Date($scope.thisSite.END_DATE) < new Date($scope.thisSite.START_DATE)) {
-                        var dateModal = $modal.open({
+                        var dateModal = $uibModal.open({
                             template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                         '<div class="modal-body"><p>Sampling end date must come after start date.</p></div>' +
                                         '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                            controller: function ($scope, $modalInstance) {
+                            controller: function ($scope, $uibModalInstance) {
                                 $scope.ok = function () {
-                                    $modalInstance.close('startDate');
+                                    $uibModalInstance.close('startDate');
                                 };
                             },
                             size: 'sm'
@@ -3803,13 +3505,13 @@
                     }
                     else {
                         //not valid.. modal for enter all required fields
-                        var modalInstance = $modal.open({
+                        var modalInstance = $uibModal.open({
                             template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                         '<div class="modal-body"><p>Please populate all required fields.</p></div>' +
                                         '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                            controller: function ($scope, $modalInstance) {
+                            controller: function ($scope, $uibModalInstance) {
                                 $scope.ok = function () {
-                                    $modalInstance.close('required');
+                                    $uibModalInstance.close('required');
                                 };
                             },
                             size: 'sm'
@@ -3997,421 +3699,5 @@
 
     }
     //#endregion SITE Controller
-
-    //#region MODALS
-    //popup new Site name
-    siGLControllers.controller('NewSiteNameModalCtrl', ['$scope', '$modalInstance', 'thisSiteID', NewSiteNameModalCtrl]);
-    function NewSiteNameModalCtrl($scope, $modalInstance, thisSiteID) {
-        var nameToSendBack = {
-        };
-        $scope.newSite = {};
-        $scope.ok = function () {
-            nameToSendBack.name = $scope.newSite.NAME;
-            nameToSendBack.id = thisSiteID;
-            $modalInstance.close(nameToSendBack);
-        };
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    }
-
-    //popup confirm box
-    siGLControllers.controller('ConfirmModalCtrl', ['$scope', '$modalInstance', 'keyToRemove', 'what', ConfirmModalCtrl]);
-    function ConfirmModalCtrl($scope, $modalInstance, keyToRemove, what) {
-
-        //todo: figure out how removing url is handled.. "URL"
-        switch (what) {
-            case "URL":
-                $scope.keyToRmv = keyToRemove;
-                break;
-            case "Keyword":
-                //keyword
-                $scope.keyToRmv = keyToRemove.TERM;
-                break;
-            case "Organization":
-                $scope.keyToRmv = keyToRemove.OrganizationName;
-                break;
-            case "Data":
-                var DstringToUse = keyToRemove.DESCRIPTION != null ? keyToRemove.DESCRIPTION : keyToRemove.HOST_NAME;
-                DstringToUse = DstringToUse != null ? DstringToUse : keyToRemove.PORTAL_URL;
-                $scope.keyToRmv = DstringToUse;
-                break;
-            case "Contact":
-                $scope.keyToRmv = keyToRemove.NAME;
-                break;
-            case "Publication":
-                var stringToUse = keyToRemove.TITLE != null ? keyToRemove.TITLE : keyToRemove.DESCRIPTION;
-                stringToUse = stringToUse != null ? stringToUse : keyToRemove.URL;
-                $scope.keyToRmv = stringToUse;
-                break;
-            case "Frequency Type":
-                $scope.keyToRmv = keyToRemove.FREQUENCY;
-                break;
-            case "Lake Type":
-                $scope.keyToRmv = keyToRemove.LAKE;
-                break;
-            case "Media Type":
-                $scope.keyToRmv = keyToRemove.MEDIA;
-                break;
-            case "Objective Type":
-                $scope.keyToRmv = keyToRemove.OBJECTIVE;
-                break;
-            case "Parameter Type":
-                $scope.keyToRmv = keyToRemove.PARAMETER;
-                break;
-            case "Resource Type":
-                $scope.keyToRmv = keyToRemove.RESOURCE_NAME;
-                break;
-            case "Project Duration":
-                $scope.keyToRmv = keyToRemove.DURATION_VALUE;
-                break;
-            case "Project Status Type":
-                $scope.keyToRmv = keyToRemove.STATUS_VALUE;
-                break;
-            case "Status Type":
-                $scope.keyToRmv = keyToRemove.STATUS;
-                break;
-            case "Project":
-                $scope.keyToRmv = keyToRemove.Name;
-                break;
-            case "Site":
-                $scope.keyToRmv = keyToRemove.Name;
-                break;
-            default:
-                $scope.keyToRmv = "error";
-        }
-
-        $scope.what = what;
-
-        $scope.ok = function () {
-            $modalInstance.close(keyToRemove);
-        };
-
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    }
-
-    //org popup to add to org db
-    siGLControllers.controller('AddOrgModalCtrl', ['$scope', '$cookies', '$modalInstance', '$http', 'chosenParts', 'allOrgs', 'allDivs', 'allSecs', 'ORGANIZATION', 'DIVISION', 'SECTION', AddOrgModalCtrl]);
-    function AddOrgModalCtrl($scope, $cookies, $modalInstance, $http, chosenParts, allOrgs, allDivs, allSecs, ORGANIZATION, DIVISION, SECTION) {
-        //globals
-        $scope.OrgName = {}; //new org name input ng-model
-        $scope.divisionName = {}; //new div name input ng-model
-        $scope.sectionName = {}; //new sec name input ng-model
-        $scope.orgList = allOrgs;
-        $scope.allDivList = allDivs;
-        $scope.allSecList = allSecs;
-        $scope.orgsBeenChosen = false; //flag for showing 'Add new Division' button
-        $scope.divsBeenChosen = false; //flag for showing 'Add new Section' button
-        $scope.showAddNAMEinput = false; //flag for ng-show on new org name input area
-        $scope.showAddDIVISIONinput = false; //flag for ng-show on new div name input area
-        $scope.showAddSECTIONinput = false; //flag for ng-show on new sec name input area
-        $scope.disableOrgSelect = false; //disable the select dropdown while they are created a new one
-        $scope.disableDivSelect = false; //disable the select dropdown while they are created a new one
-        $scope.disableSecSelect = false; //disable the select dropdown while they are created a new one
-        $scope.originalOrgId = chosenParts[0] != "" ? Number(chosenParts[0]) : 0;
-        $scope.originalDivId = chosenParts[1] != "" ? Number(chosenParts[1]) : 0;
-        $scope.originalSecId = chosenParts[2] != "" ? Number(chosenParts[2]) : 0;
-
-        //set selected parts based on what they choose from main page before hitting button to open modal
-        $scope.selectedOrgID = {};
-        $scope.selectedOrgID.id = chosenParts[0] != "" ? Number(chosenParts[0]) : "";
-        $scope.divList = []; //what the select uses, based on org chosen
-        $scope.secList = []; //what the select uses, based on div chosen
-
-        //if they did choose an org before opening modal, go get the divs for this org
-        if ($scope.selectedOrgID.id != "") {
-            $scope.orgsBeenChosen = true;
-            $scope.divList = $scope.allDivList.filter(function (d) { return d.ORG_ID == $scope.selectedOrgID.id; });
-        }
-        $scope.selectedDivID = {};
-        $scope.selectedDivID.id = chosenParts[1] != "" ? Number(chosenParts[1]) : "";
-        //if they did choose an div before opening modal, go get the sec for this div
-        if ($scope.selectedDivID.id != "") {
-            $scope.divsBeenChosen = true;
-            $scope.secList = $scope.allSecList.filter(function (s) { return s.DIV_ID == $scope.selectedDivID.id; });
-        }
-
-        $scope.selectedSecID = {}; //not going to preset this because if they are in the modal, they will at the least be created a new section
-        $scope.selectedSecID.id = chosenParts[2] != "" ? Number(chosenParts[2]) : "";
-
-        //ng-change event on org select: they selected an org name, get those divs
-        $scope.getDivs = function (orgID) {
-            $scope.selectedOrgID.id = orgID;
-            $scope.selectedDivID.id = ""; $scope.selectedSecID.id = "";
-            $scope.divList = []; 
-            $scope.divList = $scope.allDivList.filter(function (d) { return d.ORG_ID == orgID; });
-            
-            $scope.secList = [];
-            $scope.orgsBeenChosen = true;
-            $scope.divsBeenChosen = false;
-        };
-        //ng-change event on div select: they selected an div, get those secs
-        $scope.getSecs = function (divID) {
-            $scope.selectedDivID.id = divID;
-            $scope.selectedSecID.id = "";
-            $scope.secList = $scope.allSecList.filter(function (s) { return s.DIV_ID == divID; });
-            $scope.divsBeenChosen = true;
-        };
-
-        //they clicked 'Add Organization' 
-        $scope.addOrgName = function () {
-            $scope.showAddNAMEinput = true;
-            $scope.selectedOrgID.id = ""; $scope.selectedDivID.id = ""; $scope.selectedSecID.id = "";
-            $scope.disableOrgSelect = true;
-
-        };
-        //this is the one they want to add
-        $scope.addThisName = function (nameToAdd) {
-            //make sure they typed something in to add
-            if (nameToAdd != "") {
-                var orgToPost = {
-                    ORGANIZATION_NAME: nameToAdd
-                };
-                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common.Accept = 'application/json';
-                ORGANIZATION.save(orgToPost, function success(response) {
-                    //add this new one to the lists
-                    $scope.orgList.push(response);
-                    //Make just added one selected
-                    $scope.selectedOrgID.id = response.ORGANIZATION_ID;
-                    //they added it, so update the originalOrgID too 
-                    $scope.originalOrgId = response.ORGANIZATION_ID;
-                    $scope.orgsBeenChosen = true;
-
-                    //clear input, hide input
-                    $scope.OrgName.value = "";
-                    $scope.showAddNAMEinput = false;
-                    $scope.disableOrgSelect = false;
-                });
-            } else {
-                alert("Type in the new Organization first.");
-            }
-        };
-
-        //they clicked 'Add Division' 
-        $scope.addDivName = function () {
-            $scope.showAddDIVISIONinput = true;
-            $scope.selectedDivID.id = ""; $scope.selectedSecID.id = "";
-            $scope.disableDivSelect = true;
-        };
-        //this is the one they want to add
-        $scope.addThisDivision = function (divToAdd, orgID) {
-            if (divToAdd != "" && orgID != "") {
-                var divToPost = { DIVISION_NAME: divToAdd, ORG_ID: orgID };
-                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common.Accept = 'application/json';
-                DIVISION.save(divToPost, function success(response) {
-                    $scope.allDivList.push(response);
-                    $scope.divList.push(response); //push to the dropdown (these divs for this org)
-                    //Make just added one selected
-                    $scope.selectedDivID.id = response.DIVISION_ID;
-                    //they added it, so update the originalDivID with it
-                    $scope.originalDivId = response.DIVISION_ID;
-                    $scope.divsBeenChosen = true; //show "add section" button text
-
-                    //clear input, hide input
-                    $scope.divisionName.value = "";
-                    $scope.showAddDIVISIONinput = false;
-                    $scope.disableDivSelect = false;
-                });
-            } else {
-                alert("Choose an Organization and type in the new Division first.");
-            }
-        };
-
-        //they clicked 'Add Section' 
-        $scope.addSecName = function () {
-            $scope.showAddSECTIONinput = true;
-            $scope.selectedSecID.id = "";
-            $scope.disableSecSelect = true;
-        };
-        //this is the one they want to add
-        $scope.addThisSection = function (secToAdd, divID) {
-            if (secToAdd != "" && divID != "") {
-                var secToPost = { SECTION_NAME: secToAdd, DIV_ID: divID };
-                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common.Accept = 'application/json';
-                SECTION.save(secToPost, function success(response) {
-                    $scope.allSecList.push(response); //push to all sections 
-                    $scope.secList.push(response); //push to the dropdown (these secs for this div)
-                    //Make just added one selected
-                    $scope.selectedSecID.id = response.SECTION_ID;
-                    //they added it, so update the originalDivID with it
-                    $scope.originalSecId = response.SECTION_ID;
-
-                    //clear input, hide input
-                    $scope.sectionName.value = "";
-                    $scope.showAddSECTIONinput = false;
-                    $scope.disableSecSelect = false;
-                });
-            } else {
-                alert("Choose an Organization, Division and type in the new Section first.");
-            }
-        };
-        //make sure the selectedSecID gets stored to pass back to the page that called this modal so it will be preselected there upon closing the modal
-
-        $scope.setSecs = function (secID) {
-            $scope.selectedSecID.id = secID;
-        };
-
-        //want to close input for adding new part
-        $scope.neverMind = function (which) {
-            //clear 'which' input and hide all input divs
-            if (which == "org") {
-                $scope.OrgName.value = ""; $scope.showAddNAMEinput = false;
-                $scope.disableOrgSelect = false;
-                $scope.selectedOrgID.id = $scope.originalOrgId;
-            }
-            if (which == "div") {
-                $scope.divisionName.value = ""; $scope.showAddDIVISIONinput = false;
-                $scope.disableDivSelect = false;
-                $scope.selectedDivID.id = $scope.originalDivId;
-            }
-            if (which == "sec") {
-                $scope.sectionName.value = ""; $scope.showAddSECTIONinput = false;
-                $scope.disableSecSelect = false;
-                $scope.selectedSecID.id = $scope.originalSecId;
-            } 
-        };
-
-        $scope.ok = function () {
-            var allLists = [];
-            allLists.push($scope.orgList); allLists.push($scope.allDivList); allLists.push($scope.allSecList);
-            allLists.push($scope.selectedOrgID.id); allLists.push($scope.selectedDivID.id); allLists.push($scope.selectedSecID.id);
-            $modalInstance.close(allLists);
-        };
-    }
-    //#endregion MODALS
-
-    //#region LOGIN/OUT
-    //login 
-    siGLControllers.controller('LoginCtrl', ['$scope', '$state', '$http', '$rootScope', '$cookies', '$modal', 'LOGIN', LoginCtrl]);
-    function LoginCtrl($scope, $state, $http, $rootScope, $cookies, $modal, LOGIN) {
-
-        //#region CAP lock Check
-        $('[type=password]').keypress(function (e) {
-            var $password = $(this),
-                tooltipVisible = $('.tooltip').is(':visible'),
-                s = String.fromCharCode(e.which);
-
-            if (s.toUpperCase() === s && s.toLowerCase() !== s && !e.shiftKey) {
-                if (!tooltipVisible)
-                    $password.tooltip('show');
-            } else {
-                if (tooltipVisible)
-                    $password.tooltip('hide');
-            }
-
-            //hide the tooltip when moving away from password field
-            $password.blur(function (e) {
-                $password.tooltip('hide');
-            });
-        });
-        //#endregion CAP lock Check
-
-        //forgot password
-        $scope.forgotPassword = function () {
-            //modal for required at least 1 field..Please enter the email address for your account. An email will be sent to you with your new generic password.
-            var modalInstance = $modal.open({
-                template: '<div class="modal-header"><h3 class="modal-title">Forgot your password?</h3></div>' +
-                    '<div class="modal-body"><p>Not working yet......</p></div>' +
-                    '<form name="newSiteName"><div class="form-group"><label class="col-md-2 control-label req" for="EMAIL">Email:</label>' +
-                    '<div class="col-md-8" style="margin-bottom:20px"><input class="form-control" id="EMAIL" name="EMAIL" ng-enter="ok()" ng-model="EMAIL" type="text" required /></div></div></form><br clear="all" />' +
-                    '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">Reset</button></div>',
-                controller: function ($scope, $modalInstance) {
-                    $scope.EMAIL = "";
-                    $scope.ok = function () {
-                        $modalInstance.close($scope.EMAIL);
-                    };
-                },
-                size: 'md'
-            });
-            modalInstance.result.then(function (email) {
-                if (email == "reset") {
-                    //need to send creds to hit the reset endpoint and change their password to default OWNERPROFILE_EDITPASSWORD requires OWNERPROFILE..
-                }
-            });
-
-
-        };
-        $scope.submit = function () {
-            //$scope.sub = true;
-            var postData = {
-                "username": $scope.username,
-                "password": $scope.password
-            };
-            var up = $scope.username + ":" + $scope.password;
-            $http.defaults.headers.common.Authorization = 'Basic ' + btoa(up);
-            $http.defaults.headers.common.Accept = 'application/json';
-
-            Date.prototype.addHours = function (h) {
-                this.setHours(this.getHours() + h);
-                return this;
-            };
-
-            LOGIN.login({}, postData,
-                function success(response) {
-                    var user = response;
-                    if (user != undefined) {
-                        //set user cookies (cred, username, name, role
-                        var usersNAME = user.FNAME + " " + user.LNAME;
-                        var enc = btoa($scope.username.concat(":", $scope.password));
-                        //set expiration on cookies
-                        var expireDate = new Date().addHours(8);                        
-                        $cookies.put('siGLCreds', enc, { 'expires': expireDate });
-                        $cookies.put('siGLUsername', $scope.username);
-                        $cookies.put('usersName', usersNAME);
-                        $cookies.put('dmID', user.DATA_MANAGER_ID);
-                        var roleName;
-                        switch (user.ROLE_ID) {
-                            case 1:
-                                roleName = "Admin";
-                                break;
-                            case 2:
-                                roleName = "Manager";
-                                break;
-                            default:
-                                roleName = "Public";
-                                break;
-                        }
-                        $cookies.put('usersRole', roleName);
-                        
-
-                        $rootScope.isAuth.val = true;
-                        $rootScope.usersName = usersNAME;
-                        $rootScope.userID = user.DATA_MANAGER_ID;
-                        $rootScope.Role = roleName;
-                        $state.go('projectList');
-                    }
-                    else {
-                        $scope.error = "Login Failed";
-                    }
-                },
-                function error(errorResponse) {
-                    toastr.error("Error: " + errorResponse.statusText);
-                }
-            );
-        };
-    }
-
-    //logOut
-    siGLControllers.controller('LogoutCtrl', ['$scope', '$cookies', '$location', LogoutCtrl]);
-    function LogoutCtrl($scope, $cookies, $location) {
-        $scope.logout = function () {
-            $cookies.remove('siGLCreds');
-            $cookies.remove('siGLUsername');
-            $cookies.remove('usersName');
-            $cookies.remove('usersRole');
-            $cookies.remove('projListSortOrder'); $cookies.remove('pl_reverse');
-            $cookies.remove('siteListSortOrder'); $cookies.remove('sl_reverse');
-            $cookies.remove('DMListSortOrder'); $cookies.remove('dml_reverse');
-            $cookies.remove('DMprojectsSortOrder'); $cookies.remove('dmpl_reverse');
-            $location.path('/login');
-        };
-    }
-    //#endregion LOGIN/OUT
-
 
 })();
