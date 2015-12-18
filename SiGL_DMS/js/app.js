@@ -2,7 +2,7 @@
     "use strict"; 
     var app = angular.module('app',
         ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'isteven-multi-select',
-            'laMPResource', 'siGLControllers']);
+            'laMPResource', 'siGLControllers', 'ModalControllers', 'LogInOutController']);
     
     app.run(function ($rootScope) {
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {                    

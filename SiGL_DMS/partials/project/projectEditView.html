@@ -10,8 +10,8 @@
                 Publish project on SiGL Mapper?
             </p>
             <span class="pull-right">
-                <label ng-model="readyFlagModel" ng-click="Flagged('Yes')" btn-radio="'Yes'">Yes</label><!--
-                --><label ng-model="readyFlagModel" ng-click="Flagged('No')" btn-radio="'No'">No</label>
+                <label ng-model="readyFlagModel" ng-click="Flagged('Yes')" uib-btn-radio="'Yes'">Yes</label>
+                <label ng-model="readyFlagModel" ng-click="Flagged('No')" uib-btn-radio="'No'">No</label>
             </span>
         </div>
 
@@ -33,3 +33,213 @@
     </div>
 
 </div>
+
+<!-- Project Create/Edit Modal -->
+<script type="text/ng-template" id="PROJECTmodal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Project Information</h3>
+    </div>
+    <form class="form-horizontal" name="projectForm.Info">
+        <fieldset>
+            <div class="modal-body">
+
+                <!-- Project Name -->
+                <div class="form-group required" ng-class="{'has-error':projectForm.Info.NAME.$invalid && projectForm.Info.NAME.$dirty}">
+                    <label class="col-md-4 control-label req" for="NAME">Project Name:</label>
+                    <div class="col-md-8">
+                        <input class="form-control" id="NAME" name="NAME" ng-model="aProject.NAME" type="text" placeholder="Project Name" required />
+                    </div>
+
+                </div>
+                <hr />
+                <!-- Project Duration -->
+                <div class="form-group required" ng-class="{'has-error':projectForm.Info.PROJ_DURATION_ID.$invalid && projectForm.Info.PROJ_DURATION_ID.$dirty}">
+                    <label class="col-md-4 control-label req" for="PROJ_DURATION_ID">
+                        Project Duration:
+                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Select the category that best represents the length (or anticipated length) of your project.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+
+                        <!--<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right"
+                              title="Select the category that best represents the length (or anticipated length) of your project." uib-tooltip></span>-->
+                    </label>
+                    <div class="col-md-8">
+                        <select class="form-control" id="PROJ_DURATION_ID" name="PROJ_DURATION_ID" ng-model="aProject.PROJ_DURATION_ID"
+                                ng-options="d.PROJ_DURATION_ID as d.DURATION_VALUE for d in DurationList" required>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Project Status* -->
+                <div class="form-group required" ng-class="{'has-error':projectform.info.PROJ_STATUS_ID.$invalid && projectform.info.PROJ_STATUS_ID.$dirty}">
+                    <label class="col-md-4 control-label req" for="PROJ_STATUS_ID">
+                        Project Status:                        
+                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Select the category that best describes the current status of your project.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <div class="col-md-8">
+                        <select class="form-control" id="PROJ_STATUS_ID" name="PROJ_STATUS_ID" ng-model="aProject.PROJ_STATUS_ID"
+                                ng-change="statusChanged(aProject.PROJ_STATUS_ID)" ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList" required>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Project Start Date -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="START_DATE">Project Start Date:</label>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input class="form-control" id="START_DATE" name="sd" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.sd"
+                                   ng-change="compareDates('start')" ng-model="aProject.START_DATE" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open($event, 'sd')">
+                                    <i class="glyphicon glyphicon-calendar" />
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Completion Date -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="END_DATE">
+                        Project Completion Date:
+                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='If project is ongoing, leave this field blank.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input class="form-control" id="END_DATE" name="ed" ng-disabled="undetermined" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
+                                   ng-change="compareDates('end')" ng-model="aProject.END_DATE" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open($event, 'ed')">
+                                    <i class="glyphicon glyphicon-calendar" />
+                                </button>
+                            </span>
+                        </div>&nbsp;
+                    </div>
+                </div>
+
+                <hr />
+
+                <!-- Project Objectives -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="PROJ_OBJECTIVES">
+                        Project Objectives:
+                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Select the objectives that best describe the purpose of your project.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <div class="col-md-8">
+                        <div isteven-multi-select
+                             input-model="Objectivesdata"
+                             output-model="Objectivesmodel.value"
+                             button-label="OBJECTIVE"
+                             item-label="OBJECTIVE"
+                             max-height="300px"
+                             on-item-click="ObjClick(data)"
+                             tick-property="selected"
+                             helper-elements="filter"
+                             class="multi-selector">
+                        </div>&nbsp;
+
+
+                    </div>
+                </div>
+
+                <!-- Project Description -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="DESCRIPTION">
+                        Description:
+                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Briefly describe the goals and/or details of your project.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <div class="col-md-8">
+                        <textarea class="form-control" id="DESCRIPTION" type="text" rows="3" placeholder="Project Description" ng-model="aProject.DESCRIPTION" elastic />                       
+                    </div>
+                </div>
+
+                <hr />
+                <!-- Project Keywords -->
+                <div class="form-group" ng-if="ProjectKeywords.length > 0">
+                    <label class="col-md-4 control-label" for="ProjKEYWORDS">
+                        Project Keywords:
+                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Type a keyword and then click add. Can add multiple keywords.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <div class="col-md-8 ">
+                        <ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button ng-click="removeKey(key, $index)"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label req" for="ProjKeyword">Add Project Keyword:</label>
+                    <div class="col-md-7">
+                        <input class="form-control" ng-enter="addThisKeyword()" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="Enter one keyword at a time" ng-model="newKey.value" />
+                    </div>
+                    <button type="button" class="col-md-1" ng-click="addThisKeyword()">Add</button>
+                </div>
+
+                <hr />
+                <!-- Project Websites -->
+                <div class="form-group" ng-if="urls.length > 0">
+                    <label class="col-md-4 control-label" for="URL">Project Websites:</label>
+                    <div class="col-md-8">
+                        <ul><li style="list-style:none" data-ng-repeat="key in urls"><button ng-click="removeUrl(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key}}</li></ul>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label req" for="URL">
+                        Add Project Website:
+                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='If your project has a website, enter the URL here. If information about your project can be found in multiple locations, add them here.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <div class="col-md-7">
+                        <input class="form-control" ng-enter="addProjURL(projectForm.Info)" ng-model="newURL.value" name="inputURL" id="inputURL" type="url" placeholder="http://www.google.com" http-prefix />
+                    </div>
+                    <button type="button" class="col-md-1" ng-click="addProjURL(projectForm.Info)">Add</button>
+                </div>
+
+                <!-- Project Additional Info -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="ADDITIONAL_INFO">
+                        Additional Information:
+                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Include any other information about your project here.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <div class="col-md-8">
+                        <textarea class="form-control" id="ADDITIONAL_INFO" type="text" rows="3" placeholder="Additional Information" ng-model="aProject.ADDITIONAL_INFO" elastic />                        
+                    </div>
+                </div>
+
+                <!--submit and cancel buttons-->
+                <div class="form-group">
+                    <div class="col-md-4 col-md-offset-2">
+                        <span>
+                            <button ng-show="aProject.PROJECT_ID == undefined" class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="create(projectForm.Info.$valid)">
+                                <span>Create</span>
+                            </button>
+                        </span>
+                        <span>
+                            <button ng-show="aProject.PROJECT_ID != undefined" class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="save(projectForm.Info.$valid)">
+                                <span>Save</span>
+                            </button>
+                        </span>
+                        <span>
+                            <button type="button" class="btn btn-default" ng-click="cancel()">
+                                <span>Cancel</span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div> <!-- end modal-body -->
+        </fieldset>
+    </form>
+</script>
