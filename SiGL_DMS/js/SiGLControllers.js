@@ -1677,8 +1677,7 @@
             //#region GLOBALS
             $scope.StatusList = allStatsList;
             $scope.DurationList = allDurationList;
-            $scope.aProject = {}; //holder for project (either coming in for edit, or being created on POST )
-            $scope.Objectivesmodel = {}; //holder for new ProjObjs if they make any to multiselect
+            $scope.aProject = {}; //holder for project (either coming in for edit, or being created on POST )           
             $scope.urls = []; //holder for urls for future parsing back together ( | separated string)
                         
             //#endregion GLOBALS
@@ -1699,8 +1698,8 @@
                         },
                         thisProjectStuff: function () {
                             if ($scope.aProject.PROJECT_ID != undefined) {
-                                var projObjectives = projObjectives;
-                                var projKeywords = projKeywords;
+                                var projObjectives = $scope.ProjectObjectives;
+                                var projKeywords = $scope.ProjectKeywords;
                                 var projectRelatedStuff = [$scope.aProject, projObjectives, projKeywords];
                                 return projectRelatedStuff;
                             }
@@ -1708,8 +1707,16 @@
                     }
                 });
                 modalInstance.result.then(function (r) {
-                    //nothing to do here
-                    $scope.aProject = r;
+                    //$scope.aProject, projObjectives, projKeywords
+                    $(".page-loading").addClass("hidden");
+                    $scope.aProject = r[0];
+                    if ($scope.aProject.URL) {
+                        //split string into an array
+                        if (($scope.aProject.URL).indexOf('|') > -1) $scope.urls = ($scope.aProject.URL).split("|");
+                        else $scope.urls[0] = $scope.aProject.URL;
+                    }
+                    $scope.ProjectObjectives = r[1];
+                    $scope.ProjectKeywords = r[2];
                 });
             };
 
@@ -1724,6 +1731,7 @@
                 $scope.sitesCount = { total: projSites.length };
                 $scope.title = "Project: " + $scope.aProject.NAME;
                 $scope.ProjectKeywords = projKeywords;
+                $scope.ProjectObjectives = projObjectives;
 
                 //#region deal with project SITES url formatting here
                 var neededUpdating = false; //if url isn't formatted, flag so know to PUT after fix
@@ -1780,9 +1788,10 @@
                         });
                     }
                 } //end there's a url
-                $scope.ProjectKeywords = projKeywords;
+               
             } //end existing project
             else {
+                $scope.title = "Project";
                 $scope.openProjectCreate();
             }
             
@@ -1802,7 +1811,7 @@
                         $scope.cancel = function () {
                             //undo
                             $scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? "Yes" : "No";
-                        }
+                        };
                     },
                     size: 'sm'                    
                 });
@@ -1922,7 +1931,6 @@
             });
             modalInstance.result.then(function (updatedOrgDivSec) {
                 //make sure parent. are all updated
-                var test;
                 $scope.allOrgs = updatedOrgDivSec[0]; //allOrgs updated
                 $scope.allDivisions = updatedOrgDivSec[1]; //allDivs updated
                 $scope.allSections = updatedOrgDivSec[2]; //allSecs updated
@@ -2406,7 +2414,6 @@
         }
 
         $scope.secChosen = function (s) {
-            var test;
             //TODO: a section was chosen
         };
 
@@ -3024,23 +3031,17 @@
             $location.path('/login');
         } else {
             angular.element('a#siteTab').addClass('active'); //make sure that tab still stays active
-            $scope.thisSite = {
-            }; //holder for project (either coming in for edit, or being created on POST )
-            $scope.Frequencymodel = {
-            }; //holder for new siteFrequencies if they make any change to multiselect
-            $scope.Mediamodel = {
-            }; //holder for new siteMedia if they make any change to multiselect
+            $scope.thisSite = {}; //holder for project (either coming in for edit, or being created on POST )
+            $scope.Frequencymodel = {}; //holder for new siteFrequencies if they make any change to multiselect
+            $scope.Mediamodel = {}; //holder for new siteMedia if they make any change to multiselect
             // $scope.Parametermodel = {}; //holder for new siteParameters if they make any change to multiselect
-            $scope.Resourcemodel = {
-            }; //holder for new siteResource if they make any change to multiselect
+            $scope.Resourcemodel = {}; //holder for new siteResource if they make any change to multiselect
             $scope.FrequenciesToAdd = []; //holder for create Site page and user adds Frequency Types
             $scope.MediaToAdd = []; //holder for create Site page and user adds Media Types
             $scope.ParameterToAdd = []; //holder for create Site page and user adds Parameters Types
             $scope.ResourceToAdd = []; //holder for create Site page and user adds Resources Types
-            $scope.isSiteDescChanged = {
-            }; //trigger to show/hide save button for description change
-            $scope.isSiteAddInfoChanged = {
-            }; //trigger to show/hide save button for additional info change
+            $scope.isSiteDescChanged = {}; //trigger to show/hide save button for description change
+            $scope.isSiteAddInfoChanged = {}; //trigger to show/hide save button for additional info change
             $scope.showParams = false;// div containing all parameters (toggles show/hide)
             $scope.showHide = "Show"; //button text for show/hide parameters
             
