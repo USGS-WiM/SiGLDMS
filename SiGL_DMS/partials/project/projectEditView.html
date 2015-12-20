@@ -72,16 +72,16 @@
                 </div>
 
                 <!-- Project Status* -->
-                <div class="form-group required" ng-class="{'has-error':projectform.info.PROJ_STATUS_ID.$invalid && projectform.info.PROJ_STATUS_ID.$dirty}">
+                <div class="form-group required" ng-class="{'has-error':projectForm.Info.PROJ_STATUS_ID.$invalid && projectForm.Info.PROJ_STATUS_ID.$dirty}">
                     <label class="col-md-4 control-label req" for="PROJ_STATUS_ID">
-                        Project Status:                        
+                        Project Status:
                         <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Select the category that best describes the current status of your project.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
                     </label>
                     <div class="col-md-8">
                         <select class="form-control" id="PROJ_STATUS_ID" name="PROJ_STATUS_ID" ng-model="aProject.PROJ_STATUS_ID"
-                                ng-change="statusChanged(aProject.PROJ_STATUS_ID)" ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList" required>
+                                ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList" ng-change="statusChanged()" required>
                             <option value=""></option>
                         </select>
                     </div>
@@ -113,7 +113,7 @@
                     </label>
                     <div class="col-md-8">
                         <div class="input-group">
-                            <input class="form-control" id="END_DATE" name="ed" ng-disabled="undetermined" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
+                            <input class="form-control" id="END_DATE" name="ed" ng-disabled="aProject.PROJ_STATUS_ID == 1" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
                                    ng-change="compareDates('end')" ng-model="aProject.END_DATE" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="open($event, 'ed')">

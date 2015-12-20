@@ -288,8 +288,8 @@
     }
     
     //create/edit a project
-    ModalControllers.controller('PROJECTmodalCtrl', ['$scope', '$cookies', '$location', '$state', '$http', '$timeout', '$uibModal', '$uibModalInstance', '$filter', 'allDropDownParts', 'thisProjectStuff', 'PROJECT', PROJECTmodalCtrl]);
-    function PROJECTmodalCtrl($scope, $cookies, $location, $state, $http, $timeout, $uibModal, $uibModalInstance, $filter, allDropDownParts, thisProjectStuff, PROJECT) {
+    ModalControllers.controller('PROJECTmodalCtrl', ['$scope', '$cookies', '$q', '$location', '$state', '$http', '$timeout', '$uibModal', '$uibModalInstance', '$filter', 'allDropDownParts', 'thisProjectStuff', 'PROJECT', PROJECTmodalCtrl]);
+    function PROJECTmodalCtrl($scope, $cookies, $q, $location, $state, $http, $timeout, $uibModal, $uibModalInstance, $filter, allDropDownParts, thisProjectStuff, PROJECT) {
         //dropdowns allDurationList, allStatsList, allObjList
         $scope.DurationList = allDropDownParts[0];
         $scope.StatusList = allDropDownParts[1];
@@ -305,7 +305,23 @@
         $scope.urls = []; //holder for urls for future parsing back together ( | separated string)
         $scope.newURL = {}; //model binding to return newUrl.value to ADD/REMOVE functions   
         $scope.newKey = {}; //model binding to return keys to ADD/REMOVE functions
-        
+
+        //called a few times to format just the date (no time)
+        var makeAdate = function (d) {
+            var aDate = new Date();
+            if (d != "") {
+                //provided date
+                aDate = new Date(d);
+            }
+
+            var year = aDate.getFullYear();
+            var month = aDate.getMonth();
+            var day = ('0' + aDate.getDate()).slice(-2);
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var dateWOtime = new Date(monthNames[month] + " " + day + ", " + year);
+            return dateWOtime;
+        };
+
         //#region Datepicker
         $scope.datepickrs = {
             projStDate: false,
@@ -323,75 +339,53 @@
 
         if (thisProjectStuff != undefined) {
             //#region existing project (edit)
-            //$scope.aProject = angular.copy(thisProjectStuff[0]);
-           
+            $scope.aProject = angular.copy(thisProjectStuff[0]);
+            $scope.aProject.START_DATE = $scope.aProject.START_DATE != null ? makeAdate($scope.aProject.START_DATE) : null;
+            $scope.aProject.END_DATE = $scope.aProject.END_DATE != null ? makeAdate($scope.aProject.END_DATE) : null;
+
             ////put string ProjURLs into array by '|' and then ensure proper url format
-            //if ($scope.aProject.URL) {
-            //    //split string into an array
-            //    if (($scope.aProject.URL).indexOf('|') > -1) {
-            //        $scope.urls = ($scope.aProject.URL).split("|");
-            //    } else {
-            //        $scope.urls[0] = $scope.aProject.URL;
-            //    }
-            //    //make sure they are formatted.. if not, format and PUT 
-            //    var neededUpdating1 = false;
-            //    for (var u = 0; u < $scope.urls.length; u++) {
-            //        if (!$scope.urls[u].startsWith('http')) {
-            //            neededUpdating1 = true;
-            //            $scope.urls[u] = 'http://' + $scope.urls[u];
-            //        }
-            //    }
-            //    //if they needed updating, PUT the project
-            //    if (neededUpdating1) {
-            //        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-            //        $http.defaults.headers.common.Accept = 'application/json';
-            //        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-            //        $scope.aProject.URL = ($scope.urls).join('|');
-            //        PROJECT.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject).$promise.then(function (response) {
-            //            $scope.aProject = response;
-            //            //split string into an array
-            //            if (($scope.aProject.URL).indexOf('|') > -1) {
-            //                $scope.urls = ($scope.aProject.URL).split("|");
-            //            } else {
-            //                $scope.urls[0] = $scope.aProject.URL;
-            //            }
-            //            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-            //        });                        
-            //    }
-            //} //end there's a url*-/-
+            if ($scope.aProject.URL) {
+                //split string into an array
+                if (($scope.aProject.URL).indexOf('|') > -1) {
+                    $scope.urls = ($scope.aProject.URL).split("|");
+                } else {
+                    $scope.urls[0] = $scope.aProject.URL;
+                }
+            } //end there's a url*-/-
 
-            ////check status for disabling of end date
-            //if ($scope.aProject.PROJ_STATUS_ID == 1) {
-            //    $scope.undetermined = true;
-            //}
+            //check status for disabling of end date
+            if ($scope.aProject.PROJ_STATUS_ID == 1) {
+                $scope.undetermined = true;
+            }
 
-            ////apply any project objectives for EDIT projObjectives, projKeywords]
-            //if (thisProjectStuff[1].length > 0) {
-                
-            //    //go through objectiveTypeList and add selected Property.
-            //    //get projObjectives to use in making new prop in all objectives for multi select ('selected: true')
-            //    $scope.projObjs = thisProjectStuff[1];
+            //apply any project objectives for EDIT projObjectives, projKeywords]
+            if (thisProjectStuff[1].length > 0) {
 
-            //    ////http://isteven.github.io/angular-multi-select/#/demo-minimum
-            //    ////go through allObjList and add selected Property.
-            //    for (var i = 0; i < $scope.objectiveTypeList.length; i++) {
-            //        //for each one, if projObjectives has this id, add 'selected:true' else add 'selected:false'
-            //        for (var y = 0; y < $scope.projObjs.length; y++) {
-            //            if ($scope.projObjs[y].OBJECTIVE_TYPE_ID == $scope.objectiveTypeList[i].OBJECTIVE_TYPE_ID) {
-            //                $scope.objectiveTypeList[i].selected = true;
-            //                y = $scope.projObjs.length; //ensures it doesn't set it as false after setting it as true
-            //            }
-            //            else {
-            //                $scope.objectiveTypeList[i].selected = false;
-            //            }
-            //        }
-            //        if ($scope.projObjs.length == 0) {
-            //            $scope.objectiveTypeList[i].selected = false;
-            //        }
-            //    }
+                //go through objectiveTypeList and add selected Property.
+                //get projObjectives to use in making new prop in all objectives for multi select ('selected: true')
+                $scope.projObjs = angular.copy(thisProjectStuff[1]);
 
-            //    //all objectives (with new selected property)
-            //    $scope.Objectivesdata = $scope.objectiveTypeList;
+                ////http://isteven.github.io/angular-multi-select/#/demo-minimum
+                ////go through allObjList and add selected Property.
+                for (var i = 0; i < $scope.objectiveTypeList.length; i++) {
+                    //for each one, if projObjectives has this id, add 'selected:true' else add 'selected:false'
+                    for (var y = 0; y < $scope.projObjs.length; y++) {
+                        if ($scope.projObjs[y].OBJECTIVE_TYPE_ID == $scope.objectiveTypeList[i].OBJECTIVE_TYPE_ID) {
+                            $scope.objectiveTypeList[i].selected = true;
+                            y = $scope.projObjs.length; //ensures it doesn't set it as false after setting it as true
+                        }
+                        else {
+                            $scope.objectiveTypeList[i].selected = false;
+                        }
+                    }
+                    if ($scope.projObjs.length == 0) {
+                        $scope.objectiveTypeList[i].selected = false;
+                    }
+                }
+                //all objectives (with new selected property)
+                $scope.Objectivesdata = $scope.objectiveTypeList;
+            }
+            $scope.ProjectKeywords = thisProjectStuff[2];
             //#endregion existing project (edit)
         } else {
             // objective types - set all to not selected
@@ -441,12 +435,33 @@
             }
         };//end ObjClick
 
-        //add url
+        //add url TODO:check if this url is already in the urls array..if so don't add it again
         $scope.addProjURL = function (form) {
             if ($scope.newURL.value != undefined && form.inputURL.$valid) {
                 //push to array of urls to show on view and store in model
-                $scope.urls.push($scope.newURL.value);                
-                $scope.newURL = {};
+                var ind = $scope.urls.indexOf($scope.newURL.value);
+                if (ind < 0) {
+                    $scope.urls.push($scope.newURL.value);
+                    $scope.newURL = {};
+                } else {
+                    //modal for repeated url
+                    var repeatedModal = $uibModal.open({
+                        template: '<div class="modal-header"><h3 class="modal-title">Repeated URL</h3></div>' +
+                                   '<div class="modal-body"><p>This URL is already included.</p></div>' +
+                                   '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                        controller: function ($scope, $uibModalInstance) {
+                            $scope.ok = function () {
+                                $uibModalInstance.close('url');
+                            };
+                        },
+                        size: 'sm'
+                    });
+                    repeatedModal.result.then(function (fieldFocus) {
+                        if (fieldFocus == "url") {
+                            $("#URL").focus();
+                        }
+                    });
+                }
             } else {
                 //modal for entering a url first
                 var modalInstance = $uibModal.open({
@@ -462,7 +477,7 @@
                 });
                 modalInstance.result.then(function (fieldFocus) {
                     if (fieldFocus == "url") {
-                        $("#inputURL").focus();
+                        $("#URL").focus();
                     }
                 });
             }
@@ -556,16 +571,16 @@
         };
 
         //disable end date if status has 'end date undetermined'
-        $scope.statusChanged = function (id) {
-            if (id == 1) {
+        $scope.statusChanged = function () {
+            if ($scope.aProject.PROJ_STATUS_ID == 1) {
                 if ($scope.aProject != undefined && $scope.aProject.END_DATE != null) {
                     $scope.aProject.END_DATE = "";
                 }
-                $scope.undetermined = true;
+            //    $scope.undetermined = true;
             }
-            else {
-                $scope.undetermined = false;
-            }
+            //else {
+            //    $scope.undetermined = false;
+            //}
         };
 
         //project POST
@@ -576,43 +591,89 @@
                 $scope.aProject.URL = ($scope.urls).join('|');
                 var projID;
                 $(".page-loading").removeClass("hidden");
-                //PROJECT.save({}, $scope.aProject, function success(response) {
-                //    toastr.success("Project Created");
-                //    projID = response.PROJECT_ID;
-                //    //post objectives added
-                //    for (var o = $scope.ObjectivesToAdd.length; o--;) {
-                //        PROJECT.addProjObjective({ id: projID }, $scope.ObjectivesToAdd[o], function success(response) {
-                //            toastr.success("Project Objectives added");
-                //        }, function error(errorResponse) {
-                //              toastr.error("Error: " + errorResponse.statusText);
-                //        });
-                //    }
-                //    //post keywords
-                //    for (var k = $scope.KeywordsToAdd.length; k--;) {
-                //        PROJECT.addProjKeyword({ id: projID }, $scope.KeywordsToAdd[k], function success(response) {
-                //            toastr.success("Keyword Added");
-                //        }, function error(errorResponse) {
-                //              toastr.error("Error: " + errorResponse.statusText);
-                //        });
-                //    }
-                //}, function error(errorResponse) {
-                //        toastr.success("Error: " + errorResponse.statusText);
-                //}).$promise.then(function () {
-                //    $(".page-loading").addClass("hidden");
-                //    $uibModalInstance.close($scope.aProject);
-                //    $location.path('/project/edit/' + projID + '/info').replace();//.notify(false);
-                //    $scope.apply;
-                //});
+                PROJECT.save({}, $scope.aProject, function success(response) {
+                    toastr.success("Project Created");
+                    $scope.aProject = response;
+                    projID = response.PROJECT_ID;
+                    //post objectives added
+                    for (var o = $scope.ObjectivesToAdd.length; o--;) {
+                        PROJECT.addProjObjective({ id: projID }, $scope.ObjectivesToAdd[o], function success(response) {
+                            $scope.Objectivesdata = response;
+                            toastr.success("Project Objectives added");
+                        }, function error(errorResponse) {
+                              toastr.error("Error: " + errorResponse.statusText);
+                        });
+                    }
+                    //post keywords
+                    for (var k = $scope.KeywordsToAdd.length; k--;) {
+                        PROJECT.addProjKeyword({ id: projID }, $scope.KeywordsToAdd[k], function success(response) {
+                            $scope.ProjectKeywords = response;
+                            toastr.success("Keyword Added");
+                        }, function error(errorResponse) {
+                              toastr.error("Error: " + errorResponse.statusText);
+                        });
+                    }
+                }, function error(errorResponse) {
+                        toastr.success("Error: " + errorResponse.statusText);
+                }).$promise.then(function () {
+                    $(".page-loading").addClass("hidden");
+                    var prjectParts = [$scope.aProject, $scope.Objectivesdata, $scope.ProjectKeywords];
+                    $uibModalInstance.close(prjectParts);
+                    $location.path('/project/edit/' + projID + '/info').replace();//.notify(false);
+                    $scope.apply;
+                });
             }
         };
 
         //project PUT
         $scope.save = function (valid) {
             if (valid == true) {
+                var thisProjObjectives = []; var thisProjKeywords = [];
                 $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common.Accept = 'application/json';
-                var putIt;
-            }
+                $scope.aProject.URL = $scope.urls.join("|");
+                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                PROJECT.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject, function success(ProjResponse) {                    
+                    delete $http.defaults.headers.common['X-HTTP-Method-Override']; //remove 'PUT' override
+                    //use $q for async call to delete and add objectives and keywords
+                    var defer = $q.defer();
+                    var RemovePromises = [];
+                    var AddPromises = [];
+                    //remove objectives
+                    angular.forEach($scope.ObjectivesToRemove, function (Ovalue) {
+                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
+                        var delObjProm = PROJECT.deleteProjObjective({ id: $scope.aProject.PROJECT_ID }, Ovalue).$promise;
+                        RemovePromises.push(delObjProm);
+                        delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                    });
+                    //remove keywords
+                    angular.forEach($scope.KeywordsToRemove, function (Kvalue) {
+                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
+                        var delKeyProm = PROJECT.deleteProjKeyword({ id: $scope.aProject.PROJECT_ID }, Kvalue).$promise;
+                        RemovePromises.push(delKeyProm);
+                        delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                    });
+                    //add objectives
+                    angular.forEach($scope.ObjectivesToAdd, function (OaddValue) {
+                        var objProm = PROJECT.addProjObjective({ id: $scope.aProject.PROJECT_ID }, OaddValue).$promise;
+                        AddPromises.push(objProm);
+                    });
+                    //add keywords
+                    angular.forEach($scope.KeywordsToAdd, function (KaddValue) {
+                        var keyProm = PROJECT.addProjKeyword({ id: $scope.aProject.PROJECT_ID }, KaddValue).$promise;
+                        AddPromises.push(keyProm);
+                    });
+                    //ok now run the removes, then the adds and then pass the stuff back out of here.
+                    $q.all(RemovePromises).then(function () {
+                        $q.all(AddPromises).then(function (response) {
+                            var prjectParts = [$scope.aProject, response[0], response[1]];
+                            
+                            toastr.success("Project Updated");
+                            $uibModalInstance.close(prjectParts);
+                        });
+                    });                   
+                });
+            }//end valid
         };//end save
 
         //cancel modal
