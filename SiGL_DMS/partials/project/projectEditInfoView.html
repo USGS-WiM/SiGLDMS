@@ -54,9 +54,10 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="PROJ_OBJECTIVES">Project Objectives:</label>
                 <div class="col-md-8">
-                    <ul>
+                    <ul ng-if="ProjectObjectives.length > 0">
                         <li style="list-style:none" ng-repeat="o in ProjectObjectives">{{o.OBJECTIVE}}</li>
                     </ul>
+                    <span ng-if="ProjectObjectives.length == 0">None set</span>
                 </div>
             </div>
 

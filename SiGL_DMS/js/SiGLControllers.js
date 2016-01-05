@@ -1620,6 +1620,8 @@
             $scope.auth = false;
             $location.path('/login');
         } else {
+            $scope.DurationList = allDurationList;
+            $scope.StatusList = allStatsList;
             $scope.projectForm = {}; //holder for all the forms
             $scope.readyFlagModel = "No";
 
@@ -1675,8 +1677,6 @@
             //#endregion Datepicker
 
             //#region GLOBALS
-            $scope.StatusList = allStatsList;
-            $scope.DurationList = allDurationList;
             $scope.aProject = {}; //holder for project (either coming in for edit, or being created on POST )           
             $scope.urls = []; //holder for urls for future parsing back together ( | separated string)
                         
@@ -1753,7 +1753,6 @@
                 }
                 //#endregion loop to put each site's url in proper way (http://)
 
-                
                 //put string ProjURLs into array by '|' and then ensure proper url format
                 if ($scope.aProject.URL) {
                     //split string into an array
@@ -1830,53 +1829,6 @@
                 });
                 //end modal
             };
-
-
-            //change to the aProject made, put it .. fired on each blur after change made to field
-            $scope.SaveOnBlur = function (valid, id) {
-                if (id < 0) {
-                    //they changed end date, compare to make sure it comes after start date
-                    
-                }
-                if ($scope.aProject.PROJECT_ID != undefined) {
-                    //ensure they don't delete required field values
-                    if (valid) {
-                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        $http.defaults.headers.common.Accept = 'application/json';
-                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-                        PROJECT.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject, function success(response) {
-                            toastr.success("Project Updated");
-                            $scope.isProjDescChanged.bool = false;
-                            $scope.isProjAddInfoChanged.bool = false;
-                        }, function error(errorResponse) {
-                            toastr.error("Error: " + errorResponse.statusText);
-                        });
-                        delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-                    } else {
-                        //modal for enter all required fields
-                        var modalInstance = $uibModal.open({
-                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                                        '<div class="modal-body"><p>Please populate all required fields.</p></div>' +
-                                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                            controller: function ($scope, $uibModalInstance) {
-                                $scope.ok = function () {
-                                    $uibModalInstance.close('required');
-                                };
-                            },
-                            size: 'sm'
-                        });
-                        modalInstance.result.then(function (fieldFocus) {
-                            if (fieldFocus == "required") {
-                                angular.element("[name='" + $scope.projectForm.Info.$name + "']").find('.ng-invalid:visible:first').focus();
-                            }
-                        });
-                        toastr.error("Project not updated.");
-                    }
-                }
-                if (id > 0) {
-                    $scope.selectedStat(id);
-                }
-            };//end SaveOnBlur
 
             $scope.cancel = function () {
                 //navigate to a different state
@@ -2715,8 +2667,8 @@
 
     //#region SITE Controller
 
-    siGLControllers.controller('projectEditSiteListCtrl', ['$scope', '$location', '$cookies', '$uibModal', '$http', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE', projectEditSiteListCtrl]);
-    function projectEditSiteListCtrl($scope, $location, $cookies, $uibModal, $http, projS, thisProject, siteStatList, lakeList, stateList, resourceList, mediaList, frequencyList, parameterList, SITE) {
+    siGLControllers.controller('projectEditSiteListCtrl', ['$scope', '$location', '$cookies', '$uibModal', '$http', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'CountryList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE', projectEditSiteListCtrl]);
+    function projectEditSiteListCtrl($scope, $location, $cookies, $uibModal, $http, projS, thisProject, siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList, SITE) {
         $scope.projectSites = projS;
         for (var psu = 0; psu < $scope.projectSites.length; psu++) {
             var ind = psu;
@@ -2748,52 +2700,7 @@
                 $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
             }
         };
-        var responsiveTables = {
-            init: function () {
-                $(document).find('.fixed-columns').each(function (i, elem) {
-                    responsiveTables.fixColumns(elem);
-                });
-            },
-
-            fixColumns: function (table, columns) {
-                var $table = $(table);
-                $table.removeClass('fixed-columns');
-                var $fixedColumns = $table.clone().attr('id', $table.attr('id') + '-fixed').insertBefore($table).addClass('fixed-columns-fixed');
-
-                $fixedColumns.find('*').each(function (i, elem) {
-                    if ($(this).attr('id') !== undefined) {
-                        $table.find("[id='" + $(this).attr("id") + "']").attr('id', $(this).attr('id') + '-hidden');
-                    }
-                    if ($(this).attr('name') !== undefined) {
-                        $table.find("[name='" + $(this).attr("name") + "']").attr('name', $(this).attr('name') + '-hidden');
-                    }
-                });
-
-                if (columns !== undefined) {
-                    $fixedColumns.find('tr').each(function (x, elem) {
-                        $(elem).find('th,td').each(function (i, elem) {
-                            if (i >= columns) {
-                                $(elem).remove();
-                            }
-                        });
-                    });
-                } else {
-                    $fixedColumns.find('tr').each(function (x, elem) {
-                        $(elem).find('th,td').each(function (i, elem) {
-                            if (!$(elem).hasClass('fixed-column')) {
-                                $(elem).remove();
-                            }
-                        });
-                    });
-                }
-
-                $fixedColumns.find('tr').each(function (i, elem) {
-                    $(this).height($table.find('tr:eq(' + i + ')').height());
-                });
-            }
-        };
-
-        responsiveTables.init();
+        
         //used in CopyToNew for formatting the new Site
         var formatSite = function (aSite) {
             //format it properly
@@ -2984,7 +2891,7 @@
             });
         };//end CopyToNew
 
-        //#region DELETE Site
+        //DELETE Site
         $scope.DeleteSite = function (site) {
             //modal
             var modalInstance = $uibModal.open({
@@ -3018,599 +2925,67 @@
             });
             //end modal
         };
-        //#endregion DELETE Pub click
+        
+        //open modal to edit or create a project
+        $scope.openSiteCreate = function (site) {
+            var dropdownParts = [siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList];
+            var indexClicked = $scope.projectSites.indexOf(site);
+            //modal
+            var modalInstance = $uibModal.open({
+                templateUrl: 'SITEmodal.html',
+                controller: 'SITEmodalCtrl',
+                size: 'lg',
+                backdrop: 'static',
+                windowClass: 'rep-dialog',
+                resolve: {
+                    allDropDownParts: function () {
+                        return dropdownParts;
+                    },
+                    thisProject: function () {
+                        return thisProject;
+                    },
+                    thisSite: function () {
+                        if (site != 0) {
+                            return site;
+                        }
+                    },
+                    siteFreq: function () {
+                        if (site != 0) {
+                            return SITE.getSiteFrequencies({ id: site.SiteId }).$promise;
+                        }
+                    },
+                    siteMed: function () {
+                        if (site != 0) {
+                            return SITE.getSiteMedia({ id: site.SiteId }).$promise;
+                        }
+                    },
+                    siteRes: function () {
+                        if (site != 0) {
+                            return SITE.getSiteResources({ id: site.SiteId }).$promise;
+                        }
+                    },
+                    siteParams: function () {
+                        if (site != 0) {
+                            return SITE.getSiteParameters({ id: site.SiteId }).$promise;
+                        }
+                    },
+                }
+            });
+            modalInstance.result.then(function (r) {
+                //$scope.aProject, projObjectives, projKeywords
+                $(".page-loading").addClass("hidden");
+                if (r[1] == 'create') {
+                    $scope.projectSites.push(r[0]);
+                    $scope.sitesCount.total = $scope.projectSites.length;
+                }
+                if (r[1] == 'update') {
+                    //this is from edit -- refresh page?                    
+                    $scope.projectSites[indexClicked] = r[0];
+                }
+            });
+        };
+
     }
-
-    //projectEditSiteInfoCtrl ( CREATE / EDIT page)    
-    siGLControllers.controller('projectEditSiteInfoCtrl', ['$scope', '$location', '$cookies', '$http', '$uibModal', '$state', 'thisProject', 'thisSite', 'SITE', 'projSites', 'siteFrequencies', 'siteMedium',
-             'siteParameters', 'siteResources', 'CountryList', 'lakeList', 'stateList', 'siteStatList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', projectEditSiteInfoCtrl]);
-    function projectEditSiteInfoCtrl($scope, $location, $cookies, $http, $uibModal, $state, thisProject, thisSite, SITE, projSites, siteFrequencies, siteMedium,
-        siteParameters, siteResources, CountryList, lakeList, stateList, siteStatList, resourceList, mediaList, frequencyList, parameterList) {
-        if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
-            $scope.auth = false;
-            $location.path('/login');
-        } else {
-            angular.element('a#siteTab').addClass('active'); //make sure that tab still stays active
-            $scope.thisSite = {}; //holder for project (either coming in for edit, or being created on POST )
-            $scope.Frequencymodel = {}; //holder for new siteFrequencies if they make any change to multiselect
-            $scope.Mediamodel = {}; //holder for new siteMedia if they make any change to multiselect
-            // $scope.Parametermodel = {}; //holder for new siteParameters if they make any change to multiselect
-            $scope.Resourcemodel = {}; //holder for new siteResource if they make any change to multiselect
-            $scope.FrequenciesToAdd = []; //holder for create Site page and user adds Frequency Types
-            $scope.MediaToAdd = []; //holder for create Site page and user adds Media Types
-            $scope.ParameterToAdd = []; //holder for create Site page and user adds Parameters Types
-            $scope.ResourceToAdd = []; //holder for create Site page and user adds Resources Types
-            $scope.isSiteDescChanged = {}; //trigger to show/hide save button for description change
-            $scope.isSiteAddInfoChanged = {}; //trigger to show/hide save button for additional info change
-            $scope.showParams = false;// div containing all parameters (toggles show/hide)
-            $scope.showHide = "Show"; //button text for show/hide parameters
-            
-            //all the dropdowns
-            $scope.allCountries = CountryList;
-            $scope.allStates = stateList;
-            $scope.allLakes = lakeList;
-            $scope.allStats = siteStatList;
-            $scope.allResources = resourceList;
-            $scope.allParametes = parameterList;
-
-
-            //are we in edit or create?
-            if (thisSite != undefined) {
-                //edit view
-
-                //1. this site
-                $scope.thisSite = thisSite;
-                $scope.title = "Site: " + $scope.thisSite.NAME;
-
-                //convert the multiSelects for isteven (add new property for checked flag
-                //#region siteFrequencies
-                var siteFreqs = siteFrequencies;
-                var allFrequencies = frequencyList;
-                //go through allFrequencies and add selected property
-                for (var i = 0; i < allFrequencies.length; i++) {
-                    //for each one, if siteFreqs has this id, add 'selected:true' else add 'selected:false'
-                    for (var y = 0; y < siteFreqs.length; y++) {
-                        if (siteFreqs[y].FREQUENCY_TYPE_ID == allFrequencies[i].FREQUENCY_TYPE_ID) {
-                            allFrequencies[i].selected = true;
-                            y = siteFreqs.length;
-                        }
-                        else {
-                            allFrequencies[i].selected = false;
-                        }
-                    }
-                    if (siteFreqs.length == 0) {
-                        allFrequencies[i].selected = false;
-                    }
-                }
-                $scope.Frequencydata = allFrequencies;
-                //#endregion siteFrequencies
-
-                //#region siteMedia
-                var siteMeds = siteMedium;
-                var allMeds = mediaList;
-                //go through allMeds and add selected property
-                for (var mi = 0; mi < allMeds.length; mi++) {
-                    //for each one, if siteMeds has this id, add 'selected:true' else add 'selected:false'
-                    for (var sm = 0; sm < siteMeds.length; sm++) {
-                        if (siteMeds[sm].MEDIA_TYPE_ID == allMeds[mi].MEDIA_TYPE_ID) {
-                            allMeds[mi].selected = true;
-                            sm = siteMeds.length;
-                        }
-                        else {
-                            allMeds[mi].selected = false;
-                        }
-                    }
-                    if (siteMeds.length == 0) {
-                        allMeds[mi].selected = false;
-                    }
-                }
-                $scope.Mediadata = allMeds;
-                //#endregion siteMedia
-
-                //#region siteParameters
-                var siteParams = siteParameters;
-                var allParams = parameterList;
-                //go through siteParams and add selected property
-                for (var pi = 0; pi < allParams.length; pi++) {
-                    //for each one, if siteParams has this id, add 'selected:true' else add 'selected:false'
-                    for (var sp = 0; sp < siteParams.length; sp++) {
-                        if (siteParams[sp].PARAMETER_TYPE_ID == allParams[pi].PARAMETER_TYPE_ID) {
-                            allParams[pi].selected = true;
-                            sp = siteParams.length;
-                        }
-                        else {
-                            allParams[pi].selected = false;
-                        }
-                    }
-                    if (siteParams.length == 0) {
-                        allParams[pi].selected = false;
-                    }
-                }
-                $scope.physParams = []; $scope.bioParams = []; $scope.chemParams = []; $scope.microBioParams = []; $scope.toxiParams = [];
-                $scope.physParams.push(allParams.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Physical";
-                }));
-                $scope.bioParams.push(allParams.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Biological";
-                }));
-                $scope.chemParams.push(allParams.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Chemical";
-                }));
-                $scope.microBioParams.push(allParams.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Microbiological";
-                }));
-                $scope.toxiParams.push(allParams.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Toxicological";
-                }));
-
-                //$scope.Parameterdata = allParams;
-
-                //#endregion siteParameters
-
-                //#region siteResources
-                var siteRes = siteResources;
-                var allRes = resourceList;
-                //go through allRes and add selected property
-                for (var ri = 0; ri < allRes.length; ri++) {
-                    //for each one, if siteRes has this id, add 'selected:true' else add 'selected:false'
-                    for (var sr = 0; sr < siteRes.length; sr++) {
-                        if (siteRes[sr].RESOURCE_TYPE_ID == allRes[ri].RESOURCE_TYPE_ID) {
-                            allRes[ri].selected = true;
-                            sr = siteRes.length;
-                        }
-                        else {
-                            allRes[ri].selected = false;
-                        }
-                    }
-                    if (siteRes.length == 0) {
-                        allRes[ri].selected = false;
-                    }
-                }
-                $scope.Resourcedata = allRes;
-                //#endregion siteResources
-
-            }//end edit view
-            else {
-                $scope.title = "New Site";
-            }//end create view
-
-            //requirements for both create and edit views
-
-            //show/hide the parameters
-            $scope.showParamDiv = function ($event) {
-                if ($scope.showHide == "Hide") {
-                    $scope.showHide = "Show";
-                    $scope.showParams = false;
-                } else {
-                    $scope.showHide = "Hide";
-                    $scope.showParams = true;
-                }
-                $event.preventDefault();
-                $event.stopPropagation();
-            };
-
-            if (thisSite == undefined) {
-
-                //#region add selected property to all multiselects (need to set these if new site)
-                //frequencies
-                for (var a = frequencyList.length; a--;) {
-                    frequencyList[a].selected = false;
-                }
-                $scope.Frequencydata = frequencyList;
-                //media
-                for (var ma = mediaList.length; ma--;) {
-                    mediaList[ma].selected = false;
-                }
-                $scope.Mediadata = mediaList;
-                //parameters
-                for (var pa = parameterList.length; pa--;) {
-                    parameterList[pa].selected = false;
-                }
-                $scope.physParams = []; $scope.bioParams = []; $scope.chemParams = []; $scope.microBioParams = []; $scope.toxiParams = [];
-                $scope.physParams.push(parameterList.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Physical";
-                }));
-                $scope.bioParams.push(parameterList.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Biological";
-                }));
-                $scope.chemParams.push(parameterList.filter(function (p) { return p.PARAMETER_GROUP == "Chemical"; }));
-                $scope.microBioParams.push(parameterList.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Microbiological";
-                }));
-                $scope.toxiParams.push(parameterList.filter(function (p) {
-                    return p.PARAMETER_GROUP == "Toxicological";
-                }));
-                // $scope.Parameterdata = parameterList;
-                //resources
-                for (var ra = resourceList.length; ra--;) {
-                    resourceList[ra].selected = false;
-                }
-                $scope.Resourcedata = resourceList;
-                //#endregion add selected property to all multiselects (need to set these if new site)
-
-            }// thisSite == undefined
-
-            //#region a FREQUENCY was clicked - if added POST, if removed DELETE - for edit view or store for create view
-            $scope.FreqClick = function (data) {
-                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common.Accept = 'application/json';
-
-                if ($scope.thisSite.SITE_ID != undefined) {
-                    //this is an edit page and there is a site
-                    if (data.selected == true) {
-                        //post it
-                        delete data.selected; //need to remove the selected property first
-                        SITE.addSiteFrequency({ id: $scope.thisSite.SITE_ID }, data,
-                            function success(response) {
-                                toastr.success("Site Frequency added");
-                            },
-                            function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            }
-                        );
-                    } else {
-                        //delete it
-                        delete data.selected; // remove the selected flag first
-                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                        SITE.deleteSiteFrequency({ id: $scope.thisSite.SITE_ID }, data,
-                            function success(response) {
-                                toastr.success("Site Frequency removed");
-                            },
-                            function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            }
-                        );
-                    }
-                } else {
-                    //this is a create Site and need to store this to handle after site is POSTed
-                    if (data.selected == true) {
-                        delete data.selected;
-                        //only care if true since this is a new site and nothing to delete
-                        $scope.FrequenciesToAdd.push(data);
-                    }
-                }
-            };//end FreqClick
-            //#endregion a FREQUENCY was clicked - if added POST, if removed DELETE - for edit view or store for create view
-
-            //#region a MEDIA was clicked - if added POST, if removed DELETE - for edit view or store for create view
-            $scope.MedClick = function (data) {
-                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common.Accept = 'application/json';
-
-                if ($scope.thisSite.SITE_ID != undefined) {
-                    //this is an edit page and there is a site
-                    if (data.selected == true) {
-                        //post it
-                        delete data.selected; //need to remove the selected property first
-                        SITE.addSiteMedia({ id: $scope.thisSite.SITE_ID }, data,
-                            function success(response) {
-                                toastr.success("Site Media added");
-                            },
-                            function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            }
-                        );
-                    } else {
-                        //delete it
-                        delete data.selected; // remove the selected flag first
-                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                        SITE.deleteSiteMedia({ id: $scope.thisSite.SITE_ID }, data,
-                            function success(response) {
-                                toastr.success("Site Media removed");
-                            },
-                            function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            }
-                        );
-                    }
-                } else {
-                    //this is a create Site and need to store this to handle after site is POSTed
-                    if (data.selected == true) {
-                        delete data.selected;
-                        //only care if true since this is a new site and nothing to delete
-                        $scope.MediaToAdd.push(data);
-                    }
-                }
-            };//end MedClick
-            //#endregion a MEDIA was clicked - if added POST, if removed DELETE - for edit view or store for create view
-
-            //#region a PARAMETER was clicked - if added POST, if removed DELETE - for edit view or store for create view
-            $scope.ParamClick = function (data) {
-                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common.Accept = 'application/json';
-                var Param = {
-                };
-                Param.PARAMETER_TYPE_ID = data.PARAMETER_TYPE_ID;
-                Param.PARAMETER = data.PARAMETER;
-                Param.PARAMETER_GROUP = data.PARAMETER_GROUP;
-
-                if ($scope.thisSite.SITE_ID != undefined) {
-                    //this is an edit page and there is a site    
-                    if (data.selected == true) {
-                        //POST                       
-                        //delete Param['selected'];//need to remove the selected property first
-                        SITE.addSiteParameter({ id: $scope.thisSite.SITE_ID }, Param,
-                            function success(response) {
-                                toastr.success("Site Parameter added");
-                            },
-                            function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            }
-                            );
-                    } else if (data.selected == false) {
-                        //DELETE
-                        //delete Param['selected']; // remove the selected flag first
-                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                        SITE.deleteSiteParameter({ id: $scope.thisSite.SITE_ID }, Param,
-                            function success(response) {
-                                toastr.success("Site Parameter removed");
-                            },
-                            function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            }
-            );
-                        delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-                    }
-                } else {
-                    //this is a create Site and need to store this to handle after site is POSTed
-                    if (data.selected == true) {
-                        //delete Param['selected'];
-                        //only care if true since this is a new site and nothing to delete
-                        $scope.ParameterToAdd.push(Param);
-                    }
-                }
-            };//end ParamClick
-            //#endregion a PARAMETER was clicked - if added POST, if removed DELETE - for edit view or store for create view
-
-            //#region a RESOURCE was clicked - if added POST, if removed DELETE - for edit view or store for create view
-            $scope.ResClick = function (data) {
-                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common.Accept = 'application/json';
-
-                if ($scope.thisSite.SITE_ID != undefined) {
-                    //this is an edit page and there is a site
-                    if (data.selected == true) {
-                        //post it
-                        delete data.selected; //need to remove the selected property first
-                        SITE.addSiteResource({ id: $scope.thisSite.SITE_ID }, data,
-                            function success(response) {
-                                toastr.success("Site Resource added");
-                            },
-                            function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            }
-                        );
-                    } else {
-                        //delete it
-                        delete data.selected; // remove the selected flag first
-                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                        SITE.deleteSiteResource({ id: $scope.thisSite.SITE_ID }, data,
-                            function success(response) {
-                                toastr.success("Site Resource removed");
-                            },
-                            function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            }
-                        );
-                    }
-                } else {
-                    //this is a create Site and need to store this to handle after site is POSTed
-                    if (data.selected == true) {
-                        delete data.selected;
-                        //only care if true since this is a new site and nothing to delete
-                        $scope.ResourceToAdd.push(data);
-                    }
-                }
-            };//end ResClick
-            //#endregion a RESOURCE was clicked - if added POST, if removed DELETE - for edit view or store for create view
-
-            $scope.isNum = function (evt) {
-                var theEvent = evt || window.event;
-                var key = theEvent.keyCode || theEvent.which;
-                //key = String.fromCharCode(key);
-                //var regex = /[0-9]|\./;
-                if (key != 46 && key != 45 && key > 31 && (key < 48 || key > 57)) {
-                    theEvent.returnValue = false;
-                    if (theEvent.preventDefault) theEvent.preventDefault();
-                }
-            };
-
-            //lat modal 
-            var openLatModal = function () {
-                var latModal = $uibModal.open({
-                    template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                        '<div class="modal-body"><p>The Latitude must be between 0 and 73.0</p></div>' +
-                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                    controller: function ($scope, $uibModalInstance) {
-                        $scope.ok = function () {
-                            $uibModalInstance.close('lat');
-                        };
-                    },
-                    size: 'sm'
-                });
-                latModal.result.then(function (fieldFocus) {
-                    if (fieldFocus == "lat")
-                        $("#LATITUDE").focus();
-                });
-            };
-
-            //long modal
-            var openLongModal = function () {
-                var longModal = $uibModal.open({
-                    template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                        '<div class="modal-body"><p>The Longitude must be between -175.0 and -60.0</p></div>' +
-                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                    controller: function ($scope, $uibModalInstance) {
-                        $scope.ok = function () {
-                            $uibModalInstance.close('long');
-                        };
-                    },
-                    size: 'sm'
-                });
-                longModal.result.then(function (fieldFocus) {
-                    if (fieldFocus == "long")
-                        $("#LONGITUDE").focus();
-                });
-            };
-
-            //change to the thisSite made, put it .. fired on each blur after change made to field
-            $scope.SaveOnBlur = function (valid, da) {
-                if (da < 0) {
-                    //they changed end date, compare to make sure it comes after start date
-                    if (new Date($scope.thisSite.END_DATE) < new Date($scope.thisSite.START_DATE)) {
-                        var dateModal = $uibModal.open({
-                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                                        '<div class="modal-body"><p>Sampling end date must come after start date.</p></div>' +
-                                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                            controller: function ($scope, $uibModalInstance) {
-                                $scope.ok = function () {
-                                    $uibModalInstance.close('startDate');
-                                };
-                            },
-                            size: 'sm'
-                        });
-                        dateModal.result.then(function (d) {
-                            if (d == "startDate") {
-                                // $scope.aProject.END_DATE = "";
-                                angular.element("#END_DATE").focus();
-                            }
-                        });
-                        if ($scope.thisSite.SITE_ID != undefined) toastr.error("Site not updated.");
-                        return;
-                    }
-                }
-                if ($scope.thisSite.SITE_ID != undefined) {
-                    if (valid) {
-                        //ensure they don't delete required field values
-                        if (($scope.thisSite.LATITUDE > 0 && $scope.thisSite.LATITUDE < 73.0) && ($scope.thisSite.LONGITUDE > -175 && $scope.thisSite.LONGITUDE < -60)) {
-                            $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                            $http.defaults.headers.common.Accept = 'application/json';
-                            $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-                            SITE.save({
-                                id: $scope.thisSite.SITE_ID
-                            }, $scope.thisSite, function success(response) {
-                                toastr.success("Site Updated");
-                                $scope.isSiteDescChanged.bool = false;
-                                $scope.isSiteAddInfoChanged.bool = false;
-                            }, function error(errorResponse) {
-                                toastr.error("Error: " + errorResponse.statusText);
-                            });
-                            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-                        }
-                        else if ($scope.thisSite.LATITUDE < 0 || $scope.thisSite.LATITUDE > 73) {
-                            openLatModal();
-                        }
-                        else if ($scope.thisSite.LONGITUDE < -175 || $scope.thisSite.LONGITUDE > -60) {
-                            openLongModal();
-                        }
-                    }
-                    else {
-                        //not valid.. modal for enter all required fields
-                        var modalInstance = $uibModal.open({
-                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                                        '<div class="modal-body"><p>Please populate all required fields.</p></div>' +
-                                        '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
-                            controller: function ($scope, $uibModalInstance) {
-                                $scope.ok = function () {
-                                    $uibModalInstance.close('required');
-                                };
-                            },
-                            size: 'sm'
-                        });
-                        modalInstance.result.then(function (fieldFocus) {
-                            if (fieldFocus == "required")
-                                angular.element("[name='" + $scope.projectForm.SiteInfo.$name + "']").find('.ng-invalid:visible:first').focus();
-                        });
-                        toastr.error("Site not updated.");
-                    }
-                }
-            };//end SaveOnBlur
-
-            //save NEW SITE and then frequencies, media, parameters, and resources
-            $scope.save = function (valid) {
-                //check if they filled in all required fields
-                if (valid && ($scope.thisSite.LATITUDE > 0 && $scope.thisSite.LATITUDE < 73.0) && ($scope.thisSite.LONGITUDE > -175 && $scope.thisSite.LONGITUDE < -60)) {
-                    $(".page-loading").removeClass("hidden");
-                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common.Accept = 'application/json';
-                    $scope.thisSite.PROJECT_ID = thisProject.PROJECT_ID;
-                    var siteID;
-                    SITE.save({}, $scope.thisSite, function success(response) {
-                        toastr.success("Site Created");
-                        siteID = response.SITE_ID;
-                        projSites.push(response);
-                        $scope.sitesCount.total = $scope.sitesCount.total + 1;
-                        //post frequencies added
-                        for (var o = $scope.FrequenciesToAdd.length; o--;) {
-                            SITE.addSiteFrequency({
-                                id: siteID
-                            }, $scope.FrequenciesToAdd[o],
-                                function success(response) {
-                                    toastr.success("Site Frequency added");
-                                },
-                                function error(errorResponse) {
-                                    toastr.error("Error: " + errorResponse.statusText);
-                                }
-                            );
-                        }
-                        //post media
-                        for (var k = $scope.MediaToAdd.length; k--;) {
-                            SITE.addSiteMedia({
-                                id: siteID
-                            }, $scope.MediaToAdd[k],
-                                function success(response) {
-                                    toastr.success("Site Media Added");
-                                },
-                                function error(errorResponse) {
-                                    toastr.error("Error: " + errorResponse.statusText);
-                                });
-                        }
-                        //post parameters
-                        for (var para = $scope.ParameterToAdd.length; para--;) {
-                            SITE.addSiteParameter({
-                                id: siteID
-                            }, $scope.ParameterToAdd[para],
-                                function success(response) {
-                                    toastr.success("Site Parameter Added");
-                                },
-                                function error(errorResponse) {
-                                    toastr.error("Error: " + errorResponse.statusText);
-                                }
-                            );
-                        }
-                        //post resources
-                        for (var res = $scope.ResourceToAdd.length; res--;) {
-                            SITE.addSiteResource({
-                                id: siteID
-                            }, $scope.ResourceToAdd[res],
-                                function success(response) {
-                                    toastr.success("Site Resource Added");
-                                },
-                                function error(errorResponse) {
-                                    toastr.error("Error: " + errorResponse.statusText);
-                                }
-                            );
-                        }
-                    }, function error(errorResponse) {
-                        toastr.success("Error: " + errorResponse.statusText);
-                    }).$promise.then(function () {
-                        $scope.projectForm.SiteInfo.$setPristine(true);
-                        $(".page-loading").addClass("hidden");
-                        $location.path('/project/edit/' + thisProject.PROJECT_ID + '/site/siteList').replace();//.notify(false);
-                        $scope.apply;
-                    });
-                } else {
-                    if ($scope.thisSite.LATITUDE < 0 || $scope.thisSite.LATITUDE > 73.0)
-                        openLatModal();
-
-                    if ($scope.thisSite.LONGITUDE < -175 || $scope.thisSite.LONGITUDE > -60)
-                        openLongModal();
-
-                } //end else valid
-            };//end save
-
-        }//end CheckCreds() passed
-    }//end projectEditSiteInfoCtrl
 
     //projectEditALL Sites
     siGLControllers.controller('projectEditAllSitesCtrl', ['$scope', '$cookies', '$location', '$http', '$state', 'thisProject', 'SITE', 'projSites',
