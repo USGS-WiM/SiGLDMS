@@ -13,7 +13,8 @@
 </style>
 <div id="site-list-wrapper" class="panel panel-primary">
     <div class="panel-body">
-        <button ui-sref="projectEdit.site.siteInfo({id:thisProject.PROJECT_ID, siteId:0})" class="btn btn-primary">
+        <button ng-click="openSiteCreate(0)" class="btn btn-primary">
+<!--        <button ui-sref="projectEdit.site.siteInfo({id:thisProject.PROJECT_ID, siteId:0})" class="btn btn-primary">-->
             <span>Create new Site</span>
         </button>
         <!--<div><a ui-sref="projectEdit.site.siteEditAll({id:thisProject.PROJECT_ID})">Multi-Edit</a></div>-->
@@ -48,7 +49,8 @@
                     <tr ng-repeat="s in projectSites | orderBy:sortingOrder:reverse">
                         <td>
                             <div style="width:65px">
-                                <a title="Edit" ui-sref="projectEdit.site.siteInfo({id:thisProject.PROJECT_ID, siteId:s.SiteId})"><i class="glyphicon glyphicon-pencil"></i></a>
+                                <a title="Edit" class="btn borderLess" ng-click="openSiteCreate(s)"><i class="glyphicon glyphicon-pencil"></i></a>
+                                <!--<a title="Edit" ui-sref="projectEdit.site.siteInfo({id:thisProject.PROJECT_ID, siteId:s.SiteId})"><i class="glyphicon glyphicon-pencil"></i></a>-->
                                 <a title="Duplicate" href="" ng-click="CopyToNew(s.SiteId)"><img alt="Duplicate" src="images/copy_icon_sm.png" /></a>
                                 <a title="Delete" href="" ng-click="DeleteSite(s)"><i class="glyphicon glyphicon-remove"></i></a>
                             </div>
