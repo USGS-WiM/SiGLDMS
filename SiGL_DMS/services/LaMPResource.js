@@ -36,6 +36,7 @@
                 addDataManager: { method: 'POST', cache: false, isArray: false, url: rootURL + '/dataManagers/:pass/addDataManager' },
                 getDMProject: { method: 'GET', isArray: true, url: rootURL + '/projects/IndexProjects.json' }, //?DataManager={dmID}     
                 getAll: { method: 'GET', isArray: true },
+                getDMListModel: {method: 'GET', isArray: true, url: rootURL + '/dataManagers/DMList.json'},
                 changePW: {method:'GET', isArray:false, url: rootURL + '/dataManagers.json'},
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }

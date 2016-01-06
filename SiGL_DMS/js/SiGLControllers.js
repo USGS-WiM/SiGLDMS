@@ -318,8 +318,8 @@
     }
 
     //#region Data Manager
-    siGLControllers.controller('dataManagerCtrl', ['$scope', '$location', '$http', '$cookies', 'DATA_MANAGER', 'ROLE', 'allProj', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allRoles', dataManagerCtrl]);
-    function dataManagerCtrl($scope, $location, $http, $cookies, DATA_MANAGER, ROLE, allProj, allOrgRes, allOrgs, allDivs, allSecs, allRoles) {
+    siGLControllers.controller('dataManagerCtrl', ['$scope', '$location', '$http', '$cookies', 'DATA_MANAGER', 'ROLE', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'allRoles', dataManagerCtrl]);
+    function dataManagerCtrl($scope, $location, $http, $cookies, DATA_MANAGER, ROLE, allOrgRes, allOrgs, allDivs, allSecs, allRoles) {
         //get all datamanagers once here to ensure passing auth
         if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
@@ -338,14 +338,14 @@
             $http.defaults.headers.common.Accept = 'application/json';
                 
             //TODO:::: Make this a VIEW so that I don't have to get all the projects again. NAME, Organization, Role, # of Projects
-            DATA_MANAGER.getAll().$promise.then(function (result) {
+            DATA_MANAGER.getDMListModel().$promise.then(function (result) {
                 for (var x = 0; x < result.length; x++) {
                     var orgName = allOrgRes.filter(function (or) { return or.OrganizationSystemID == result[x].ORGANIZATION_SYSTEM_ID; })[0];
                     result[x].OrgName = orgName != undefined ? orgName.OrganizationName : "";
-                    result[x].roleName = $scope.allROLEs.filter(function (ro) { return ro.ROLE_ID == result[x].ROLE_ID; })[0].ROLE_NAME;
-                    result[x].FULLNAME = result[x].FNAME + " " + result[x].LNAME;
-                    var theseProjs = allProj.filter(function (p) { return p.DataManagerID == result[x].DATA_MANAGER_ID; });
-                    result[x].projCount = theseProjs.length;
+                    //result[x].roleName = $scope.allROLEs.filter(function (ro) { return ro.ROLE_ID == result[x].ROLE_ID; })[0].ROLE_NAME;
+                    //result[x].FULLNAME = result[x].FNAME + " " + result[x].LNAME;
+                    //var theseProjs = allProj.filter(function (p) { return p.DataManagerID == result[x].DATA_MANAGER_ID; });
+                    //result[x].projCount = theseProjs.length;
                 }
                 $scope.allDMs = result;
             });
@@ -633,7 +633,7 @@
                         var index = $scope.DMProjects.indexOf(proj);
                         //DELETE it
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        PROJECT.delete({ id: proj.PROJECT_ID }, proj, function success(response) {
+                        PROJECT.delete({ id: proj.ProjId }, function success(response) {
                             $scope.DMProjects.splice(index, 1);
                             toastr.success("Project Removed");
                         }, function error(errorResponse) {
