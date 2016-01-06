@@ -441,10 +441,12 @@
                 }
             } else {
                 //data.selected == false
+                var i = $scope.ObjectivesToAdd.map(function (e) { return e.OBJECTIVE_TYPE_ID; }).indexOf(data.OBJECTIVE_TYPE_ID);
+                if (i >= 0) $scope.ObjectivesToAdd.splice(i, 1); //remove it from addList if they added then removed
+
                 if ($scope.aProject.PROJECT_ID != undefined) { //edit
                     $scope.ObjectivesToRemove.push(data); //add it to removeList
-                    var i = $scope.ObjectivesToAdd.map(function (e) { return e.OBJECTIVE_TYPE_ID; }).indexOf(data.OBJECTIVE_TYPE_ID);
-                    if (i >= 0) $scope.ObjectivesToAdd.splice(i, 1); //remove it from addList if they added then removed
+                    
                 }
             }
         };//end ObjClick
@@ -762,7 +764,7 @@
                     LATITUDE: s.latitude,
                     LONGITUDE: s.longitude,
                     WATERBODY: s.Waterbody,
-                    STATUS_TYPE_ID: s.Status != "" ? $scope.allStats.filter(function (st) { return st.STATUS == s.Status; })[0].STATUS_ID : 0,
+                    STATUS_TYPE_ID: s.Status != "" && s.Status != undefined ? $scope.allStats.filter(function (st) { return st.STATUS == s.Status; })[0].STATUS_ID : 0,
                     LAKE_TYPE_ID: $scope.allLakes.filter(function (l) { return l.LAKE == s.GreatLake; })[0].LAKE_TYPE_ID,
                     COUNTRY: s.Country,
                     STATE_PROVINCE: s.State,
@@ -1325,7 +1327,7 @@
                                     'Description': newSite.DESCRIPTION,
                                     'Waterbody': newSite.WATERBODY,
                                     'GreatLake': $scope.allLakes.filter(function (l) { return l.LAKE_TYPE_ID == newSite.LAKE_TYPE_ID; })[0].LAKE,
-                                    'Status': newSite.STATUS_TYPE_ID > 0 ? $scope.allStats.filter(function (s) { return s.STATUS_ID == newSite.STATUS_TYPE_ID; })[0].STATUS : "",
+                                    'Status': newSite.STATUS_TYPE_ID > 0 && newSite.STATUS_TYPE_ID != null ? $scope.allStats.filter(function (s) { return s.STATUS_ID == newSite.STATUS_TYPE_ID; })[0].STATUS : "",
                                     'Country': newSite.COUNTRY,
                                     'State': newSite.STATE_PROVINCE,
                                     'WatershedHUC8': newSite.WATERSHED_HUC8,
