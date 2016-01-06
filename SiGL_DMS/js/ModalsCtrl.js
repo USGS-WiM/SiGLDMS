@@ -1261,94 +1261,98 @@
 
             //save NEW SITE and then frequencies, media, parameters, and resources
             $scope.create = function (valid) {
-                if (valid == true) {
-                    $scope.thisSite.PROJECT_ID = thisProject.PROJECT_ID;
-                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common.Accept = 'application/json';
-                    //post site
-                    SITE.save({}, $scope.thisSite, function success(response) {
-                        var newSite = response;
-                        var defer = $q.defer();
-                        var postPromises = [];
-                        //post frequencies
-                        angular.forEach($scope.Frequencymodel.value, function (fValue) {
-                            if (fValue.selected == true) {                               
-                                $scope.freqCommaSep.push(fValue.FREQUENCY); 
-                                var freqProm = SITE.addSiteFrequency({ id: newSite.SITE_ID }, fValue).$promise;
-                                postPromises.push(freqProm);
-                            }
-                        });
-                        //post media
-                        angular.forEach($scope.Mediamodel.value, function (mValue) {
-                            if (mValue.selected == true) {
-                                $scope.medCommaSep.push(mValue.MEDIA);
-                                var medProm = SITE.addSiteMedia({ id: newSite.SITE_ID }, mValue).$promise;
-                                postPromises.push(medProm);
-                            }
-                        });
-                        //post resources
-                        angular.forEach($scope.Resourcemodel.value, function (rValue) {
-                            if (rValue.selected == true) {
-                                $scope.resCommaSep.push(rValue.RESOURCE_NAME); 
-                                var resProm = SITE.addSiteResource({ id: newSite.SITE_ID }, rValue).$promise;
-                                postPromises.push(resProm);
-                            }
-                        });
-                        $scope.pParams = []; $scope.bParams = []; $scope.cParams = []; $scope.mBioParams = []; $scope.tParams = [];
-                        //post parameters
-                        angular.forEach($scope.allParametes, function (pValue) {
-                            if (pValue.selected == true) {
-                                $scope.paramCommaSep.push(pValue);
-                                if (pValue.PARAMETER_GROUP == 'Physical') $scope.pParams.push(pValue.PARAMETER);
-                                if (pValue.PARAMETER_GROUP == 'Biological') $scope.bParams.push(pValue.PARAMETER);
-                                if (pValue.PARAMETER_GROUP == 'Chemical') $scope.cParams.push(pValue.PARAMETER);
-                                if (pValue.PARAMETER_GROUP == 'Microbiological') $scope.mBioParams.push(pValue.PARAMETER);
-                                if (pValue.PARAMETER_GROUP == 'Toxicological') $scope.tParams.push(pValue.PARAMETER);
-
-                                var parProm = SITE.addSiteParameter({ id: newSite.SITE_ID }, pValue).$promise;
-                                postPromises.push(parProm);
-                            }
-                        });
-                        $q.all(postPromises).then(function (response) {
-                            var newSiteFormatted = {
-                                'SiteId': newSite.SITE_ID,
-                                'Name': newSite.NAME,
-                                'latitude': newSite.LATITUDE,
-                                'longitude': newSite.LONGITUDE,
-                                'StartDate': newSite.START_DATE != undefined ? makeAdateString(newSite.START_DATE) : '',
-                                'EndDate': newSite.END_DATE != undefined ? makeAdateString(newSite.END_DATE) : '',
-                                'SamplePlatform': newSite.SAMPLE_PLATFORM,
-                                'AdditionalInfo': newSite.ADDITIONAL_INFO,
-                                'Description': newSite.DESCRIPTION,
-                                'Waterbody': newSite.WATERBODY,
-                                'GreatLake': $scope.allLakes.filter(function (l) { return l.LAKE_TYPE_ID == newSite.LAKE_TYPE_ID; })[0].LAKE,
-                                'Status': newSite.STATUS_TYPE_ID > 0 ? $scope.allStats.filter(function (s) { return s.STATUS_ID == newSite.STATUS_TYPE_ID; })[0].STATUS : "",
-                                'Country': newSite.COUNTRY,
-                                'State': newSite.STATE_PROVINCE,
-                                'WatershedHUC8': newSite.WATERSHED_HUC8,
-                                'URL': newSite.URL,
-                                'Resources': $scope.resCommaSep.join(", "),
-                                'Media': $scope.medCommaSep.join(", "),
-                                'Frequency': $scope.freqCommaSep.join(", "),
-                                'Parameters': $scope.paramCommaSep,
-                                'ParameterStrings': {
-                                    'Biological': $scope.bParams.join(", "),
-                                    'Chemical': $scope.cParams.join(", "),
-                                    'Microbiological': $scope.mBioParams.join(", "),
-                                    'Physical': $scope.pParams.join(", "),
-                                    'Toxicological': $scope.tParams.join(", ")
+                if ($scope.thisSite.SITE_ID != undefined) {
+                    $scope.save(valid);
+                } else {
+                    if (valid == true) {
+                        $scope.thisSite.PROJECT_ID = thisProject.PROJECT_ID;
+                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                        $http.defaults.headers.common.Accept = 'application/json';
+                        //post site
+                        SITE.save({}, $scope.thisSite, function success(response) {
+                            var newSite = response;
+                            var defer = $q.defer();
+                            var postPromises = [];
+                            //post frequencies
+                            angular.forEach($scope.Frequencymodel.value, function (fValue) {
+                                if (fValue.selected == true) {
+                                    $scope.freqCommaSep.push(fValue.FREQUENCY);
+                                    var freqProm = SITE.addSiteFrequency({ id: newSite.SITE_ID }, fValue).$promise;
+                                    postPromises.push(freqProm);
                                 }
-                            };
-                            
-                            var siteParts = [newSiteFormatted, 'create'];
-                            
-                            toastr.success("Site Created");
-                            $uibModalInstance.close(siteParts);
-                        }).catch(function error(msg) {
-                            console.error(msg);
-                        });
-                    });//end SITE.save()
-                }//end valid == true
+                            });
+                            //post media
+                            angular.forEach($scope.Mediamodel.value, function (mValue) {
+                                if (mValue.selected == true) {
+                                    $scope.medCommaSep.push(mValue.MEDIA);
+                                    var medProm = SITE.addSiteMedia({ id: newSite.SITE_ID }, mValue).$promise;
+                                    postPromises.push(medProm);
+                                }
+                            });
+                            //post resources
+                            angular.forEach($scope.Resourcemodel.value, function (rValue) {
+                                if (rValue.selected == true) {
+                                    $scope.resCommaSep.push(rValue.RESOURCE_NAME);
+                                    var resProm = SITE.addSiteResource({ id: newSite.SITE_ID }, rValue).$promise;
+                                    postPromises.push(resProm);
+                                }
+                            });
+                            $scope.pParams = []; $scope.bParams = []; $scope.cParams = []; $scope.mBioParams = []; $scope.tParams = [];
+                            //post parameters
+                            angular.forEach($scope.allParametes, function (pValue) {
+                                if (pValue.selected == true) {
+                                    $scope.paramCommaSep.push(pValue);
+                                    if (pValue.PARAMETER_GROUP == 'Physical') $scope.pParams.push(pValue.PARAMETER);
+                                    if (pValue.PARAMETER_GROUP == 'Biological') $scope.bParams.push(pValue.PARAMETER);
+                                    if (pValue.PARAMETER_GROUP == 'Chemical') $scope.cParams.push(pValue.PARAMETER);
+                                    if (pValue.PARAMETER_GROUP == 'Microbiological') $scope.mBioParams.push(pValue.PARAMETER);
+                                    if (pValue.PARAMETER_GROUP == 'Toxicological') $scope.tParams.push(pValue.PARAMETER);
+
+                                    var parProm = SITE.addSiteParameter({ id: newSite.SITE_ID }, pValue).$promise;
+                                    postPromises.push(parProm);
+                                }
+                            });
+                            $q.all(postPromises).then(function (response) {
+                                var newSiteFormatted = {
+                                    'SiteId': newSite.SITE_ID,
+                                    'Name': newSite.NAME,
+                                    'latitude': newSite.LATITUDE,
+                                    'longitude': newSite.LONGITUDE,
+                                    'StartDate': newSite.START_DATE != undefined ? makeAdateString(newSite.START_DATE) : '',
+                                    'EndDate': newSite.END_DATE != undefined ? makeAdateString(newSite.END_DATE) : '',
+                                    'SamplePlatform': newSite.SAMPLE_PLATFORM,
+                                    'AdditionalInfo': newSite.ADDITIONAL_INFO,
+                                    'Description': newSite.DESCRIPTION,
+                                    'Waterbody': newSite.WATERBODY,
+                                    'GreatLake': $scope.allLakes.filter(function (l) { return l.LAKE_TYPE_ID == newSite.LAKE_TYPE_ID; })[0].LAKE,
+                                    'Status': newSite.STATUS_TYPE_ID > 0 ? $scope.allStats.filter(function (s) { return s.STATUS_ID == newSite.STATUS_TYPE_ID; })[0].STATUS : "",
+                                    'Country': newSite.COUNTRY,
+                                    'State': newSite.STATE_PROVINCE,
+                                    'WatershedHUC8': newSite.WATERSHED_HUC8,
+                                    'URL': newSite.URL,
+                                    'Resources': $scope.resCommaSep.join(", "),
+                                    'Media': $scope.medCommaSep.join(", "),
+                                    'Frequency': $scope.freqCommaSep.join(", "),
+                                    'Parameters': $scope.paramCommaSep,
+                                    'ParameterStrings': {
+                                        'Biological': $scope.bParams.join(", "),
+                                        'Chemical': $scope.cParams.join(", "),
+                                        'Microbiological': $scope.mBioParams.join(", "),
+                                        'Physical': $scope.pParams.join(", "),
+                                        'Toxicological': $scope.tParams.join(", ")
+                                    }
+                                };
+
+                                var siteParts = [newSiteFormatted, 'create'];
+
+                                toastr.success("Site Created");
+                                $uibModalInstance.close(siteParts);
+                            }).catch(function error(msg) {
+                                console.error(msg);
+                            });
+                        });//end SITE.save()
+                    }//end valid == true
+                } //really is create and not just a save that got triggered by hitting enter in a field
             }//end create()
 
             //cancel modal

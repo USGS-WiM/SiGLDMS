@@ -47,7 +47,7 @@
                 <div class="form-group required" ng-class="{'has-error':projectForm.Info.NAME.$invalid && projectForm.Info.NAME.$dirty}">
                     <label class="col-md-4 control-label req" for="NAME">Project Name:</label>
                     <div class="col-md-8">
-                        <input class="form-control" id="NAME" name="NAME" ng-model="aProject.NAME" type="text" placeholder="Project Name" required />
+                        <input class="form-control" id="NAME" name="NAME" ng-enter="save(projectForm.Info.$valid)" ng-model="aProject.NAME" type="text" placeholder="Project Name" required />
                     </div>
 
                 </div>
