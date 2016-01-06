@@ -86,7 +86,6 @@
     <Content Include="partials\DM\dmHolderView.html" />
     <Content Include="partials\DM\DMList.html" />
     <Content Include="partials\helpView.html" />
-    <Content Include="partials\project\projectEditSiteInfoView.html" />
     <Content Include="partials\project\projectEditSiteEditAll.html" />
     <Content Include="partials\project\projectEditSiteList.html" />
     <Content Include="partials\Resources\PageContent\LakeType.html" />

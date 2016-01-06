@@ -355,7 +355,7 @@
             $scope.loggedInUser.Role = $cookies.get('usersRole'); 
             //see if sorting order has already been set, preserve if so, otherwise set to 'LNAME'
             $scope.sortingOrder = $cookies.get('DMListSortOrder') != undefined ? $cookies.get('DMListSortOrder') : 'LNAME';
-            $scope.reverse = $cookies.get('dml_reverse') != undefined ? $cookies.get('dml_reverse') : true;
+            $scope.reverse = $cookies.get('dml_reverse') != undefined ? Boolean($cookies.get('dml_reverse')) : true;
             $scope.sort_by = function (newSortingOrder) {
                 $cookies.put('DMListSortOrder', newSortingOrder);
                 if ($scope.sortingOrder == newSortingOrder) {
@@ -388,7 +388,7 @@
                 
             //see if sorting order has already been set, preserve if so, otherwise set to 'Name'
             $scope.sortingOrder = $cookies.get('DMprojectsSortOrder') != undefined ? $cookies.get('DMprojectsSortOrder') : 'Name';
-            $scope.reverse = $cookies.get('dmpl_reverse') != undefined ? $cookies.get('dmpl_reverse') : true;
+            $scope.reverse = $cookies.get('dmpl_reverse') != undefined ? Boolean($cookies.get('dmpl_reverse')) : true;
             $scope.sort_by = function (newSortingOrder) {
                 $cookies.put('DMprojectsSortOrder', newSortingOrder);
                 if ($scope.sortingOrder == newSortingOrder) {
@@ -675,7 +675,8 @@
                                 toastr.success("Password Updated");
                                 //update creds                               
                                 var enc = btoa($scope.DM.USERNAME.concat(":", $scope.pass.newP));
-                                $cookies.put('siGLCreds', enc);
+                                var expireDate = new Date().addHours(8);
+                                $cookies.put('siGLCreds', enc, { 'expires': expireDate });
                                 $cookies.put('siGLUsername', $scope.aMember.USERNAME);
                                 $cookies.put('usersName', $scope.$parent.loggedInUser.Name);
                                 $cookies.put('mID', $scope.DM.DATA_MANAGER_ID);
@@ -1582,13 +1583,13 @@
 
             //see if sorting order has already been set, preserve if so, otherwise set to 'Name'
             $scope.sortingOrder = $cookies.get('projListSortOrder') != undefined ? $cookies.get('projListSortOrder') : 'Name';
-            $scope.reverse = $cookies.get('pl_reverse') != undefined ? $cookies.get('pl_reverse'): true;
+            $scope.reverse = $cookies.get('pl_reverse') != undefined ? Boolean($cookies.get('pl_reverse')): false;
                                 
             $scope.sort_by = function (newSortingOrder) {
                 $cookies.put('projListSortOrder', newSortingOrder);
                 if ($scope.sortingOrder == newSortingOrder) {
                     $scope.reverse = !$scope.reverse;
-                    $cookies.put('plreverse', $scope.reverse);
+                    $cookies.put('pl_reverse', $scope.reverse);
                 }
                 $scope.sortingOrder = newSortingOrder;
                 // icon setup
@@ -2681,7 +2682,7 @@
         $scope.FrequenciesToAdd = []; $scope.MediaToAdd = []; $scope.ParameterToAdd = []; $scope.ResourceToAdd = [];
         // change sorting order
         $scope.sortingOrder = $cookies.get('siteListSortOrder') != undefined ? $cookies.get('siteListSortOrder') : 'Name';
-        $scope.reverse = $cookies.get('sl_reverse') != undefined ? $cookies.get('sl_reverse') : true;
+        $scope.reverse = $cookies.get('sl_reverse') != undefined ? Boolean($cookies.get('sl_reverse')) : false;
         $scope.sort_by = function (newSortingOrder) {
             $cookies.put('siteListSortOrder', newSortingOrder);
             if ($scope.sortingOrder == newSortingOrder) {
