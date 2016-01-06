@@ -711,6 +711,10 @@
             $location.path('/login');
         } else {
             angular.element('a#siteTab').addClass('active'); //make sure that tab still stays active
+            $scope.status = {
+                phyOpen: false, chemOpen: false, bioOpen: false, microOpen: false, toxOpen: false
+            };
+
             $scope.thisSite = {}; //holder for project (either coming in for edit, or being created on POST )
             $scope.freqDirty = false; $scope.freqToRemove = [];
             $scope.medDirty = false; $scope.medToRemove = [];
