@@ -1,15 +1,20 @@
-﻿
-<legend>Contacts</legend>
+<div class="sigl-edit-form">
+    <legend style="margin-bottom: 25px; margin-top: 0;">Contacts</legend>
+</div>
+
 <!--<button ng-click="delete(c)"><i class="glyphicon glyphicon-remove"></i></button>-->
-<div class="form-group" ng-if="ProjContacts.length > 0" style="height: auto; max-height: 300px;overflow:auto;">
-    <div class="contacts-list-item" ng-repeat="c in ProjContacts">
+
+<div class="form-group" ng-if="ProjContacts.length > 0">
+
+    <div class="current-data-list" ng-repeat="c in ProjContacts">
         <!--<td><button ng-click="RemoveContact(c)"><i class="glyphicon glyphicon-remove"></i></button></td>-->
         <!-- form -->
+        <!-- form -->
         <form editable-form name="rowform" onshow="EditRowClicked($index)" onhide="CancelEditRowClick()" onaftersave="saveContact($data, c.CONTACT_ID)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == c">
-            <button type="submit" ng-disabled="rowform.$waiting || rowform.$invalid" class="btn btn-primary btn-edit-delete">
+            <button type="submit" ng-disabled="rowform.$waiting || rowform.$invalid" class="sigl-btn">
                 Save
             </button>
-            <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default btn-edit-delete">
+            <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="sigl-btn btn-orange">
                 Cancel
             </button>
         </form>
@@ -19,51 +24,57 @@
             <span editable-text="c.SCIENCE_BASE_ID" e-form="rowform" e-name="SCIENCE_BASE_ID">{{c.SCIENCE_BASE_ID}}xxx</span>
             <span editable-text="c.ORGANIZATION_SYSTEM_ID" e-form="rowform" e-name="ORGANIZATION_SYSTEM_ID">{{c.ORGANIZATION_SYSTEM_ID}}</span>
         </div>
+
+        <!--  -->
+
+        <div class="data-display contact-display">
+            <span editable-text="c.NAME" e-required e-style="width:25em;" e-name="NAME" onbeforesave="checkRequiredFields('name', $data)" e-form="rowform"><b>{{ c.NAME }}</b></span>
+            <span editable-text="c.EMAIL" e-style="width:25em;" e-required e-name="EMAIL" onbeforesave="checkRequiredFields('email', $data)" e-form="rowform"> {{ c.EMAIL || '' }}</span>
+            <span editable-text="c.PHONE" e-my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}" e-style="width:25em;" e-name="PHONE" e-form="rowform">{{ c.PHONE || '' }}</span>
+            <br>
+            <span>{{c.OrgName}}<em ng-if="c.DivName">, {{c.DivName}}</em><em ng-if="c.SecName">, {{c.SecName}}</em></span>
+            <div class="showHide">
+                <button class="sigl-btn btn-small" ng-click="addNewOrg()">
+                    Change Contact's Organization
+                </button>
+            </div>
+
+        </div><!--
+        --><div class="data-controls" ng-show="!rowform.$visible">
+            <button class="sigl-btn btn-small" ng-click="rowform.$show()">Edit</button>
+            <button class="sigl-btn btn-orange btn-small" ng-click="RemoveContact(c)">Delete</button>
+        </div>
+
+
+
         <!--ng-show="isEditing"-->
-        <span editable-text="c.NAME" e-required e-style="width:25em;" e-name="NAME" onbeforesave="checkRequiredFields('name', $data)" e-form="rowform"><b>{{ c.NAME }}</b></span><br />
-        <span editable-text="c.EMAIL" e-style="width:25em;" e-required e-name="EMAIL" onbeforesave="checkRequiredFields('email', $data)" e-form="rowform">{{ c.EMAIL || '' }}</span><br />
-        <span editable-text="c.PHONE" e-my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}" e-style="width:25em;" e-name="PHONE" e-form="rowform">{{ c.PHONE || '' }}</span><br />
+
         <!--<div ng-show="isEditing" class="col-md-6"> e-ui-mask="{{'(999) 999-9999'}}"
             <span>
                 <a href ng-click="addNewOrg()">Change Contact's Organization</a>
             </span>
         </div>-->
 
-
-        <div class="col-md-12" style="padding-left: 0;">
-            <span>{{c.OrgName}}</span><span ng-if="c.DivName">, {{c.DivName}}</span><span ng-if="c.SecName">, {{c.SecName}}</span>
-            </span>
-        </div>
-        <div class="col-md-6 showHide" style="margin-top: -20px;">
-            <button class="btn btn-primary" ng-click="addNewOrg()">
-                Change Contact's Organization
-            </button>            
-        </div>
-        <div class="buttons" ng-show="!rowform.$visible">
-            <button class="btn btn-primary btn-edit-delete" ng-click="rowform.$show()">Edit</button>
-            <button class="btn btn-danger btn-edit-delete" ng-click="RemoveContact(c)">Delete</button>
-        </div>
     </div>
-
 </div>
 
-<hr />
 
-<form class="form-horizontal" name="projectForm.Contact">
+
+
+<hr ng-if="ProjContacts.length > 0">
+
+<form class="sigl-edit-form" name="projectForm.Contact">
 
     <fieldset ng-disabled="isEditing">
-        <div class="subheader">Add new contact</div>
+        <div class="subhead">Add new contact</div>
         <!-- NAME -->
-        <div class="form-group required">
-            <label class="col-md-4 control-label req" for="inputNAME">
+        <div class="sigl-edit-form-group">
+            <label class="req" for="inputNAME">
                 Name:
-                <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Enter the contact's first and last name." data-placement="right" tooltip>
+                <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Enter the contact's first and last name." data-placement="right" tooltip>
                 </span>
             </label>
-            <div class="col-md-8">
-                <input class="form-control" id="inputNAME" name="NAME" type="text" placeholder="" ng-model="newContact.NAME" required />
-            </div>&nbsp;
-
+            <input class="form-control" id="inputNAME" name="NAME" type="text" placeholder="" ng-model="newContact.NAME" required />
         </div>
         <!--<div class="form-group">
             <label class="col-md-4 control-label"></label>
@@ -75,74 +86,57 @@
             </div>
         </div>
          ORG section -->
-        <div class="form-group required">
-            <label class="col-md-4 control-label">Organization</label>
-            <div class="col-md-8">
-                <select class="form-control" name="NAME" ng-model="selectedOrgID" ng-options="o.ORGANIZATION_ID as o.ORGANIZATION_NAME for o in allOrganizations | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)" required></select>
-                <button class="btn btn-primary" ng-click="addNewOrg()">
-                    Add New
-                </button>
-            </div>
+        <div class="sigl-edit-form-group">
+            <label>Organization</label>
+            <select style="display:block;" class="form-control" name="NAME" ng-model="selectedOrgID" ng-options="o.ORGANIZATION_ID as o.ORGANIZATION_NAME for o in allOrganizations | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)" required></select>
+            <button class="sigl-form-add-new" ng-click="addNewOrg()">
+                Add New
+            </button>
         </div>
 
-        <div class="form-group">
-            <label class="col-md-4 control-label">Division</label>
-            <div class="col-md-8">
-                <select class="form-control" ng-model="selectedDivID" ng-options="d.DIVISION_ID as d.DIVISION_NAME for d in alldivs | orderBy: 'DIVISION_NAME'" ng-change="getSecs(selectedDivID)"></select>
-                <button class="btn btn-primary" ng-click="addNewOrg()">
-                    Add New
-                </button>
-            </div>
+        <div class="sigl-edit-form-group">
+            <label>Division</label>
+            <select class="form-control" style="display: block" ng-model="selectedDivID" ng-options="d.DIVISION_ID as d.DIVISION_NAME for d in alldivs | orderBy: 'DIVISION_NAME'" ng-change="getSecs(selectedDivID)"></select>
+            <button class="sigl-form-add-new" ng-click="addNewOrg()">
+                Add New
+            </button>
         </div>
 
-        <div class="form-group">
-            <label class="col-md-4 control-label">Section</label>
-            <div class="col-md-8">
-                <select class="form-control" ng-model="selectedSecID" ng-options="s.SECTION_ID as s.SECTION_NAME for s in allsecs | orderBy: 'SECTION_NAME'"></select>
-                <button class="btn btn-primary" ng-click="addNewOrg()">
-                    Add New
-                </button>
-            </div>
+        <div class="sigl-edit-form-group">
+            <label>Section</label>
+            <select style="display: block" class="form-control" ng-model="selectedSecID" ng-options="s.SECTION_ID as s.SECTION_NAME for s in allsecs | orderBy: 'SECTION_NAME'"></select>
+            <button class="sigl-form-add-new" ng-click="addNewOrg()">
+                Add New
+            </button>
         </div>
 
         <!-- Email -->
-        <div class="form-group required">
-            <label class="col-md-4 control-label req" for="inputEMAIL">
+        <div class="sigl-edit-form-group">
+            <label class="req" for="inputEMAIL">
                 Email:
-                <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Enter the contact's email address." data-placement="right" tooltip></span>
+                <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Enter the contact's email address." data-placement="right" tooltip></span>
             </label>
-            <div class="col-md-8">
-                <input class="form-control" type="email" placeholder="" ng-model="newContact.EMAIL" required />
-            </div>&nbsp;
+            <input type="email" placeholder="" ng-model="newContact.EMAIL" required />
         </div>
 
         <!-- Phone -->
-        <div class="form-group">
-            <label class="col-md-4 control-label req" for="inputPHONE">
+        <div class="sigl-edit-form-group">
+            <label class="req" for="inputPHONE">
                 Phone:
-                <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip"
                       title="Enter the contact's phone number. To add an extension, immediately following the phone number type 'x' and then the extension number."
                       data-placement="right" tooltip>
                 </span>
             </label>
-            <div class="col-md-8">
-                <input class="form-control" type="text" my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}" ng-model="newContact.PHONE" />
-
-            </div>&nbsp;
-
+            <input type="text" my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}" ng-model="newContact.PHONE" />
         </div>
 
 
         <!--submit button-->
-        <div class="form-group">
-            <div class="col-md-4 col-md-offset-2">
-                <span>
-                    <button class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="AddContact(projectForm.Contact.$valid)">
-                        Save
-                    </button>
-                </span>
-
-            </div>
+        <div class="sigl-edit-form-group" style="text-align: right;">
+            <button class="sigl-btn" style="width:80px;margin-right:10px" ng-click="AddContact(projectForm.Contact.$valid)">
+                Save
+            </button>
         </div>
 
     </fieldset>

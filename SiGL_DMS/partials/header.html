@@ -1,19 +1,11 @@
-﻿<div ng-controller="navCtrl" class="navbar navbar-default">
-    <div class="container-fluid" style="background-color:gray;">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">
-                <img alt="Brand" src="images/usgsLogo.png">
-            </a>
-        </div>
-        <div>
-            <div>
-                <h2>SiGL: Data Management System (DMS)</h2>
-            </div>
-        </div>
-        <div ng-show="isAuth.val">
-            <span>Welcome, {{username}}</span>
-            <button ng-click="logout()">LOG OFF</button>
-        </div>
+﻿<div ng-controller="navCtrl" id="main-nav">
+    <a class="navbar-brand" href="#">
+        <img alt="Brand" src="images/usgsLogo.png">
+    </a>
+    <h2>SiGL: Data Management System (DMS)</h2>
+    <div ng-show="isAuth.val">
+        <span>Welcome, {{username}}</span>
+        <button ng-click="logout()">LOG OFF</button>
     </div>
 
     <div class="container">
@@ -25,5 +17,3 @@
         </div>-->
     </div>
 </div>
-
-<br clear="all" />

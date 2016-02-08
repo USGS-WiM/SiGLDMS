@@ -1,10 +1,10 @@
 ﻿(function () {
     "use strict";
 
-    //look up common service module, and register the new factory with that module 
+    //look up common service module, and register the new factory with that module
     var laMPResource = angular.module('laMPResource', ['ngResource']);
-    var rootURL = "/LaMPServices";
-   // var rootURL = "/LaMPServicesTest";
+    // var rootURL = "https://sigldev.wim.usgs.gov/LaMPServicesTest";
+   var rootURL = "/LaMPServicesTest";
 
     //CONTACT
     laMPResource.factory('CONTACT', ['$resource', function ($resource) {
@@ -34,7 +34,7 @@
             {}, {
                 query: {},
                 addDataManager: { method: 'POST', cache: false, isArray: false, url: rootURL + '/dataManagers/:pass/addDataManager' },
-                getDMProject: { method: 'GET', isArray: true, url: rootURL + '/projects/IndexProjects.json' }, //?DataManager={dmID}     
+                getDMProject: { method: 'GET', isArray: true, url: rootURL + '/projects/IndexProjects.json' }, //?DataManager={dmID}
                 getAll: { method: 'GET', isArray: true },
                 getDMListModel: {method: 'GET', isArray: true, url: rootURL + '/dataManagers/DMList.json'},
                 changePW: {method:'GET', isArray:false, url: rootURL + '/dataManagers.json'},
@@ -104,7 +104,7 @@
         return $resource(rootURL + '/Organizations/:id.json',
             {}, {
                 query: { isArray: true },
-                getAll: {method: 'GET', isArray: true},               
+                getAll: {method: 'GET', isArray: true},
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
@@ -115,7 +115,7 @@
         return $resource(rootURL + '/OrgResources/:id.json',
             {}, {
                 query: { isArray: true },
-                getAll: { method: 'GET', isArray: true },                
+                getAll: { method: 'GET', isArray: true },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
@@ -178,12 +178,12 @@
                 delete: { method: 'DELETE', cache: false, isArray: false },
             });
     }]);
-    
+
     //PROJ_DURATION
     laMPResource.factory('PROJ_DURATION', ['$resource', function ($resource) {
         return $resource(rootURL + '/ProjectDuration/:id.json',
             {}, {
-                query: { isArray: true },                
+                query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
@@ -194,14 +194,14 @@
     laMPResource.factory('PROJ_STATUS', ['$resource', function ($resource) {
         return $resource(rootURL + '/ProjectStatus/:id.json',
             {}, {
-                query: { isArray: true },                
+                query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
                 save: { method: 'POST', cache: false, isArray: false },
                 update: { method: 'PUT', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
     }]);
-   
+
     //PUBLICATION
     laMPResource.factory('PUBLICATION', ['$resource', function ($resource) {
         return $resource(rootURL + '/publications/:id.json',
@@ -245,12 +245,12 @@
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
     }]);//end of SECTION
- 
+
     //SITE
     laMPResource.factory('SITE', ['$resource', function ($resource) {
         return $resource(rootURL + '/sites/:id.json',
             {}, {
-                query: {},                
+                query: {},
                 getSiteParameters: { isArray: true, url: rootURL + '/sites/:id/parameters.json' },
                 addSiteParameter: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addParameter' },
                 deleteSiteParameter: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/removeParameter' },
@@ -275,7 +275,7 @@
                 getAll: { method: 'GET', isArray: true }
             });
     }]);
-   
+
     //STATUS_TYPE
     laMPResource.factory('STATUS_TYPE', ['$resource', function ($resource) {
         return $resource(rootURL + '/status/:id.json',

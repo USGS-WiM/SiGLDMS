@@ -2,35 +2,28 @@
     Back to Project List
 </button></div>-->
 
-<div class="panel panel-primary" id="panel-details">
-    <div class="panel-heading clearfix" style="font-size:large">
-        <span class="panel-title pull-left">{{title}}</span>
-        <div class="btn-group pull-right">
-            <p class="" style="font-size:small">
-                Publish project on SiGL Mapper?
-            </p>
-            <span class="pull-right">
-                <label ng-model="readyFlagModel" ng-click="Flagged('Yes')" uib-btn-radio="'Yes'">Yes</label>
-                <label ng-model="readyFlagModel" ng-click="Flagged('No')" uib-btn-radio="'No'">No</label>
-            </span>
+<div class="sigl-section">
+    <div class="edit-section-heading">
+        {{title}}
+        <div id="edit-publish-buttons">
+            <h4>Publish project on SiGL Mapper?</h4>
+            <label ng-model="readyFlagModel" ng-click="Flagged('Yes')" uib-btn-radio="'Yes'" class="publish-yes">Yes</label><!--
+            --><label ng-model="readyFlagModel" ng-click="Flagged('No')" uib-btn-radio="'No'" class="publish-no">No</label>
         </div>
-
     </div>
 
-    <div class="panel-body">
-        <div class="wizard">
+
+
+        <div id="sigl-edit-left">
             <a ui-sref=".info" ui-sref-active="active">Project Information</a>
             <a ui-sref=".cooperator" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Organizations<span class="badge pull-right">{{coopCount.total}}</span></a>
             <a ui-sref=".data" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Data Sources<span class="badge pull-right">{{datumCount.total}}</span></a>
             <a ui-sref=".contact" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Contacts<span class="badge pull-right">{{contactCount.total}}</span></a>
             <a ui-sref=".publication" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Publications<span class="badge pull-right">{{pubCount.total}}</span></a>
             <a ui-sref=".site.siteList" id="siteTab" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Sites<span class="badge pull-right">{{sitesCount.total}}</span></a>
+        </div><!--
+        --><div ui-view id="sigl-edit-right"></div>
 
-        </div>
-
-        <div ui-view id="edit-right"></div>
-
-    </div>
 
 </div>
 
@@ -39,206 +32,167 @@
     <div class="modal-header">
         <h3 class="modal-title">Project Information</h3>
     </div>
-    <form class="form-horizontal" name="projectForm.Info">
+    <form class="sigl-modal-form" name="projectForm.Info">
         <fieldset>
             <div class="modal-body">
 
                 <!-- Project Name -->
-                <div class="form-group required" ng-class="{'has-error':projectForm.Info.NAME.$invalid && projectForm.Info.NAME.$dirty}">
-                    <label class="col-md-4 control-label req" for="NAME">Project Name:</label>
-                    <div class="col-md-8">
-                        <input class="form-control" id="NAME" name="NAME" ng-enter="save(projectForm.Info.$valid)" ng-model="aProject.NAME" type="text" placeholder="Project Name" required />
-                    </div>
-
+                <div class="sigl-modal-form-group required" ng-class="{'has-error':projectForm.Info.NAME.$invalid && projectForm.Info.NAME.$dirty}">
+                    <label class="req" for="NAME">Project Name:</label>
+                    <input id="NAME" name="NAME" ng-enter="save(projectForm.Info.$valid)" ng-model="aProject.NAME" type="text" placeholder="Project Name" required />
                 </div>
+
                 <hr />
+
                 <!-- Project Duration -->
-                <div class="form-group required" ng-class="{'has-error':projectForm.Info.PROJ_DURATION_ID.$invalid && projectForm.Info.PROJ_DURATION_ID.$dirty}">
-                    <label class="col-md-4 control-label req" for="PROJ_DURATION_ID">
+                <div class="sigl-modal-form-group required" ng-class="{'has-error':projectForm.Info.PROJ_DURATION_ID.$invalid && projectForm.Info.PROJ_DURATION_ID.$dirty}">
+                    <label class="req" for="PROJ_DURATION_ID">
                         Project Duration:
-                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Select the category that best represents the length (or anticipated length) of your project.'>
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Select the category that best represents the length (or anticipated length) of your project.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
-
-                        <!--<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right"
-                              title="Select the category that best represents the length (or anticipated length) of your project." uib-tooltip></span>-->
                     </label>
-                    <div class="col-md-8">
-                        <select class="form-control" id="PROJ_DURATION_ID" name="PROJ_DURATION_ID" ng-model="aProject.PROJ_DURATION_ID" 
-                                ng-options="d.PROJ_DURATION_ID as d.DURATION_VALUE for d in DurationList" required>
-                            <option value=""></option>
-                        </select>
-                    </div>
+                    <select id="PROJ_DURATION_ID" name="PROJ_DURATION_ID" ng-model="aProject.PROJ_DURATION_ID"
+                            ng-options="d.PROJ_DURATION_ID as d.DURATION_VALUE for d in DurationList" required>
+                        <option value=""></option>
+                    </select>
                 </div>
 
                 <!-- Project Status* -->
-                <div class="form-group required" ng-class="{'has-error':projectForm.Info.PROJ_STATUS_ID.$invalid && projectForm.Info.PROJ_STATUS_ID.$dirty}">
-                    <label class="col-md-4 control-label req" for="PROJ_STATUS_ID">
+                <div class="sigl-modal-form-group required" ng-class="{'has-error':projectForm.Info.PROJ_STATUS_ID.$invalid && projectForm.Info.PROJ_STATUS_ID.$dirty}">
+                    <label class="req" for="PROJ_STATUS_ID">
                         Project Status:
-                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Select the category that best describes the current status of your project.'>
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Select the category that best describes the current status of your project.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
                     </label>
-                    <div class="col-md-8">
-                        <select class="form-control" id="PROJ_STATUS_ID" name="PROJ_STATUS_ID" ng-model="aProject.PROJ_STATUS_ID"
-                                ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList" ng-change="statusChanged()" required>
-                            <option value=""></option>
-                        </select>
-                    </div>
+                    <select id="PROJ_STATUS_ID" name="PROJ_STATUS_ID" ng-model="aProject.PROJ_STATUS_ID"
+                            ng-options="s.PROJ_STATUS_ID as s.STATUS_VALUE for s in StatusList" ng-change="statusChanged()" required>
+                        <option value=""></option>
+                    </select>
                 </div>
 
                 <!-- Project Start Date -->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="START_DATE">Project Start Date:</label>
-                    <div class="col-md-8">
-                        <div class="input-group">
-                            <input class="form-control" id="START_DATE" name="sd" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.sd"
-                                   ng-change="compareDates('start')" ng-model="aProject.START_DATE" />
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="open($event, 'sd')">
-                                    <i class="glyphicon glyphicon-calendar" />
-                                </button>
-                            </span>
-                        </div>
-                    </div>
+                <div class="sigl-modal-form-group">
+                    <label for="START_DATE">Project Start Date:</label>
+                    <input class="input-calendar" id="START_DATE" name="sd" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.sd"
+                           ng-change="compareDates('start')" ng-model="aProject.START_DATE" /><!--
+                    --><button type="button" class="btn-cal" ng-click="open($event, 'sd')">
+                        <i class="glyphicon glyphicon-calendar" />
+                    </button>
                 </div>
 
                 <!-- Project Completion Date -->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="END_DATE">
+                <div class="sigl-modal-form-group">
+                    <label for="END_DATE">
                         Project Completion Date:
-                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='If project is ongoing, leave this field blank.'>
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='If project is ongoing, leave this field blank.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
                     </label>
-                    <div class="col-md-8">
-                        <div class="input-group">
-                            <input class="form-control" id="END_DATE" name="ed" ng-disabled="aProject.PROJ_STATUS_ID == 1" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
-                                   ng-change="compareDates('end')" ng-model="aProject.END_DATE" />
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="open($event, 'ed')">
-                                    <i class="glyphicon glyphicon-calendar" />
-                                </button>
-                            </span>
-                        </div>&nbsp;
-                    </div>
+                    <input class="input-calendar" id="END_DATE" name="ed" ng-disabled="aProject.PROJ_STATUS_ID == 1" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
+                           ng-change="compareDates('end')" ng-model="aProject.END_DATE" /><!--
+                    --><button type="button" class="btn-cal" ng-click="open($event, 'ed')">
+                        <i class="glyphicon glyphicon-calendar" />
+                    </button>
                 </div>
 
                 <hr />
 
                 <!-- Project Objectives -->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="PROJ_OBJECTIVES">
+                <div class="sigl-modal-form-group">
+                    <label for="PROJ_OBJECTIVES">
                         Project Objectives:
-                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Select the objectives that best describe the purpose of your project.'>
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Select the objectives that best describe the purpose of your project.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
                     </label>
-                    <div class="col-md-8">
-                        <div isteven-multi-select
-                             input-model="Objectivesdata"
-                             output-model="Objectivesmodel.value"
-                             button-label="OBJECTIVE"
-                             item-label="OBJECTIVE"
-                             max-height="300px"
-                             on-item-click="ObjClick(data)"
-                             tick-property="selected"
-                             helper-elements="filter"
-                             class="multi-selector">
-                        </div>&nbsp;
-
-
+                    <div isteven-multi-select
+                         input-model="Objectivesdata"
+                         output-model="Objectivesmodel.value"
+                         button-label="OBJECTIVE"
+                         item-label="OBJECTIVE"
+                         max-height="300px"
+                         on-item-click="ObjClick(data)"
+                         tick-property="selected"
+                         helper-elements="filter"
+                         class="sigl-multi-selector">
                     </div>
                 </div>
 
                 <!-- Project Description -->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="DESCRIPTION">
+                <div class="sigl-modal-form-group">
+                    <label for="DESCRIPTION">
                         Description:
-                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Briefly describe the goals and/or details of your project.'>
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Briefly describe the goals and/or details of your project.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
                     </label>
-                    <div class="col-md-8">
-                        <textarea class="form-control" id="DESCRIPTION" type="text" rows="3" placeholder="Project Description" ng-model="aProject.DESCRIPTION" elastic />
-                    </div>
+                    <textarea id="DESCRIPTION" type="text" rows="3" placeholder="Project Description" ng-model="aProject.DESCRIPTION" elastic />
                 </div>
 
                 <hr />
+
                 <!-- Project Keywords -->
-                <div class="form-group" ng-if="ProjectKeywords.length > 0">
-                    <label class="col-md-4 control-label" for="ProjKEYWORDS">
+                <div class="sigl-modal-form-group" ng-if="ProjectKeywords.length > 0">
+                    <label for="ProjKEYWORDS">
                         Project Keywords:
-                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Type a keyword and then click add. Can add multiple keywords.'>
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Type a keyword and then click add. Can add multiple keywords.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
                     </label>
-                    <div class="col-md-8 ">
-                        <ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button ng-click="removeKey(key, $index)"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul>
-                    </div>
+                    <ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button ng-click="removeKey(key, $index)"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label req" for="ProjKeyword">Add Project Keyword:</label>
-                    <div class="col-md-7">
-                        <input class="form-control" ng-enter="addThisKeyword()" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="Enter one keyword at a time" ng-model="newKey.value" />
-                    </div>
-                    <button type="button" class="col-md-1" ng-click="addThisKeyword()">Add</button>
+
+                <div class="sigl-modal-form-group">
+                    <label class="req" for="ProjKeyword">Add Project Keyword:</label>
+                    <input class="input-with-add-button" ng-enter="addThisKeyword()" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="Enter one keyword at a time" ng-model="newKey.value" /><!--
+                    --><button type="button" class="input-add-button" ng-click="addThisKeyword()">Add</button>
                 </div>
 
                 <hr />
+
                 <!-- Project Websites -->
-                <div class="form-group" ng-if="urls.length > 0">
-                    <label class="col-md-4 control-label" for="URL">Project Websites:</label>
-                    <div class="col-md-8">
-                        <ul><li style="list-style:none" data-ng-repeat="key in urls"><button ng-click="removeUrl(key)"><i class="glyphicon glyphicon-remove"></i></button>  {{key}}</li></ul>
-                    </div>
+                <div class="sigl-modal-form-group" ng-if="urls.length > 0">
+                    <label for="URL">Project Websites:</label>
+                    <ul><li style="list-style:none" data-ng-repeat="key in urls"><button ng-click="removeUrl(key)" class="list-remove-item"><i class="glyphicon glyphicon-remove"></i></button>  {{key}}</li></ul>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label req" for="URL">
+
+                <div class="sigl-modal-form-group">
+                    <label class="req" for="URL">
                         Add Project Website:
-                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='If your project has a website, enter the URL here. If information about your project can be found in multiple locations, add them here.'>
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='If your project has a website, enter the URL here. If information about your project can be found in multiple locations, add them here.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
                     </label>
-                    <div class="col-md-7">
-                        <input class="form-control" ng-enter="addProjURL(projectForm.Info)" ng-model="newURL.value" name="inputURL" id="inputURL" type="url" placeholder="http://www.google.com" http-prefix />
-                    </div>
-                    <button type="button" class="col-md-1" ng-click="addProjURL(projectForm.Info)">Add</button>
+                    <input class="input-with-add-button" ng-enter="addProjURL(projectForm.Info)" ng-model="newURL.value" name="inputURL" id="inputURL" type="url" placeholder="http://www.google.com" http-prefix /><!--
+                    --><button type="button" class="input-add-button" ng-click="addProjURL(projectForm.Info)">Add</button>
                 </div>
 
                 <!-- Project Additional Info -->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="ADDITIONAL_INFO">
+                <div class="sigl-modal-form-group">
+                    <label for="ADDITIONAL_INFO">
                         Additional Information:
-                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Include any other information about your project here.'>
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Include any other information about your project here.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
                     </label>
-                    <div class="col-md-8">
-                        <textarea class="form-control" id="ADDITIONAL_INFO" type="text" rows="3" placeholder="Additional Information" ng-model="aProject.ADDITIONAL_INFO" elastic />
-                    </div>
+                    <textarea id="ADDITIONAL_INFO" type="text" rows="3" placeholder="Additional Information" ng-model="aProject.ADDITIONAL_INFO" elastic />
                 </div>
 
                 <!--submit and cancel buttons-->
-                <div class="form-group">
-                    <div class="col-md-4 col-md-offset-2">
-                        <span>
-                            <button ng-show="aProject.PROJECT_ID == undefined" class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="create(projectForm.Info.$valid)">
-                                <span>Create</span>
-                            </button>
-                        </span>
-                        <span>
-                            <button ng-show="aProject.PROJECT_ID != undefined" class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="save(projectForm.Info.$valid)">
-                                <span>Save</span>
-                            </button>
-                        </span>
-                        <span>
-                            <button type="button" class="btn btn-default" ng-click="cancel()">
-                                <span>Cancel</span>
-                            </button>
-                        </span>
-                    </div>
+                <div class="sigl-modal-form-group" style="text-align:center; padding-top: 15px;">
+                    <button type="button" class="sigl-btn btn-orange" ng-click="cancel()">
+                        Cancel
+                    </button>
+                    <button ng-show="aProject.PROJECT_ID == undefined" class="sigl-btn" style="width:80px;margin-right:10px" ng-click="create(projectForm.Info.$valid)">
+                        Create
+                    </button>
+                    <button ng-show="aProject.PROJECT_ID != undefined" class="sigl-btn" style="width:80px;margin-right:10px" ng-click="save(projectForm.Info.$valid)">
+                        Save
+                    </button>
                 </div>
+
             </div> <!-- end modal-body -->
         </fieldset>
     </form>
@@ -250,283 +204,270 @@
     <div class="modal-header">
         <h3 class="modal-title">Site Information</h3>
     </div>
-    <form class="form-horizontal" name="projectForm.SiteInfo">
+    <form class="sigl-modal-form" name="projectForm.SiteInfo">
         <fieldset>
             <div class="modal-body">
 
                 <!--<button style="margin-left:10px" class="btn btn-primary" ui-sref="projectEdit.site.siteList">Back to Site List</button>-->
                 <!--Site Name*-->
-                <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.NAME.$invalid && projectForm.SiteInfo.NAME.$dirty}">
-                    <label class="col-md-3 control-label req" for="NAME">Site Name:</label>
-                    <div class="col-md-6">
-                        <input class="form-control" id="NAME" name="NAME" ng-model="thisSite.NAME" type="text" placeholder="Site Name" required />
-                    </div>
+                <div class="sigl-modal-form-group" ng-class="{'has-error':projectForm.SiteInfo.NAME.$invalid && projectForm.SiteInfo.NAME.$dirty}">
+                    <label class="req" for="NAME">Site Name:</label>
+                    <input id="NAME" name="NAME" ng-model="thisSite.NAME" type="text" placeholder="Site Name" required />
                 </div>
 
                 <!--Latitude*-->
-                <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.LATITUDE.$invalid && projectForm.SiteInfo.LATITUDE.$dirty}">
-                    <label class="col-md-3 control-label req" for="LATITUDE">Latitude:</label>
-                    <div class="col-md-6">
-                        <input class="form-control" ng-keypress="isNum($event)" ng-model-options="{ updateOn: 'blur' }" ng-change="checkValue()"
+                <div class="sigl-modal-form-group" ng-class="{'has-error':projectForm.SiteInfo.LATITUDE.$invalid && projectForm.SiteInfo.LATITUDE.$dirty}">
+                    <label class="req" for="LATITUDE">
+                        Latitude:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Latitude should be entered in NAD83 decimal degrees (positive values).'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <input ng-keypress="isNum($event)" ng-model-options="{ updateOn: 'blur' }" ng-change="checkValue()"
                                name="LATITUDE" id="LATITUDE" ng-model="thisSite.LATITUDE" type="text" placeholder="Latitude" required />
-                    </div>
-                    <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Latitude should be entered in NAD83 decimal degrees (positive values).'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
                 </div>
 
                 <!--Longitude*-->
-                <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.LONGITUDE.$invalid && projectForm.SiteInfo.LONGITUDE.$dirty}">
-                    <label class="col-md-3 control-label req" for="LONGITUDE">Longitude:</label>
-                    <div class="col-md-6">
-                        <input class="form-control" ng-keypress="isNum($event)" id="LONGITUDE" name="LONGITUDE" ng-model-options="{ updateOn: 'blur' }"
+                <div class="sigl-modal-form-group" ng-class="{'has-error':projectForm.SiteInfo.LONGITUDE.$invalid && projectForm.SiteInfo.LONGITUDE.$dirty}">
+                    <label class="req" for="LONGITUDE">
+                        Longitude:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right"
+                                uib-tooltip='Longitute should be entered in NAD83 decimal degrees (negative values indicate western hemisphere).'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <input ng-keypress="isNum($event)" id="LONGITUDE" name="LONGITUDE" ng-model-options="{ updateOn: 'blur' }"
                                ng-change="checkValue()" ng-model="thisSite.LONGITUDE" type="text" placeholder="Longitude" required />
-                    </div>
-                    <button type="button" class="borderLess" tooltip-placement="right"
-                            uib-tooltip='Longitute should be entered in NAD83 decimal degrees (negative values indicate western hemisphere).'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
                 </div>
 
                 <!--Country*-->
-                <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.COUNTRY.$invalid && projectForm.SiteInfo.COUNTRY.$dirty}">
-                    <label class="col-md-3 control-label req" for="COUNTRY">Country:</label>
-                    <div class="col-md-6">
-                        <select class="form-control" id="COUNTRY" name="COUNTRY" ng-model="thisSite.COUNTRY" ng-options="c for c in allCountries" required>
-                            <option value=""></option>
-                        </select>
-                    </div>
-                    <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Which country is this site located in?'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
+                <div class="sigl-modal-form-group" ng-class="{'has-error':projectForm.SiteInfo.COUNTRY.$invalid && projectForm.SiteInfo.COUNTRY.$dirty}">
+                    <label class="req" for="COUNTRY">
+                        Country:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Which country is this site located in?'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <select id="COUNTRY" name="COUNTRY" ng-model="thisSite.COUNTRY" ng-options="c for c in allCountries" required>
+                        <option value=""></option>
+                    </select>
+
                 </div>
 
                 <!--State/Province*-->
-                <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.STATE_PROVINCE.$invalid && projectForm.SiteInfo.STATE_PROVINCE.$dirty}">
-                    <label class="col-md-3 control-label req" for="STATE_PROVINCE">State/Province:</label>
-                    <div class="col-md-6">
-                        <select class="form-control" id="STATE_PROVINCE" name="STATE_PROVINCE" ng-model="thisSite.STATE_PROVINCE"
-                                ng-options="s for s in allStates" required>
-                            <option value=""></option>
-                        </select>
-                    </div>
-                    <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Which state (U.S. only) or province (Canada only) is this site located in?'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
+                <div class="sigl-modal-form-group" ng-class="{'has-error':projectForm.SiteInfo.STATE_PROVINCE.$invalid && projectForm.SiteInfo.STATE_PROVINCE.$dirty}">
+                    <label class="req" for="STATE_PROVINCE">
+                        State/Province:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Which state (U.S. only) or province (Canada only) is this site located in?'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <select class="form-control" id="STATE_PROVINCE" name="STATE_PROVINCE" ng-model="thisSite.STATE_PROVINCE"
+                            ng-options="s for s in allStates" required>
+                        <option value=""></option>
+                    </select>
                 </div>
 
                 <!--Lake*-->
-                <div class="form-group required" ng-class="{'has-error':projectForm.SiteInfo.LAKE_TYPE_ID.$invalid && projectForm.SiteInfo.LAKE_TYPE_ID.$dirty}">
-                    <label class="col-md-3 control-label req" for="LAKE_TYPE_ID">Lake:</label>
-                    <div class="col-md-6">
-                        <select class="form-control" id="LAKE_TYPE_ID" name="LAKE_TYPE_ID" ng-model="thisSite.LAKE_TYPE_ID"
-                                ng-options="l.LAKE_TYPE_ID as l.LAKE for l in allLakes" required>
-                            <option value=""></option>
-                        </select>
-                    </div>
-                    <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Which Great Lake (or Lakewide Management Plan) is this site associated with?'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
+                <div class="sigl-modal-form-group" ng-class="{'has-error':projectForm.SiteInfo.LAKE_TYPE_ID.$invalid && projectForm.SiteInfo.LAKE_TYPE_ID.$dirty}">
+                    <label class="req" for="LAKE_TYPE_ID">
+                        Lake:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Which Great Lake (or Lakewide Management Plan) is this site associated with?'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <select class="form-control" id="LAKE_TYPE_ID" name="LAKE_TYPE_ID" ng-model="thisSite.LAKE_TYPE_ID"
+                            ng-options="l.LAKE_TYPE_ID as l.LAKE for l in allLakes" required>
+                        <option value=""></option>
+                    </select>
                 </div>
 
                 <!--Waterbody-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="WATERBODY">Waterbody:</label>
-                    <div class="col-md-6">
-                        <input class="form-control" id="WATERBODY" name="WATERBODY" ng-model="thisSite.WATERBODY" type="text" placeholder="Waterbody" />
-                    </div>
-                    <button type="button" class="borderLess" tooltip-placement="right"
-                            uib-tooltip='Identify any additional waterbodies this site is associated with. Separate distinct waterbody names with a comma.'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
+                <div class="sigl-modal-form-group">
+                    <label for="WATERBODY">
+                        Waterbody:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right"
+                                uib-tooltip='Identify any additional waterbodies this site is associated with. Separate distinct waterbody names with a comma.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <input class="form-control" id="WATERBODY" name="WATERBODY" ng-model="thisSite.WATERBODY" type="text" placeholder="Waterbody" />
                 </div>
 
                 <!--Watershed (8-digit HUC)-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="WATERSHED_HUC8">Watershed (8-digit HUC):</label>
-                    <div class="col-md-6">
-                        <input class="form-control" id="WATERSHED_HUC8" name="WATERSHED_HUC8" ng-model="thisSite.WATERSHED_HUC8" type="text" ui-mask="{{'99999999'}}" />
-                    </div>
-                    <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Enter the 8-digit HUC (hydrologic unit code, ex. 04030204) for this site.'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
+                <div class="sigl-modal-form-group">
+                    <label for="WATERSHED_HUC8">
+                        Watershed (8-digit HUC):
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Enter the 8-digit HUC (hydrologic unit code, ex. 04030204) for this site.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <input class="form-control" id="WATERSHED_HUC8" name="WATERSHED_HUC8" ng-model="thisSite.WATERSHED_HUC8" type="text" ui-mask="{{'99999999'}}" />
                 </div>
 
                 <!--Site Description-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="DESCRIPTION">Site Description:</label>
-                    <div class="col-md-6">
-                        <textarea class="form-control" id="DESCRIPTION" type="text" rows="3" placeholder="Site Description" ng-model="thisSite.DESCRIPTION" elastic />
-                        <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Include any site description or additional location information here.'>
+                <div class="sigl-modal-form-group">
+                    <label for="DESCRIPTION">
+                        Site Description:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Include any site description or additional location information here.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
-                    </div>
+                    </label>
+                    <textarea class="form-control" id="DESCRIPTION" type="text" rows="3" placeholder="Site Description" ng-model="thisSite.DESCRIPTION" elastic />
                 </div>
 
                 <!--Status-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="STATUS_TYPE_ID">Status:</label>
-                    <div class="col-md-6">
-                        <select class="form-control" id="STATUS_TYPE_ID" name="STATUS_TYPE_ID" ng-model="thisSite.STATUS_TYPE_ID"
-                                ng-options="st.STATUS_ID as st.STATUS for st in allStats">
-                            <option value="0"></option>
-                        </select>
-                    </div>
-                    <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Indicate if your site is currently being monitored (at any sampling frequency).'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
+                <div class="sigl-modal-form-group">
+                    <label for="STATUS_TYPE_ID">
+                        Status:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Indicate if your site is currently being monitored (at any sampling frequency).'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <select class="form-control" id="STATUS_TYPE_ID" name="STATUS_TYPE_ID" ng-model="thisSite.STATUS_TYPE_ID"
+                            ng-options="st.STATUS_ID as st.STATUS for st in allStats">
+                        <option value="0"></option>
+                    </select>
                 </div>
 
                 <hr />
 
                 <!--Resource Component-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="SITE_RESOURCES">Resource Component:</label>
-                    <div class="col-md-6">
-                        <div isteven-multi-select
-                             input-model="Resourcedata"
-                             output-model="Resourcemodel.value"
-                             button-label="RESOURCE_NAME"
-                             item-label="RESOURCE_NAME"
-                             max-height="300px"
-                             on-item-click="ResClick(data)"
-                             tick-property="selected"
-                             helper-elements="filter">
-                        </div>
+                <div class="sigl-modal-form-group">
+                    <label for="SITE_RESOURCES">
+                        Resource Component:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Select where the sampling or analysis occurred.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <div isteven-multi-select
+                         input-model="Resourcedata"
+                         output-model="Resourcemodel.value"
+                         button-label="RESOURCE_NAME"
+                         item-label="RESOURCE_NAME"
+                         max-height="300px"
+                         on-item-click="ResClick(data)"
+                         tick-property="selected"
+                         helper-elements="filter">
                     </div>
-                    <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Select where the sampling or analysis occurred.'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
                 </div>
 
                 <hr />
 
                 <!--Media-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="SITE_MEDIA">Media:</label>
-                    <div class="col-md-6">
-                        <div isteven-multi-select
-                             input-model="Mediadata"
-                             output-model="Mediamodel.value"
-                             button-label="MEDIA"
-                             item-label="MEDIA"
-                             max-height="300px"
-                             on-item-click="MedClick(data)"
-                             tick-property="selected"
-                             helper-elements="filter">
-                        </div>
+                <div class="sigl-modal-form-group">
+                    <label for="SITE_MEDIA">
+                        Media:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Select what type of media was sampled or analyzed here.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <div isteven-multi-select
+                         input-model="Mediadata"
+                         output-model="Mediamodel.value"
+                         button-label="MEDIA"
+                         item-label="MEDIA"
+                         max-height="300px"
+                         on-item-click="MedClick(data)"
+                         tick-property="selected"
+                         helper-elements="filter">
                     </div>
-                    <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Select what type of media was sampled or analyzed here.'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
                 </div>
 
                 <hr />
 
                 <!--Sampling Frequency-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="SITE_FREQUENCY">Sampling Frequency:</label>
-                    <div class="col-md-6">
-                        <div isteven-multi-select
-                             input-model="Frequencydata"
-                             output-model="Frequencymodel.value"
-                             button-label="FREQUENCY"
-                             item-label="FREQUENCY"
-                             max-height="300px"
-                             on-item-click="FreqClick(data)"
-                             tick-property="selected"
-                             helper-elements="filter">
-                        </div>
+                <div class="sigl-modal-form-group">
+                    <label for="SITE_FREQUENCY">
+                        Sampling Frequency:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Indicate how frequently this site was sampled or analyzed.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <div isteven-multi-select
+                         input-model="Frequencydata"
+                         output-model="Frequencymodel.value"
+                         button-label="FREQUENCY"
+                         item-label="FREQUENCY"
+                         max-height="300px"
+                         on-item-click="FreqClick(data)"
+                         tick-property="selected"
+                         helper-elements="filter">
                     </div>
-                    <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='Indicate how frequently this site was sampled or analyzed.'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
                 </div>
 
                 <hr />
 
                 <!--Sampling Start Date  ng-controller="datePickrCtrl"-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="START_DATE">Sampling Start Date:</label>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <input class="form-control" id="START_DATE" name="sd" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.sd"
-                                   ng-change="compareSiteDates('start')" ng-model="thisSite.START_DATE" />
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="open($event, 'sd')">
-                                    <i class="glyphicon glyphicon-calendar" />
-                                </button>
-                            </span>
-                        </div>
-                    </div>
+                <div class="sigl-modal-form-group">
+                    <label for="START_DATE">Sampling Start Date:</label>
+                    <input class="input-calendar" id="START_DATE" name="sd" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.sd"
+                           ng-change="compareSiteDates('start')" ng-model="thisSite.START_DATE" /><!--
+                    --><button type="button" class="btn-cal" ng-click="open($event, 'sd')">
+                        <i class="glyphicon glyphicon-calendar" />
+                    </button>
                 </div>
 
                 <!--Sampling End Date-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="END_DATE">Sampling End Date:</label>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <input class="form-control" id="END_DATE" name="ed" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
-                                   ng-change="compareSiteDates('end')" ng-model="thisSite.END_DATE" />
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="open($event, 'ed')">
-                                    <i class="glyphicon glyphicon-calendar" />
-                                </button>
-                            </span>
-                        </div>
-                    </div>
-                    <button type="button" class="borderLess" tooltip-placement="right" uib-tooltip='If sampling is ongoing, leave blank.'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
+                <div class="sigl-modal-form-group">
+                    <label for="END_DATE">
+                        Sampling End Date:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='If sampling is ongoing, leave blank.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <input class="input-calendar" id="END_DATE" name="ed" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
+                           ng-change="compareSiteDates('end')" ng-model="thisSite.END_DATE" /><!--
+                    --><button type="button" class="btn-cal" ng-click="open($event, 'ed')">
+                        <i class="glyphicon glyphicon-calendar" />
                     </button>
                 </div>
 
+
                 <!--Sampling Platform-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="SAMPLE_PLATFORM">Sampling Platform:</label>
-                    <div class="col-md-6">
-                        <input class="form-control" id="SAMPLE_PLATFORM" name="SAMPLE_PLATFORM" ng-model="thisSite.SAMPLE_PLATFORM" type="text" />
-                    </div>
-                    <button type="button" class="borderLess"
-                            tooltip-placement="right" uib-tooltip='Include information about the type of sampling equipment used here. Separate terms with a comma.'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
+                <div class="sigl-modal-form-group">
+                    <label for="SAMPLE_PLATFORM">
+                        Sampling Platform:
+                        <button type="button" class="sigl-tooltip"
+                                tooltip-placement="right" uib-tooltip='Include information about the type of sampling equipment used here. Separate terms with a comma.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <input id="SAMPLE_PLATFORM" name="SAMPLE_PLATFORM" ng-model="thisSite.SAMPLE_PLATFORM" type="text" />
                 </div>
 
                 <!--Additional Site Information-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="ADDITIONAL_INFO">Additional Site Information:</label>
-                    <div class="col-md-6">
-                        <textarea class="form-control" id="ADDITIONAL_INFO" type="text" rows="3" placeholder="Additional Information" ng-model="thisSite.ADDITIONAL_INFO" elastic />
+                <div class="sigl-modal-form-group">
+                    <label for="ADDITIONAL_INFO">
+                        Additional Site Information:
                         <button type="button" class="borderLess"
                                 tooltip-placement="right" uib-tooltip='Include any other sampling or site-specific information here.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
-                    </div>
+                    </label>
+                    <textarea id="ADDITIONAL_INFO" type="text" rows="3" placeholder="Additional Information" ng-model="thisSite.ADDITIONAL_INFO" elastic />
                 </div>
 
                 <!--Site URL-->
-                <div class="form-group" ng-class="{'has-error':projectForm.SiteInfo.URL.$invalid}">
-                    <label class="col-md-3 control-label" for="URL">Site URL:</label>
-                    <div class="col-md-6">
-                        <input class="form-control" id="URL" name="URL" ng-model="thisSite.URL" type="url" placeholder="http://www.exampleurl.com" http-prefix />
-                    </div>
-                    <button type="button" class="borderLess"
-                            tooltip-placement="right" uib-tooltip='If site-specific data is available online, enter URL here.'>
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </button>
+                <div class="sigl-modal-form-group" ng-class="{'has-error':projectForm.SiteInfo.URL.$invalid}">
+                    <label for="URL">
+                        Site URL:
+                        <button type="button" class="sigl-tooltip"
+                                tooltip-placement="right" uib-tooltip='If site-specific data is available online, enter URL here.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <input id="URL" name="URL" ng-model="thisSite.URL" type="url" placeholder="http://www.exampleurl.com" http-prefix />
                 </div>
 
                 <hr />
 
                 <!--Add Parameters-->
-                <div class="form-group">
-                    <label class="col-md-3 control-label" for="SITE_PARAMS">Site Parameters:</label>
-                    <div class="col-md-8">
-                    </div>
+                <div class="sigl-modal-form-group">
+                    <label for="SITE_PARAMS">Site Parameters:</label>
                 </div>
 
-                <div class="form-group">
-                    <div class="col-md-10 col-md-offset-1">
+                <div class="sigl-modal-form-group" id="acords">
                         <uib-accordion close-others="false">
                             <!--PHYSICAL-->
                             <uib-accordion-group is-open="status.phyOpen" style="margin:0">
@@ -537,10 +478,12 @@
                                 <div>
                                     <ul style="padding-left:0">
                                         <li style="list-style:none;" ng-repeat="phys in physParams[0]">
-                                            <input type="checkbox" ng-model="phys.selected"
-                                                   ng-checked="phys.selected" value="{{phys.PARAMETER_TYPE_ID}}"
-                                                   ng-click="ParamClick(phys)" />
-                                            <span ng-class="{orange:phys.selected}">{{ phys.PARAMETER }}</span>
+                                            <div class="input-accord">
+                                                <input type="checkbox" ng-model="phys.selected"
+                                                       ng-checked="phys.selected" value="{{phys.PARAMETER_TYPE_ID}}"
+                                                       ng-click="ParamClick(phys)" />
+                                                <span ng-class="{orange:phys.selected}">{{ phys.PARAMETER }}</span>
+                                            </div>
                                         </li>
                                     </ul>
                                 </div>
@@ -618,28 +561,21 @@
                                 </div>
                             </uib-accordion-group>
                         </uib-accordion>
-                    </div>
                 </div>
 
                 <!--submit and cancel buttons-->
-                <div class="form-group">
-                    <div class="col-md-4 col-md-offset-2">
-                        <span>
-                            <button ng-show="thisSite.SITE_ID == undefined" class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="create(projectForm.SiteInfo.$valid)">
-                                <span>Create</span>
-                            </button>
-                        </span>
-                        <span>
-                            <button ng-show="thisSite.SITE_ID != undefined" class="btn btn-primary" style="width:80px;margin-right:10px" ng-click="save(projectForm.SiteInfo.$valid)">
-                                <span>Save</span>
-                            </button>
-                        </span>
-                        <span>
-                            <button type="button" class="btn btn-default" ng-click="cancel()">
-                                <span>Cancel</span>
-                            </button>
-                        </span>
-                    </div>
+                <div class="sigl-modal-form-group" style="text-align: right;">
+
+                    <button type="button" class="sigl-btn btn-orange" ng-click="cancel()">
+                        Cancel
+                    </button>
+                    <button ng-show="thisSite.SITE_ID == undefined" class="sigl-btn" ng-click="create(projectForm.SiteInfo.$valid)">
+                        Create
+                    </button>
+                    <button ng-show="thisSite.SITE_ID != undefined" class="sigl-btn" ng-click="save(projectForm.SiteInfo.$valid)">
+                        Save
+                    </button>
+
                 </div>
             </div>
         </fieldset>

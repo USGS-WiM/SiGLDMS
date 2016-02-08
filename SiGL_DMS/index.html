@@ -21,7 +21,12 @@
 
     <!-- Custom Style - Samuels -->
     <!-- <link href="css/styles.css" rel="stylesheet" /> -->
-    <link href="css/overwrite.css" rel="stylesheet" />
+    <link href="css/custom/universal.css" rel="stylesheet" />
+    <link href="css/custom/login.css" rel="stylesheet" />
+    <link href="css/custom/projecteditview.css" rel="stylesheet" />
+    <link href="css/custom/pages.css" rel="stylesheet" />
+
+
     <link href="https://fonts.googleapis.com/css?family=Valera+Round" type="text/css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,300,700" type="text/css" rel="stylesheet" />
     <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" type="text/css" rel="stylesheet" />
@@ -32,6 +37,7 @@
     <script src="bower_components/angular-route/angular-route.min.js"></script>
     <script src="bower_components/angular-resource/angular-resource.min.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.min.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script> <!--includes templates-->
@@ -67,36 +73,26 @@
 <body ng-app="app">
     <!--<div ng-include src="'partials/header.html'"></div>-->
     <!--HEADER START-->
-    <div ng-controller="mainCtrl" class="navbar navbar-default">
-        <div class="container-fluid" style="padding: 0;">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">
-                    <img alt="Brand" src="images/usgsLogo.png">
-                </a>
-            </div>
-            <div>
-                <div style="width:60%;float:left;">
-                    <h2><b>SiGL</b><em>:</em>Data Management System (DMS)</h2>
-                </div>
-                <div class="pull-right" ng-show="isAuth.val">
-                    <div><span>Welcome, <a ui-sref="dataManagers.DMInfo({id: userID})">{{usersName}}</a></span></div>
-                    <div><button ng-controller="navCtrl" ng-click="logout()">LOG OFF</button></div>
-                </div>
-            </div>
-            <br clear="all" />
-            <div ng-show="isAuth.val" class="container" style="padding: 0;">
+    <div ng-controller="mainCtrl" id="main-nav">
+            <a href="http://usgs.gov/" target="_blank" id="usgs-logo">
+                <img alt="Brand" src="images/usgsLogo.png">
+            </a>
+            <h2><b>SiGL</b><em>:</em>Data Management System (DMS)</h2>
 
-                <div class="collapse navbar-collapse" id="">
-                    <ul class="nav navbar-nav">
-                        <li><a ui-sref="home" ui-sref-active="active">Home</a></li>
-                        <li ng-if="Role == 'Admin'"><a ui-sref="settings" ui-sref-active="active">Settings</a></li>
-                        <li><a ui-sref="dataManagers.DMInfo({id: userID})" ui-sref-active="active">Your account</a></li>
-                        <li><a ui-sref="help" ui-sref-active="active">FAQs/Help</a></li>
-
-                    </ul>
-                </div>
-
+            <div id="account-controls" ng-show="isAuth.val">
+                <h3>Welcome, <a ui-sref="dataManagers.DMInfo({id: userID})">{{usersName}}</a></h3>
+                <button ng-controller="navCtrl" ng-click="logout()">LOG OFF</button>
             </div>
+
+
+            <ul id="nav-links" ng-show="isAuth.val">
+                <li><a ui-sref="home" ui-sref-active="active">Home</a></li><!--
+                --><li ng-if="Role == 'Admin'"><a ui-sref="settings" ui-sref-active="active">Settings</a></li><!--
+                --><li><a ui-sref="dataManagers.DMInfo({id: userID})" ui-sref-active="active">Your account</a></li><!--
+                --><li><a ui-sref="help" ui-sref-active="active">FAQs/Help</a></li>
+
+            </ul>
+
         </div>
     </div>
     <br clear="all" />
@@ -104,7 +100,7 @@
     <!--<div ng-include src="'partials/nav.html'" style="margin-top:31px"></div>-->
 
     <div class="page-loading"><div id="loading"><div id="loadingcontent"><p id="loadingspinner" style=""><img src="images/loading1.gif" /></p></div></div></div>
-    <div class="container">
+    <div id="body-wrapper">
         <div ui-view></div>
     </div>
 
@@ -144,8 +140,8 @@
         <p>Are you sure you want to remove this {{what}}: <b>{{keyToRmv}}</b></p>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">OK</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="sigl-btn btn-orange" ng-click="cancel()">Cancel</button>
+        <button class="sigl-btn" ng-click="ok()">OK</button>
     </div>
 </script>
 
@@ -155,69 +151,58 @@
         <h3 class="modal-title">Organizations</h3>
     </div>
     <div class="modal-body">
-        <form name="newOrgForm">
+        <form name="newOrgForm" class="sigl-modal-form">
             <fieldset>
-                <div class="col-md-12 form-group">
-                    <label class="col-md-3 control-label">Organization:</label>
-                    <div class="col-md-9" ng-show="!showAddNAMEinput">
-                        <div class="col-md-8" style="padding-left:0">
-                            <select class="form-control" ng-disabled="disableOrgSelect" ng-model="selectedOrgID.id" ng-options="org.ORGANIZATION_ID as org.ORGANIZATION_NAME for org in orgList | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID.id)"></select>
-                        </div>
-                        <span class="col-md-3" ng-show="!showAddDIVISIONinput && !showAddSECTIONinput"><a href ng-click="addOrgName()">Add Organization</a></span>
+                <div class="sigl-modal-form-group">
+                    <label>Organization:</label>
+                    <div ng-show="!showAddNAMEinput">
+                        <select ng-disabled="disableOrgSelect" ng-model="selectedOrgID.id" ng-options="org.ORGANIZATION_ID as org.ORGANIZATION_NAME for org in orgList | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID.id)"></select>
+                        <span ng-show="!showAddDIVISIONinput && !showAddSECTIONinput" style="display: block; font-size: 8pt;"><a href ng-click="addOrgName()">Add Organization</a></span>
                     </div>
-                    <div class="col-md-9" ng-show="showAddNAMEinput">
-                        <div class="col-md-8" style="padding-left:0">
-                            <input class="form-control" id="inputNAME" name="NAME" ng-model="OrgName.value" type="text" placeholder="New Organization Name" />
-                            <button class="btn btn-group-xs" style="padding-top:0;padding-bottom:0;" ng-click="addThisName(OrgName.value)">Add</button>
-                            <button class="btn btn-group-xs" style="padding-top:0;padding-bottom:0;" ng-click="neverMind('org')">Cancel</button>
-                        </div>
+                    <div ng-show="showAddNAMEinput">
+                        <input class="form-control" id="inputNAME" name="NAME" ng-model="OrgName.value" type="text" placeholder="New Organization Name" />
+                        <button class="sigl-btn btn-small" ng-click="addThisName(OrgName.value)">Add</button>
+                        <button class="sigl-btn btn-small" ng-click="neverMind('org')">Cancel</button>
                     </div>
 
                 </div>
 
-                <div class="col-md-12 form-group">
-                    <label class="col-md-3 control-label">Division</label>
-                    <div class="col-md-9" ng-show="!showAddDIVISIONinput">
-                        <div class="col-md-8" style="padding-left:0">
-                            <select class="form-control" ng-disabled="disableDivSelect" ng-model="selectedDivID.id" ng-options="div.DIVISION_ID as div.DIVISION_NAME for div in divList | orderBy: 'DIVISION_NAME'" ng-change="getSecs(selectedDivID.id)">
-                                <!--<option ng-repeat="div in divList | orderBy: 'DIVISION_NAME'" value="{{div.DIVISION_ID}}">{{div.DIVISION_NAME}}</option>-->
-                            </select>
-                        </div>
-                        <span ng-show="orgsBeenChosen && !showAddSECTIONinput" class="col-md-3"><a href ng-click="addDivName()">Add Division</a></span>                        
+                <div class="sigl-modal-form-group">
+                    <label>Division</label>
+                    <div ng-show="!showAddDIVISIONinput">
+                        <select ng-disabled="disableDivSelect" ng-model="selectedDivID.id" ng-options="div.DIVISION_ID as div.DIVISION_NAME for div in divList | orderBy: 'DIVISION_NAME'" ng-change="getSecs(selectedDivID.id)">
+                            <!--<option ng-repeat="div in divList | orderBy: 'DIVISION_NAME'" value="{{div.DIVISION_ID}}">{{div.DIVISION_NAME}}</option>-->
+                        </select>
+                        <span ng-show="orgsBeenChosen && !showAddSECTIONinput" style="display: block; font-size: 8pt;"><a href ng-click="addDivName()">Add Division</a></span>
                     </div>
                 </div>
-                <div class="col-md-9" ng-show="showAddDIVISIONinput">
-                    <div class="col-md-8" style="padding-left:0;">
-                        <input class="form-control" id="inputDIVISION" name="DIVISION" ng-model="divisionName.value" type="text" placeholder="New Division" />
-                        <button class="btn btn-group-xs" style="padding-top:0;padding-bottom:0;" ng-click="addThisDivision(divisionName.value, selectedOrgID.id)">Add</button>
-                        <button class="btn btn-group-xs" style="padding-top:0;padding-bottom:0;" ng-click="neverMind('div')">Cancel</button>
+                <div ng-show="showAddDIVISIONinput">
+                    <input id="inputDIVISION" name="DIVISION" ng-model="divisionName.value" type="text" placeholder="New Division" />
+                    <button class="sigl-btn btn-small" ng-click="addThisDivision(divisionName.value, selectedOrgID.id)">Add</button>
+                    <button class="sigl-btn btn-small" ng-click="neverMind('div')">Cancel</button>
+                </div>
+
+
+
+                <div class="sigl-modal-form-group">
+                    <label>Section</label>
+                    <div ng-show="!showAddSECTIONinput">
+                        <select ng-disabled="disableSecSelect" ng-model="selectedSecID.id" ng-options="sec.SECTION_ID as sec.SECTION_NAME for sec in secList | orderBy: 'SECTION_NAME'" ng-change="setSecs(selectedSecID.id)"></select>
+                        <span ng-show="divsBeenChosen" style="display: block; font-size: 8pt;"><a href ng-click="addSecName()">Add Section</a></span>
+                    </div>
+                    <div ng-show="showAddSECTIONinput">
+                        <input id="inputSECTION" name="SECTION" ng-model="sectionName.value" type="text" placeholder="New Section" />
+                        <button class="sigl-btn btn-small" ng-click="addThisSection(sectionName.value, selectedDivID.id)">Add</button>
+                        <button class="sigl-btn btn-small" ng-click="neverMind('sec')">Cancel</button>
                     </div>
                 </div>
-    </div>
 
-    <div class="col-md-12 form-group">
-        <label class="col-md-3 control-label">Section</label>
-        <div class="col-md-9" ng-show="!showAddSECTIONinput">
-            <div class="col-md-8" style="padding-left:0">
-                <select class="form-control" ng-disabled="disableSecSelect" ng-model="selectedSecID.id" ng-options="sec.SECTION_ID as sec.SECTION_NAME for sec in secList | orderBy: 'SECTION_NAME'" ng-change="setSecs(selectedSecID.id)"></select>
-            </div>
-            <span ng-show="divsBeenChosen" class="col-md-3"><a href ng-click="addSecName()">Add Section</a></span>
-        </div>
-        <div class="col-md-9" ng-show="showAddSECTIONinput">
-            <div class="col-md-8" style="padding-left:0;">
-                <input class="form-control" id="inputSECTION" name="SECTION" ng-model="sectionName.value" type="text" placeholder="New Section" />
-                <button class="btn btn-group-xs" style="padding-top:0;padding-bottom:0;" ng-click="addThisSection(sectionName.value, selectedDivID.id)">Add</button>
-                <button class="btn btn-group-xs" style="padding-top:0;padding-bottom:0;" ng-click="neverMind('sec')">Cancel</button>
-            </div>
-        </div>
-    </div>
 
-    </fieldset>
-    </form>
-    <br clear="all" />
+            </fieldset>
+        </form>
     </div>
 
     <div class="modal-footer">
-        <button class="btn btn-warning" ng-click="ok()">Close</button>
+        <button class="sigl-btn" ng-click="ok()">Close</button>
     </div>
 </script>

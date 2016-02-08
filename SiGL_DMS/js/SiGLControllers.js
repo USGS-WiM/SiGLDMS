@@ -240,7 +240,7 @@
             });
         };
     });
-   
+
     //adding 'http://' to url inputs http://stackoverflow.com/questions/19482000/angularjs-add-http-prefix-to-url-input-field
     siGLControllers.directive('httpPrefix', function () {
         return {
@@ -296,7 +296,7 @@
         } else {
             $rootScope.isAuth.val = true;
             $rootScope.usersName = $cookies.get('usersName');
-            $rootScope.userID = $cookies.get('dmID'); 
+            $rootScope.userID = $cookies.get('dmID');
             $rootScope.Role = $cookies.get('usersRole');
 
             $state.go('projectList');
@@ -336,7 +336,7 @@
             //get all the roles and data managers
             $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
             $http.defaults.headers.common.Accept = 'application/json';
-                
+
             //TODO:::: Make this a VIEW so that I don't have to get all the projects again. NAME, Organization, Role, # of Projects
             DATA_MANAGER.getDMListModel().$promise.then(function (result) {
                 for (var x = 0; x < result.length; x++) {
@@ -349,10 +349,10 @@
                 }
                 $scope.allDMs = result;
             });
-            
+
             $scope.loggedInUser.Name = $cookies.get('usersName'); //User's NAME
-            $scope.loggedInUser.ID = $cookies.get('dmID'); 
-            $scope.loggedInUser.Role = $cookies.get('usersRole'); 
+            $scope.loggedInUser.ID = $cookies.get('dmID');
+            $scope.loggedInUser.Role = $cookies.get('usersRole');
             //see if sorting order has already been set, preserve if so, otherwise set to 'LNAME'
             $scope.sortingOrder = $cookies.get('DMListSortOrder') != undefined ? $cookies.get('DMListSortOrder') : 'LNAME';
             $scope.reverse = $cookies.get('dml_reverse') != undefined ? Boolean($cookies.get('dml_reverse')) : true;
@@ -383,9 +383,9 @@
             $scope.auth = false;
             $location.path('/login');
         } else {
-            $scope.DMProjects = dmProjects; //All their Projects            
+            $scope.DMProjects = dmProjects; //All their Projects
             $scope.RoleList = allRoles;
-                
+
             //see if sorting order has already been set, preserve if so, otherwise set to 'Name'
             $scope.sortingOrder = $cookies.get('DMprojectsSortOrder') != undefined ? $cookies.get('DMprojectsSortOrder') : 'Name';
             $scope.reverse = $cookies.get('dmpl_reverse') != undefined ? Boolean($cookies.get('dmpl_reverse')) : true;
@@ -435,7 +435,7 @@
             };
             //#endregion Filter Divisions / Sections based on select change
 
-            //ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)                
+            //ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)
             $scope.AddNewOrg = function () {
                 //modal
                 //pass array of chosen org/div so they will be prepopulated in modal
@@ -577,7 +577,7 @@
                 //    for (var x = 0; x < $scope.$parent.allDMs.length; x++) {
                 //        $scope.$parent.allDMs[x].FULLNAME = $scope.$parent.allDMs[x].FNAME + " " + $scope.$parent.allDMs[x].LNAME;
                 //    };
-                    $scope.allDMs = $scope.$parent.allDMs; 
+                    $scope.allDMs = $scope.$parent.allDMs;
                     $scope.$apply;
                     //used in xeditable to show dm for project in dropdown
                     $scope.showDMs = function (project) {
@@ -641,7 +641,7 @@
                         });
                     }, function () {
                         //logic for cancel
-                    });//end modal                        
+                    });//end modal
                 };
 
                 //password update section
@@ -673,7 +673,7 @@
                         DATA_MANAGER.changePW({ username: $scope.DM.USERNAME, newP: $scope.pass.newP },
                             function success(response) {
                                 toastr.success("Password Updated");
-                                //update creds                               
+                                //update creds
                                 var enc = btoa($scope.DM.USERNAME.concat(":", $scope.pass.newP));
                                 var expireDate = new Date().addHours(8);
                                 $cookies.put('siGLCreds', enc, { 'expires': expireDate });
@@ -753,7 +753,7 @@
                     } //end else (not valid)
                 };//end save
 
-                //called from within save of new dm 
+                //called from within save of new dm
                 $scope.postNewDM = function () {
                     DATA_MANAGER.addDataManager({ pass: $scope.pass.confirmP }, $scope.DM, function success(response) {
                         toastr.success("Data Manager Created");
@@ -833,12 +833,12 @@
             //show Add New .... clicked, hide the button and show the form
             $scope.showAddFTClicked = function () {
                 $scope.showAddFTForm = true; //show the form
-                $scope.addFTButtonShowing = false; //hide button                
+                $scope.addFTButtonShowing = false; //hide button
             };
             $scope.NeverMindCT = function () {
                 $scope.newFT = {};
                 $scope.showAddFTForm = false; //hide the form
-                $scope.addFTButtonShowing = true; //show button   
+                $scope.addFTButtonShowing = true; //show button
 
             };
 
@@ -913,12 +913,12 @@
             //show Add New .... clicked, hide the button and show the form
             $scope.showAddLTClicked = function () {
                 $scope.showAddLTForm = true; //show the form
-                $scope.addLTButtonShowing = false; //hide button                
+                $scope.addLTButtonShowing = false; //hide button
             };
             $scope.NeverMindLT = function () {
                 $scope.newLT = {};
                 $scope.showAddLTForm = false; //hide the form
-                $scope.addLTButtonShowing = true; //show button   
+                $scope.addLTButtonShowing = true; //show button
 
             };
             $scope.AddLakeType = function (valid) {
@@ -987,12 +987,12 @@
             //show Add New .... clicked, hide the button and show the form
             $scope.showAddMTClicked = function () {
                 $scope.showAddMTForm = true; //show the form
-                $scope.addMTButtonShowing = false; //hide button                
+                $scope.addMTButtonShowing = false; //hide button
             };
             $scope.NeverMindMT = function () {
                 $scope.newMT = {};
                 $scope.showAddMTForm = false; //hide the form
-                $scope.addMTButtonShowing = true; //show button   
+                $scope.addMTButtonShowing = true; //show button
 
             };
             $scope.AddMediaType = function (valid) {
@@ -1061,12 +1061,12 @@
             //show Add New .... clicked, hide the button and show the form
             $scope.showAddOTClicked = function () {
                 $scope.showAddOTForm = true; //show the form
-                $scope.addOTButtonShowing = false; //hide button                
+                $scope.addOTButtonShowing = false; //hide button
             };
             $scope.NeverMindOT = function () {
                 $scope.newOT = {};
                 $scope.showAddOTForm = false; //hide the form
-                $scope.addOTButtonShowing = true; //show button   
+                $scope.addOTButtonShowing = true; //show button
 
             };
 
@@ -1141,12 +1141,12 @@
             //show Add New .... clicked, hide the button and show the form
             $scope.showAddPTClicked = function () {
                 $scope.showAddPTForm = true; //show the form
-                $scope.addPTButtonShowing = false; //hide button                
+                $scope.addPTButtonShowing = false; //hide button
             };
             $scope.NeverMindPT = function () {
                 $scope.newPT = {};
                 $scope.showAddPTForm = false; //hide the form
-                $scope.addPTButtonShowing = true; //show button   
+                $scope.addPTButtonShowing = true; //show button
 
             };
             $scope.AddParameterType = function (valid) {
@@ -1215,12 +1215,12 @@
             //show Add New .... clicked, hide the button and show the form
             $scope.showAddRTClicked = function () {
                 $scope.showAddRTForm = true; //show the form
-                $scope.addRTButtonShowing = false; //hide button                
+                $scope.addRTButtonShowing = false; //hide button
             };
             $scope.NeverMindRT = function () {
                 $scope.newRT = {};
                 $scope.showAddRTForm = false; //hide the form
-                $scope.addRTButtonShowing = true; //show button   
+                $scope.addRTButtonShowing = true; //show button
 
             };
             $scope.AddResourceType = function (valid) {
@@ -1289,12 +1289,12 @@
             //show Add New .... clicked, hide the button and show the form
             $scope.showAddPDClicked = function () {
                 $scope.showAddPDForm = true; //show the form
-                $scope.addPDButtonShowing = false; //hide button                
+                $scope.addPDButtonShowing = false; //hide button
             };
             $scope.NeverMindPD = function () {
                 $scope.newPD = {};
                 $scope.showAddPDForm = false; //hide the form
-                $scope.addPDButtonShowing = true; //show button   
+                $scope.addPDButtonShowing = true; //show button
 
             };
 
@@ -1369,12 +1369,12 @@
             //show Add New .... clicked, hide the button and show the form
             $scope.showAddPSClicked = function () {
                 $scope.showAddPSForm = true; //show the form
-                $scope.addPSButtonShowing = false; //hide button                
+                $scope.addPSButtonShowing = false; //hide button
             };
             $scope.NeverMindPS = function () {
                 $scope.newPS = {};
                 $scope.showAddPSForm = false; //hide the form
-                $scope.addPSButtonShowing = true; //show button   
+                $scope.addPSButtonShowing = true; //show button
 
             };
             $scope.AddProjStatus = function (valid) {
@@ -1443,12 +1443,12 @@
             //show Add New .... clicked, hide the button and show the form
             $scope.showAddSSClicked = function () {
                 $scope.showAddSSForm = true; //show the form
-                $scope.addSSButtonShowing = false; //hide button                
+                $scope.addSSButtonShowing = false; //hide button
             };
             $scope.NeverMindSS = function () {
                 $scope.newSS = {};
                 $scope.showAddSSForm = false; //hide the form
-                $scope.addSSButtonShowing = true; //show button   
+                $scope.addSSButtonShowing = true; //show button
 
             };
             $scope.AddSiteStatus = function (valid) {
@@ -1550,7 +1550,7 @@
             $scope.auth = false;
             $location.path('/login');
         } else {
-            //array of projects 
+            //array of projects
             $http.defaults.headers.common.Authorization= 'Basic ' + $cookies.get('siGLCreds');
             $(".page-loading").removeClass("hidden");
             //get the projects to list
@@ -1584,7 +1584,7 @@
             //see if sorting order has already been set, preserve if so, otherwise set to 'Name'
             $scope.sortingOrder = $cookies.get('projListSortOrder') != undefined ? $cookies.get('projListSortOrder') : 'Name';
             $scope.reverse = $cookies.get('pl_reverse') != undefined ? Boolean($cookies.get('pl_reverse')): false;
-                                
+
             $scope.sort_by = function (newSortingOrder) {
                 $cookies.put('projListSortOrder', newSortingOrder);
                 if ($scope.sortingOrder == newSortingOrder) {
@@ -1607,7 +1607,7 @@
             $scope.User = $cookies.get('usersName');
         }
     }
-    //end projectListCtrl    
+    //end projectListCtrl
     //#endregion PROJECT LIST Controller
 
     //#region ABSTRACT PROJECT EDIT Controller
@@ -1616,7 +1616,7 @@
         'projDatum', 'projContacts', 'projPubs', 'projSites', 'projObjectives', 'projKeywords', 'PROJECT', 'SITE', 'allDurationList', 'allStatsList', 'allObjList', projectEditCtrl]);
     function projectEditCtrl($scope, $rootScope, $cookies, $location, $state, $http, $filter, $uibModal, thisProject, projOrgs, projDatum, projContacts, projPubs, projSites,
         projObjectives, projKeywords, PROJECT, SITE, allDurationList, allStatsList, allObjList) {
-        //model needed for ProjectEdit Info tab: ( Counts for Cooperators, Datum, Contacts, Publications and Sites) 1. thisProject, 2. parsed urls, 3. project Keywords, 4. all objectives, 5. all statuses, 6. all durations 
+        //model needed for ProjectEdit Info tab: ( Counts for Cooperators, Datum, Contacts, Publications and Sites) 1. thisProject, 2. parsed urls, 3. project Keywords, 4. all objectives, 5. all statuses, 6. all durations
         if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
             $location.path('/login');
@@ -1629,7 +1629,7 @@
             //#region changing tabs handler /////////////////////
             $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
                 //var formNameModified = false;
-                
+
                 var formNamePristine = true;
                 switch (fromState.url) {
                     case '/info':
@@ -1651,7 +1651,7 @@
                         formNamePristine = true;
                         break;
                 }
-                if (!formNamePristine) {                   
+                if (!formNamePristine) {
                     if (confirm("Are you sure you want to change tabs? Any unsaved information will be lost.")) {
                         console.log('go to: ' + toState.name);
                     } else {
@@ -1678,9 +1678,9 @@
             //#endregion Datepicker
 
             //#region GLOBALS
-            $scope.aProject = {}; //holder for project (either coming in for edit, or being created on POST )           
+            $scope.aProject = {}; //holder for project (either coming in for edit, or being created on POST )
             $scope.urls = []; //holder for urls for future parsing back together ( | separated string)
-                        
+
             //#endregion GLOBALS
 
             //open modal to edit or create a project
@@ -1762,7 +1762,7 @@
                     } else {
                         $scope.urls[0] = $scope.aProject.URL;
                     }
-                    //make sure they are formatted.. if not, format and PUT 
+                    //make sure they are formatted.. if not, format and PUT
                     var neededUpdating1 = false;
                     for (var u = 0; u < $scope.urls.length; u++) {
                         if (!$scope.urls[u].startsWith('http')) {
@@ -1788,21 +1788,20 @@
                         });
                     }
                 } //end there's a url
-               
+
             } //end existing project
             else {
                 $scope.title = "Project";
                 $scope.openProjectCreate();
             }
-            
+
             //flag radio clicked
-            $scope.Flagged = function (data) {                
+            $scope.Flagged = function (data) {
                 //modal
                 var changeFlagModal = $uibModal.open({
                     template: '<div class="modal-header"><h3 class="modal-title">Publish Project</h3></div>' +
                                 '<div class="modal-body"><p>Are you sure this project is ready to publish on the SiGL Mapper?</p></div>' +
-                                '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>'+
-                                '<div class="modal-footer"><button class="btn btn-warning" ng-click="cancel()">Cancel</button></div>',
+                                '<div class="modal-footer"><button class="sigl-btn btn-orange" ng-click="cancel()">Cancel</button><button class="sigl-btn" ng-click="ok()">OK</button></div>',
                     controller: function ($scope, $uibModalInstance) {
                         $scope.ok = function () {
                             $scope.aProject.READY_FLAG = data == "Yes" ? 1 : 0;
@@ -1813,7 +1812,7 @@
                             $scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? "Yes" : "No";
                         };
                     },
-                    size: 'sm'                    
+                    size: 'sm'
                 });
                 changeFlagModal.result.then(function () {
                     //yes, PUT the project with the updated flag set
@@ -1834,7 +1833,7 @@
             $scope.cancel = function () {
                 //navigate to a different state
                 $state.go('projectList');
-            };//end cancel           
+            };//end cancel
         }//end else (checkCreds == true)
     }//end projectEditCtrl
     //#endregion ABSTRACT PROJECT EDIT Controller
@@ -1843,7 +1842,7 @@
     //ProjectEditCoopCtrl
     siGLControllers.controller('projectEditCoopCtrl', ['$scope', '$http', '$cookies', '$filter', '$uibModal', 'thisProject', 'projOrgs', 'allOrgList', 'allDivisionList', 'allSectionList', 'PROJECT', projectEditCoopCtrl]);
     function projectEditCoopCtrl($scope, $http, $cookies, $filter, $uibModal, thisProject, projOrgs, allOrgList, allDivisionList, allSectionList, PROJECT) {
-        $scope.ProjOrgs = projOrgs; // ORGANIZATION_RESOURCE        
+        $scope.ProjOrgs = projOrgs; // ORGANIZATION_RESOURCE
         $scope.allOrgs = allOrgList; //ORGANIZATION
         $scope.allDivisions = allDivisionList; //DIVISION
         $scope.allSections = allSectionList; //SECTION
@@ -1865,7 +1864,7 @@
             $scope.allsecs = $scope.allSections.filter(function (s) { return s.DIV_ID == divID; });
         };
 
-        //ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)                
+        //ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)
         $scope.addNewOrg = function () {
             //modal
             //pass array of chosen org/div so they will be prepopulated in modal
@@ -1925,7 +1924,7 @@
                     if (fieldFocus == "org") {
                         $("#OrgName").focus();
                     }
-                });                
+                });
             } else {
                 var secID = $scope.selectedSecID != "" ? $scope.selectedSecID : "0";
                 var divID = $scope.selectedDivID != "" ? $scope.selectedDivID : "0";
@@ -1936,7 +1935,7 @@
                 } //end this project doesn't already have this org
                 else {
                     PROJECT.addProjOrg({ id: thisProject.PROJECT_ID, organizationId: orgID, divisionId: divID, sectionId: secID }, function success(response) {
-                        //array of all the ORGANIZATION_RESOURCES for this project                    
+                        //array of all the ORGANIZATION_RESOURCES for this project
                         var postedORG = response.filter(function (postedO) { return postedO.OrganizationID == orgID && postedO.DivisionID == divID && postedO.SectionID == secID; })[0];
                         $scope.ProjOrgs.push(postedORG);
 
@@ -1947,7 +1946,7 @@
                         toastr.success("Organization Added");
                     }, function error(errorResponse) {
                         toastr.error("Error: " + errorResponse.statusText);
-                    });                    
+                    });
                 }
             }
         };//end AddOrg (projectCooperator)
@@ -2008,13 +2007,13 @@
                 $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common.Accept = 'application/json';
                 $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-                
+
                 DATA_HOST.save({ id: $scope.ProjData[ind].DATA_HOST_ID }, $scope.ProjData[ind]).$promise.then(function () {
                     delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                 });
             }
         }
-       
+
         //modal for required at least 1 field..
         var openModal = function () {
             var modalInstance = $uibModal.open({
@@ -2101,23 +2100,23 @@
             if ((d.DESCRIPTION == "" || d.DESCRIPTION == null) && (d.HOST_NAME == "" || d.HOST_NAME == null) && (d.PORTAL_URL == "" || d.PORTAL_URL == null)) {
                 toastr.error("Data Source not updated.");
                 openModal();
-                return "You need to populate at least one field."; //way to stop it from closing edit..just return something cuz modal is opening                
+                return "You need to populate at least one field."; //way to stop it from closing edit..just return something cuz modal is opening
             }
         };
 
         //editing, disable create parts
-        $scope.EditRowClicked = function () {    
-            $scope.projectForm.Data.$pristine = false; //make sure form is not pristine in case they change tabs before hitting save/cancel            
+        $scope.EditRowClicked = function () {
+            $scope.projectForm.Data.$pristine = false; //make sure form is not pristine in case they change tabs before hitting save/cancel
             $scope.isEditing = true; //disable create new fields until they hit save/cancel
         };
 
         //cancel edit
-        $scope.CancelEditRowClick = function () {            
-            $scope.projectForm.Data.$setPristine(true);//make sure form is pristine             
+        $scope.CancelEditRowClick = function () {
+            $scope.projectForm.Data.$setPristine(true);//make sure form is pristine
             $scope.isEditing = false;//enable create new fields
         };
 
-        //Edit existing Data        
+        //Edit existing Data
         $scope.saveData = function (data, id) {
             if (this.rowform.$valid) {
                 var retur = false;
@@ -2178,7 +2177,7 @@
         $scope.isEditing = false; //flag so that when editing, can't also add a new one below
         $scope.updatedContactOrg = false; //set flag to check on saveEdits to update the org
 
-        //format contacts for display with org parts        
+        //format contacts for display with org parts
         for (var x = 0; x < $scope.ProjContacts.length; x++) {
             var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.OrganizationSystemID == $scope.ProjContacts[x].ORGANIZATION_SYSTEM_ID; })[0];
             $scope.ProjContacts[x].OrgName = thisOrgRes.OrganizationName;
@@ -2187,7 +2186,7 @@
             if (thisOrgRes.SectionID > 0)
                 $scope.ProjContacts[x].SecName = thisOrgRes.SectionName;
         }
-        
+
         //org was chosen, go get the divs
         $scope.getDivs = function (orgID) {
             $scope.alldivs = {}; $scope.selectedDivID = ""; $scope.selectedSecID = "";
@@ -2229,7 +2228,7 @@
                 toasstr.error("Error: " + errorResponse.statusText);
             });
         }
-        
+
         //add this contact to the project
         $scope.AddContact = function (valid) {
             if (valid) {
@@ -2276,7 +2275,7 @@
             $scope.isEditing = true;
         };
         $scope.CancelEditRowClick = function () {
-            //done editing: hide (add org button) for this row, and re-enable inputs for new contact below 
+            //done editing: hide (add org button) for this row, and re-enable inputs for new contact below
             var showAtag = document.getElementsByClassName("showHide")[this.$index];
             showAtag.style.display = "none";
             $scope.isEditing = false;
@@ -2324,7 +2323,7 @@
                     //they didn't create a new one, just add the orgsysid to hidden input
                     contact.ORGANIZATION_SYSTEM_ID = thisOrgRes.OrganizationSystemID;
                     PUTcontact(contact, id);
-                    //do a put now                    
+                    //do a put now
                 } else {
                     //create the org_sys then add the id then put
                     var orgId = $scope.allOrganizations.filter(function (aorg) { return aorg.ORGANIZATION_NAME == projContactBeingUpdated.OrgName; })[0].ORGANIZATION_ID;
@@ -2370,7 +2369,7 @@
             //TODO: a section was chosen
         };
 
-        //ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)                
+        //ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)
         $scope.addNewOrg = function () {
             //modal
             var editingContact = null;
@@ -2410,7 +2409,7 @@
                 $scope.allOrganizations = updatedOrgDivSec[0]; //allOrgs updated
                 $scope.allDivisions = updatedOrgDivSec[1]; //allDivs updated
                 $scope.allSections = updatedOrgDivSec[2]; //allSecs updated
-                
+
                 if ($scope.isEditing) {
                     //this is updating the existing contact's organization
                     var chosenOrgID = updatedOrgDivSec[3];
@@ -2435,10 +2434,10 @@
                         ORGANIZATION_SYSTEM.save(newORGSYS, function success(response) {
                             var test;
                             //update the orgResourceList
-                            var orgResToAdd = { 
-                                OrganizationSystemID: response.ORGANIZATION_SYSTEM_ID, 
-                                OrganizationID: response.ORG_ID, 
-                                OrganizationName: $scope.ProjContacts[i].OrgName, 
+                            var orgResToAdd = {
+                                OrganizationSystemID: response.ORGANIZATION_SYSTEM_ID,
+                                OrganizationID: response.ORG_ID,
+                                OrganizationName: $scope.ProjContacts[i].OrgName,
                                 DivisionID: response.DIV_ID,
                                 DivisionName: $scope.ProjContacts[i].DivName,
                                 SectionID: response.SEC_ID,
@@ -2447,10 +2446,10 @@
                             $scope.allOrgResources.push(orgResToAdd);
                             $scope.ProjContacts[i].ORGANIZATION_SYSTEM_ID = response.ORGANIZATION_SYSTEM_ID;
                         }, function error(errorResponse) { toastr.error(errorResponse.statusText);}).$promise;
-                       
+
                     }
-                    
-                } else {         
+
+                } else {
                     //new contact section
                     //set selected choices
                     $scope.selectedOrgID = updatedOrgDivSec[3];
@@ -2623,7 +2622,7 @@
             if ((d.TITLE == "" || d.TITLE == null) && (d.DESCRIPTION == "" || d.DESCRIPTION == null) && (d.URL == "" || d.URL == null)) {
                 toastr.error("Publication not updated.");
                 openModal();
-                return "You need to populate at least one field."; //way to stop it from closing edit..just return something cuz modal is opening                
+                return "You need to populate at least one field."; //way to stop it from closing edit..just return something cuz modal is opening
             }
         };
 
@@ -2701,7 +2700,7 @@
                 $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
             }
         };
-        
+
         //used in CopyToNew for formatting the new Site
         var formatSite = function (aSite) {
             //format it properly
@@ -2926,7 +2925,7 @@
             });
             //end modal
         };
-        
+
         //open modal to edit or create a project
         $scope.openSiteCreate = function (site) {
             var dropdownParts = [siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList];
@@ -2980,7 +2979,7 @@
                     $scope.sitesCount.total = $scope.projectSites.length;
                 }
                 if (r[1] == 'update') {
-                    //this is from edit -- refresh page?                    
+                    //this is from edit -- refresh page?
                     $scope.projectSites[indexClicked] = r[0];
                 }
             });

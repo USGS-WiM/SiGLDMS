@@ -6,23 +6,30 @@
         border-right: 2px solid #ddd;
         background-color: #fff;
   }
-  #edit-right{
+  .panel{
+      border: none;
+      background-color: #F9F9F9;
+      box-sizing: border-box;
+      padding: 15px;
+      border-bottom: none;
+  }
+  #sigl-edit-right{
     padding: 0;
     margin: 0;
   }
 </style>
-<div id="site-list-wrapper" class="panel panel-primary">
-    <div class="panel-body">
-        <button ng-click="openSiteCreate(0)" class="btn btn-primary">
+<div>
+    <div>
+        <button ng-click="openSiteCreate(0)" class="sigl-btn" style="margin: 0 0 10px 0;">
 <!--        <button ui-sref="projectEdit.site.siteInfo({id:thisProject.PROJECT_ID, siteId:0})" class="btn btn-primary">-->
-            <span>Create new Site</span>
+            Create New Site
         </button>
         <!--<div><a ui-sref="projectEdit.site.siteEditAll({id:thisProject.PROJECT_ID})">Multi-Edit</a></div>-->
-        <div class="table-responsive" style="width:100%;">
-            <table style="display:inline-block;overflow:auto;width:100%;" class="table table-striped table-condensed">
+        <div class="table-responsive" style="width:100%;" id="site-table">
+            <table style="display:inline-block;overflow:auto;width:100%; margin: 0 auto;" class="table table-striped table-condensed">
                 <thead>
                     <tr>
-                        <th></th>                        
+                        <th></th>
                         <th class="Name">Site Name&nbsp;<a ng-click="sort_by('Name')"><i class="glyphicon glyphicon-sort"></i></a></th>
                         <th class="Latitude">Latitude&nbsp;<a ng-click="sort_by('latitude')"><i class="glyphicon glyphicon-sort"></i></a></th>
                         <th class="Longitude">Longitude&nbsp;<a ng-click="sort_by('longitude')"><i class="glyphicon glyphicon-sort"></i></a></th>
@@ -44,14 +51,14 @@
                         <th class="Parameters">Site Parameters</th>
                     </tr>
                 </thead>
-                
+
                 <tbody>
                     <tr ng-repeat="s in projectSites | orderBy:sortingOrder:reverse">
                         <td>
                             <div style="width:65px">
                                 <a title="Edit" class="btn borderLess" ng-click="openSiteCreate(s)"><i class="glyphicon glyphicon-pencil"></i></a>
                                 <!--<a title="Edit" ui-sref="projectEdit.site.siteInfo({id:thisProject.PROJECT_ID, siteId:s.SiteId})"><i class="glyphicon glyphicon-pencil"></i></a>-->
-                                <a title="Duplicate" href="" ng-click="CopyToNew(s.SiteId)"><img alt="Duplicate" src="images/copy_icon_sm.png" /></a>
+                                <a title="Duplicate" href="" ng-click="CopyToNew(s.SiteId)"><i class="glyphicon glyphicon-duplicate"></i></a>
                                 <a title="Delete" href="" ng-click="DeleteSite(s)"><i class="glyphicon glyphicon-remove"></i></a>
                             </div>
                         </td>
@@ -73,7 +80,7 @@
                         <td>{{s.SamplePlatform}}</td>
                         <td>{{s.AdditionalInfo}}</td>
                         <td>{{s.URL}}</td>
-                        <td>
+                        <td class="site-params">
                             <span ng-show="s.ParameterStrings.Biological.length > 0"><b>Biological</b>:  <i>{{s.ParameterStrings.Biological}}</i><br /></span>
                             <span ng-show="s.ParameterStrings.Chemical.length > 0"><b>Chemical</b>: <i>{{s.ParameterStrings.Chemical}}</i><br /></span>
                             <span ng-show="s.ParameterStrings.Microbiological.length > 0"><b>Microbiological</b>: <i>{{s.ParameterStrings.Microbiological}}</i><br /></span>
