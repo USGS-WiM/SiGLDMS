@@ -535,49 +535,49 @@
                 //#endregion region projectEdit.site.siteList
 
                 //#region region projectEdit.site.siteInfo
-                .state("projectEdit.site.siteInfo", {
-                    url: "/siteInfo/:siteId",
-                    templateUrl: "partials/project/projectEditSiteInfoView.html",
-                    controller: "projectEditSiteInfoCtrl",
-                    resolve: {
-                        aSite: 'SITE', //dependency for the project
-                        thisSite: function (aSite, $stateParams) {
-                            var siteId = $stateParams.siteId;
-                            if (siteId > 0) {
-                                return aSite.query(
-                                    { id: siteId }).$promise;
-                            }
-                        },
-                        siteFrequencies: function (aSite, $stateParams) {
-                            var siteId = $stateParams.siteId;
-                            if (siteId > 0) {
-                                return aSite.getSiteFrequencies(
-                                    { id: siteId }).$promise;
-                            }
-                        },
-                        siteMedium: function (aSite, $stateParams) {
-                            var siteId = $stateParams.siteId;
-                            if (siteId > 0) {
-                                return aSite.getSiteMedia(
-                                    { id: siteId }).$promise;
-                            }
-                        },
-                        siteParameters: function (aSite, $stateParams) {
-                            var siteId = $stateParams.siteId;
-                            if (siteId > 0) {
-                                return aSite.getSiteParameters(
-                                    { id: siteId }).$promise;
-                            }
-                        },
-                        siteResources: function (aSite, $stateParams) {
-                            var siteId = $stateParams.siteId;
-                            if (siteId > 0) {
-                                return aSite.getSiteResources(
-                                    { id: siteId }).$promise;
-                            }
-                        }
-                    }
-                })
+                //.state("projectEdit.site.siteInfo", {
+                //    url: "/siteInfo/:siteId",
+                //    templateUrl: "partials/project/projectEditSiteInfoView.html",
+                //    controller: "projectEditSiteInfoCtrl",
+                //    resolve: {
+                //        aSite: 'SITE', //dependency for the project
+                //        thisSite: function (aSite, $stateParams) {
+                //            var siteId = $stateParams.siteId;
+                //            if (siteId > 0) {
+                //                return aSite.query(
+                //                    { id: siteId }).$promise;
+                //            }
+                //        },
+                //        siteFrequencies: function (aSite, $stateParams) {
+                //            var siteId = $stateParams.siteId;
+                //            if (siteId > 0) {
+                //                return aSite.getSiteFrequencies(
+                //                    { id: siteId }).$promise;
+                //            }
+                //        },
+                //        siteMedium: function (aSite, $stateParams) {
+                //            var siteId = $stateParams.siteId;
+                //            if (siteId > 0) {
+                //                return aSite.getSiteMedia(
+                //                    { id: siteId }).$promise;
+                //            }
+                //        },
+                //        siteParameters: function (aSite, $stateParams) {
+                //            var siteId = $stateParams.siteId;
+                //            if (siteId > 0) {
+                //                return aSite.getSiteParameters(
+                //                    { id: siteId }).$promise;
+                //            }
+                //        },
+                //        siteResources: function (aSite, $stateParams) {
+                //            var siteId = $stateParams.siteId;
+                //            if (siteId > 0) {
+                //                return aSite.getSiteResources(
+                //                    { id: siteId }).$promise;
+                //            }
+                //        }
+                //    }
+                //})
                 //#endregion region projectEdit.site.siteInfo
 
                 .state("projectEdit.site.siteEditAll", {

@@ -2716,7 +2716,7 @@
             aSITE.LONGITUDE = aSite.longitude;
             aSITE.WATERBODY = aSite.Waterbody != undefined ? aSite.Waterbody : "";
             aSITE.STATUS_TYPE_ID = aSite.StatType != undefined ? aSite.StatType[0].STATUS_ID : "0";
-            aSITE.LAKE_TYPE_ID = aSite.LakeType[0].LAKE_TYPE_ID;
+            aSITE.LAKE_TYPE_ID = aSite.LakeType.LAKE_TYPE_ID;
             aSITE.COUNTRY = aSite.Country;
             aSITE.STATE_PROVINCE = aSite.State;
             aSITE.WATERSHED_HUC8 = aSite.WatershedHUC8 != undefined ? aSite.WatershedHUC8 : "";
@@ -2740,27 +2740,23 @@
             });
             modalInstance.result.then(function (newSiteName) {
                 //go use this (newSiteName.name and newSiteName.id) (new with this new name and duplicate everything and then direct to it
-                var thisSite = $scope.projectSites.filter(function (s) {
-                    return s.SiteId == newSiteName.id;
-                });
-                thisSite[0].ProjID = $scope.thisProject.PROJECT_ID;
-                thisSite[0].Name = newSiteName.name;
-                thisSite[0].StatType = $scope.StatusList.filter(function (st) {
-                    return st.STATUS == thisSite[0].Status;
-                });
-                thisSite[0].LakeType = $scope.LakeList.filter(function (st) { return st.LAKE == thisSite[0].GreatLake; });
+                var thisSite = angular.copy($scope.projectSites.filter(function (s) {return s.SiteId == newSiteName.id;})[0]);
+                thisSite.ProjID = $scope.thisProject.PROJECT_ID;
+                thisSite.Name = newSiteName.name;
+                thisSite.StatType = $scope.StatusList.filter(function (st) { return st.STATUS == thisSite.Status; })[0];
+                thisSite.LakeType = $scope.LakeList.filter(function (st) { return st.LAKE == thisSite.GreatLake; })[0];
                 //properly form the site
-                var aSITE = formatSite(thisSite[0]);
-                var freqSplit = thisSite[0].Frequency != undefined ? thisSite[0].Frequency.split(',') : [];
-                var medSplit = thisSite[0].Media != undefined ? thisSite[0].Media.split(',') : [];
-                var resSplit = thisSite[0].Resources != undefined ? thisSite[0].Resources.split(',') : [];
+                var aSITE = formatSite(thisSite);
+                var freqSplit = thisSite.Frequency != undefined ? thisSite.Frequency.split(',') : [];
+                var medSplit = thisSite.Media != undefined ? thisSite.Media.split(',') : [];
+                var resSplit = thisSite.Resources != undefined ? thisSite.Resources.split(',') : [];
 
                 var paramSorted = [];
-                var bioSplit = thisSite[0].ParameterStrings.Biological.split(';');
-                var chemSplit = thisSite[0].ParameterStrings.Chemical.split(';');
-                var micSplit = thisSite[0].ParameterStrings.Microbiological.split(';');
-                var phySplit = thisSite[0].ParameterStrings.Physical.split(';');
-                var toxSplit = thisSite[0].ParameterStrings.Toxicological.split(';');
+                var bioSplit = thisSite.ParameterStrings.Biological.split(';');
+                var chemSplit = thisSite.ParameterStrings.Chemical.split(';');
+                var micSplit = thisSite.ParameterStrings.Microbiological.split(';');
+                var phySplit = thisSite.ParameterStrings.Physical.split(';');
+                var toxSplit = thisSite.ParameterStrings.Toxicological.split(';');
 
                 for (var b = 0; b < bioSplit.length; b++) {
                     //add biological string
@@ -2825,6 +2821,9 @@
                 $http.defaults.headers.common.Accept = 'application/json';
                 var siteId = "";
                 SITE.save({}, aSITE, function success(response) {
+                    $(".page-loading").removeClass("hidden");
+                    thisSite.SiteId = response.SITE_ID;
+                    $scope.projectSites.push(thisSite);
                     toastr.success("Site Created");
                     siteId = response.SITE_ID;
                     //projSites.push(response);
@@ -2884,8 +2883,7 @@
                 }, function error(errorResponse) {
                     toastr.success("Error: " + errorResponse.statusText);
                 }).$promise.then(function () {
-                    $location.path('/project/edit/' + thisProject.PROJECT_ID + '/site/siteInfo/' + siteId).replace();
-                    $scope.apply;
+                    $scope.openSiteCreate(thisSite);                    
                 });
 
             });
@@ -2930,6 +2928,7 @@
         $scope.openSiteCreate = function (site) {
             var dropdownParts = [siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList];
             var indexClicked = $scope.projectSites.indexOf(site);
+           
             //modal
             var modalInstance = $uibModal.open({
                 templateUrl: 'SITEmodal.html',
@@ -2968,7 +2967,7 @@
                         if (site != 0) {
                             return SITE.getSiteParameters({ id: site.SiteId }).$promise;
                         }
-                    },
+                    }
                 }
             });
             modalInstance.result.then(function (r) {
