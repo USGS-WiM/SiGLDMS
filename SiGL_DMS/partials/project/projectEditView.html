@@ -145,9 +145,9 @@
                 </div>
 
                 <div class="sigl-modal-form-group">
-                    <label class="req" for="ProjKeyword">Add Project Keyword:</label>
-                    <input class="input-with-add-button" ng-enter="addThisKeyword()" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="Enter one keyword at a time" ng-model="newKey.value" /><!--
-                    --><button type="button" class="input-add-button" ng-click="addThisKeyword()">Add</button>
+                    <label for="ProjKeyword">Add Project Keyword:</label>
+                    <input class="input-with-add-button" ng-enter="addThisKeyword()" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="Enter one keyword at a time" ng-model="newKey.value" />
+                    <button type="button" class="input-add-button" ng-click="addThisKeyword()">Add</button>
                 </div>
 
                 <hr />
@@ -159,14 +159,14 @@
                 </div>
 
                 <div class="sigl-modal-form-group">
-                    <label class="req" for="URL">
+                    <label for="URL">
                         Add Project Website:
                         <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='If your project has a website, enter the URL here. If information about your project can be found in multiple locations, add them here.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
                     </label>
-                    <input class="input-with-add-button" ng-enter="addProjURL(projectForm.Info)" ng-model="newURL.value" name="inputURL" id="inputURL" type="url" placeholder="http://www.google.com" http-prefix /><!--
-                    --><button type="button" class="input-add-button" ng-click="addProjURL(projectForm.Info)">Add</button>
+                    <input class="input-with-add-button" ng-enter="addProjURL(projectForm.Info)" ng-model="newURL.value" name="inputURL" id="inputURL" type="url" placeholder="http://www.google.com" http-prefix />
+                    <button type="button" class="input-add-button" ng-click="addProjURL(projectForm.Info)">Add</button>
                 </div>
 
                 <!-- Project Additional Info -->
