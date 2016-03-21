@@ -76,8 +76,8 @@
                 <div class="sigl-modal-form-group">
                     <label for="START_DATE">Project Start Date:</label>
                     <input class="input-calendar" id="START_DATE" name="sd" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.sd"
-                           ng-change="compareDates('start')" ng-model="aProject.START_DATE" /><!--
-                    --><button type="button" class="btn-cal" ng-click="open($event, 'sd')">
+                           show-weeks="false" ng-change="compareDates('start')" ng-model="aProject.START_DATE" />
+                    <button type="button" class="btn-cal" ng-click="open($event, 'sd')">
                         <i class="glyphicon glyphicon-calendar" />
                     </button>
                 </div>
@@ -91,8 +91,8 @@
                         </button>
                     </label>
                     <input class="input-calendar" id="END_DATE" name="ed" ng-disabled="aProject.PROJ_STATUS_ID == 1" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
-                           ng-change="compareDates('end')" ng-model="aProject.END_DATE" /><!--
-                    --><button type="button" class="btn-cal" ng-click="open($event, 'ed')">
+                           show-weeks="false" ng-change="compareDates('end')" ng-model="aProject.END_DATE" />
+                    <button type="button" class="btn-cal" ng-click="open($event, 'ed')">
                         <i class="glyphicon glyphicon-calendar" />
                     </button>
                 </div>
@@ -402,8 +402,8 @@
                 <div class="sigl-modal-form-group">
                     <label for="START_DATE">Sampling Start Date:</label>
                     <input class="input-calendar" id="START_DATE" name="sd" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.sd"
-                           ng-change="compareSiteDates('start')" ng-model="thisSite.START_DATE" /><!--
-                    --><button type="button" class="btn-cal" ng-click="open($event, 'sd')">
+                           show-weeks="false" ng-change="compareSiteDates('start')" ng-model="thisSite.START_DATE" />
+                    <button type="button" class="btn-cal" ng-click="open($event, 'sd')">
                         <i class="glyphicon glyphicon-calendar" />
                     </button>
                 </div>
@@ -417,8 +417,8 @@
                         </button>
                     </label>
                     <input class="input-calendar" id="END_DATE" name="ed" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
-                           ng-change="compareSiteDates('end')" ng-model="thisSite.END_DATE" /><!--
-                    --><button type="button" class="btn-cal" ng-click="open($event, 'ed')">
+                           show-weeks="false" ng-change="compareSiteDates('end')" ng-model="thisSite.END_DATE" />
+                    <button type="button" class="btn-cal" ng-click="open($event, 'ed')">
                         <i class="glyphicon glyphicon-calendar" />
                     </button>
                 </div>
