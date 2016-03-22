@@ -92,7 +92,7 @@
                     </label>
                     <input class="input-calendar" id="END_DATE" name="ed" ng-disabled="aProject.PROJ_STATUS_ID == 1" type="text" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
                            show-weeks="false" ng-change="compareDates('end')" ng-model="aProject.END_DATE" />
-                    <button type="button" class="btn-cal" ng-click="open($event, 'ed')">
+                    <button type="button" class="btn-cal" ng-disabled="aProject.PROJ_STATUS_ID == 1" ng-click="open($event, 'ed')">
                         <i class="glyphicon glyphicon-calendar" />
                     </button>
                 </div>
