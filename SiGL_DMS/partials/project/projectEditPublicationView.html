@@ -15,10 +15,6 @@
                 Cancel
             </button>
         </form>
-
-
-
-
         <div style="display:none">
             <span editable-text="p.PUBLICATION_ID" e-form="rowform" e-name="PUBLICATION_ID">{{p.PUBLICATION_ID}}</span>
             <span editable-text="p.SCIENCE_BASE_ID" e-form="rowform" e-name="SCIENCE_BASE_ID">{{p.SCIENCE_BASE_ID}}</span>
@@ -26,13 +22,13 @@
 
 
         <div class="data-display">
-            <span class="publication-list-item-text" editable-text="p.TITLE" e-name="TITLE" e-form="rowform"><b>{{ p.TITLE || '' }} | </b></span>
+            <span class="publication-list-item-text" editable-text="p.TITLE" e-name="TITLE" e-form="rowform"><b>{{ p.TITLE || '' }}</b></span>
 
             <span class="publication-list-item-text" editable-textarea="p.DESCRIPTION" e-elastic e-rows="5" e-cols="40" e-name="DESCRIPTION" e-form="rowform">{{ p.DESCRIPTION || '' }}</span>
 
-            <span class="publication-list-item-text" editable-text="p.URL" e-name="URL" e-form="rowform"> - {{ p.URL || '' }}</span>
-        </div><!--
-        --><div class="data-controls" ng-show="!rowform.$visible">
+            <span class="publication-list-item-text" editable-text="p.URL" e-name="URL" e-form="rowform">{{ p.URL || '' }}</span>
+        </div>
+        <div class="data-controls" ng-show="!rowform.$visible">
             <button class="sigl-btn btn-small" ng-click="rowform.$show()">Edit</button>
             <button class="sigl-btn btn-orange btn-small" ng-click="RemoveData(p)">Delete</button>
         </div>
@@ -43,7 +39,7 @@
 </div>
 
 
-<hr  ng-if="ProjPubs.length > 0">
+<hr ng-if="ProjPubs.length > 0">
 
 
 
@@ -55,8 +51,8 @@
             <label for="inputTITLE">
                 Publication title:
                 <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                    title="Enter the title of your publication in this field. Do not include any other information."
-                    data-placement="right" tooltip>
+                      title="Enter the title of your publication in this field. Do not include any other information."
+                      data-placement="right" tooltip>
                 </span>
             </label>
             <input id="inputTITLE" name="TITLE"
@@ -69,13 +65,13 @@
             <label for="inputDESCRIPTION">
                 Publication description:
                 <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                    title="Enter the citation or briefly describe the content and format of your publication."
-                    data-placement="right" tooltip>
+                      title="Enter the citation or briefly describe the content and format of your publication."
+                      data-placement="right" tooltip>
                 </span>
             </label>
             <textarea id="inputDESCRIPTION" rows="3" elastic
-                          type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.DESCRIPTION.length || newPub.URL.length)"
-                          ng-model="newPub.DESCRIPTION" />
+                      type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.DESCRIPTION.length || newPub.URL.length)"
+                      ng-model="newPub.DESCRIPTION" />
 
         </div>
 
@@ -84,13 +80,13 @@
             <label for="inputURL">
                 Pub website or location:
                 <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                    title="If the publication is online, enter the URL. Otherwise, provide information on how to obtain a copy of the publication."
-                    data-placement="right" tooltip>
+                      title="If the publication is online, enter the URL. Otherwise, provide information on how to obtain a copy of the publication."
+                      data-placement="right" tooltip>
                 </span>
             </label>
             <input class="form-control" id="inputURL" name="URL"
-                       type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.DESCRIPTION.length || newPub.URL.length)"
-                       ng-model="newPub.URL" />
+                   type="text" placeholder="" ng-required="!(newPub.TITLE.length || newPub.DESCRIPTION.length || newPub.URL.length)"
+                   ng-model="newPub.URL" />
         </div>
 
         <!--submit button-->

@@ -2040,11 +2040,10 @@
                 //add it
                 $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common.Accept = 'application/json';
-                PROJECT.addProjData({ id: thisProjID }, d, function success(response) {
-                    var postedDATA = response.filter(function (postedD) { return postedD.DESCRIPTION == d.DESCRIPTION && postedD.PORTAL_URL == d.PORTAL_URL && postedD.HOST_NAME == d.HOST_NAME; })[0];
-                    $scope.ProjData.push(postedDATA);
+                PROJECT.addProjData({ id: thisProjID }, d, function success(response) {                    
+                    $scope.ProjData = response;
 
-                    $scope.datumCount.total = $scope.datumCount.total + 1;
+                    $scope.datumCount.total = $scope.ProjData.length;
                     $scope.newData = {};
                     $scope.projectForm.Data.$setPristine(true);
                     toastr.success("Data Added");
@@ -2557,20 +2556,15 @@
                 $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common.Accept = 'application/json';
                 PROJECT.addProjPublication({ id: thisProjID }, p, function success(response) {
-                    var postedPUB = response.filter(function (postedP) {
-                        return postedP.URL == p.URL && postedP.TITLE == p.TITLE && postedP.DESCRIPTION == p.DESCRIPTION;
-                    })[0];
-                    $scope.ProjPubs.push(postedPUB);
+                    $scope.ProjPubs = response;
 
-                    $scope.pubCount.total = $scope.pubCount.total + 1;
-                    $scope.newPub = {
-                    };
+                    $scope.pubCount.total = $scope.ProjPubs.length;
+                    $scope.newPub = {};
                     $scope.projectForm.Pubs.$setPristine(true);
                     toastr.success("Publication Added");
                 }, function error(errorResponse) {
                     toastr.error("Error: " + errorResponse.statusText);
                 });
-
             } else {
                 //modal for enter all required fields
                 openModal();
