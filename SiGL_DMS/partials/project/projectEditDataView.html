@@ -17,12 +17,20 @@
 
         <div class="data-display">
             <div style="display:none"><span editable-text="d.PROJECT_ID" e-form="rowform" e-name="PROJECT_ID">{{d.PROJECT_ID}}</span></div>
-            <span class="data-list-item" editable-textarea="d.DESCRIPTION" e-rows="5" e-cols="40" e-elastic e-name="DESCRIPTION" e-form="rowform"><b>{{ d.DESCRIPTION || '' }}</b></span>
-
-            <span class="data-list-item" editable-text="d.HOST_NAME" e-name="HOST_NAME" e-form="rowform">{{ d.HOST_NAME || '' }}</span>
-            <span class="data-list-item" editable-text="d.PORTAL_URL" e-http-prefix e-name="PORTAL_URL" e-form="rowform">{{d.PORTAL_URL || ''}}</span>
-        </div><!--
-        --><div class="data-controls" ng-show="!rowform.$visible">
+            <div>
+                <label class="title">Data management system or data description:</label>
+                <span class="data-list-item" editable-textarea="d.DESCRIPTION" e-rows="5" e-cols="40" e-elastic e-name="DESCRIPTION" e-form="rowform">{{ d.DESCRIPTION || '' }}</span>
+            </div>
+            <div>
+                <label class="title">Data Hosting Entity:</label>
+                <span class="data-list-item" editable-text="d.HOST_NAME" e-name="HOST_NAME" e-form="rowform">{{ d.HOST_NAME || '' }}</span>
+            </div>
+            <div>
+                <label class="title">Online Data Location:</label>
+                <span class="data-list-item" editable-text="d.PORTAL_URL" e-http-prefix e-name="PORTAL_URL" e-form="rowform">{{d.PORTAL_URL || ''}}</span>
+            </div>
+        </div>
+        <div class="data-controls" ng-show="!rowform.$visible">
             <button class="sigl-btn btn-small" ng-click="rowform.$show()">Edit</button>
             <button class="sigl-btn btn-orange btn-small" ng-click="RemoveData(d)">Delete</button>
         </div>
@@ -40,13 +48,13 @@
             <label for="inputDESCRIPTION">
                 Data management system or data description:
                 <span class="glyphicon glyphicon-question-sign sigl-tooltip" data-toggle="tooltip"
-                    title="Describe your project data and where it resides (USGS NWIS, the Water Quality Portal, Access database, Excel spreadsheet, etc.). If your project uses multiple systems at different locations, enter each as a separate Data entry."
-                    data-placement="right" tooltip>
+                      title="Describe your project data and where it resides (USGS NWIS, the Water Quality Portal, Access database, Excel spreadsheet, etc.). If your project uses multiple systems at different locations, enter each as a separate Data entry."
+                      data-placement="right" tooltip>
                 </span>
             </label>
             <textarea class="form-control" id="DESCRIPTION" rows="3" name="DESCRIPTION" elastic
-                       type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
-                       ng-model="newData.DESCRIPTION" />
+                      type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
+                      ng-model="newData.DESCRIPTION" />
         </div>
 
         <!-- Data Hosting Entity -->
@@ -54,13 +62,13 @@
             <label for="inputHOST_NAME">
                 Data Hosting Entity:
                 <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                    title="Enter the entity, person, or organization that hosts or holds your data."
-                    data-placement="right" tooltip>
+                      title="Enter the entity, person, or organization that hosts or holds your data."
+                      data-placement="right" tooltip>
                 </span>
             </label>
             <input class="form-control" id="inputHOST_NAME" name="HOST_NAME"
-                       type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
-                       ng-model="newData.HOST_NAME" />
+                   type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
+                   ng-model="newData.HOST_NAME" />
         </div>
 
         <!-- Online Data Location -->
@@ -68,17 +76,17 @@
             <label for="inputPORTAL_URL">
                 Online Data Location:
                 <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                    title="If data is available online, provide the entire URL of the data’s location (be sure to include the ' http://'). Only enter one address."
-                    data-placement="right" tooltip>
+                      title="If data is available online, provide the entire URL of the data’s location (be sure to include the ' http://'). Only enter one address."
+                      data-placement="right" tooltip>
                 </span>
             </label>
             <input class="form-control" id="inputPORTAL_URL" name="PORTAL_URL"
-                       type="url" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
-                       ng-model="newData.PORTAL_URL" http-prefix />
+                   type="url" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
+                   ng-model="newData.PORTAL_URL" http-prefix />
         </div>
 
         <!--submit button-->
-        <div class="sigl-edit-form-group"style="text-align: right;">
+        <div class="sigl-edit-form-group" style="text-align: right;">
             <button class="sigl-btn" ng-click="AddData(projectForm.Data.$valid, newData)">Add</button>
         </div>
 

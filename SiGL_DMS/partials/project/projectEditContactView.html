@@ -24,43 +24,36 @@
             <span editable-text="c.SCIENCE_BASE_ID" e-form="rowform" e-name="SCIENCE_BASE_ID">{{c.SCIENCE_BASE_ID}}xxx</span>
             <span editable-text="c.ORGANIZATION_SYSTEM_ID" e-form="rowform" e-name="ORGANIZATION_SYSTEM_ID">{{c.ORGANIZATION_SYSTEM_ID}}</span>
         </div>
-
-        <!--  -->
-
-        <div class="data-display contact-display">
-            <span editable-text="c.NAME" e-required e-style="width:25em;" e-name="NAME" onbeforesave="checkRequiredFields('name', $data)" e-form="rowform"><b>{{ c.NAME }}</b></span>
-            <span editable-text="c.EMAIL" e-style="width:25em;" e-required e-name="EMAIL" onbeforesave="checkRequiredFields('email', $data)" e-form="rowform"> {{ c.EMAIL || '' }}</span>
-            <span editable-text="c.PHONE" e-my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}" e-style="width:25em;" e-name="PHONE" e-form="rowform">{{ c.PHONE || '' }}</span>
-            <br>
-            <span>{{c.OrgName}}<em ng-if="c.DivName">, {{c.DivName}}</em><em ng-if="c.SecName">, {{c.SecName}}</em></span>
-            <div class="showHide">
-                <button class="sigl-btn btn-small" ng-click="addNewOrg()">
-                    Change Contact's Organization
-                </button>
+        <!--  contact-display-->
+        <div class="data-display">
+            <div>
+                <label class="title">Name:</label>
+                <span editable-text="c.NAME" e-required e-style="width:25em;" e-name="NAME" onbeforesave="checkRequiredFields('name', $data)" e-form="rowform">{{ c.NAME }}</span>
+            </div>
+            <div>
+                <label class="title">Email:</label>
+                <span editable-text="c.EMAIL" e-style="width:25em;" e-required e-name="EMAIL" onbeforesave="checkRequiredFields('email', $data)" e-form="rowform"> {{ c.EMAIL || '' }}</span>
+            </div>
+            <div>
+                <label class="title">Phone:</label>
+                <span editable-text="c.PHONE" e-my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}" e-style="width:25em;" e-name="PHONE" e-form="rowform">{{ c.PHONE || '' }}</span>
             </div>
 
-        </div><!--
-        --><div class="data-controls" ng-show="!rowform.$visible">
+                <br>
+                <span>{{c.OrgName}}<em ng-if="c.DivName">, {{c.DivName}}</em><em ng-if="c.SecName">, {{c.SecName}}</em></span>
+                <div class="showHide">
+                    <button class="sigl-btn btn-small" ng-click="addNewOrg()">
+                        Change Contact's Organization
+                    </button>
+                </div>
+
+            </div>
+        <div class="data-controls" ng-show="!rowform.$visible">
             <button class="sigl-btn btn-small" ng-click="rowform.$show()">Edit</button>
             <button class="sigl-btn btn-orange btn-small" ng-click="RemoveContact(c)">Delete</button>
         </div>
-
-
-
-        <!--ng-show="isEditing"-->
-
-        <!--<div ng-show="isEditing" class="col-md-6"> e-ui-mask="{{'(999) 999-9999'}}"
-            <span>
-                <a href ng-click="addNewOrg()">Change Contact's Organization</a>
-            </span>
-        </div>-->
-
     </div>
 </div>
-
-
-
-
 <hr ng-if="ProjContacts.length > 0">
 
 <form class="sigl-edit-form" name="projectForm.Contact">
@@ -76,18 +69,8 @@
             </label>
             <input class="form-control" id="inputNAME" name="NAME" type="text" placeholder="" ng-model="newContact.NAME" required />
         </div>
-        <!--<div class="form-group">
-            <label class="col-md-4 control-label"></label>
-            <div class="col-md-8">
-                <span>
-                    Don't see the Organization Name, Division or Section?
-                    <a href ng-click="addNewOrg()"> Click here to add it.</a>
-                </span>
-            </div>
-        </div>
-         ORG section -->
         <div class="sigl-edit-form-group">
-            <label>Organization</label>
+            <label class="req">Organization</label>
             <select style="display:block;" class="form-control" name="NAME" ng-model="selectedOrgID" ng-options="o.ORGANIZATION_ID as o.ORGANIZATION_NAME for o in allOrganizations | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)" required></select>
             <button class="sigl-form-add-new" ng-click="addNewOrg()">
                 Add New

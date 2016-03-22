@@ -2176,14 +2176,16 @@
         $scope.isEditing = false; //flag so that when editing, can't also add a new one below
         $scope.updatedContactOrg = false; //set flag to check on saveEdits to update the org
 
-        //format contacts for display with org parts
+        //format contacts for display with org parts (if there is one.. all should have one, but a few don't..)
         for (var x = 0; x < $scope.ProjContacts.length; x++) {
-            var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.OrganizationSystemID == $scope.ProjContacts[x].ORGANIZATION_SYSTEM_ID; })[0];
-            $scope.ProjContacts[x].OrgName = thisOrgRes.OrganizationName;
-            if (thisOrgRes.DivisionID > 0)
-                $scope.ProjContacts[x].DivName = thisOrgRes.DivisionName;
-            if (thisOrgRes.SectionID > 0)
-                $scope.ProjContacts[x].SecName = thisOrgRes.SectionName;
+            if ($scope.ProjContacts[x].ORGANIZATION_SYSTEM_ID !== null) {
+                var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.OrganizationSystemID == $scope.ProjContacts[x].ORGANIZATION_SYSTEM_ID; })[0];
+                $scope.ProjContacts[x].OrgName = thisOrgRes.OrganizationName;
+                if (thisOrgRes.DivisionID > 0)
+                    $scope.ProjContacts[x].DivName = thisOrgRes.DivisionName;
+                if (thisOrgRes.SectionID > 0)
+                    $scope.ProjContacts[x].SecName = thisOrgRes.SectionName;
+            }
         }
 
         //org was chosen, go get the divs
@@ -2270,7 +2272,7 @@
         $scope.EditRowClicked = function (i) {
             //editing: only show (add org button) for this row, and disable inputs for new contact below
             var showAtag = document.getElementsByClassName("showHide")[this.$index];
-            showAtag.style.display = "inline";
+            showAtag.style.display = "block";
             $scope.isEditing = true;
         };
         $scope.CancelEditRowClick = function () {
@@ -2379,9 +2381,9 @@
             var chosenparts = [];
             if ($scope.isEditing == true) {
                 //editing contact's org, pass their org id's to the modal for prepopulating
-                var orgId = $scope.allOrganizations.filter(function (o) { return o.ORGANIZATION_NAME == editingContact.OrgName; })[0].ORGANIZATION_ID;
-                var divId = editingContact.DivName != undefined ? $scope.allDivisions.filter(function (d) { return d.DIVISION_NAME == editingContact.DivName; })[0].DIVISION_ID : 0;
-                var secId = editingContact.SecName != undefined ? $scope.allSections.filter(function (s) { return s.SECTION_NAME == editingContact.SecName; })[0].SECTION_ID : 0;
+                var orgId = editingContact.OrgName !== undefined ? $scope.allOrganizations.filter(function (o) { return o.ORGANIZATION_NAME == editingContact.OrgName; })[0].ORGANIZATION_ID: 0;
+                var divId = editingContact.DivName != undefined && editingContact.DivName !== "" ? $scope.allDivisions.filter(function (d) { return d.DIVISION_NAME == editingContact.DivName; })[0].DIVISION_ID : 0;
+                var secId = editingContact.SecName != undefined && editingContact.SecName !== "" ? $scope.allSections.filter(function (s) { return s.SECTION_NAME == editingContact.SecName; })[0].SECTION_ID : 0;
                 chosenparts.push(orgId);
                 chosenparts.push(divId);
                 chosenparts.push(secId);

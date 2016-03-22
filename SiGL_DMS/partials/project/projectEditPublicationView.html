@@ -20,22 +20,25 @@
             <span editable-text="p.SCIENCE_BASE_ID" e-form="rowform" e-name="SCIENCE_BASE_ID">{{p.SCIENCE_BASE_ID}}</span>
         </div>
 
-
         <div class="data-display">
-            <span class="publication-list-item-text" editable-text="p.TITLE" e-name="TITLE" e-form="rowform"><b>{{ p.TITLE || '' }}</b></span>
-
-            <span class="publication-list-item-text" editable-textarea="p.DESCRIPTION" e-elastic e-rows="5" e-cols="40" e-name="DESCRIPTION" e-form="rowform">{{ p.DESCRIPTION || '' }}</span>
-
-            <span class="publication-list-item-text" editable-text="p.URL" e-name="URL" e-form="rowform">{{ p.URL || '' }}</span>
+            <div>
+                <label class="title">Title:</label>
+                <span class="publication-list-item-text" editable-text="p.TITLE" e-name="TITLE" e-form="rowform">{{ p.TITLE || '' }}</span>
+            </div>
+            <div>
+                <label class="title">Description:</label>
+                <span class="publication-list-item-text" editable-textarea="p.DESCRIPTION" e-elastic e-rows="5" e-cols="40" e-name="DESCRIPTION" e-form="rowform">{{ p.DESCRIPTION || '' }}</span>
+            </div>
+            <div>
+                <label class="title">Website or location:</label>
+                <span class="publication-list-item-text" editable-text="p.URL" e-name="URL" e-form="rowform">{{ p.URL || '' }}</span>
+            </div>
         </div>
         <div class="data-controls" ng-show="!rowform.$visible">
             <button class="sigl-btn btn-small" ng-click="rowform.$show()">Edit</button>
             <button class="sigl-btn btn-orange btn-small" ng-click="RemoveData(p)">Delete</button>
         </div>
-
-
     </div>
-
 </div>
 
 
