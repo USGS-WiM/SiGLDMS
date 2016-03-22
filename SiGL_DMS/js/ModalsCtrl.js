@@ -589,14 +589,15 @@
         //disable end date if status has 'end date undetermined'
         $scope.statusChanged = function () {
             if ($scope.aProject.PROJ_STATUS_ID == 1) {
-                if ($scope.aProject != undefined && $scope.aProject.END_DATE != null) {
+                if ($scope.aProject.END_DATE !== undefined || $scope.aProject.END_DATE !== "") {
                     $scope.aProject.END_DATE = "";
                 }
-            //    $scope.undetermined = true;
+                $scope.undetermined = true;
+               
             }
-            //else {
-            //    $scope.undetermined = false;
-            //}
+            else {
+                $scope.undetermined = false;
+            }
         };
 
         //project POST
