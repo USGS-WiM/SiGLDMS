@@ -377,8 +377,8 @@
         }//end auth user logged in
     }//end resourceCtrl
 
-    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$cookies', '$location', '$http', '$uibModal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'ROLE', 'allRoles', 'thisDM', 'dmProjects', dataManagerInfoCtrl]);
-    function dataManagerInfoCtrl($scope, $cookies, $location, $http, $uibModal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, ROLE, allRoles, thisDM, dmProjects) {
+    siGLControllers.controller('dataManagerInfoCtrl', ['$scope', '$rootScope', '$cookies', '$location', '$http', '$uibModal', '$stateParams', '$filter', 'ORGANIZATION_SYSTEM', 'PROJECT', 'DATA_MANAGER', 'ROLE', 'allRoles', 'thisDM', 'dmProjects', dataManagerInfoCtrl]);
+    function dataManagerInfoCtrl($scope, $rootScope, $cookies, $location, $http, $uibModal, $stateParams, $filter, ORGANIZATION_SYSTEM, PROJECT, DATA_MANAGER, ROLE, allRoles, thisDM, dmProjects) {
         if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
             $location.path('/login');
@@ -719,7 +719,7 @@
                 $scope.changeOrg = true; //flag to true so that org drop downs show without clicking "change my organization" button
                 $scope.save = function (valid) {
                     if (valid) {
-                        $(".page-loading").removeClass("hidden");
+                        $rootScope.stateIsLoading.showLoading = true; //loading...
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common.Accept = 'application/json';
                         //see if they created an org or just chose an existing one
@@ -738,7 +738,7 @@
                                     $scope.DM.ORGANIZATION_SYSTEM_ID = response.ORGANIZATION_SYSTEM_ID;
                                     $scope.postNewDM();
                                 }, function error(errorResponse) {
-                                    $(".page-loading").addClass("hidden");
+                                    $rootScope.stateIsLoading.showLoading = false; //loading... 
                                     toastr.error("Error: " + errorResponse.statusText);
                                 });
                             }//end else (new Orgsys)
@@ -766,10 +766,10 @@
                         nm.projCont = 0;
                         $scope.allDMs.push(nm); $scope.$parent.allDMs.push(nm);
                     }, function error(errorResponse) {
-                        $(".page-loading").addClass("hidden");
+                        $rootScope.stateIsLoading.showLoading = false; //loading... 
                         toastr.error("Error: " + errorResponse.statusText);
                     }).$promise.then(function () {
-                        $(".page-loading").addClass("hidden");
+                        $rootScope.stateIsLoading.showLoading = false; //loading...                        
                         $location.path('/dataManager/dataManagerList').replace();
                     });
                 };
@@ -1544,15 +1544,15 @@
 
     //#region PROJECT LIST Controller
     //ProjectListCtrl
-    siGLControllers.controller('projectListCtrl', ['$scope', '$cookies', 'PROJECT', '$location', '$http', projectListCtrl]);
-    function projectListCtrl($scope, $cookies, PROJECT, $location, $http) {
+    siGLControllers.controller('projectListCtrl', ['$scope', '$rootScope', '$cookies', 'PROJECT', '$location', '$http', projectListCtrl]);
+    function projectListCtrl($scope, $rootScope, $cookies, PROJECT, $location, $http) {
         if($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
             $location.path('/login');
         } else {
             //array of projects
             $http.defaults.headers.common.Authorization= 'Basic ' + $cookies.get('siGLCreds');
-            $(".page-loading").removeClass("hidden");
+            $rootScope.stateIsLoading.showLoading = true; //loading...
             //get the projects to list
             PROJECT.getIndexProjects(function success(data) {
                 data.sort(function (a, b) {
@@ -1573,10 +1573,9 @@
                 $scope.projects = data;
                 $scope.ProjCnt = data.length;
                 $scope.MoreThan20 = data.length >= 20 ? true : false;
-
-                $(".page-loading").addClass("hidden");
+                $rootScope.stateIsLoading.showLoading = false; //loading...                 
             }, function error(errorResponse) {
-                $(".page-loading").addClass("hidden");
+                $rootScope.stateIsLoading.showLoading = false; //loading...
                 toastr.error("Error: " + errorResponse.statusText);
             }
             ).$promise;
@@ -1656,7 +1655,7 @@
                         console.log('go to: ' + toState.name);
                     } else {
                         console.log('stay at state: ' + fromState.name);
-                        $(".page-loading").addClass("hidden");
+                        $rootScope.stateIsLoading.showLoading = false; //loading... 
                         event.preventDefault();
                     }
                 }
@@ -1709,7 +1708,7 @@
                 });
                 modalInstance.result.then(function (r) {
                     //$scope.aProject, projObjectives, projKeywords
-                    $(".page-loading").addClass("hidden");
+                    $rootScope.stateIsLoading.showLoading = false; //loading...  
                     $scope.aProject = r[0];
                     if ($scope.aProject.URL) {
                         //split string into an array
@@ -2663,8 +2662,8 @@
 
     //#region SITE Controller
 
-    siGLControllers.controller('projectEditSiteListCtrl', ['$scope', '$location', '$cookies', '$uibModal', '$http', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'CountryList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE', projectEditSiteListCtrl]);
-    function projectEditSiteListCtrl($scope, $location, $cookies, $uibModal, $http, projS, thisProject, siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList, SITE) {
+    siGLControllers.controller('projectEditSiteListCtrl', ['$scope', '$rootScope', '$location', '$cookies', '$uibModal', '$http', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'CountryList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE', projectEditSiteListCtrl]);
+    function projectEditSiteListCtrl($scope, $rootScope, $location, $cookies, $uibModal, $http, projS, thisProject, siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList, SITE) {
         $scope.projectSites = projS;
         for (var psu = 0; psu < $scope.projectSites.length; psu++) {
             var ind = psu;
@@ -2817,7 +2816,7 @@
                 $http.defaults.headers.common.Accept = 'application/json';
                 var siteId = "";
                 SITE.save({}, aSITE, function success(response) {
-                    $(".page-loading").removeClass("hidden");
+                    $rootScope.stateIsLoading.showLoading = true; //loading... 
                     thisSite.SiteId = response.SITE_ID;
                     $scope.projectSites.push(thisSite);
                     toastr.success("Site Created");
@@ -2922,6 +2921,7 @@
 
         //open modal to edit or create a project
         $scope.openSiteCreate = function (site) {
+            $rootScope.stateIsLoading.showLoading = true; //Loading...
             var dropdownParts = [siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList];
             var indexClicked = $scope.projectSites.indexOf(site);
            
@@ -2968,7 +2968,7 @@
             });
             modalInstance.result.then(function (r) {
                 //$scope.aProject, projObjectives, projKeywords
-                $(".page-loading").addClass("hidden");
+                $rootScope.stateIsLoading.showLoading = false; //loading... 
                 if (r[1] == 'create') {
                     $scope.projectSites.push(r[0]);
                     $scope.sitesCount.total = $scope.projectSites.length;

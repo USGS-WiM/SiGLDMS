@@ -288,8 +288,8 @@
     }
     
     //create/edit a project
-    ModalControllers.controller('PROJECTmodalCtrl', ['$scope', '$cookies', '$q', '$location', '$state', '$http', '$timeout', '$uibModal', '$uibModalInstance', '$filter', 'allDropDownParts', 'thisProjectStuff', 'PROJECT', PROJECTmodalCtrl]);
-    function PROJECTmodalCtrl($scope, $cookies, $q, $location, $state, $http, $timeout, $uibModal, $uibModalInstance, $filter, allDropDownParts, thisProjectStuff, PROJECT) {
+    ModalControllers.controller('PROJECTmodalCtrl', ['$scope', '$rootScope', '$cookies', '$q', '$location', '$state', '$http', '$timeout', '$uibModal', '$uibModalInstance', '$filter', 'allDropDownParts', 'thisProjectStuff', 'PROJECT', PROJECTmodalCtrl]);
+    function PROJECTmodalCtrl($scope, $rootScope, $cookies, $q, $location, $state, $http, $timeout, $uibModal, $uibModalInstance, $filter, allDropDownParts, thisProjectStuff, PROJECT) {
         //dropdowns allDurationList, allStatsList, allObjList
         $scope.DurationList = allDropDownParts[0];
         $scope.StatusList = allDropDownParts[1];
@@ -607,7 +607,8 @@
                 $http.defaults.headers.common.Accept = 'application/json';
                 $scope.aProject.URL = ($scope.urls).join('|');
                 var projID;
-                $(".page-loading").removeClass("hidden");
+               // $(".page-loading").removeClass("hidden");
+                $rootScope.stateIsLoading.showLoading = true; //loading...
                 PROJECT.save({}, $scope.aProject, function success(response) {
                     toastr.success("Project Created");
                     $scope.aProject = response;
@@ -633,7 +634,7 @@
                 }, function error(errorResponse) {
                         toastr.success("Error: " + errorResponse.statusText);
                 }).$promise.then(function () {
-                    $(".page-loading").addClass("hidden");
+                    $rootScope.stateIsLoading.showLoading = false; //loading...
                     var prjectParts = [$scope.aProject, $scope.Objectivesdata, $scope.ProjectKeywords];
                     $uibModalInstance.close(prjectParts);
                     $location.path('/project/edit/' + projID + '/info').replace();//.notify(false);
@@ -645,7 +646,7 @@
         //project PUT
         $scope.save = function (valid) {
             if (valid == true) {
-                $(".page-loading").removeClass("hidden");
+                $rootScope.stateIsLoading.showLoading = true; //loading... 
                 $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common.Accept = 'application/json';
                 $scope.aProject.URL = $scope.urls.join("|");
@@ -706,9 +707,9 @@
     } //end PROJECTmodalCtrl()
 
     //projectEditSiteInfoCtrl ( CREATE / EDIT page)    siteFrequencies, siteMedium, siteParameters, siteResources,
-    ModalControllers.controller('SITEmodalCtrl', ['$scope', '$q', '$location', '$cookies', '$http', '$uibModal', '$uibModalInstance', '$state', 'thisProject', 'allDropDownParts', 'thisSite',
+    ModalControllers.controller('SITEmodalCtrl', ['$scope', '$rootScope', '$q', '$location', '$cookies', '$http', '$uibModal', '$uibModalInstance', '$state', 'thisProject', 'allDropDownParts', 'thisSite',
         'siteFreq', 'siteMed', 'siteRes', 'siteParams', 'SITE', SITEmodalCtrl]);
-    function SITEmodalCtrl($scope, $q, $location, $cookies, $http, $uibModal, $uibModalInstance, $state, thisProject, allDropDownParts, thisSite, siteFreq, siteMed, siteRes, siteParams, SITE) {
+    function SITEmodalCtrl($scope, $rootScope, $q, $location, $cookies, $http, $uibModal, $uibModalInstance, $state, thisProject, allDropDownParts, thisSite, siteFreq, siteMed, siteRes, siteParams, SITE) {
         if ($cookies.get('siGLCreds') == undefined || $cookies.get('siGLCreds') == "") {
             $scope.auth = false;
             $location.path('/login');
@@ -717,7 +718,7 @@
             $scope.status = {
                 phyOpen: false, chemOpen: false, bioOpen: false, microOpen: false, toxOpen: false
             };
-            $(".page-loading").addClass("hidden");
+            $rootScope.stateIsLoading.showLoading = false; //loading... 
             $scope.thisSite = {}; //holder for project (either coming in for edit, or being created on POST )
             $scope.freqDirty = false; $scope.freqToRemove = [];
             $scope.medDirty = false; $scope.medToRemove = [];
@@ -1125,7 +1126,7 @@
             $scope.save = function (valid) {
                 //check if they filled in all required fields
                 if (valid == true){
-                    $(".page-loading").removeClass("hidden");
+                    $rootScope.stateIsLoading.showLoading = true; //loading...
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
                     $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
