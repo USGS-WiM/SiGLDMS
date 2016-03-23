@@ -4,20 +4,31 @@
         ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'isteven-multi-select',
             'laMPResource', 'siGLControllers', 'ModalControllers', 'LogInOutController']);
     
-    app.run(function ($rootScope) {
+    app.run(function ($rootScope, $cookies, $state) {
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {                    
-            $("#ui-view").html("");
-            $(".page-loading").removeClass("hidden");
+            if (($cookies.get('siGLCreds') === undefined || $cookies.get('siGLCreds') === "") && toState.authenticate) {
+                $rootScope.returnToState = toState.name;
+                $rootScope.returnToStateParams = toParams.id;
+                event.preventDefault();
+                $state.go('home');
+                //$("#ui-view").html("");
+            } else {
+                $rootScope.stateIsLoading = { showLoading: true }; //loading...
 
-            //check to see if they are going to project info
-            if (toState.url == "/") {
-                //make username focus
-                $("#userNameFocus").focus();
+                //check to see if they are going to project info
+                if (toState.url == "/") {
+                    //make username focus
+                    $("#userNameFocus").focus();
+                }
             }
         });
         $rootScope.$on('$stateChangeSuccess', function () {
             window.scrollTo(0, 0);
-            $(".page-loading").addClass("hidden");
+            $rootScope.stateIsLoading.showLoading = false; //loading...
+        });
+        $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+            $rootScope.stateIsLoading.showLoading = false; //loading...
+            alert("Error occurred: Status" + error.status + ", " + error.statusText + ". The following request was unsuccessful: " + error.config.url + " Please refresh and try again.");
         });
        
     });
@@ -28,8 +39,6 @@
             //if no active state, display state associated with this fragment identifier
             $urlRouterProvider.otherwise("/");
 
-            //http://stackoverflow.com/questions/19721125/resolve-http-request-before-running-app-and-switching-to-a-route-or-state
-            //http://stackoverflow.com/questions/22537311/angular-ui-router-login-authentication
             $stateProvider
                 //#region region home
                 .state("home", {
@@ -43,8 +52,9 @@
                 //#region settings page
                 .state("settings", {
                     url: "/settings",
+                    authenticate: true,
                     templateUrl: "partials/settings.html",
-                    controller: "settingsCtrl"    
+                    controller: "settingsCtrl"
                 })
                 //#endregion settings page
 
@@ -53,6 +63,7 @@
                  .state("dataManagers", {
                      url: "/dataManager",
                      abstract: true,
+                     authenticate: true,
                      templateUrl: "partials/DM/dmHolderView.html",
                      controller: "dataManagerCtrl",
                      resolve: {                         
@@ -87,6 +98,7 @@
                 //#region dataManager.dmList
                 .state("dataManagers.DMList", {
                     url: "/dataManagerList",
+                    authenticate: true,
                     templateUrl: "partials/DM/DMList.html"
                 })
                 //#endregion dataManager.dmList
@@ -95,6 +107,7 @@
                 .state("dataManagers.DMInfo", {
                     url: "/dataManagerInfo/:id",
                     templateUrl: "partials/DM/dataManagerInfo.html",
+                    authenticate: true,
                     controller: "dataManagerInfoCtrl",
                     resolve: {
                         dm: 'DATA_MANAGER',
@@ -123,6 +136,7 @@
                  .state("organizations", {
                      url: "/organizations",
                      abstract: true,
+                     authenticate: true,
                      templateUrl: "partials/Org/orgHolderView.html",
                      controller: "organizationCtrl",
                      resolve: {
@@ -134,6 +148,7 @@
                 //#region organizations.OrgList
                 .state("organizations.OrgList", {
                     url: "/organizationList",
+                    authenticate: true,
                     templateUrl: "partials/Org/OrgList.html"
                 })
                 //#endregion organizations.OrgList
@@ -141,6 +156,7 @@
                 //#region organizations.OrgInfo
                 .state("organizations.OrgInfo", {
                     url: "/organizations/:id",
+                    authenticate: true,
                     templateUrl: "partials/Org/OrgInfo.html",
                     controller: "organizationInfoCtrl",
                     resolve: {
@@ -155,6 +171,7 @@
                 .state("resources", {
                     url: "/Resources",
                     abstract: true,
+                    authenticate: true,
                     templateUrl: "partials/Resources/resourcesHolderView.html",
                     controller: "resourcesCtrl",
                     resolve: {
@@ -200,6 +217,7 @@
                 //#region resources.ResourcesList
                 .state("resources.ResourcesList", {
                     url: "/ResourcesList",
+                    authenticate: true,
                     templateUrl: "partials/Resources/resourcesList.html"
                 })
                 //#endregion resources.ResourcesList
@@ -276,6 +294,7 @@
                 //#region region help
                  .state("help", {
                      url: "/help",
+                     authenticate: true,
                      templateUrl: "partials/helpView.html",
                      controller: "helpCtrl"
                  })
@@ -284,6 +303,7 @@
                 //#region region projectList
                 .state("projectList", {
                     url: "/projects",
+                    authenticate: true,
                     templateUrl: "partials/project/projectListView.html",
                     controller: "projectListCtrl"
                 })
@@ -293,6 +313,7 @@
                 .state("projectEdit", {
                     abstract: true, //can't be directly activated, only nested states
                     url: "/project/edit/:id",
+                    authenticate: true,
                     templateUrl: "partials/project/projectEditView.html",
                     controller: "projectEditCtrl",
                     resolve: {
@@ -412,6 +433,7 @@
                 //#region region projectEdit.info
                 .state("projectEdit.info", {
                     url: "/info",
+                    authenticate: true,
                     templateUrl: "partials/project/projectEditInfoView.html"
                 })
                 //#endregion region projectEdit.info
@@ -419,6 +441,7 @@
                 //#region region projectEdit.cooperator
                 .state("projectEdit.cooperator", {
                     url: "/cooperator",
+                    authenticate: true,
                     templateUrl: "partials/project/projectEditCooperatorView.html",
                     controller: "projectEditCoopCtrl"
                 })
@@ -427,6 +450,7 @@
                 //#region region projectEdit.data
                 .state("projectEdit.data", {
                     url: "/data",
+                    authenticate: true,
                     templateUrl: "partials/project/projectEditDataView.html",
                     controller: "projectEditDataCtrl"
                 })
@@ -435,6 +459,7 @@
                 //#region region projectEdit.contact
                 .state("projectEdit.contact", {
                     url: "/contact",
+                    authenticate: true,
                     templateUrl: "partials/project/projectEditContactView.html",
                     controller: "projectEditContactCtrl",
                     resolve: {
@@ -457,6 +482,7 @@
                 //#region region projectEdit.publication
                 .state("projectEdit.publication", {
                     url: "/publication",
+                    authenticate: true,
                     templateUrl: "partials/project/projectEditPublicationView.html",
                     controller: "projectEditPubCtrl"
                 })
@@ -467,6 +493,7 @@
                     template: '<div class="panel panel-primary"><div ui-view=""></div></div>',
                     url: "/site",
                     abstract: true,
+                    authenticate: true,
                     resolve: {                        
                         //countries
                         CountryList: function () {
@@ -520,6 +547,7 @@
                 //#region region projectEdit.site.siteList
                 .state("projectEdit.site.siteList", {
                     url: "/siteList",
+                    authenticate: true,
                     templateUrl: "partials/project/projectEditSiteList.html",
                     resolve: {
                         Proj: 'PROJECT',
@@ -582,6 +610,7 @@
 
                 .state("projectEdit.site.siteEditAll", {
                     url: "/siteEditAll",
+                    authenticate: true,
                     templateUrl: "partials/project/projectEditSiteEditAll.html",
                     controller: "projectEditAllSitesCtrl"
                 });

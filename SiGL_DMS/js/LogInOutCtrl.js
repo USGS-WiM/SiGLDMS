@@ -102,7 +102,11 @@
                     $rootScope.usersName = usersNAME;
                     $rootScope.userID = user.DATA_MANAGER_ID;
                     $rootScope.Role = roleName;
-                    $state.go('projectList');
+                    if ($rootScope.returnToState !== undefined) {
+                        $state.go($rootScope.returnToState, { id: $rootScope.returnToStateParams });
+                    } else {
+                        $state.go('projectList');
+                    }
                 }
                 else {
                     $scope.error = "Login Failed";
@@ -116,8 +120,8 @@
 }
 
     //logOut
-    LogInOutController.controller('LogoutCtrl', ['$scope', '$cookies', '$location', LogoutCtrl]);
-    function LogoutCtrl($scope, $cookies, $location) {
+    LogInOutController.controller('LogoutCtrl', ['$scope', '$rootScope', '$cookies', '$location', LogoutCtrl]);
+    function LogoutCtrl($scope, $rootScope, $cookies, $location) {
     $scope.logout = function () {
         $cookies.remove('siGLCreds');
         $cookies.remove('siGLUsername');
@@ -127,6 +131,14 @@
         $cookies.remove('siteListSortOrder'); $cookies.remove('sl_reverse');
         $cookies.remove('DMListSortOrder'); $cookies.remove('dml_reverse');
         $cookies.remove('DMprojectsSortOrder'); $cookies.remove('dmpl_reverse');
+        $rootScope.isAuth = undefined;
+        $rootScope.usersName = undefined;
+        $rootScope.userID = undefined;
+        $rootScope.Role = undefined;
+        $rootScope.returnToState = undefined;
+        $rootScope.returnToStateParams = undefined;
+        $rootScope.stateIsLoading = undefined;
+
         $location.path('/login');
     };
 }

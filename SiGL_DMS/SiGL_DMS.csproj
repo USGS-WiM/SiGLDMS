@@ -906,7 +906,21 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="src\component\dataManager\" />
+    <Folder Include="src\component\help\" />
+    <Folder Include="src\component\main\" />
+    <Folder Include="src\component\nav\" />
+    <Folder Include="src\component\organization\" />
+    <Folder Include="src\component\projContact\" />
+    <Folder Include="src\component\projCooperator\" />
+    <Folder Include="src\component\projData\" />
+    <Folder Include="src\component\project\" />
+    <Folder Include="src\component\projPublication\" />
+    <Folder Include="src\component\projSite\" />
+    <Folder Include="src\component\resources\" />
+    <Folder Include="src\component\settings\" />
+  </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="js\typings\angularjs\angular-animate.d.ts" />
     <TypeScriptCompile Include="js\typings\angularjs\angular-cookies.d.ts" />

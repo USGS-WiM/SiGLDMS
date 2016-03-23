@@ -99,7 +99,11 @@
     <!--HEADER END-->
     <!--<div ng-include src="'partials/nav.html'" style="margin-top:31px"></div>-->
 
-    <div class="page-loading"><div id="loading"><div id="loadingcontent"><p id="loadingspinner" style=""><img src="images/loading1.gif" /></p></div></div></div>
+    <div ng-class="{'hidden': !stateIsLoading.showLoading}" class="page-loading">
+        <div id="loading">
+            <div id="loadingcontent"><p id="loadingspinner" style=""><img src="images/loading1.gif" /></p></div>
+        </div>
+    </div>
     <div id="body-wrapper">
         <div ui-view></div>
     </div>
