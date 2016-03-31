@@ -1,0 +1,86 @@
+
+<!-- Project Details View -->
+<div ng-if="aProject.PROJECT_ID != undefined">
+    <form class="sigl-edit-form" name="projectForm.Info">
+        <fieldset>
+            <legend>
+                Project Information
+                <button type="button" ng-if="aProject.PROJECT_ID != undefined" class="sigl-btn btn-right project-info-btn" ng-click="openProjectCreate()">Edit Project</button>
+                <button type="button" ng-if="aProject.PROJECT_ID == undefined" class="sigl-btn btn-right project-info-btn" ng-click="openProjectCreate()">Create Project</button>
+            </legend>
+
+            <!-- Project Name -->
+            <div class="sigl-edit-form-group">
+                <label for="NAME">Project Name:</label>
+                <span>{{aProject.NAME}}</span>
+            </div>
+
+            <hr />
+            <!-- Project Duration -->
+            <div class="sigl-edit-form-group">
+                <label for="inputPROJ_DURATION_ID">Project Duration:</label>
+                <span>{{(DurationList | filter: {PROJ_DURATION_ID: aProject.PROJ_DURATION_ID})[0].DURATION_VALUE}}</span>
+            </div>
+
+            <!-- Project Status -->
+            <div class="sigl-edit-form-group">
+                <label for="PROJ_STATUS_ID">Project Status:</label>
+                <span>{{(StatusList | filter: {PROJ_STATUS_ID: aProject.PROJ_STATUS_ID})[0].STATUS_VALUE}}</span>
+            </div>
+
+            <!-- Project Start Date  ng-controller="datePickrCtrl"-->
+            <div class="sigl-edit-form-group">
+                <label for="START_DATE">Project Start Date:</label>
+                <span>{{aProject.START_DATE | date: 'MM/dd/yyyy'}}</span>
+            </div>
+
+            <!-- Project Completion Date -->
+            <div class="sigl-edit-form-group">
+                <label for="END_DATE">Project Completion Date:</label>
+                <span>{{aProject.END_DATE | date: 'MM/dd/yyyy'}}</span>
+            </div>
+
+            <hr />
+
+            <!-- Project Objectives -->
+            <div class="sigl-edit-form-group">
+                <label for="PROJ_OBJECTIVES">Project Objectives:</label>
+                <ul ng-if="ProjectObjectives.length > 0">
+                    <li style="list-style:none" ng-repeat="o in ProjectObjectives">{{o.OBJECTIVE}}</li>
+                </ul>
+            </div>
+
+            <!-- Project Description -->
+            <div class="sigl-edit-form-group">
+                <label for="DESCRIPTION">Description:</label>
+                <textarea readonly="readonly" class="form-control" id="DESCRIPTION" type="text" rows="3" ng-model="aProject.DESCRIPTION" elastic />
+            </div>
+
+            <hr />
+            <!-- Project Keywords -->
+            <div class="sigl-edit-form-group" ng-if="ProjectKeywords.length > 0">
+                <label for="ProjKEYWORDS">Project Keywords:</label>
+                <ul>
+                    <li style="list-style:none" data-ng-repeat="key in ProjectKeywords">{{key.TERM}}</li>
+                </ul>
+            </div>
+
+
+            <hr />
+            <!-- Project Websites -->
+            <div class="sigl-edit-form-group" ng-if="urls.length > 0">
+                <label for="URL">Project Websites:</label>
+                <ul>
+                    <li style="list-style:none" data-ng-repeat="key in urls">{{key}}</li>
+                </ul>
+            </div>
+
+            <!-- Project Additional Info -->
+            <div class="sigl-edit-form-group">
+                <label for="ADDITIONAL_INFO">Additional Information:</label>
+                <textarea class="form-control" id="ADDITIONAL_INFO" type="text" rows="3" readonly="readonly" elastic ng-model="aProject.ADDITIONAL_INFO" />
+            </div>
+
+        </fieldset>
+    </form>
+</div>

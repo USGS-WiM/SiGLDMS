@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiGL_DMS", "SiGL_DMS\SiGL_DMS.csproj", "{B9CEDBDD-64A9-4448-8E67-75DDBA2602AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiGL_DMS", "SiGL_DMS.csproj", "{B9CEDBDD-64A9-4448-8E67-75DDBA2602AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{7C4D0D56-74D5-45A4-BA1B-D7DF15511F4C}"
 	ProjectSection(SolutionItems) = preProject

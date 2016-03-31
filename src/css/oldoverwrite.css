@@ -1,0 +1,558 @@
+body,
+html {
+  background-color: #e6e2c9;
+  font-family: 'Nunito', sans-serif;
+  padding: 0;
+  margin: 0;
+  letter-spacing: 1px;
+  font-size: .975em;
+  color: #000000;
+}
+* {
+  outline: none;
+}
+.container,
+.container-fluid {
+  box-sizing: border-box;
+  padding: 25px 0 45px 0;
+  padding: 0;
+  width: 100%;
+}
+.btn-primary {
+  background-color: #55b5ae;
+  box-sizing: border-box;
+  padding: 6px 12px 6px 12px !important;
+}
+.btn-primary:hover {
+  cursor: pointer;
+  background-color: #3F928C;
+  transition: 0.09s;
+}
+a {
+  color: #de5030;
+  text-decoration: none;
+  transition: 0.09s;
+}
+a:hover {
+  color: #55b5ae;
+  transition: 0.09s;
+}
+.navbar {
+  background-color: #525352;
+  color: #e6e2c9;
+  height: 60px;
+  width: 100%;
+  padding: 0;
+  margin: 0 auto;
+  border-radius: 0;
+  box-sizing: border-box;
+}
+.navbar .navbar-brand {
+  padding: 0 0 0 15px;
+}
+.navbar .navbar-brand img {
+  margin-right: 25px;
+  padding: 6px;
+  background-color: #000;
+  width: auto;
+}
+.navbar h2 {
+  color: #e6e2c9;
+  font-weight: lighter;
+  padding: 0;
+  margin: 0;
+  line-height: 60px;
+}
+.navbar h2 em {
+  color: #de5030;
+  font-style: normal;
+  font-weight: bolder;
+  display: inline-block;
+  padding: 0 6px 0 6px;
+}
+.navbar h2 b {
+  font-weight: bolder;
+}
+.navbar .pull-right {
+  font-size: 10pt;
+  box-sizing: border-box;
+  padding: 6px 15px 6px 8px;
+}
+.navbar .pull-right button {
+  background-color: #55b5ae;
+  color: #ffffff;
+  text-transform: uppercase;
+  box-sizing: border-box;
+  padding: 3px 8px 3px 8px;
+  float: right;
+  margin-top: 4px;
+  font-size: 8pt;
+  letter-spacing: 1px;
+  border-radius: 5px;
+  border: none;
+}
+.navbar-collapse {
+  background-color: #77797a;
+  width: 100%;
+  position: relative;
+  top: -2px;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+.navbar-collapse .navbar-nav li {
+  color: #ffffff;
+}
+.navbar-collapse .navbar-nav li a {
+  height: 30px;
+  line-height: 30px;
+  box-sizing: border-box;
+  padding: 0px 15px 0px 15px;
+  color: #ffffff;
+  background-color: #323432;
+  margin-right: 1px;
+}
+.navbar-collapse .navbar-nav li a:hover {
+  transition: 0.09s;
+  background-color: #de5030;
+  color: #ffffff;
+}
+#login-wrapper {
+  box-sizing: border-box;
+  padding: 25px;
+}
+.sigl-login-wrapper {
+  width: 310px;
+  height: auto;
+  overflow: hidden;
+  background-color: #55b5ae;
+  box-sizing: border-box;
+  padding: 55px;
+  border: 1px solid #7c8e8a;
+  border-radius: 5px;
+  margin: 45px 0 45px 0;
+}
+.sigl-login-wrapper .sigl-login-label {
+  display: block;
+  height: auto;
+  width: 100%;
+  padding: 0;
+}
+.sigl-login-wrapper .sigl-login-label label {
+  font-size: 8pt;
+  font-weight: lighter;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+.sigl-login-wrapper .sigl-login-element {
+  margin: 0 auto;
+  display: block;
+  width: 100%;
+  margin-bottom: 3px;
+}
+.sigl-login-wrapper .sigl-login-element input {
+  box-sizing: border-box;
+  padding: 6px;
+  width: 100%;
+}
+.sigl-login-wrapper .sigl-login-button button {
+  background-color: #525352;
+  float: right;
+  border-radius: 5px;
+  color: #e6e2c9;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-sizing: border-box;
+  padding: 4px 8px 4px 8px;
+  border: none;
+}
+.btn-edit-delete {
+  padding: 6px 14px !important;
+  margin: 8px 4px 8px 0 !important;
+}
+.editable-wrap {
+  display: block;
+  box-sizing: border-box;
+  padding: 8px 0;
+}
+.editable-input {
+  background-color: #f1f1f1;
+  border: 1px solid rgba(0, 0, 0, 0.22) !important;
+  margin: 0px 0 0px 0 !important;
+  display: block !important;
+  clear: both !important;
+}
+.project-list-item {
+  font-weight: bolder;
+}
+.data-list {
+  box-sizing: border-box;
+  font-weight: bolder;
+  padding: 10px 10px 0px 10px;
+  background-color: #FFFFFF;
+}
+.data-list .data-list-item {
+  display: block;
+}
+.contacts-list-item {
+  background-color: #FFFFFF;
+  box-sizing: border-box;
+  padding: 10px;
+}
+.contacts-list-item label {
+  height: 20px !important;
+}
+.publication-list-item {
+  background-color: #FFFFFF;
+  box-sizing: border-box;
+  padding: 10px;
+}
+.publication-list-item .publication-list-item-text {
+  display: block;
+}
+#site-list-wrapper {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.org-list {
+  display: block;
+  box-sizing: border-box;
+  padding: 7px 8px;
+  margin: 0 auto;
+  margin-bottom: 5px !important;
+  font-size: 10pt;
+  background-color: #fff;
+}
+.org-list:last-child {
+  margin-bottom: 35px !important;
+}
+.org-list .icon {
+  position: relative;
+  top: -1px;
+  background-color: rgba(222, 80, 48, 0.6);
+  color: #ffffff;
+  font-size: 7pt;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  text-align: center;
+  box-sizing: border-box;
+  margin: 0 10px 0 0;
+  transition: 0.09s;
+}
+.org-list .icon:hover {
+  cursor: pointer;
+  background-color: #de5030;
+  transition: 0.09s;
+}
+.panel {
+  box-sizing: border-box;
+  margin: 55px;
+  border: 1px solid #928f7a;
+  background-color: #fff;
+}
+.panel .panel-heading {
+  background-color: #aaa892;
+  border-bottom: 1px solid #928f7a;
+  color: #ffffff;
+  margin-bottom: 0;
+}
+.panel div {
+  margin-bottom: 12px;
+  font-weight: lighter;
+}
+.panel table {
+  border-radius: 5px;
+  border-bottom: 2px solid #ddd;
+}
+.panel table thead {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #000000;
+  letter-spacing: 1px;
+  margin-top: 8px;
+}
+.panel table thead tr th {
+  padding-top: 8px;
+}
+.panel table thead tr th i {
+  color: #E5755C;
+  padding-left: 6px;
+}
+.panel table thead tr th i:hover {
+  cursor: pointer;
+}
+.panel table tr {
+  background-color: #fff;
+  box-sizing: border-box;
+}
+.panel table tr:nth-child(even) {
+  background-color: #f2f0e3;
+}
+.panel #new-project-button {
+  background-color: #55b5ae;
+  color: #ffffff;
+  box-sizing: border-box;
+  padding: 6px 10px 6px 10px;
+  text-transform: capitalize;
+  border-radius: 5px;
+}
+.panel #new-project-button:hover {
+  cursor: pointer;
+  text-decoration: none;
+  background-color: #3F928C;
+}
+#panel-details .panel-heading {
+  padding: 6;
+}
+#panel-details .panel-heading span {
+  font-size: 14pt;
+  position: relative;
+  top: 2px;
+  font-weight: bolder;
+}
+#panel-details .panel-heading .btn-group {
+  margin: 0;
+  font-size: 11pt;
+}
+#panel-details .panel-heading .btn-group p {
+  position: relative;
+  top: 4px;
+  display: inline-block;
+}
+#panel-details .panel-heading .btn-group label {
+  box-sizing: border-box;
+  font-size: 9pt;
+  padding: 6px 8px;
+  background-color: #77797a;
+  margin: 0;
+}
+#panel-details .panel-heading .btn-group label.active {
+  background-color: #de5030;
+}
+#panel-details .panel-heading .btn-group label:nth-child(1) {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  margin-left: 10px;
+}
+#panel-details .panel-heading .btn-group label:nth-child(2) {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+#panel-details .panel-heading .btn-group label:hover {
+  cursor: pointer;
+  background-color: #de5030;
+  transition: 0.09s;
+}
+#panel-details .panel-body {
+  padding: 0;
+}
+#panel-details .panel-body .wizard {
+  width: 220px;
+  box-sizing: border-box;
+  padding: 10px 10px 10px 15px;
+  display: inline-block;
+  position: relative;
+  height: 100%;
+  float: left;
+  margin-top: 10px;
+}
+#panel-details .panel-body .wizard a {
+  background-color: #D6D4D3;
+  display: block;
+  font-size: 10pt;
+  box-sizing: border-box;
+  padding: 8px 5px;
+  margin-bottom: 4px;
+  border-radius: 5px;
+  color: #000000;
+}
+#panel-details .panel-body .wizard a.active {
+  background-color: #de5030;
+  color: #ffffff;
+}
+#panel-details .panel-body .wizard a:hover {
+  cursor: pointer;
+  color: #ffffff;
+  background-color: #de5030;
+  transition: 0.09s;
+}
+#panel-details .panel-body #edit-right {
+  background-color: #f2f0e3;
+  width: auto;
+  width: calc(100% - 250px);
+  display: inline-block;
+  box-sizing: border-box;
+  margin: 20px 10px;
+  padding: 20px;
+}
+#panel-details .panel-body #edit-right legend {
+  font-size: 12pt;
+  font-weight: bolder;
+  padding-bottom: 6px;
+  text-transform: uppercase;
+  color: #000000;
+  border-bottom: 1px solid #928f7a;
+}
+#panel-details .panel-body #edit-right .subheader {
+  font-weight: bolder;
+  display: block;
+  text-align: center;
+  margin-bottom: 25px;
+  color: #de5030;
+}
+#panel-details .panel-body #edit-right hr {
+  display: none;
+}
+#panel-details .panel-body #edit-right fieldset {
+  box-sizing: border-box;
+  padding: 15px;
+}
+#panel-details .panel-body #edit-right .form-group {
+  height: auto;
+  min-height: 10px;
+}
+#panel-details .panel-body #edit-right .form-group .col-md-8,
+#panel-details .panel-body #edit-right .form-group .col-md-4,
+#panel-details .panel-body #edit-right .form-group .col-md-7 {
+  padding: 0;
+  margin: 0 auto;
+}
+#panel-details .panel-body #edit-right .form-group label {
+  font-size: 10pt;
+  font-weight: lighter;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  padding-left: 15px;
+  height: 34px;
+  line-height: 34px;
+  line-height: 1.3em;
+  box-sizing: border-box;
+  padding-right: 10px;
+}
+#panel-details .panel-body #edit-right .form-group label .glyphicon-question-sign {
+  color: #aaa892;
+}
+#panel-details .panel-body #edit-right .form-group label:after {
+  position: relative;
+  top: -1px;
+  left: -2px;
+  font-size: 14pt;
+}
+#panel-details .panel-body #edit-right .form-group input,
+#panel-details .panel-body #edit-right .form-group select,
+#panel-details .panel-body #edit-right .form-group button,
+#panel-details .panel-body #edit-right .form-group textarea,
+#panel-details .panel-body #edit-right .form-group .multi-selector {
+  border: none;
+  box-sizing: border-box;
+  padding: 4px;
+}
+#panel-details .panel-body #edit-right .form-group .multi-selector button {
+  background-color: #fff;
+  background-image: none;
+  height: 30px;
+}
+#panel-details .panel-body #edit-right .form-group .multi-selector button .buttonLabel {
+  background-color: transparent;
+}
+#panel-details .panel-body #edit-right .form-group .col-md-1 {
+  box-sizing: border-box;
+}
+#panel-details .panel-body #edit-right .form-group button.col-md-1 {
+  color: #ffffff;
+  font-size: 10pt;
+  box-sizing: border-box;
+  height: 34px;
+  border-radius: 5px;
+  background-color: #55b5ae;
+}
+#panel-details .panel-body #edit-right .form-group button.col-md-1:hover {
+  cursor: pointer;
+  background-color: #3F928C;
+  transition: 0.09s;
+}
+#panel-details .panel-body #edit-right .form-group ul {
+  padding: 0;
+  background-color: #fff;
+  border: 1px solid #de5030;
+}
+#panel-details .panel-body #edit-right .form-group ul li {
+  box-sizing: border-box;
+  padding: 5px;
+}
+#panel-details .panel-body #edit-right .form-group ul li button {
+  height: 18px;
+  width: 18px;
+  font-size: 6pt;
+  box-sizing: border-box;
+  padding-right: 4px;
+  text-align: center;
+  border-radius: 50%;
+  background-color: #de5030;
+  color: #ffffff;
+}
+#panel-details .panel-body #edit-right .form-group table thead {
+  display: none;
+}
+#panel-details .panel-body #edit-right .form-group table tbody tr td {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  padding: 4px 10px;
+  display: inline-block;
+  width: auto;
+  border: none;
+}
+#panel-details .panel-body #edit-right .form-group table tbody tr td .buttons {
+  margin: 0;
+}
+#panel-details .panel-body #edit-right .form-group table tbody tr td .buttons .btn-icon {
+  font-size: 6pt;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  color: #ffffff;
+  background-color: #de5030;
+}
+#panel-details .panel-body #edit-right .data-sources-table tr {
+  margin: 5px 0;
+}
+#panel-details .panel-body #edit-right .data-sources-table tr td {
+  display: block !important;
+  width: 100%;
+  font-size: 10pt;
+  font-weight: lighter;
+  padding: 0px;
+  box-sizing: border-box;
+}
+#panel-details .panel-body #edit-right .data-sources-table tr td:nth-child(2) {
+  font-weight: bolder;
+}
+#panel-details .panel-body #edit-right .data-sources-table tr td .buttons button {
+  height: 28px;
+  font-size: 8pt;
+  text-transform: uppercase;
+  box-sizing: border-box;
+  padding: 3px 8px;
+}
+#panel-details .panel-body #edit-right .contacts-table tr td:nth-child(2) label {
+  padding: 0;
+  margin: 0;
+  height: 20px;
+}
+#panel-details .panel-body #edit-right .contacts-table tr td .buttons button {
+  height: 28px;
+  font-size: 8pt;
+  text-transform: uppercase;
+  box-sizing: border-box;
+  padding: 3px 8px;
+  margin-bottom: 6px;
+}
+#panel-details .panel-body #edit-right .publications-table tr td {
+  width: 100%;
+  display: block;
+  font-size: 10pt;
+  padding: 0;
+}
