@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <link rel="icon" href="data:;base64,="><!--<link rel="icon" href="data:;base64,iVBORw0KGgo=">-->
+    <title>SiGL DMS</title>
+    <!--<base href="/">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+    <!-- bower:css -->
+    <!-- endinject -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- bower:js -->
+    <!-- endinject -->
+    <!-- inject:js -->
+    <!-- endinject -->
+
+</head>
+
+<body ng-app="app">
+    <!--<div ng-include src="'partials/header.html'"></div>-->
+    <!--HEADER START-->
+    <div ng-controller="mainCtrl" id="main-nav">
+        <a href="http://usgs.gov/" target="_blank" id="usgs-logo">
+            <img alt="Brand" src="images/usgsLogo.png" />
+        </a>
+        <h2><b>SiGL</b><em>:</em>Data Management System (DMS)</h2>
+
+        <div id="account-controls" ng-show="isAuth.val">
+            <h3>Welcome, <a ui-sref="dataManagers.DMInfo({id: userID})">{{usersName}}</a></h3>
+            <button ng-controller="logoutCtrl" ng-click="logout()">LOG OFF</button>
+        </div>
+
+
+        <ul id="nav-links" ng-show="isAuth.val">
+            <li><a ui-sref="home" ui-sref-active="active">Home</a></li>
+            <!--
+            -->
+            <li ng-if="Role == 'Admin'"><a ui-sref="settings" ui-sref-active="active">Settings</a></li>
+            <!--
+            -->
+            <li><a ui-sref="dataManagers.DMInfo({id: userID})" ui-sref-active="active">Your account</a></li>
+            <!--
+            -->
+            <li><a ui-sref="help" ui-sref-active="active">FAQs/Help</a></li>
+
+        </ul>
+
+    </div>
+    <br clear="all" />
+    <!--HEADER END-->
+
+    <div ng-class="{'hidden': !stateIsLoading.showLoading}" class="page-loading">
+        <div id="loading">
+            <div id="loadingcontent"><p id="loadingspinner" style=""><img src="images/loading1.gif" /></p></div>
+        </div>
+    </div>
+    <div id="body-wrapper">
+        <div ui-view></div>
+    </div>
+
+</body>
+</html>
+
+<!-- MODAL for 'new site name' for copy off sitelist -->
+<script type="text/ng-template" id="duplicateSiteMdlView.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Copy Site</h3>
+    </div>
+    <div class="modal-body">
+        <div class="modal-body">
+            <form name="newSiteName">
+                <div class="form-group">
+                    <label class="col-md-10 control-label req" for="inputNAME">New Site Name:</label>
+                    <div class="col-md-12">
+                        <input class="form-control" id="inputNAME" name="NAME" ng-enter="ok()" ng-model="newSite.NAME" type="text" required />
+                    </div>
+                </div>
+            </form><br clear="all" />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+
+</script>
+
+<!-- MODALs for "are you sure you want to remove this thing (Keyword or URL) -->
+<script type="text/ng-template" id="removemodal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Remove {{what}}</h3>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to remove this {{what}}: <b>{{keyToRmv}}</b></p>
+    </div>
+    <div class="modal-footer">
+        <button class="sigl-btn btn-orange" ng-click="cancel()">Cancel</button>
+        <button class="sigl-btn" ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<!-- MODAL for add new org NAME to database-->
+<script type="text/ng-template" id="AddOrganizationModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Organizations</h3>
+    </div>
+    <div class="modal-body">
+        <form name="newOrgForm" class="sigl-modal-form">
+            <fieldset>
+                <div class="sigl-modal-form-group">
+                    <label>Organization:</label>
+                    <div ng-show="!showAddNAMEinput">
+                        <select ng-disabled="disableOrgSelect" ng-model="selectedOrgID.id" ng-options="org.ORGANIZATION_ID as org.ORGANIZATION_NAME for org in orgList | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID.id)"></select>
+                        <span ng-show="!showAddDIVISIONinput && !showAddSECTIONinput" style="display: block; font-size: 8pt;"><a href ng-click="addOrgName()">Add Organization</a></span>
+                    </div>
+                    <div ng-show="showAddNAMEinput">
+                        <input class="form-control" id="inputNAME" name="NAME" ng-model="OrgName.value" type="text" placeholder="New Organization Name" />
+                        <button class="sigl-btn btn-small" ng-click="addThisName(OrgName.value)">Add</button>
+                        <button class="sigl-btn btn-small" ng-click="neverMind('org')">Cancel</button>
+                    </div>
+
+                </div>
+
+                <div class="sigl-modal-form-group">
+                    <label>Division</label>
+                    <div ng-show="!showAddDIVISIONinput">
+                        <select ng-disabled="disableDivSelect" ng-model="selectedDivID.id" ng-options="div.DIVISION_ID as div.DIVISION_NAME for div in divList | orderBy: 'DIVISION_NAME'" ng-change="getSecs(selectedDivID.id)">
+                            <!--<option ng-repeat="div in divList | orderBy: 'DIVISION_NAME'" value="{{div.DIVISION_ID}}">{{div.DIVISION_NAME}}</option>-->
+                        </select>
+                        <span ng-show="orgsBeenChosen && !showAddSECTIONinput" style="display: block; font-size: 8pt;"><a href ng-click="addDivName()">Add Division</a></span>
+                    </div>
+                </div>
+                <div ng-show="showAddDIVISIONinput">
+                    <input id="inputDIVISION" name="DIVISION" ng-model="divisionName.value" type="text" placeholder="New Division" />
+                    <button class="sigl-btn btn-small" ng-click="addThisDivision(divisionName.value, selectedOrgID.id)">Add</button>
+                    <button class="sigl-btn btn-small" ng-click="neverMind('div')">Cancel</button>
+                </div>
+
+
+
+                <div class="sigl-modal-form-group">
+                    <label>Section</label>
+                    <div ng-show="!showAddSECTIONinput">
+                        <select ng-disabled="disableSecSelect" ng-model="selectedSecID.id" ng-options="sec.SECTION_ID as sec.SECTION_NAME for sec in secList | orderBy: 'SECTION_NAME'" ng-change="setSecs(selectedSecID.id)"></select>
+                        <span ng-show="divsBeenChosen" style="display: block; font-size: 8pt;"><a href ng-click="addSecName()">Add Section</a></span>
+                    </div>
+                    <div ng-show="showAddSECTIONinput">
+                        <input id="inputSECTION" name="SECTION" ng-model="sectionName.value" type="text" placeholder="New Section" />
+                        <button class="sigl-btn btn-small" ng-click="addThisSection(sectionName.value, selectedDivID.id)">Add</button>
+                        <button class="sigl-btn btn-small" ng-click="neverMind('sec')">Cancel</button>
+                    </div>
+                </div>
+
+
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button class="sigl-btn" ng-click="ok()">Close</button>
+    </div>
+</script>

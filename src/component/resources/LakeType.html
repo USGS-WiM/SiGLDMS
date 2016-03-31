@@ -1,0 +1,80 @@
+﻿<div ng-if="accountRole =='Admin'">
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width:0"></th>
+                <th>Lake Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="lt in lakeTypeList | orderBy: 'LAKE'">
+                <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="LTrowform" onaftersave="saveLakeType($data, lt.LAKE_TYPE_ID)" ng-show="LTrowform.$visible" class="form-buttons form-inline" shown="inserted == lt">
+                        <button type="submit" ng-disabled="LTrowform.$waiting" class="btn btn-primary">
+                            save
+                        </button>
+                        <button type="button" ng-disabled="LTrowform.$waiting" ng-click="LTrowform.$cancel()" class="btn btn-default">
+                            cancel
+                        </button>
+                    </form>
+                    <div class="buttons" ng-show="!LTrowform.$visible">
+                        <button class="btn btn-primary" ng-click="LTrowform.$show()">edit</button>
+                        <button class="btn btn-danger" ng-click="deleteLakeType(lt)">del</button>
+                    </div>
+                </td>
+                <td>
+                    <div style="display:none"><span editable-text="lt.LAKE_TYPE_ID" e-form="LTrowform" e-name="LAKE_TYPE_ID">{{lt.LAKE_TYPE_ID}}</span></div>
+                    <span editable-text="lt.LAKE" e-name="LAKE" e-form="LTrowform">{{ lt.LAKE || '' }}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr />
+
+    <button ng-show="addLTButtonShowing" class="btn btn-primary" ng-click="showAddLTClicked()">Add New Lake Type</button>
+
+    <div ng-show="showAddLTForm">
+        <form class="form-horizontal" name="lookupForm.lakeTypeFm">
+            <fieldset>
+                <div class="form-group required">
+                    <label class="col-md-3 control-label req" for="inputLAKE">Lake Type:</label>
+                    <div class="col-md-6">
+                        <input class="form-control" id="inputLAKE" name="LAKE" type="text" placeholder="" ng-model="newLT.LAKE" required />
+                    </div>
+                </div>
+                <!--submit button-->
+                <div class="form-group">
+                    <div class="col-md-2 col-md-offset-2">
+                        <span>
+                            <button class="btn btn-primary" ng-click="AddLakeType(lookupForm.lakeTypeFm.$valid, newLT)">
+                                Add
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+        </form><button class="btn btn-default center-block" style="margin-top:-48px;" ng-click="NeverMindLT()">
+            Cancel
+        </button>
+    </div>
+</div><!--end admin view-->
+<div ng-if="accountRole !='Admin'">
+    <script>
+        //var sortingOrder = 'LAKE';
+    </script>
+
+    <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
+                <th class="LAKE">Lake Type&nbsp;<a ng-click="sort_by('LAKE')"><i class="glyphicon glyphicon-sort"></i></a></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="lt in lakeTypeList | orderBy:sortingOrder:reverse">
+                <td>{{ lt.LAKE || '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

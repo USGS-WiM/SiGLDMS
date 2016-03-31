@@ -1,0 +1,80 @@
+﻿<div ng-if="accountRole =='Admin'">
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width:0"></th>
+                <th>Project Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="ps in projStatusList | orderBy: 'STATUS_VALUE'">
+                <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="PSrowform" onaftersave="saveProjStatus($data, ps.PROJ_STATUS_ID)" ng-show="PSrowform.$visible" class="form-buttons form-inline" shown="inserted == ps">
+                        <button type="submit" ng-disabled="PSrowform.$waiting" class="btn btn-primary">
+                            save
+                        </button>
+                        <button type="button" ng-disabled="PSrowform.$waiting" ng-click="PSrowform.$cancel()" class="btn btn-default">
+                            cancel
+                        </button>
+                    </form>
+                    <div class="buttons" ng-show="!PSrowform.$visible">
+                        <button class="btn btn-primary" ng-click="PSrowform.$show()">edit</button>
+                        <button class="btn btn-danger" ng-click="deleteProjStatus(ps)">del</button>
+                    </div>
+                </td>
+                <td>
+                    <div style="display:none"><span editable-text="ps.PROJ_STATUS_ID" e-form="PSrowform" e-name="PROJ_STATUS_ID">{{ps.PROJ_STATUS_ID}}</span></div>
+                    <span editable-text="ps.STATUS_VALUE" e-name="STATUS_VALUE" e-form="PSrowform">{{ ps.STATUS_VALUE || '' }}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr />
+
+    <button ng-show="addPSButtonShowing" class="btn btn-primary" ng-click="showAddPSClicked()">Add New Project Status</button>
+
+    <div ng-show="showAddPSForm">
+        <form class="form-horizontal" name="lookupForm.projStatFm">
+            <fieldset>
+                <div class="form-group required">
+                    <label class="col-md-3 control-label req" for="inputSTATUS_VALUE">Project Status:</label>
+                    <div class="col-md-6">
+                        <input class="form-control" id="inputSTATUS_VALUE" name="STATUS_VALUE" type="text" placeholder="" ng-model="newPS.STATUS_VALUE" required />
+                    </div>
+                </div>
+                <!--submit button-->
+                <div class="form-group">
+                    <div class="col-md-2 col-md-offset-2">
+                        <span>
+                            <button class="btn btn-primary" ng-click="AddProjStatus(lookupForm.projStatFm.$valid, newPS)">
+                                Add
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+        </form><button class="btn btn-default center-block" style="margin-top:-48px;" ng-click="NeverMindPS()">
+                   Cancel
+        </button>
+    </div>
+</div><!--end admin view-->
+<div ng-if="accountRole !='Admin'">
+    <script>
+        //var sortingOrder = 'STATUS_VALUE';
+    </script>
+
+    <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
+                <th class="STATUS_VALUE">Project Status&nbsp;<a ng-click="sort_by('STATUS_VALUE')"><i class="glyphicon glyphicon-sort"></i></a></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="ps in projStatusList | orderBy:sortingOrder:reverse">
+                <td>{{ ps.STATUS_VALUE || '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,491 @@
+﻿body{
+    background-color: #E5E4C8;
+    font-family: 'Nunito', sans-serif;
+}
+
+/*
+===============================================
+===============================================
+===============================================
+===============================================
+==========                           ==========
+==========                           ==========
+==========          Text             ==========
+==========                           ==========
+==========                           ==========
+===============================================
+===============================================
+===============================================
+===============================================
+*/
+
+a{
+    color:#F56938;
+}
+    a:hover{
+        text-decoration:none
+    }
+        a:visited{
+            color:#f34b11;
+        }
+
+    .orange{
+      color: #F56938;
+      font-style: normal;
+    }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6{
+
+}
+h1{font-size:20pt;}
+
+
+p{
+    font-size:12pt;
+    font-weight:300;
+    padding-bottom:15px;
+    letter-spacing:1px;
+}
+
+
+.section_heaader{
+    border-bottom:1px solid #BEBB9F;
+    padding-bottom:10px;
+}
+
+
+
+
+
+.btn-sigl{
+    border:none;
+    border-radius:5px;
+    box-sizing:border-box;
+    padding:8px 12px 8px 12px;;
+    font-weight:300;
+    letter-spacing:1px;
+    transition:0.2s;
+}
+    .btn-sigl:hover{
+        cursor:pointer;
+        transition:0.2s;
+    }
+
+
+    .btn-sigl-grey{
+        color:#fff;
+        background-color:#525352;
+    }
+        .btn-sigl-grey:hover{
+            transition:0.2s;
+            background-color:#3c3d3c;
+        }
+
+    .btn-sigl-blue{
+        color:#fff !important;
+        background-color:#00BAB1;
+    }
+        .btn-sigl-blue:hover{
+            transition:0.2s;
+            background-color:#009991;
+        }
+
+    .btn-sigl-orange{
+        color:#fff;
+        background-color:#f56938;
+    }
+        .btn-sigl-orange:hover{
+            transition:0.2s;
+            background-color:#f34b11;
+        }
+
+    .sigl-toggle .btn-toggle{
+      font-size: 10pt;
+      background-color: #51595c;
+      color: #fff;
+      box-sizing:border-box;
+      padding: 5px 10px 5px 10px;
+      margin-top:4px;
+      transition:0.2s;
+    }
+      .sigl-toggle .btn-toggle:nth-child(1){
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+      }
+      .sigl-toggle .btn-toggle:nth-child(2){
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      .sigl-toggle .btn-toggle i{
+        display: none;
+      }
+
+      .sigl-toggle .btn-toggle:hover{
+        cursor: pointer;
+        background-color: #34393b;
+        transition:0.2s;
+      }
+
+    .sigl-toggle .active{
+      opacity: 1;
+      background-color:#f56938 !important;
+    }
+     .sigl-toggle .active i{
+       display: inline !important;
+     }
+
+
+/*
+===============================================
+===============================================
+===============================================
+===============================================
+==========                           ==========
+==========                           ==========
+==========        Universal          ==========
+==========                           ==========
+==========                           ==========
+===============================================
+===============================================
+===============================================
+===============================================
+*/
+/*Navigation bar*/
+.navbar-default{
+    background-color: #525352;
+    border-bottom:2px solid ;
+    height:65px;
+    border-bottom:2px solid #3c3d3c;
+    margin-bottom:15px;
+    color: #e7e3cf;
+}
+    .navbar-default .container-fluid{
+        padding:0; margin:0 auto;
+    }
+
+/*Logo Branding*/
+.navbar-header{
+  background-color: #000;
+  height: 64px;
+  box-sizing: border-box;
+  padding: 8px 25px 10px 35px;
+}
+.navbar-header a{
+  padding:0;
+}
+.navbar-header img{
+    height:100%;
+    display:inline-block;
+}
+.navbar-default h2{
+    margin:0 auto;
+    padding:0;
+    display: inline-block;
+    margin-left:25px;
+    color:#E5E4C8;
+    font-family: 'Nunito', sans-serif;
+    height: 64px; line-height: 64px;
+}
+    .navbar-default h2 i{
+        font-style:normal;
+        color:#F56938;
+    }
+
+#nav-welcome{
+    color:#fff;
+    box-sizing:border-box;
+    padding:7px 35px 6px 0;
+    font-weight: 400;
+    text-align:center;
+    letter-spacing: 1px;
+
+}
+    #nav-welcome button{
+        display:block;
+        font-size:8pt;
+        padding: 4px 10px 4px 10px;
+        float:right;
+        margin-top:3px;
+    }
+
+#nav_links{
+    width:100%;
+    background-color:#77797A;
+    height:30px;
+    border-bottom:1px solid #626364;
+    padding:0; margin:0 auto;
+}
+    #nav_links ul{
+        margin:0 auto;
+        padding:0;
+    }
+        #nav_links ul li{
+            display:inline-block;
+        }
+            #nav_links ul li a{
+                color:#fff;
+                background-color:rgba(255,50,100,0.5);
+                height:30px;
+                display:block;
+                line-height:30px;
+                font-size:11pt;
+                font-weight:300;
+                box-sizing:border-box;
+                padding: 0 20px 0 20px;
+                transition:0.2s;
+                letter-spacing: 1px;
+                background-color:#323432;
+            }
+                #nav_links ul li a:hover{
+                    background-color:#f56938;
+                    transition:0.2s;
+                }
+
+
+
+.sigl-body-sidebar-left{
+  width: 20%;
+  display: inline-block;
+}
+  .sigl-body-sidebar-left a{
+    display: block;
+    background-color: #DBD9DE;
+    box-sizing: border-box;
+    padding: 7px 10px 7px 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    color: #38393A;
+    transition: 0.2s;
+    opacity: 1;
+  }
+    .sigl-body-sidebar-left a:hover{
+      background-color: #EFEEE1;
+      transition:0.2s;
+    }
+    .sigl-body-sidebar-left .active{
+      background-color: #F05428;
+      color:#fff;
+    }
+      .sigl-body-sidebar-left .active:hover{background-color: #F05428; color:#fff;}
+
+#sigl-body-withsidebar{
+  width: 78.5%;
+  float: right;
+  box-sizing: border-box; padding:15px;
+  margin-left: 1.5%;
+  background-color: #EFEEE1;
+  border-radius: 4px;
+}
+
+
+
+
+/*Popup questionmark tooltip*/
+.control-label{
+  font-size: 10pt;
+}
+.input-helper{
+  margin-left: 8px;
+  width: auto;
+  position: relative; top:3px;
+}
+  .form-group .glyphicon{opacity:0.58; transition: 0.2s;}
+  .form-group .glyphicon:hover{
+    opacity: 1;
+    transition: 0.2s;
+  }
+
+
+/*Butotn bottom of each edit page - return to projects*/
+#back-to-projects-btn{
+  width: 100%;
+  text-align: center;
+  padding: 20px 0 45px 0;
+}
+
+
+/*Styles for list of tags*/
+.sigl-tag-list{
+
+}
+  .sigl-tag-list li{
+    display: inline-block;
+    margin-right: 10px; margin-bottom: 10px;
+    background-color: #29bdbb;
+    color:#fff;
+    box-sizing: border-box;
+    padding: 5px 8px 5px 8px;
+    border-radius: 8px;
+  }
+    .sigl-tag-list li button{
+      border: none;
+      background-color: #F37A49;
+      color:#fff;
+      width:17px; height:17px;
+      border-radius: 50%;
+      line-height: 12px;
+      text-align: center;
+      margin-right: 4px;
+      position: relative; top:-1px;
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+      transition: 0.2s;
+    }
+      .sigl-tag-list li button i{
+        font-size: 7pt;
+        position: relative; left:-1px;
+      }
+      .sigl-tag-list li button:hover{
+        cursor: pointer;
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+        transition:0.2s;
+        background-color: #38393A;
+      }
+
+  /*button next to add tag fields*/
+  .btn-add-tag{
+    background-color: #51595c;
+    color:#fff;
+    border:none;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 8px 12px 8px 12px;
+    display: inline-block;
+    letter-spacing: 1px;
+    font-size: 9pt;
+    transition: 0.2s;
+  }
+    .btn-add-tag:hover{
+      background-color: #34383b;
+      transition: 0.2s;
+    }
+
+/*
+===============================================
+===============================================
+===============================================
+===============================================
+==========                           ==========
+==========                           ==========
+==========        Specifics          ==========
+==========                           ==========
+==========                           ==========
+===============================================
+===============================================
+===============================================
+===============================================
+*/
+
+/*
+=========================================
+=========================================
+=======                           =======
+=======        Login.html         =======
+=======                           =======
+=========================================
+=========================================
+*/
+#sigl-login-wrapper{
+    width:410px; height:auto;
+    overflow:hidden;
+    background-color:#00BAB1;
+    box-sizing:border-box;
+    padding:25px;
+    border:1px solid #009991;
+    border-radius:5px;
+}
+    #sigl-login-wrapper label{
+        text-transform:capitalize;
+        color:#fff;
+        font-weight:300;
+        letter-spacing:1px;
+        font-size:14pt;
+        width:130px;
+    }
+    #sigl-login-wrapper input{
+        font-size:14pt;
+        margin:0 auto;
+        box-sizing:border-box;
+        padding:5px;
+        margin-bottom:15px;
+    }
+    #sigl-login-wrapper a{
+        color:#fff;
+        font-weight:300;
+        position:relative; top:17px;
+    }
+    #sigl-login-wrapper button{
+        margin-top:10px;
+        float:right;
+    }
+
+
+/*
+=========================================
+=========================================
+=======                           =======
+=======   projectListView.html    =======
+=======                           =======
+=========================================
+=========================================
+*/
+.panel-wim{
+  background-color: #fff;
+  border: 1px solid #9E9D85;
+  margin-top:35px;
+  padding-bottom: 15px;
+}
+  .panel-heading{
+    background-color: #AAA991;
+    color:#f1f1f1;
+    letter-spacing: 1px;
+  }
+    .panel-heading b{
+      font-weight: bolder;
+      color:#fff;
+    }
+
+  /*Every other row color*/
+  .table-fill{
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 30px;
+  }
+    .table-fill tbody tr:nth-child(even){
+      background-color: #F2F1E3;
+    }
+
+    .table-fill thead tr th{
+      font-size: 12pt;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+
+/*
+=========================================
+=========================================
+=======                           =======
+=======   projectEditView.html    =======
+=======                           =======
+=========================================
+=========================================
+*/
+.panel-title{
+  color:#fff;
+  letter-spacing: 1px;
+  font-size: 18pt;
+  font-weight: bolder;
+}
+.panel-right{
+  font-size: 10pt;
+  font-weight: lighter;
+  letter-spacing: 1px;
+  position: relative; top:4px;
+  padding-right: 15px;
+}

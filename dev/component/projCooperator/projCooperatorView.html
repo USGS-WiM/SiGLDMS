@@ -1,0 +1,66 @@
+<form class="sigl-edit-form" name="projectForm.Coop">
+    <fieldset>
+        <legend style="margin-bottom: 25px;">Organizations</legend>
+        <div class="" ng-if="ProjOrgs.length > 0">
+            <div class="" ng-repeat="o in ProjOrgs">
+                <button type="button" class="remove-org" ng-click="RemoveOrgFromProj(o)"><i class="glyphicon glyphicon-remove"></i></button>
+                {{ o.OrganizationName }},
+                {{ o.DivisionName || '' }},
+                {{ o.SectionName || ''}}
+            </div>
+        </div>
+
+
+
+
+    <div class="subhead">Add New Organization</div>
+    
+
+    <!--<div>
+        <span>
+            Don't see the Organization Name, Division or Section?
+            <a href ng-click="addNewOrg()"> Click here to add it.</a>
+        </span>
+    </div>-->
+
+        <div class="sigl-edit-form-group">
+            <label>
+                Organization
+                <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip"
+                        title="After selecting your Organization (and Division/Office and Section, if applicable) in the drop-down menu, click the “Add Organization” button to save. Repeat if multiple organizations apply."
+                        data-placement="right" tooltip>
+                </span>
+            </label>
+            <select class="form-control" id="OrgName" name="OrgName" ng-model="selectedOrgID" ng-options="org.ORGANIZATION_ID as org.ORGANIZATION_NAME for org in allOrgs | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)"></select>
+            <button class="sigl-form-add-new" ng-click="addNewOrg()">
+                Add New
+            </button>
+        </div>
+
+        <div class="sigl-edit-form-group">
+            <label>Division</label>
+            <select class="form-control" ng-model="selectedDivID" ng-options="div.DIVISION_ID as div.DIVISION_NAME for div in alldivs | orderBy: 'DIVISION_NAME'" ng-change="getSecs(selectedDivID)"></select>
+            <button class="sigl-form-add-new" ng-click="addNewOrg()">
+                Add New
+            </button>
+        </div>
+
+        <div class="sigl-edit-form-group">
+            <label>Section</label>
+            <select class="form-control" ng-model="selectedSecID" ng-options="sec.SECTION_ID as sec.SECTION_NAME for sec in allsecs | orderBy: 'SECTION_NAME'"></select>
+            <button class="sigl-form-add-new" ng-click="addNewOrg()">
+                Add New
+            </button>
+        </div>
+
+        <br><br>
+
+        <!--submit button-->
+        <div class="sigl-edit-form-group" style="text-align:center;">
+            <button class="sigl-btn" ng-click="AddOrgToProj(projectForm.Coop.$valid)" id="addOrg">
+                Add this Organization to the Project
+            </button>
+        </div>
+
+    </fieldset>
+</form>
