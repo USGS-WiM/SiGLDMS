@@ -3,7 +3,8 @@
         <legend style="margin-bottom: 25px;">Organizations</legend>
         <div class="" ng-if="ProjOrgs.length > 0">
             <div class="" ng-repeat="o in ProjOrgs">
-                <button type="button" class="remove-org" ng-click="RemoveOrgFromProj(o)"><i class="glyphicon glyphicon-remove"></i></button>
+                <!--<button type="button" class="remove-org" ng-click="RemoveOrgFromProj(o)"><i class="glyphicon glyphicon-remove"></i></button>-->
+                <button class="sigl-btn btn-xs btn-orange" style="margin-right: 10px;" ng-click="RemoveOrgFromProj(o)">Delete</button>
                 {{ o.OrganizationName }},
                 {{ o.DivisionName || '' }},
                 {{ o.SectionName || ''}}
