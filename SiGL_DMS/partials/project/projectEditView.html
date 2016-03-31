@@ -185,10 +185,10 @@
                     <button type="button" class="sigl-btn btn-orange" ng-click="cancel()">
                         Cancel
                     </button>
-                    <button ng-show="aProject.PROJECT_ID == undefined" class="sigl-btn" style="width:80px;margin-right:10px" ng-click="create(projectForm.Info.$valid)">
+                    <button ng-show="aProject.PROJECT_ID == undefined" class="sigl-btn" ng-click="create(projectForm.Info.$valid)">
                         Create
                     </button>
-                    <button ng-show="aProject.PROJECT_ID != undefined" class="sigl-btn" style="width:80px;margin-right:10px" ng-click="save(projectForm.Info.$valid)">
+                    <button ng-show="aProject.PROJECT_ID != undefined" class="sigl-btn" ng-click="save(projectForm.Info.$valid)">
                         Save
                     </button>
                 </div>
