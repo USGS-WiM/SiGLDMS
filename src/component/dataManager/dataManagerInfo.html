@@ -23,14 +23,12 @@
                 Username:
                 <span ng-show="DM.DATA_MANAGER_ID != undefined" class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                       title="Usernames cannot be modified. If you need to request a different username, contact Jen Bruce at jlbruce@usgs.gov"
-                      data-placement="right" tooltip>
+                      data-placement="right" tooltip></span>
             </label>
             <input ng-show="DM.DATA_MANAGER_ID == undefined" id="inputUSERNAME" name="USERNAME" ng-model="DM.USERNAME"
                    type="text" placeholder="User Name" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur()"
                    required />
             <span ng-show="DM.DATA_MANAGER_ID != undefined" class="static-label">{{DM.USERNAME}}</span>
-
-            </span>
         </div>
 
         <!-- Organization-->
@@ -51,7 +49,7 @@
                     Organization:
                     <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                           title="After selecting your Organization (and Division/Office and Section, if applicable) in the drop-down menu, click the “Add Organization” button to save. Repeat if multiple organizations apply."
-                          data-placement="right" tooltip>
+                          data-placement="right" tooltip></span>
                 </label>
                 <div class="col-md-6">
                     <select class="form-control" ng-model="selectedOrgID" ng-options="org.ORGANIZATION_ID as org.ORGANIZATION_NAME for org in allOrgs | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)"></select>
@@ -60,7 +58,7 @@
                     </button>
                 </div>&nbsp;
 
-                </span>
+                
             </div>
 
             <div class="form-group">
@@ -112,9 +110,9 @@
                 Email:
                 <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                       title="Enter the contact's email address."
-                      data-placement="right" tooltip>
+                      data-placement="right" tooltip></span>
             </label>
-            <input id="inputEMAIL" name="EMAIL" type="email" placeholder="" ng-model="DM.EMAIL" required />
+            <input id="inputEMAIL" name="EMAIL" type="email" placeholder="" ng-model="DM.EMAIL" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur()" required />
         </div>
 
         <!-- Phone -->
@@ -126,9 +124,7 @@
                       data-placement="right" tooltip>
                 </span>
             </label>
-            <input id="inputPHONE" name="PHONE"
-                   type="text" my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}"
-                   ng-model="DM.PHONE" />
+            <input type="text" name="phone" mask="(999) 999-9999 x?9?9?9?9?9?" restrict="reject" ng-model="DM.PHONE" ng-value="DM.PHONE" mask-validate="false" ng-model-options="{ updateOn: 'blur' }" ng-change="SaveOnBlur()">
         </div>
 
         <!-- Role-->

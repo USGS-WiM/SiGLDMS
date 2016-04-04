@@ -76,16 +76,16 @@
                     //DELETE it
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
-                    $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
+                   // $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
-                    PROJECT.deleteProjPublication({ id: thisProjID }, pub, function success(response) {
+                    PROJECT.deleteProjPublication({ id: thisProjID, pubId: pub.PUBLICATION_ID}, function success(response) {
                         $scope.ProjPubs.splice(index, 1);
                         $scope.pubCount.total = $scope.pubCount.total - 1;
                         toastr.success("Publication Removed");
                     }, function error(errorResponse) {
                         toastr.error("Error: " + errorResponse.statusText);
                     });
-                    delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                  //  delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                 }, function () {
                     //logic for cancel
                 });
@@ -121,12 +121,9 @@
                 var test;
                 var retur = false;
                 $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                $http.defaults.headers.common.Accept = 'application/json';
-                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
+                $http.defaults.headers.common.Accept = 'application/json';                
 
-                PUBLICATION.save({
-                    id: id
-                }, data, function success(response) {
+                PUBLICATION.update({ id: id }, data, function success(response) {
                     retur = response;
                     $scope.projectForm.Pubs.$setPristine(true);
                     toastr.success("Publication Updated");
@@ -134,7 +131,6 @@
                     retur = false;
                     toastr.error("Error: " + errorResponse.statusText);
                 });
-                delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                 return retur;
             };
             //#endregion Edit existing Data

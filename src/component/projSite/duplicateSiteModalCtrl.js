@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    var ModalControllers = angular.module('ModalControllers', []);
+    var ModalControllers = angular.module('ModalControllers');
 
     ModalControllers.controller('duplicateSiteModalCtrl', ['$scope', '$uibModalInstance', 'thisSiteID',
         function ($scope, $uibModalInstance, thisSiteID) {

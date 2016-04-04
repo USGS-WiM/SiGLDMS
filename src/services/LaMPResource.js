@@ -12,6 +12,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
@@ -23,6 +24,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
@@ -38,6 +40,7 @@
                 getAll: { method: 'GET', isArray: true },
                 getDMListModel: {method: 'GET', isArray: true, url: rootURL + '/dataManagers/DMList.json'},
                 changePW: {method:'GET', isArray:false, url: rootURL + '/dataManagers.json'},
+                update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
@@ -154,26 +157,27 @@
                 getProjStatus: { isArray: false, url: rootURL + '/projects/:id/projStatus.json' },
                 getProjKeywords: { isArray: true, url: rootURL + '/projects/:id/Keywords.json' },
                 addProjKeyword: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addKeyword'},
-                deleteProjKeyword: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/removeKeyword' },
+                deleteProjKeyword: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/projects/:id/removeKeyword/:keyId' },
                 getProjObjectives: { isArray: true, url: rootURL + '/projects/:id/objectives.json' },
                 addProjObjective: {method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addObjective'},
-                deleteProjObjective: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/removeObjective' },
+                deleteProjObjective: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/projects/:id/removeObjective/:objId' },
                 getProjOrganizations: { isArray: true, url: rootURL + '/projects/:id/organizations.json' },
                 addProjOrg: { method: 'GET', cache: false, isArray: true, url: rootURL + '/projects/:id/AddOrganizationSystem.json' },//?organizationId={orgId}&divisionId={divId}&sectionId={secId}
                 deleteProjOrg: { method: 'GET', cache: false, isArray: false, url: rootURL + '/projects/:id/RemoveOrganization' },//?orgId={orgSysId}
                 getProjData: { isArray: true, url: rootURL + '/projects/:id/datahosts.json' },
                 addProjData: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addDataHost.json' },
-                deleteProjData: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/removeProjectDataHost' },
+                deleteProjData: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/projects/:id/removeProjectDataHost/:dataId' },
                 updateProjData: { method: 'POST', cache: false, isArray: false, url: rootURL + '/datahosts'},
                 getProjContacts: { isArray: true, url: rootURL + '/projects/:id/contacts.json' },
                 addProjContact: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addContact.json'}, //?organizationId={orgId}&divisionId={divId}&sectionId={secId}'},
-                deleteProjContact: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/RemoveProjectContact' },
+                deleteProjContact: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/projects/:id/RemoveProjectContact/:contId' },
                 getProjPublications: { isArray: true, url: rootURL + '/projects/:id/publications.json' },
                 addProjPublication: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addPublication.json' },
-                deleteProjPublication: { method: 'POST', cache: false, isArray: false, url: rootURL + '/projects/:id/RemoveProjectPublication' },
+                deleteProjPublication: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/projects/:id/RemoveProjectPublication/:pubId' },
                 getProjSites: { isArray: true, url: rootURL + '/projects/:id/sites.json' },
                 getFullSiteList: { isArray: true, url: rootURL + '/Sites/FullSiteInfo/:projId.json' },
                 updateDM: {isArray: false, cache: false, url: rootURL + '/projects/:id/ReassignProject'}, // ?DataManager={dataManagerId}
+                update: {method:'PUT', cache: false, isArray: false},
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false },
             });
@@ -208,6 +212,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
@@ -253,16 +258,17 @@
                 query: {},
                 getSiteParameters: { isArray: true, url: rootURL + '/sites/:id/parameters.json' },
                 addSiteParameter: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addParameter' },
-                deleteSiteParameter: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/removeParameter' },
+                deleteSiteParameter: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/sites/:id/removeParameter/:paramId' },
                 getSiteFrequencies: { isArray: true, url: rootURL + '/sites/:id/frequencies.json' },
                 addSiteFrequency: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addFrequency' },
-                deleteSiteFrequency: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/removeFrequency' },
+                deleteSiteFrequency: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/sites/:id/removeFrequency/:freqId' },
                 getSiteMedia: { isArray: true, url: rootURL + '/sites/:id/media.json' },
                 addSiteMedia: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addMedium' },
-                deleteSiteMedia: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/removeMedium' },
+                deleteSiteMedia: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/sites/:id/removeMedium/:mediaId' },
                 getSiteResources: { isArray: true, url: rootURL + '/sites/:id/resourcetypes.json' },
                 addSiteResource: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addResourcetype' },
-                deleteSiteResource: { method: 'POST', cache: false, isArray: false, url: rootURL + '/sites/:id/removeResourcetype' },
+                deleteSiteResource: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/sites/:id/removeResourcetype/:resourceId' },
+                update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });

@@ -5,8 +5,8 @@
 
 
     //login 
-    LogInOutController.controller('loginCtrl', ['$scope', '$state', '$http', '$rootScope', '$cookies', '$uibModal', 'LOGIN',
-        function ($scope, $state, $http, $rootScope, $cookies, $uibModal, LOGIN) {
+    LogInOutController.controller('loginCtrl', ['$scope', '$state', '$http', '$rootScope', '$cookies', '$uibModal', '$location', 'LOGIN',
+        function ($scope, $state, $http, $rootScope, $cookies, $uibModal, $location, LOGIN) {
             //#region CAP lock Check
             $('[type=password]').keypress(function (e) {
                 var $password = $(this),
@@ -112,7 +112,23 @@
                         }
                     },
                     function error(errorResponse) {
-                        toastr.error("Error: " + errorResponse.statusText);
+                        //modal for error
+                        var modalInstance = $uibModal.open({
+                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                       '<div class="modal-body"><p>There was an error.</p><p>Error: {{status}} - {{statusText}}</p></div>' +
+                                       '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+                            controller: ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
+                                $scope.ok = function () {
+                                    $uibModalInstance.close();
+                                };
+                                $scope.status = errorResponse.status !== -1 ? errorResponse.status : 'Unknown';
+                                $scope.statusText = errorResponse.statusText !== "" ? errorResponse.statusText : '';
+                            }],
+                            size: 'sm'
+                        });
+                        modalInstance.result.then(function (fieldFocus) {
+                            $location.path('/login');
+                        });
                     }
                 );
             };

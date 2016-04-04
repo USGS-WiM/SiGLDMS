@@ -179,22 +179,19 @@
                         if ($scope.DM.FNAME !== null) {
                             $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                             $http.defaults.headers.common.Accept = 'application/json';
-                            $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                             var DM_PUT = {};
                             DM_PUT.DATA_MANAGER_ID = $scope.DM.DATA_MANAGER_ID; DM_PUT.EMAIL = $scope.DM.EMAIL;
                             DM_PUT.FNAME = $scope.DM.FNAME; DM_PUT.LNAME = $scope.DM.LNAME; DM_PUT.ORGANIZATION_SYSTEM_ID = $scope.DM.ORGANIZATION_SYSTEM_ID;
                             DM_PUT.PHONE = $scope.DM.PHONE; DM_PUT.ROLE_ID = $scope.DM.ROLE_ID; DM_PUT.USERNAME = $scope.DM.USERNAME;
-                            DATA_MANAGER.save({ id: $scope.DM.DATA_MANAGER_ID }, DM_PUT, function success(response) {
+                            DATA_MANAGER.update({ id: $scope.DM.DATA_MANAGER_ID }, DM_PUT, function success(response) {
                                 toastr.success("User Updated");
                                 $scope.selectedOrgID = "";
                                 $scope.alldivs = {}; $scope.selectedDivID = "";
                                 $scope.allsecs = {}; $scope.selectedSecID = [];
                                 $scope.changeOrg = false;
-                                //  $scope.dmOrg = $scope.$parent.allORG_RES.filter(function (o) { return o.OrganizationSystemID == $scope.DM.ORGANIZATION_SYSTEM_ID });
                             }, function error(errorResponse) {
                                 toastr.error("Error: " + errorResponse.statusText);
                             }); //end DATA_MANAGER.save
-                            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                         }
                     }
                 };//end SaveOnBlur
@@ -224,18 +221,15 @@
                 $scope.updateDMonProj = function (data, ProjID) {
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
-                    //$http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
 
                     var retur = false;
                     PROJECT.updateDM({ id: ProjID, DataManager: data.DataManagerID }, function success(response) {
-                        //PROJECT.save({ id: data.PROJECT_ID }, data, function success(response) {
                         toastr.success("Project Updated");
                         retur = response;
                     }, function error(errorResponse) {
                         toastr.error("Error: " + errorResponse.statusText);
                         retur = false;
                     }); //end PROJECT.save
-                    delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                     return retur;
                 }; //end updateDMonProj
 

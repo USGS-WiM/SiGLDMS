@@ -15,7 +15,7 @@
             $scope.StatusList = allStatsList;
             $scope.projectForm = {}; //holder for all the forms
             $scope.readyFlagModel = "No";
-
+            $scope.uncheckable = true;
           //#region changing tabs handler /////////////////////
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
             //var formNameModified = false;
@@ -135,11 +135,7 @@
                         projSites[ind].URL = 'http://' + projSites[ind].URL;
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common.Accept = 'application/json';
-                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-
-                        SITE.save({ id: projSites[ind].SITE_ID }, projSites[ind]).$promise.then(function () {
-                            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-                        });
+                        SITE.update({ id: projSites[ind].SITE_ID }, projSites[ind]).$promise;
                     }
                 }
                 //#endregion loop to put each site's url in proper way (http://)
@@ -164,9 +160,8 @@
                     if (neededUpdating1) {
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common.Accept = 'application/json';
-                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                         $scope.aProject.URL = ($scope.urls).join('|');
-                        PROJECT.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject).$promise.then(function (response) {
+                        PROJECT.update({ id: $scope.aProject.PROJECT_ID }, $scope.aProject).$promise.then(function (response) {
                             $scope.aProject = response;
                             //split string into an array
                             if (($scope.aProject.URL).indexOf('|') > -1) {
@@ -174,7 +169,6 @@
                             } else {
                                 $scope.urls[0] = $scope.aProject.URL;
                             }
-                            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                         });
                     }
                 } //end there's a url
@@ -186,38 +180,47 @@
             }
 
             //flag radio clicked
-            $scope.Flagged = function (data) {
-                //modal
-                var changeFlagModal = $uibModal.open({
-                    template: '<div class="modal-header"><h3 class="modal-title">Publish Project</h3></div>' +
-                                '<div class="modal-body"><p>Are you sure this project is ready to publish on the SiGL Mapper?</p></div>' +
-                                '<div class="modal-footer"><button class="sigl-btn btn-orange" ng-click="cancel()">Cancel</button><button class="sigl-btn" ng-click="ok()">OK</button></div>',
-                    controller: function ($scope, $uibModalInstance) {
-                        $scope.ok = function () {
-                            $scope.aProject.READY_FLAG = data == "Yes" ? 1 : 0;
-                            $uibModalInstance.close();
-                        };
-                        $scope.cancel = function () {
-                            //undo
-                            $scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? "Yes" : "No";
-                        };
-                    },
-                    size: 'sm'
-                });
-                changeFlagModal.result.then(function () {
-                    //yes, PUT the project with the updated flag set
-                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common.Accept = 'application/json';
-                    $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-                    PROJECT.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject, function success(response) {
-                        toastr.success("Project Updated");
-                    }, function error(errorResponse) {
-                        toastr.error("Error: " + errorResponse.statusText);
+            $scope.Flagged = function (data, p) {
+                //can not uncheck a checked radio
+                if ((data == "No" && p.READY_FLAG > 0) || (data == "Yes" && (p.READY_FLAG == 0 || p.READY_FLAG === null))) {
+                    //modal
+                    var changeFlagModal = $uibModal.open({
+                        template: '<div class="modal-header"><h3 class="modal-title">Publish Project</h3></div>' +
+                                    '<div class="modal-body"><p>{{message}}</p></div>' +
+                                    '<div class="modal-footer"><button class="sigl-btn btn-orange" ng-click="cancel()">Cancel</button><button class="sigl-btn" ng-click="ok()">OK</button></div>',
+                        controller: function ($scope, $uibModalInstance) {
+                            //don't let them uncheck.. either click yes or no .. can't unYes or unNo
+                            $scope.message = data == "Yes" ? "Are you sure this project is ready to publish on the SiGL Mapper?" : "Are you sure you want to remove this project from being published on the SiGL Mapper?";
+
+                            $scope.ok = function () {
+                                //$scope.aProject.READY_FLAG = data == "Yes" ? 1 : 0;
+                                p.READY_FLAG = data == "Yes" ? 1 : 0;
+                                $uibModalInstance.close(p);
+                            };
+                            $scope.cancel = function () {
+                                //undo
+                                //$scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? "Yes" : "No";
+                                $uibModalInstance.dismiss();
+                            };
+                        },
+                        size: 'sm'
                     });
-                }, function () {
-                    //logic for cancel
-                });
-                //end modal
+                    changeFlagModal.result.then(function (pr) {
+                        //yes, PUT the project with the updated flag set
+                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                        $http.defaults.headers.common.Accept = 'application/json';
+                        PROJECT.update({ id: pr.PROJECT_ID }, pr, function success(response) {
+                            $scope.aProject = response;
+                            $scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? "Yes" : "No";
+                            toastr.success("Project Updated");
+                        }, function error(errorResponse) {
+                            toastr.error("Error: " + errorResponse.statusText);
+                        });
+                    }, function () {
+                        //logic for cancel
+                    });
+                    //end modal
+                }
             };
 
             $scope.cancel = function () {

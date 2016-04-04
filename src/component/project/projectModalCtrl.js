@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    var ModalControllers = angular.module('ModalControllers', []);
+    var ModalControllers = angular.module('ModalControllers');
     ModalControllers.controller('projectModalCtrl', ['$scope', '$rootScope', '$cookies', '$q', '$location', '$state', '$http', '$timeout', '$uibModal', '$uibModalInstance', '$filter', 'allDropDownParts', 'thisProjectStuff', 'PROJECT',
         function ($scope, $rootScope, $cookies, $q, $location, $state, $http, $timeout, $uibModal, $uibModalInstance, $filter, allDropDownParts, thisProjectStuff, PROJECT) {
             //dropdowns allDurationList, allStatsList, allObjList
@@ -287,9 +287,12 @@
                     //yes, remove this keyword
                     var index1 = $scope.ProjectKeywords.indexOf(key);
 
-                    if ($scope.aProject.PROJECT_ID !== undefined)
+                    if ($scope.aProject.PROJECT_ID !== undefined){
                         $scope.KeywordsToRemove.push(key);
-                    else
+                        //check and see if they are adding then removing
+                        var isInKeysToAdd = $scope.KeywordsToAdd.map(function (k) { return k.TERM; }).indexOf(key.TERM);
+                        if (isInKeysToAdd >= 0) { $scope.KeywordsToAdd.splice(isInKeysToAdd, 1); }
+                    }  else
                         $scope.KeywordsToAdd.splice(index, 1);
 
                     $scope.ProjectKeywords.splice(index1, 1);
@@ -364,26 +367,22 @@
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
                     $scope.aProject.URL = $scope.urls.join("|");
-                    $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-                    PROJECT.save({ id: $scope.aProject.PROJECT_ID }, $scope.aProject, function success(ProjResponse) {
-                        delete $http.defaults.headers.common['X-HTTP-Method-Override']; //remove 'PUT' override
+                    PROJECT.update({ id: $scope.aProject.PROJECT_ID }, $scope.aProject, function success(ProjResponse) {                       
                         //use $q for async call to delete and add objectives and keywords
                         var defer = $q.defer();
                         var RemovePromises = [];
                         var AddPromises = [];
                         //remove objectives
                         angular.forEach($scope.ObjectivesToRemove, function (Ovalue) {
-                            $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                            var delObjProm = PROJECT.deleteProjObjective({ id: $scope.aProject.PROJECT_ID }, Ovalue).$promise;
-                            RemovePromises.push(delObjProm);
-                            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                            var delObjProm = PROJECT.deleteProjObjective({ id: $scope.aProject.PROJECT_ID, objId: Ovalue.OBJECTIVE_TYPE_ID }).$promise;
+                            RemovePromises.push(delObjProm);                            
                         });
                         //remove keywords
                         angular.forEach($scope.KeywordsToRemove, function (Kvalue) {
-                            $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                            var delKeyProm = PROJECT.deleteProjKeyword({ id: $scope.aProject.PROJECT_ID }, Kvalue).$promise;
-                            RemovePromises.push(delKeyProm);
-                            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                            if (Kvalue.KEYWORD_ID !== undefined) {
+                                var delKeyProm = PROJECT.deleteProjKeyword({ id: $scope.aProject.PROJECT_ID, keyId: Kvalue.KEYWORD_ID }).$promise;
+                                RemovePromises.push(delKeyProm);
+                            }
                         });
                         //add objectives
                         angular.forEach($scope.ObjectivesToAdd, function (OaddValue) {

@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    var ModalControllers = angular.module('ModalControllers', []);
+    var ModalControllers = angular.module('ModalControllers');
     
     ModalControllers.controller('siteModalCtrl', ['$scope', '$rootScope', '$q', '$location', '$cookies', '$http', '$uibModal', '$uibModalInstance', '$state', 'thisProject', 'allDropDownParts', 'thisSite',
         'siteFreq', 'siteMed', 'siteRes', 'siteParams', 'SITE',
@@ -423,10 +423,8 @@
                         $rootScope.stateIsLoading.showLoading = true; //loading...
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common.Accept = 'application/json';
-                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
                         $scope.thisSite.PROJECT_ID = thisProject.PROJECT_ID;                    
-                        SITE.save({ id: $scope.thisSite.SITE_ID }, $scope.thisSite, function success(siteResponse) {
-                            delete $http.defaults.headers.common['X-HTTP-Method-Override']; //remove 'PUT' override
+                        SITE.update({ id: $scope.thisSite.SITE_ID }, $scope.thisSite, function success(siteResponse) {
                             //use $q for async call to delete and add objectives and keywords
                             var defer = $q.defer();
                             var RemovePromises = [];
@@ -434,34 +432,26 @@
                             //#region REMOVES
                             //remove frequencies (freqToRemove contains those to remove ->DELETE)
                             angular.forEach($scope.freqToRemove, function (Fvalue) {
-                                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                                var delFreqProm = SITE.deleteSiteFrequency({ id: $scope.thisSite.SITE_ID }, Fvalue).$promise;
+                                var delFreqProm = SITE.deleteSiteFrequency({ id: $scope.thisSite.SITE_ID, freqId: Fvalue.FREQUENCY_TYPE_ID }).$promise;
                                 RemovePromises.push(delFreqProm);
-                                delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                             });
 
                             //remove media (medToRemove contains those to remove ->DELETE)
-                            angular.forEach($scope.medToRemove, function (Mvalue) {
-                                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                                var delMedProm = SITE.deleteSiteMedia({ id: $scope.thisSite.SITE_ID }, Mvalue).$promise;
+                            angular.forEach($scope.medToRemove, function (Mvalue) {                              
+                                var delMedProm = SITE.deleteSiteMedia({ id: $scope.thisSite.SITE_ID, mediaId: Mvalue.MEDIA_TYPE_ID }).$promise;
                                 RemovePromises.push(delMedProm);
-                                delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                             });
 
                             //remove resources (resToRemove contains those to remove ->DELETE)
                             angular.forEach($scope.resToRemove, function (Rvalue) {
-                                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                                var delResProm = SITE.deleteSiteResource({ id: $scope.thisSite.SITE_ID }, Rvalue).$promise;
+                                var delResProm = SITE.deleteSiteResource({ id: $scope.thisSite.SITE_ID, resourceId: Rvalue.RESOURCE_TYPE_ID }).$promise;
                                 RemovePromises.push(delResProm);
-                                delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                             });
 
                             //remove Paramters (paramToRemove contains those to remove ->DELETE)
                             angular.forEach($scope.paramToRemove, function (Pvalue) {
-                                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-                                var delParamProm = SITE.deleteSiteParameter({ id: $scope.thisSite.SITE_ID }, Pvalue).$promise;
+                                var delParamProm = SITE.deleteSiteParameter({ id: $scope.thisSite.SITE_ID, paramId: Pvalue.PARAMETER_TYPE_ID }).$promise;
                                 RemovePromises.push(delParamProm);
-                                delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                             });
                             //#endregion
                             //#region ADDS
@@ -616,8 +606,8 @@
                                         'Name': newSite.NAME,
                                         'latitude': newSite.LATITUDE,
                                         'longitude': newSite.LONGITUDE,
-                                        'StartDate': newSite.START_DATE !== undefined ? makeAdateString(newSite.START_DATE) : '',
-                                        'EndDate': newSite.END_DATE !== undefined ? makeAdateString(newSite.END_DATE) : '',
+                                        'StartDate': newSite.START_DATE !== undefined && newSite.START_DATE !== null ? makeAdateString(newSite.START_DATE) : '',
+                                        'EndDate': newSite.END_DATE !== undefined && newSite.END_DATE !== null ? makeAdateString(newSite.END_DATE) : '',
                                         'SamplePlatform': newSite.SAMPLE_PLATFORM,
                                         'AdditionalInfo': newSite.ADDITIONAL_INFO,
                                         'Description': newSite.DESCRIPTION,

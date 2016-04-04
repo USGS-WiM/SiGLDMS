@@ -1,6 +1,6 @@
 ﻿(function () {
     "use strict"; 
-    var ModalControllers = angular.module('ModalControllers',  []);
+    var ModalControllers = angular.module('ModalControllers');
 
    
     //popup confirm box

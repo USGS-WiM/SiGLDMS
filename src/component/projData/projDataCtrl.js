@@ -20,11 +20,7 @@
                     $scope.ProjData[ind].PORTAL_URL = 'http://' + $scope.ProjData[ind].PORTAL_URL;
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
-                    $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-
-                    DATA_HOST.save({ id: $scope.ProjData[ind].DATA_HOST_ID }, $scope.ProjData[ind]).$promise.then(function () {
-                        delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-                    });
+                    DATA_HOST.update({ id: $scope.ProjData[ind].DATA_HOST_ID }, $scope.ProjData[ind]).$promise;
                 }
             }
 
@@ -92,16 +88,16 @@
                     //DELETE it
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
-                    $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
+                   // $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
-                    PROJECT.deleteProjData({ id: thisProjID }, dataH, function success(response) {
+                    PROJECT.deleteProjData({ id: thisProjID, dataId: dataH.DATA_HOST_ID }, function success(response) {
                         $scope.ProjData.splice(index, 1); projDatum.splice(index, 1);
                         $scope.datumCount.total = $scope.datumCount.total - 1;
                         toastr.success("Data Removed");
                     }, function error(errorResponse) {
                         toastr.error("Error: " + errorResponse.statusText);
                     });
-                    delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                   // delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                 }, function () {
                     //logic for cancel
                 });
@@ -135,8 +131,7 @@
                     var retur = false;
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
-                    $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-                    DATA_HOST.save({ id: id }, data, function success(response) {
+                    DATA_HOST.update({ id: id }, data, function success(response) {
                         retur = response; //maybe need to update the projData that this controller gets from resolve, for returning to this tab later
                         $scope.projectForm.Data.$setPristine(true);
                         toastr.success("Data Updated");
@@ -144,7 +139,6 @@
                         retur = false;
                         toastr.error("Error: " + errorResponse.statusText);
                     });
-                    delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                     return retur;
                 }
             };//end saveData

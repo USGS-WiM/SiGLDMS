@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    var ModalControllers = angular.module('ModalControllers', []);
+    var ModalControllers = angular.module('ModalControllers');
 
 
 //org popup to add to org db

@@ -18,10 +18,7 @@
                         $scope.ProjContacts[theI].PHONE = "(" + phNo.substring(0, 3) + ") " + phNo.substring(3, 6) + "-" + phNo.substring(6);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common.Accept = 'application/json';
-                        $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-                        CONTACT.save({ id: $scope.ProjContacts[theI].CONTACT_ID }, $scope.ProjContacts[theI]).$promise.then(function (response) {
-                            delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-                        });
+                        CONTACT.update({ id: $scope.ProjContacts[theI].CONTACT_ID }, $scope.ProjContacts[theI]).$promise;
                     }
                 }
             }
@@ -195,16 +192,14 @@
                 var retur = false;
                 $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common.Accept = 'application/json';
-                $http.defaults.headers.common['X-HTTP-Method-Override'] = 'PUT';
-                CONTACT.save({ id: id }, contactToUpdate, function success(response) {
+                CONTACT.update({ id: id }, contactToUpdate, function success(response) {
                     var projContact = response;
                     var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.OrganizationSystemID == response.ORGANIZATION_SYSTEM_ID; })[0];
                     projContacts.OrgName = thisOrgRes.OrganizationName;
                     projContacts.DivName = thisOrgRes.DivisionName;
                     projContacts.SecName = thisOrgRes.SectionName;
                     retur = projContacts;
-                    toastr.success("Contact Updated");
-                    delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                    toastr.success("Contact Updated");                    
                 }, function error(errorResponse) {
                     toastr.error("Error: " + errorResponse.statusText);
                 });
@@ -347,9 +342,9 @@
                     //DELETE it
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
-                    $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
+                   // $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
-                    PROJECT.deleteProjContact({ id: thisProject.PROJECT_ID }, aCONTACT, function success(response) {
+                    PROJECT.deleteProjContact({ id: thisProject.PROJECT_ID, contId: aCONTACT.CONTACT_ID }, function success(response) {
                         $scope.ProjContacts.splice(index, 1);
                         $scope.contactCount.total = $scope.contactCount.total - 1;
                         //TODO: Make sure services are removing the organizationsystem object
@@ -357,7 +352,7 @@
                     }, function error(errorResponse) {
                         toastr.error("Error: " + errorResponse.statusText);
                     });
-                    delete $http.defaults.headers.common['X-HTTP-Method-Override'];
+                   // delete $http.defaults.headers.common['X-HTTP-Method-Override'];
                 }, function () {
                     //logic for cancel
                 });
