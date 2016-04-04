@@ -3,11 +3,12 @@
         <thead>
             <tr>
                 <th style="width:0"></th>
-                <th>Resource Type</th>
+                <th class="RESOURCE_NAME">Resource Type&nbsp;<a ng-click="Rsort_by('RESOURCE_NAME')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Projects.length">Project Cnt&nbsp;<a ng-click="Rsort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="ResCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="rt in resourceTypeList | orderBy: 'RESOURCE_NAME'">
+            <tr ng-repeat="rt in resourceTypeList | orderBy: RsortingOrder:Rreverse">
                 <td style="white-space: nowrap">
                     <!-- form -->
                     <form editable-form name="RTrowform" onaftersave="saveResourceType($data, rt.RESOURCE_TYPE_ID)" ng-show="RTrowform.$visible" class="form-buttons form-inline" shown="inserted == rt">
@@ -24,8 +25,10 @@
                     </div>
                 </td>
                 <td>
-                    <div style="display:none"><span editable-text="rt.RESOURCE_TYPE_ID" e-form="RTrowform" e-name="RESOURCE_TYPE_ID">{{rt.RESOURCE_TYPE_ID}}</span></div>
                     <span editable-text="rt.RESOURCE_NAME" e-name="RESOURCE_NAME" e-form="RTrowform">{{ rt.RESOURCE_NAME || '' }}</span>
+                </td>
+                <td>
+                    <span>{{rt.Projects.length}}</span>
                 </td>
             </tr>
         </tbody>

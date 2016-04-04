@@ -3,9 +3,9 @@
 
     var siGLControllers = angular.module('siGLControllers');
 
-    siGLControllers.controller('resourcesCtrl', ['$scope', '$cookies', '$location', '$state', '$http', '$filter', '$uibModal', 'FREQUENCY_TYPE', 'LAKE_TYPE', 'MEDIA_TYPE', 'OBJECTIVE_TYPE', 'PARAMETER_TYPE',
+    siGLControllers.controller('resourcesCtrl', ['$scope', '$cookies', '$q', '$location', '$state', '$http', '$filter', '$uibModal', 'FREQUENCY_TYPE', 'LAKE_TYPE', 'MEDIA_TYPE', 'OBJECTIVE_TYPE', 'PARAMETER_TYPE',
         'RESOURCE_TYPE', 'PROJ_DURATION', 'PROJ_STATUS', 'STATUS_TYPE', 'allFreqs', 'allLakes', 'allMedias', 'allObjectives', 'allParams', 'allResources', 'allProjDurations', 'allProjStats', 'allSiteStats',
-        function ($scope, $cookies, $location, $state, $http, $filter, $uibModal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, PARAMETER_TYPE, RESOURCE_TYPE,
+        function ($scope, $cookies, $q, $location, $state, $http, $filter, $uibModal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, PARAMETER_TYPE, RESOURCE_TYPE,
         PROJ_DURATION, PROJ_STATUS, STATUS_TYPE, allFreqs, allLakes, allMedias, allObjectives, allParams, allResources, allProjDurations, allProjStats, allSiteStats) {
             if ($cookies.get('siGLCreds') === undefined || $cookies.get('siGLCreds') === "") {
                 $scope.auth = false;
@@ -13,29 +13,66 @@
             } else {
                 $scope.accountRole = $cookies.get('usersRole');
                 // change sorting order
-                $scope.sortingOrder = ''; // TODO :: SET THIS
-                $scope.sort_by = function (newSortingOrder) {
-                    if ($scope.sortingOrder == newSortingOrder) {
-                        $scope.reverse = !$scope.reverse;
-                    }
-                    $scope.sortingOrder = newSortingOrder;
-                    // icon setup
-                    $('th i').each(function () {
-                        // icon reset
-                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
-                    });
-                    if ($scope.reverse) {
-                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
-                    } else {
-                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
-                    }
-                };
+                //$scope.sortingOrder = ''; // TODO :: SET THIS
+                //$scope.sort_by = function (newSortingOrder) {
+                //    if ($scope.sortingOrder == newSortingOrder) {
+                //        $scope.reverse = !$scope.reverse;
+                //    }
+                //    $scope.sortingOrder = newSortingOrder;
+                //    // icon setup
+                //    $('th i').each(function () {
+                //        // icon reset
+                //        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                //    });
+                //    if ($scope.reverse) {
+                //        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                //    } else {
+                //        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                //    }
+                //};
                 $scope.lookupForm = {};
 
                 //#region ALL LOOKUPS (add/update/delete)
 
                 //#region Frequency Types Add/Update/Delete
+                $scope.FsortingOrder = 'FREQUENCY';
+                $scope.Freverse = false;
+                $scope.Fsort_by = function (newSortingOrder) {
+                    if ($scope.FsortingOrder == newSortingOrder) {
+                        $scope.Freverse = !$scope.Freverse;
+                    }
+                    $scope.FsortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.Freverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
+
                 $scope.freqTypeList = allFreqs; //ft
+                $scope.freqCntLoading = true;// show/hide loading next to proj cnt
+                var Fpromises = [];
+                //get all projects that use each of these frequencies
+                $http.defaults.headers.common.Accept = 'application/json';
+                angular.forEach($scope.freqTypeList, function (f) {
+                    var Fdeferred = $q.defer();
+                    FREQUENCY_TYPE.getFreqProj({ id: f.FREQUENCY_TYPE_ID }, function success(response) {
+                        f.Projects = response;
+                        //defer so can capture when all done here
+                        Fdeferred.resolve(response); 
+                    });
+                    Fpromises.push(Fdeferred.promise);
+                });
+                $q.all(Fpromises).then(function () {
+                    //now turn off loading
+                    $scope.freqCntLoading = false;
+                });
+
                 $scope.showAddFTForm = false; //add something new to a lookup clicked (will unhide form below it) False-> form: hidden, True-> form: visible
                 $scope.addFTButtonShowing = true; //start it at true..when clicked, show form, hide button
                 $scope.newFT = {};
@@ -115,7 +152,42 @@
                 //#endregion Frequency Types Add/Update/Delete
 
                 //#region Lake Type Add/Update/Delete
+                $scope.LsortingOrder = 'LAKE';
+                $scope.Lreverse = false;
+                $scope.Lsort_by = function (newSortingOrder) {
+                    if ($scope.LsortingOrder == newSortingOrder) {
+                        $scope.Lreverse = !$scope.Lreverse;
+                    }
+                    $scope.LsortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.Lreverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
+
                 $scope.lakeTypeList = allLakes; //lt
+                $scope.lakeCntLoading = true; // show/hide loading next to proj cnt
+                var Lpromises = [];
+                $http.defaults.headers.common.Accept = 'application/json';
+                //get all the projects at these lakes
+                angular.forEach($scope.lakeTypeList, function (l) {
+                    var Ldeferred = $q.defer();
+                    LAKE_TYPE.getLakeProj({ id: l.LAKE_TYPE_ID }, function success(response) {
+                        l.Projects = response;
+                        Ldeferred.resolve(response);
+                    });
+                    Lpromises.push(Ldeferred.promise);
+                });
+                $q.all(Lpromises).then(function () {
+                    //now turn off loading
+                    $scope.lakeCntLoading = false;
+                });
                 $scope.showAddLTForm = false; //add something new to a lookup clicked (will unhide form below it) False-> form: hidden, True-> form: visible
                 $scope.addLTButtonShowing = true; //start it at true..when clicked, show form, hide button
                 $scope.newLT = {};
@@ -189,7 +261,41 @@
                 //#endregion Lake Type Add/Update/Delete
 
                 //#region Media Type Add/Update/Delete
+                $scope.MsortingOrder = 'MEDIA';
+                $scope.Mreverse = false;
+                $scope.Msort_by = function (newSortingOrder) {
+                    if ($scope.MsortingOrder == newSortingOrder) {
+                        $scope.Mreverse = !$scope.Mreverse;
+                    }
+                    $scope.MsortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.Mreverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
                 $scope.mediaTypeList = allMedias; //mt
+                $scope.medCntLoading = true;
+                var Mpromises = [];
+                //get all projects that use each of these media
+                $http.defaults.headers.common.Accept = 'application/json';
+                angular.forEach($scope.mediaTypeList, function (m) {
+                    var Mdeferred = $q.defer();
+                    MEDIA_TYPE.getMediaProj({ id: m.MEDIA_TYPE_ID }, function success(response) {
+                        m.Projects = response;
+                        Mdeferred.resolve(response);
+                    });
+                    Mpromises.push(Mdeferred.promise);
+                });
+                $q.all(Mpromises).then(function () {
+                    //now turn off loading
+                    $scope.medCntLoading = false;
+                });
                 $scope.showAddMTForm = false; //add something new to a lookup clicked (will unhide form below it) False-> form: hidden, True-> form: visible
                 $scope.addMTButtonShowing = true; //start it at true..when clicked, show form, hide button
                 $scope.newMT = {};
@@ -263,7 +369,41 @@
                 //#endregion Media Type Add/Update/Delete
 
                 //#region Objective Type Add/Update/Delete
+                $scope.OsortingOrder = 'OBJECTIVE';
+                $scope.Oreverse = false;
+                $scope.Osort_by = function (newSortingOrder) {
+                    if ($scope.OsortingOrder == newSortingOrder) {
+                        $scope.Oreverse = !$scope.Oreverse;
+                    }
+                    $scope.OsortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.Oreverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
                 $scope.objTypeList = allObjectives; //ot
+                $scope.objCntLoading = true;
+                var Opromises = [];
+                //get all projects that use each of these objectives
+                $http.defaults.headers.common.Accept = 'application/json';
+                angular.forEach($scope.objTypeList, function (o) {
+                    var Odeferred = $q.defer();
+                    OBJECTIVE_TYPE.getObjProj({ id: o.OBJECTIVE_TYPE_ID }, function success(response) {
+                        o.Projects = response;
+                        Odeferred.resolve(response);
+                    });
+                    Opromises.push(Odeferred.promise);
+                });
+                $q.all(Opromises).then(function () {
+                    //now turn off loading
+                    $scope.objCntLoading = false;
+                });
                 $scope.showAddOTForm = false; //add something new to a lookup clicked (will unhide form below it) False-> form: hidden, True-> form: visible
                 $scope.addOTButtonShowing = true; //start it at true..when clicked, show form, hide button
                 $scope.newOT = {};
@@ -343,6 +483,25 @@
                 //#endregion Objective Type Add/Update/Delete
 
                 //#region Parameter Type Add/Update/Delete
+                 $scope.PsortingOrder = 'PARAMETER';
+                $scope.Preverse = false;
+
+                $scope.Psort_by = function (newSortingOrder) {                   
+                    if ($scope.PsortingOrder == newSortingOrder) {
+                        $scope.Preverse = !$scope.Preverse;                        
+                    }
+                    $scope.PsortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.Preverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
                 $scope.paramTypeList = allParams; //pt
                 $scope.paramGroupTypes = [
                      { value: 1, text: 'Biological' },
@@ -351,26 +510,23 @@
                      { value: 4, text: 'Physical' },
                      { value: 5, text: 'Toxicological' }
                 ];
-                $scope.sortingOrder = 'PARAMETER';
-                $scope.reverse = false;
-
-                $scope.sort_by = function (newSortingOrder) {                   
-                    if ($scope.sortingOrder == newSortingOrder) {
-                        $scope.reverse = !$scope.reverse;                        
-                    }
-                    $scope.sortingOrder = newSortingOrder;
-                    // icon setup
-                    $('th i').each(function () {
-                        // icon reset
-                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                $scope.paramCntLoading = true;
+                var Ppromises = [];
+                //get all projects that use each of these parameters
+                $http.defaults.headers.common.Accept = 'application/json';
+                angular.forEach($scope.paramTypeList, function (p) {
+                    var Pdeferred = $q.defer();
+                    PARAMETER_TYPE.getParamProj({ id: p.PARAMETER_TYPE_ID }, function success(response) {
+                        p.Projects = response;
+                        Pdeferred.resolve(response);
                     });
-                    if ($scope.reverse) {
-                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
-                    } else {
-                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
-                    }
-                };
-
+                    Ppromises.push(Pdeferred.promise);
+                });
+                $q.all(Ppromises).then(function () {
+                    //now turn off loading
+                    $scope.paramCntLoading = false;
+                });
+               
                 $scope.showAddPTForm = false; //add something new to a lookup clicked (will unhide form below it) False-> form: hidden, True-> form: visible
                 $scope.addPTButtonShowing = true; //start it at true..when clicked, show form, hide button
                 $scope.newPT = {};
@@ -444,7 +600,41 @@
                 //#endregion Parameter Type Add/Update/Delete
 
                 //#region Resource Type Add/Update/Delete
-                $scope.resourceTypeList = allResources; //rt
+                $scope.RsortingOrder = 'RESOURCE_NAME';
+                $scope.Rreverse = false;
+                $scope.Rsort_by = function (newSortingOrder) {
+                    if ($scope.RsortingOrder == newSortingOrder) {
+                        $scope.Rreverse = !$scope.Rreverse;
+                    }
+                    $scope.RsortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.Rreverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
+                $scope.resourceTypeList = allResources; //rt  
+                $scope.ResCntLoading = true;
+                var Rpromises = [];
+                //get all projects that use each of these proj Durations
+                $http.defaults.headers.common.Accept = 'application/json';
+                angular.forEach($scope.resourceTypeList, function (rt) {
+                    var Rdeferred = $q.defer();
+                    RESOURCE_TYPE.getResourceProj({ id: rt.RESOURCE_TYPE_ID }, function success(response) {
+                        rt.Projects = response;
+                        Rdeferred.resolve(response);
+                    });
+                    Rpromises.push(Rdeferred.promise);
+                });
+                $q.all(Rpromises).then(function () {
+                    //now turn off loading
+                    $scope.ResCntLoading = false;
+                });
                 $scope.showAddRTForm = false; //add something new to a lookup clicked (will unhide form below it) False-> form: hidden, True-> form: visible
                 $scope.addRTButtonShowing = true; //start it at true..when clicked, show form, hide button
                 $scope.newRT = {};
@@ -518,7 +708,41 @@
                 //#endregion Resource Type Add/Update/Delete
 
                 //#region Proj Duration Add/Update/Delete
+                $scope.PDsortingOrder = 'DURATION_VALUE';
+                $scope.PDreverse = false;
+                $scope.PDsort_by = function (newSortingOrder) {
+                    if ($scope.PDsortingOrder == newSortingOrder) {
+                        $scope.PDreverse = !$scope.PDreverse;
+                    }
+                    $scope.PDsortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.PDreverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
                 $scope.projDurationList = allProjDurations; //pd
+                $scope.projDCntLoading = true;
+                var PDpromises = [];
+                //get all projects that use each of these proj Durations
+                $http.defaults.headers.common.Accept = 'application/json';
+                angular.forEach($scope.projDurationList, function (pd) {
+                    var PDdeferred = $q.defer();
+                    PROJ_DURATION.getProjDurProj({ id: pd.PROJ_DURATION_ID }, function success(response) {
+                        pd.Projects = response;
+                        PDdeferred.resolve(response);
+                    });
+                    PDpromises.push(PDdeferred.promise);
+                });
+                $q.all(PDpromises).then(function () {
+                    //now turn off loading
+                    $scope.projDCntLoading = false;
+                });
                 $scope.showAddPDForm = false; //add something new to a lookup clicked (will unhide form below it) False-> form: hidden, True-> form: visible
                 $scope.addPDButtonShowing = true; //start it at true..when clicked, show form, hide button
                 $scope.newPD = {};
@@ -598,7 +822,41 @@
                 //#endregion Proj Duration Add/Update/Delete
 
                 //#region Proj Status Add/Update/Delete
-                $scope.projStatusList = allProjStats; //ps
+                $scope.PSsortingOrder = 'STATUS_VALUE';
+                $scope.PSreverse = false;
+                $scope.PSsort_by = function (newSortingOrder) {
+                    if ($scope.PSsortingOrder == newSortingOrder) {
+                        $scope.PSreverse = !$scope.PSreverse;
+                    }
+                    $scope.PSsortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.PSreverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
+                $scope.projStatusList = allProjStats; //ps 
+                $scope.projStatCntLoading = true;
+                var PSpromises = [];
+                //get all projects that use each of these proj stat
+                $http.defaults.headers.common.Accept = 'application/json';
+                angular.forEach($scope.projStatusList, function (ps) {
+                    var PSdeferred = $q.defer();
+                    PROJ_STATUS.getProjStatProj({ id: ps.PROJ_STATUS_ID }, function success(response) {
+                        ps.Projects = response;
+                        PSdeferred.resolve(response);
+                    });
+                    PSpromises.push(PSdeferred.promise);
+                });
+                $q.all(PSpromises).then(function () {
+                    //now turn off loading
+                    $scope.projStatCntLoading = false;
+                });
                 $scope.showAddPSForm = false; //add something new to a lookup clicked (will unhide form below it) False-> form: hidden, True-> form: visible
                 $scope.addPSButtonShowing = true; //start it at true..when clicked, show form, hide button
                 $scope.newPS = {};
@@ -672,7 +930,41 @@
                 //#endregion Proj Status Add/Update/Delete
 
                 //#region Site Status Add/Update/Delete
+                $scope.SSsortingOrder = 'STATUS';
+                $scope.SSreverse = false;
+                $scope.SSsort_by = function (newSortingOrder) {
+                    if ($scope.SSsortingOrder == newSortingOrder) {
+                        $scope.SSreverse = !$scope.SSreverse;
+                    }
+                    $scope.SSsortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.SSreverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
                 $scope.siteStatusList = allSiteStats; //ss
+                $scope.siteStatCntLoading = true;
+                var SSpromises = [];
+                //get all projects that use each of these proj stat
+                $http.defaults.headers.common.Accept = 'application/json';
+                angular.forEach($scope.siteStatusList, function (ss) {
+                    var SSdeferred = $q.defer();
+                    STATUS_TYPE.getSiteStatusProj({ id: ss.STATUS_ID }, function success(response) {
+                        ss.Projects = response;
+                        SSdeferred.resolve(response);
+                    });
+                    SSpromises.push(SSdeferred.promise);
+                });
+                $q.all(SSpromises).then(function () {
+                    //now turn off loading
+                    $scope.siteStatCntLoading = false;
+                });
                 $scope.showAddSSForm = false; //add something new to a lookup clicked (will unhide form below it) False-> form: hidden, True-> form: visible
                 $scope.addSSButtonShowing = true; //start it at true..when clicked, show form, hide button
                 $scope.newSS = {};

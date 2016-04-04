@@ -3,11 +3,12 @@
         <thead>
             <tr>
                 <th style="width:0"></th>
-                <th>Project Duration</th>
+                <th class="DURATION_VALUE">Project Duration&nbsp;<a ng-click="PDsort_by('DURATION_VALUE')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Projects.length">Project Cnt&nbsp;<a ng-click="PDsort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="projDCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="pd in projDurationList | orderBy: 'DURATION_VALUE'">
+            <tr ng-repeat="pd in projDurationList | orderBy: PDsortingOrder:PDreverse">
                 <td style="white-space: nowrap">
                     <!-- form -->
                     <form editable-form name="PDrowform" onaftersave="saveProjDuration($data, pd.PROJ_DURATION_ID)" ng-show="PDrowform.$visible" class="form-buttons form-inline" shown="inserted == pd">
@@ -24,8 +25,10 @@
                     </div>
                 </td>
                 <td>
-                    <div style="display:none"><span editable-text="pd.PROJ_DURATION_ID" e-form="PDrowform" e-name="PROJ_DURATION_ID">{{pd.PROJ_DURATION_ID}}</span></div>
                     <span editable-textarea="pd.DURATION_VALUE" e-rows="1" e-cols="40" e-name="DURATION_VALUE" e-form="PDrowform">{{ pd.DURATION_VALUE || '' }}</span>
+                </td>
+                <td>
+                    <span>{{pd.Projects.length}}</span>
                 </td>
             </tr>
         </tbody>
