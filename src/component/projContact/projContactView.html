@@ -36,18 +36,18 @@
             </div>
             <div>
                 <label class="title">Phone:</label>
-                <span editable-text="c.PHONE" e-my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}" e-style="width:25em;" e-name="PHONE" e-form="rowform">{{ c.PHONE || '' }}</span>
+                <span editable-text="c.PHONE" e-mask="(999) 999-9999 x?9?9?9?9?9?" e-restrict="reject" e-style="width:25em;" e-name="PHONE" e-form="rowform">{{ c.PHONE || '' }}</span>
             </div>
 
-                <br>
-                <span>{{c.OrgName}}<em ng-if="c.DivName">, {{c.DivName}}</em><em ng-if="c.SecName">, {{c.SecName}}</em></span>
-                <div class="showHide">
-                    <button class="sigl-btn btn-small" ng-click="addNewOrg()">
-                        Change Contact's Organization
-                    </button>
-                </div>
-
+            <br>
+            <span>{{c.OrgName}}<em ng-if="c.DivName">, {{c.DivName}}</em><em ng-if="c.SecName">, {{c.SecName}}</em></span>
+            <div class="showHide">
+                <button class="sigl-btn btn-small" ng-click="addNewOrg()">
+                    Change Contact's Organization
+                </button>
             </div>
+
+        </div>
         <div class="data-controls" ng-show="!rowform.$visible">
             <button class="sigl-btn btn-small" ng-click="rowform.$show()">Edit</button>
             <button class="sigl-btn btn-orange btn-small" ng-click="RemoveContact(c)">Delete</button>
@@ -111,7 +111,7 @@
                       data-placement="right" tooltip>
                 </span>
             </label>
-            <input type="text" my-input-mask="{mask: '(999) 999-9999[ x99999]', greedy:false}" ng-model="newContact.PHONE" required />
+            <input type="text" mask="(999) 999-9999 x?9?9?9?9?9?" restrict="reject" ng-model="newContact.PHONE" ng-value="newContact.PHONE" mask-validate="false" required>            
         </div>
 
 

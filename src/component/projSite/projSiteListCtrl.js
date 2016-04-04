@@ -7,7 +7,7 @@
             $scope.projectSites = projS;
             for (var psu = 0; psu < $scope.projectSites.length; psu++) {
                 var ind = psu;
-                if ($scope.projectSites[ind].URL !== null && !$scope.projectSites[ind].URL.startsWith('http')) {
+                if ($scope.projectSites[ind].URL !== undefined && !$scope.projectSites[ind].URL.startsWith('http')) {
                     $scope.projectSites[ind].URL = 'http://' + $scope.projectSites[ind].URL;
                 }
             }
@@ -268,7 +268,7 @@
                 //modal
                 var modalInstance = $uibModal.open({
                     templateUrl: 'SITEmodal.html',
-                    controller: 'SITEmodalCtrl',
+                    controller: 'siteModalCtrl',
                     size: 'lg',
                     backdrop: 'static',
                     windowClass: 'rep-dialog',

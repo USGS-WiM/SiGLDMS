@@ -33,10 +33,6 @@ $scope.isDisabledDate = function(currentDate, mode) {
  	:
  	The date and time object.
 
- * `starting-day`
- 	_(Defaults: 0)_ :
- 	Starting day of the week from 0-6 (0=Sunday, ..., 6=Saturday).
-
  * `min-date` <i class="icon-eye-open"></i>
  	_(Default: null)_ :
  	Defines the minimum available date.
@@ -81,7 +77,7 @@ $scope.isDisabledDate = function(currentDate, mode) {
  	_(Default: 'yyyy-MM-dd')_ :
  	The format for displayed dates.
 
- * `datepicker-options` attribute.
+ * `date-options` attribute.
   	_(Default: {})_ :
    Options for datepicker in JSON format
 
@@ -103,11 +99,19 @@ $scope.isDisabledDate = function(currentDate, mode) {
 
  * `readonly-time`
  	_(Defaults: false)_ :
- 	 Whether user can type inside the hours & minutes input.
+ 	 Whether a user can type inside the hours & minutes input.
 
 * `readonly-date`
  	_(Defaults: false)_ :
- 	 Whether user can type inside the date input.
+ 	 Whether a user can type inside the date input.
+
+* `hidden-time`
+ 	_(Defaults: false)_ :
+ 	 Whether a user can see the hours & minutes input.
+
+* `hidden-date`
+	_(Defaults: false)_ :
+ 	 Whether a user can see the date input.
 
 * `mousewheel`
  	_(Defaults: true)_ :

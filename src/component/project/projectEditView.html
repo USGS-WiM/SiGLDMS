@@ -7,22 +7,28 @@
         {{title}}
         <div id="edit-publish-buttons">
             <h4>Publish project on SiGL Mapper?</h4>
-            <label ng-model="readyFlagModel" ng-click="Flagged('Yes')" uib-btn-radio="'Yes'" class="publish-yes">Yes</label><!--
-            --><label ng-model="readyFlagModel" ng-click="Flagged('No')" uib-btn-radio="'No'" class="publish-no">No</label>
+            <div class="btn-group">
+                <label class="btn btn-success" ng-model="readyFlagModel" ng-click="Flagged('Yes', aProject)" uib-btn-radio="'Yes'" uib-uncheckable="uncheckable">Yes</label>
+                <label class="btn btn-success" ng-model="readyFlagModel" ng-click="Flagged('No', aProject)" uib-btn-radio="'No'" uib-uncheckable="uncheckable">No</label>
+            </div>
+            <!--<label ng-model="aProject.READY_FLAG" uib-uncheckable="true" ng-click="Flagged('Yes', aProject)" uib-btn-radio="'1'" class="publish-yes">Yes</label>
+            <label ng-model="aProject.READY_FLAG" uib-uncheckable="true" ng-click="Flagged('No', aProject)" uib-btn-radio="'0'" class="publish-no">No</label>-->
         </div>
     </div>
 
 
 
-        <div id="sigl-edit-left">
-            <a ui-sref=".info" ui-sref-active="active">Project Information</a>
-            <a ui-sref=".cooperator" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Organizations<span class="badge pull-right">{{coopCount.total}}</span></a>
-            <a ui-sref=".data" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Data Sources<span class="badge pull-right">{{datumCount.total}}</span></a>
-            <a ui-sref=".contact" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Contacts<span class="badge pull-right">{{contactCount.total}}</span></a>
-            <a ui-sref=".publication" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Publications<span class="badge pull-right">{{pubCount.total}}</span></a>
-            <a ui-sref=".site.siteList" id="siteTab" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Sites<span class="badge pull-right">{{sitesCount.total}}</span></a>
-        </div><!--
-        --><div ui-view id="sigl-edit-right"></div>
+    <div id="sigl-edit-left">
+        <a ui-sref=".info" ui-sref-active="active">Project Information</a>
+        <a ui-sref=".cooperator" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Organizations<span class="badge pull-right">{{coopCount.total}}</span></a>
+        <a ui-sref=".data" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Data Sources<span class="badge pull-right">{{datumCount.total}}</span></a>
+        <a ui-sref=".contact" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Contacts<span class="badge pull-right">{{contactCount.total}}</span></a>
+        <a ui-sref=".publication" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Publications<span class="badge pull-right">{{pubCount.total}}</span></a>
+        <a ui-sref=".site.siteList" id="siteTab" a-disabled="aProject.PROJECT_ID == null" ui-sref-active="active">Sites<span class="badge pull-right">{{sitesCount.total}}</span></a>
+    </div>
+    <!--
+    -->
+    <div ui-view id="sigl-edit-right"></div>
 
 
 </div>
@@ -137,15 +143,18 @@
                 <div class="sigl-modal-form-group" ng-if="ProjectKeywords.length > 0">
                     <label for="ProjKEYWORDS">
                         Project Keywords:
+
+                    </label>
+                    <ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button ng-click="removeKey(key, $index)" class="list-remove-item"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul>
+                </div>
+
+                <div class="sigl-modal-form-group">
+                    <label for="ProjKeyword">
+                        Add Project Keyword:
                         <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Type a keyword and then click add. Can add multiple keywords.'>
                             <span class="glyphicon glyphicon-question-sign"></span>
                         </button>
                     </label>
-                    <ul><li style="list-style:none" data-ng-repeat="key in ProjectKeywords"><button ng-click="removeKey(key, $index)"><i class="glyphicon glyphicon-remove"></i></button>  {{key.TERM}}</li></ul>
-                </div>
-
-                <div class="sigl-modal-form-group">
-                    <label for="ProjKeyword">Add Project Keyword:</label>
                     <input class="input-with-add-button" ng-enter="addThisKeyword()" id="inputKEYWORD" name="KEYWORD" type="text" placeholder="Enter one keyword at a time" ng-model="newKey.value" />
                     <button type="button" class="input-add-button" ng-click="addThisKeyword()">Add</button>
                 </div>
@@ -224,7 +233,7 @@
                         </button>
                     </label>
                     <input ng-keypress="isNum($event)" ng-model-options="{ updateOn: 'blur' }" ng-change="checkValue()"
-                               name="LATITUDE" id="LATITUDE" ng-model="thisSite.LATITUDE" type="text" placeholder="Latitude" required />
+                           name="LATITUDE" id="LATITUDE" ng-model="thisSite.LATITUDE" type="text" placeholder="Latitude" required />
                 </div>
 
                 <!--Longitude*-->
@@ -237,7 +246,7 @@
                         </button>
                     </label>
                     <input ng-keypress="isNum($event)" id="LONGITUDE" name="LONGITUDE" ng-model-options="{ updateOn: 'blur' }"
-                               ng-change="checkValue()" ng-model="thisSite.LONGITUDE" type="text" placeholder="Longitude" required />
+                           ng-change="checkValue()" ng-model="thisSite.LONGITUDE" type="text" placeholder="Longitude" required />
                 </div>
 
                 <!--Country*-->
@@ -468,99 +477,107 @@
                 </div>
 
                 <div class="sigl-modal-form-group" id="acords">
-                        <uib-accordion close-others="false">
-                            <!--PHYSICAL-->
-                            <uib-accordion-group is-open="status.phyOpen" style="margin:0">
-                                <uib-accordion-heading>
-                                    <i style="margin-right:10px" class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': status.phyOpen, 'glyphicon-chevron-right': !status.phyOpen}"></i>
-                                    <span>Physical Parameters</span>
-                                </uib-accordion-heading>
-                                <div>
-                                    <ul style="padding-left:0">
-                                        <li style="list-style:none;" ng-repeat="phys in physParams[0]">
-                                            <div class="input-accord">
-                                                <input type="checkbox" ng-model="phys.selected"
-                                                       ng-checked="phys.selected" value="{{phys.PARAMETER_TYPE_ID}}"
-                                                       ng-click="ParamClick(phys)" />
-                                                <span ng-class="{orange:phys.selected}">{{ phys.PARAMETER }}</span>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </uib-accordion-group>
+                    <uib-accordion close-others="false">
+                        <!--PHYSICAL-->
+                        <uib-accordion-group is-open="status.phyOpen" style="margin:0">
+                            <uib-accordion-heading>
+                                <i style="margin-right:10px" class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': status.phyOpen, 'glyphicon-chevron-right': !status.phyOpen}"></i>
+                                <span>Physical Parameters</span>
+                            </uib-accordion-heading>
+                            <div>
+                                <ul style="padding-left:0">
+                                    <li style="list-style:none;" ng-repeat="phys in physParams[0]">
+                                        <div class="input-accord">
+                                            <input type="checkbox" ng-model="phys.selected"
+                                                   ng-checked="phys.selected" value="{{phys.PARAMETER_TYPE_ID}}"
+                                                   ng-click="ParamClick(phys)" />
+                                            <span ng-class="{orange:phys.selected}">{{ phys.PARAMETER }}</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </uib-accordion-group>
 
-                            <!--CHEMICAL-->
-                            <uib-accordion-group is-open="status.chemOpen" style="margin:0">
-                                <uib-accordion-heading>
-                                    <i style="margin-right:10px" class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': status.chemOpen, 'glyphicon-chevron-right': !status.chemOpen}"></i>
-                                    <span>Chemical Parameters</span>
-                                </uib-accordion-heading>
-                                <div>
-                                    <ul style="padding-left:0">
-                                        <li style="list-style:none;" ng-repeat="chem in chemParams[0]">
+                        <!--CHEMICAL-->
+                        <uib-accordion-group is-open="status.chemOpen" style="margin:0">
+                            <uib-accordion-heading>
+                                <i style="margin-right:10px" class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': status.chemOpen, 'glyphicon-chevron-right': !status.chemOpen}"></i>
+                                <span>Chemical Parameters</span>
+                            </uib-accordion-heading>
+                            <div>
+                                <ul style="padding-left:0">
+                                    <li style="list-style:none;" ng-repeat="chem in chemParams[0]">
+                                        <div class="input-accord">
                                             <input type="checkbox" ng-model="chem.selected"
                                                    ng-checked="chem.selected" value="{{chem.PARAMETER_TYPE_ID}}"
                                                    ng-click="ParamClick(chem)" />
                                             <span ng-class="{orange:chem.selected}">{{ chem.PARAMETER }}</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </uib-accordion-group>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </uib-accordion-group>
 
-                            <!--BIOLOGICAL-->
-                            <uib-accordion-group is-open="status.bioOpen" style="margin:0">
-                                <uib-accordion-heading>
-                                    <i style="margin-right:10px" class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': status.bioOpen, 'glyphicon-chevron-right': !status.bioOpen}"></i>
-                                    <span>Biological Parameters</span>
-                                </uib-accordion-heading>
-                                <div>
-                                    <ul style="padding-left:0">
-                                        <li style="list-style:none;" ng-repeat="bio in bioParams[0]">
+                        <!--BIOLOGICAL-->
+                        <uib-accordion-group is-open="status.bioOpen" style="margin:0">
+                            <uib-accordion-heading>
+                                <i style="margin-right:10px" class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': status.bioOpen, 'glyphicon-chevron-right': !status.bioOpen}"></i>
+                                <span>Biological Parameters</span>
+                            </uib-accordion-heading>
+                            <div>
+                                <ul style="padding-left:0">
+                                    <li style="list-style:none;" ng-repeat="bio in bioParams[0]">
+                                        <div class="input-accord">
                                             <input type="checkbox" ng-model="bio.selected"
                                                    ng-checked="bio.selected" value="{{bio.PARAMETER_TYPE_ID}}"
                                                    ng-click="ParamClick(bio)" />
                                             <span ng-class="{orange:bio.selected}">{{ bio.PARAMETER }}</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </uib-accordion-group>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </uib-accordion-group>
 
-                            <!--MICROBIOLOGICAL-->
-                            <uib-accordion-group is-open="status.microOpen" style="margin:0">
-                                <uib-accordion-heading>
-                                    <i style="margin-right:10px" class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': status.microOpen, 'glyphicon-chevron-right': !status.microOpen}"></i>
-                                    <span>Microbiological Parameters</span>
-                                </uib-accordion-heading>
-                                <div>
-                                    <ul style="padding-left:0">
-                                        <li style="list-style:none;" ng-repeat="mic in microBioParams[0]">
+                        <!--MICROBIOLOGICAL-->
+                        <uib-accordion-group is-open="status.microOpen" style="margin:0">
+                            <uib-accordion-heading>
+                                <i style="margin-right:10px" class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': status.microOpen, 'glyphicon-chevron-right': !status.microOpen}"></i>
+                                <span>Microbiological Parameters</span>
+                            </uib-accordion-heading>
+                            <div>
+                                <ul style="padding-left:0">
+                                    <li style="list-style:none;" ng-repeat="mic in microBioParams[0]">
+                                        <div class="input-accord">
                                             <input type="checkbox" ng-model="mic.selected"
                                                    ng-checked="mic.selected" value="{{mic.PARAMETER_TYPE_ID}}"
                                                    ng-click="ParamClick(mic)" />
                                             <span ng-class="{orange:mic.selected}">{{ mic.PARAMETER }}</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </uib-accordion-group>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </uib-accordion-group>
 
-                            <!--Toxicological-->
-                            <uib-accordion-group is-open="status.toxOpen" style="margin:0">
-                                <uib-accordion-heading>
-                                    <i style="margin-right:10px" class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': status.toxOpen, 'glyphicon-chevron-right': !status.toxOpen}"></i>
-                                    <span>Toxicological Parameters</span>
-                                </uib-accordion-heading>
-                                <div>
-                                    <ul style="padding-left:0">
-                                        <li style="list-style:none;" ng-repeat="tox in toxiParams[0]">
+                        <!--Toxicological-->
+                        <uib-accordion-group is-open="status.toxOpen" style="margin:0">
+                            <uib-accordion-heading>
+                                <i style="margin-right:10px" class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': status.toxOpen, 'glyphicon-chevron-right': !status.toxOpen}"></i>
+                                <span>Toxicological Parameters</span>
+                            </uib-accordion-heading>
+                            <div>
+                                <ul style="padding-left:0">
+                                    <li style="list-style:none;" ng-repeat="tox in toxiParams[0]">
+                                        <div class="input-accord">
                                             <input type="checkbox" ng-model="tox.selected"
                                                    ng-checked="tox.selected" value="{{tox.PARAMETER_TYPE_ID}}"
                                                    ng-click="ParamClick(tox)" />
                                             <span ng-class="{orange:tox.selected}">{{ tox.PARAMETER }}</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </uib-accordion-group>
-                        </uib-accordion>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </uib-accordion-group>
+                    </uib-accordion>
                 </div>
 
                 <!--submit and cancel buttons-->

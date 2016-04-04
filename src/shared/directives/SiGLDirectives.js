@@ -91,18 +91,19 @@
         };
     });
 
-    siGLControllers.directive('myInputMask', function () {
-        return {
-            restrict: 'AC',
-            link: function (scope, el, attrs) {
-                el.inputmask(scope.$eval(attrs.myInputMask));
-                el.on('change', function () {
-                    scope.$eval(attrs.ngModel + "='" + el.val() + "'");
-                    // or scope[attrs.ngModel] = el.val() if your expression doesn't contain dot.
-                });
-            }
-        };
-    });
+    //replaced with ngMask -- do the same for stn
+    //siGLControllers.directive('myInputMask', function () {
+    //    return {
+    //        restrict: 'AC',
+    //        link: function (scope, el, attrs) {
+    //            el.inputmask(scope.$eval(attrs.myInputMask));
+    //            el.on('change', function () {
+    //                scope.$eval(attrs.ngModel + "='" + el.val() + "'");
+    //                // or scope[attrs.ngModel] = el.val() if your expression doesn't contain dot.
+    //            });
+    //        }
+    //    };
+    //});
 
     //This directive allows us to pass a function in on an enter key to do what we want.
     siGLControllers.directive('ngEnter', function () {
@@ -169,4 +170,77 @@
             }
         };
     }]);
+
+    //Publish project on map
+    //siGLControllers.directive('publishSite', function (){//'siteSearch', function () {
+    //    return {
+    //        restrict: 'E',
+    //        scope: {
+    //            model: '=ngModel',
+    //        },
+    //        replace: true,
+    //        template: '<label ng-model="aProject.READY_FLAG" uib-uncheckable="uncheckable" ng-click="Flagged("Yes", aProject)" uib-btn-radio="1" class="publish-yes">Yes</label>' +
+    //                    '<label ng-model="aProject.READY_FLAG" uib-uncheckable="uncheckable" ng-click="Flagged("No", aProject)" uib-btn-radio="0" class="publish-no">No</label>',
+    //        controller: [
+    //            '$scope', '$state', 'SITE', '$uibModal',
+    //            function ($scope, $state, SITE, $uibModal) {
+    //                $scope.searchTerm = '';
+    //                $scope.searchBy = { val: 'bySiteNo' };
+    //                $scope.placeholder = '...';
+    //                $scope.IndexSearchSites = function () {
+    //                    switch ($scope.searchBy.val) {
+    //                        case 'bySiteNo':
+    //                            SITE.query({ bySiteNo: $scope.searchTerm }, function success(resp) {
+    //                                siteSearchResponse(resp);
+    //                            }, function error(errorResponse) {
+    //                                siteSearchResponse(errorResponse);
+    //                            }).$promise;
+    //                            break;
+    //                        case 'bySiteId':
+    //                            SITE.query({ bySiteId: $scope.searchTerm }).$promise.then(function (resp) {
+    //                                siteSearchResponse(resp);
+    //                            }), function (errorResponse) {
+    //                                siteSearchResponse(errorResponse);
+    //                            };
+    //                            break;
+    //                        case 'bySiteName':
+    //                            SITE.query({ bySiteName: $scope.searchTerm }).$promise.then(function (resp) {
+    //                                siteSearchResponse(resp);
+    //                            }), function (errorResponse) {
+    //                                siteSearchResponse(errorResponse);
+    //                            };
+    //                            break;
+    //                    }
+    //                };
+    //                var siteSearchResponse = function (s) {
+    //                    if (s.status !== undefined) {
+    //                        //errorstatus show modal with error message 'no site found'
+    //                        var errorModal = $uibModal.open({
+    //                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+    //                                '<div class="modal-body"><p>No site found. For more site search options, go to the Sites navigation tab to search for sites.</p></div>' +
+    //                                '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button></div>',
+    //                            controller: ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
+    //                                $scope.ok = function () {
+    //                                    $uibModalInstance.close();
+    //                                };
+    //                            }],
+    //                            size: 'sm'
+
+    //                        });
+    //                        errorModal.result.then(function () {
+    //                            $scope.searchTerm = '';
+    //                            $scope.searchBy = { val: 'bySiteNo' };
+    //                        });
+
+    //                    } else {
+    //                        //reset search and go to the site dash
+    //                        $scope.searchTerm = '';
+    //                        $scope.searchBy = { val: 'bySiteNo' };
+    //                        $state.go('site.dashboard', { id: s.SITE_ID });
+    //                    }
+    //                };
+    //            }
+    //        ]
+    //    };
+    //});
 })();
