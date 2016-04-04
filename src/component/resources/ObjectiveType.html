@@ -1,5 +1,5 @@
 ﻿<div ng-if="accountRole =='Admin'">
-    <table class="table">
+    <table class="table table-condensed">
         <thead>
             <tr>
                 <th style="width:0"></th>
@@ -25,7 +25,7 @@
                 </td>
                 <td>
                     <div style="display:none"><span editable-text="ot.OBJECTIVE_TYPE_ID" e-form="OTrowform" e-name="OBJECTIVE_TYPE_ID">{{ot.OBJECTIVE_TYPE_ID}}</span></div>
-                    <span editable-text="ot.OBJECTIVE" e-name="OBJECTIVE" e-form="FTrowform">{{ ot.OBJECTIVE || '' }}</span>
+                    <span editable-text="ot.OBJECTIVE" e-name="OBJECTIVE" e-form="OTrowform">{{ ot.OBJECTIVE || '' }}</span>
                 </td>
             </tr>
         </tbody>

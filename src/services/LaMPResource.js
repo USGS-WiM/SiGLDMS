@@ -63,6 +63,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
@@ -74,6 +75,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
@@ -85,6 +87,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
@@ -141,6 +144,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
@@ -189,6 +193,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
@@ -224,6 +229,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
@@ -288,6 +294,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });

@@ -3,10 +3,9 @@
 
     var siGLControllers = angular.module('siGLControllers');
 
-    siGLControllers.controller('resourcesCtrl', ['$scope', '$cookies', '$location', '$state', '$http', '$filter', '$uibModal', 'FREQUENCY_TYPE', 'LAKE_TYPE', 'MEDIA_TYPE', 'OBJECTIVE_TYPE',
-        'PARAMETER_TYPE', 'RESOURCE_TYPE', 'HOUSING_TYPE', 'PROJ_DURATION', 'PROJ_STATUS', 'STATUS_TYPE', 'allFreqs', 'allLakes', 'allMedias', 'allObjectives', 'allParams', 'allResources',
-        'allProjDurations', 'allProjStats', 'allSiteStats',
-        function ($scope, $cookies, $location, $state, $http, $filter, $uibModal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, PARAMETER_TYPE, RESOURCE_TYPE, HOUSING_TYPE,
+    siGLControllers.controller('resourcesCtrl', ['$scope', '$cookies', '$location', '$state', '$http', '$filter', '$uibModal', 'FREQUENCY_TYPE', 'LAKE_TYPE', 'MEDIA_TYPE', 'OBJECTIVE_TYPE', 'PARAMETER_TYPE',
+        'RESOURCE_TYPE', 'PROJ_DURATION', 'PROJ_STATUS', 'STATUS_TYPE', 'allFreqs', 'allLakes', 'allMedias', 'allObjectives', 'allParams', 'allResources', 'allProjDurations', 'allProjStats', 'allSiteStats',
+        function ($scope, $cookies, $location, $state, $http, $filter, $uibModal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, PARAMETER_TYPE, RESOURCE_TYPE,
         PROJ_DURATION, PROJ_STATUS, STATUS_TYPE, allFreqs, allLakes, allMedias, allObjectives, allParams, allResources, allProjDurations, allProjStats, allSiteStats) {
             if ($cookies.get('siGLCreds') === undefined || $cookies.get('siGLCreds') === "") {
                 $scope.auth = false;
@@ -46,7 +45,7 @@
                     $scope.showAddFTForm = true; //show the form
                     $scope.addFTButtonShowing = false; //hide button
                 };
-                $scope.NeverMindCT = function () {
+                $scope.NeverMindFT = function () {
                     $scope.newFT = {};
                     $scope.showAddFTForm = false; //hide the form
                     $scope.addFTButtonShowing = true; //show button
@@ -103,7 +102,7 @@
                         var index = $scope.freqTypeList.indexOf(ft);
                         //DELETE it
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        FREQUENCY_TYPE.delete({ id: ft.FREQUENCY_TYPE_ID }, ft, function success(response) {
+                        FREQUENCY_TYPE.delete({ id: ft.FREQUENCY_TYPE_ID }, function success(response) {
                             $scope.freqTypeList.splice(index, 1);
                             toastr.success("Frequency Type Removed");
                         }, function error(errorResponse) {
@@ -177,7 +176,7 @@
                     modalInstance.result.then(function (keyToRemove) {
                         var index = $scope.lakeTypeList.indexOf(lt);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        LAKE_TYPE.delete({ id: lt.LAKE_TYPE_ID }, lt, function success(response) {
+                        LAKE_TYPE.delete({ id: lt.LAKE_TYPE_ID }, function success(response) {
                             $scope.lakeTypeList.splice(index, 1);
                             toastr.success("Lake Type Removed");
                         }, function error(errorResponse) {
@@ -251,7 +250,7 @@
                     modalInstance.result.then(function (keyToRemove) {
                         var index = $scope.mediaTypeList.indexOf(mt);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        MEDIA_TYPE.delete({ id: mt.MEDIA_TYPE_ID }, mt, function success(response) {
+                        MEDIA_TYPE.delete({ id: mt.MEDIA_TYPE_ID },function success(response) {
                             $scope.mediaTypeList.splice(index, 1);
                             toastr.success("Media Type Removed");
                         }, function error(errorResponse) {
@@ -331,7 +330,7 @@
                         var index = $scope.objTypeList.indexOf(ot);
                         //DELETE it
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        OBJECTIVE_TYPE.delete({ id: ot.OBJECTIVE_TYPE_ID }, ot, function success(response) {
+                        OBJECTIVE_TYPE.delete({ id: ot.OBJECTIVE_TYPE_ID }, function success(response) {
                             $scope.objTypeList.splice(index, 1);
                             toastr.success("Objective Type Removed");
                         }, function error(errorResponse) {
@@ -345,6 +344,33 @@
 
                 //#region Parameter Type Add/Update/Delete
                 $scope.paramTypeList = allParams; //pt
+                $scope.paramGroupTypes = [
+                     { value: 1, text: 'Biological' },
+                     { value: 2, text: 'Chemical' },
+                     { value: 3, text: 'Microbiological' },
+                     { value: 4, text: 'Physical' },
+                     { value: 5, text: 'Toxicological' }
+                ];
+                $scope.sortingOrder = 'PARAMETER';
+                $scope.reverse = false;
+
+                $scope.sort_by = function (newSortingOrder) {                   
+                    if ($scope.sortingOrder == newSortingOrder) {
+                        $scope.reverse = !$scope.reverse;                        
+                    }
+                    $scope.sortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.reverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
+
                 $scope.showAddPTForm = false; //add something new to a lookup clicked (will unhide form below it) False-> form: hidden, True-> form: visible
                 $scope.addPTButtonShowing = true; //start it at true..when clicked, show form, hide button
                 $scope.newPT = {};
@@ -403,9 +429,9 @@
                         }
                     });
                     modalInstance.result.then(function (keyToRemove) {
-                        var index = $scope.fileTypeList.indexOf(pt);
+                        var index = $scope.paramTypeList.indexOf(pt);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        PARAMETER_TYPE.delete({ id: pt.PARAMETER_TYPE_ID }, pt, function success(response) {
+                        PARAMETER_TYPE.delete({ id: pt.PARAMETER_TYPE_ID }, function success(response) {
                             $scope.paramTypeList.splice(index, 1);
                             toastr.success("Parameter Type Removed");
                         }, function error(errorResponse) {
@@ -449,7 +475,7 @@
                         });
                     }
                 };
-                $scope.saveResourcType = function (data, id) {
+                $scope.saveResourceType = function (data, id) {
                     var retur = false;
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
@@ -479,7 +505,7 @@
                     modalInstance.result.then(function (keyToRemove) {
                         var index = $scope.resourceTypeList.indexOf(rt);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        RESOURCE_TYPE.delete({ id: rt.RESOURCE_TYPE_ID }, rt, function success(response) {
+                        RESOURCE_TYPE.delete({ id: rt.RESOURCE_TYPE_ID }, function success(response) {
                             $scope.resourceTypeList.splice(index, 1);
                             toastr.success("Resource Type Removed");
                         }, function error(errorResponse) {
@@ -559,7 +585,7 @@
                         var index = $scope.projDurationList.indexOf(pd);
                         //DELETE it
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        PROJ_DURATION.delete({ id: pd.PROJ_DURATION_ID }, pd, function success(response) {
+                        PROJ_DURATION.delete({ id: pd.PROJ_DURATION_ID }, function success(response) {
                             $scope.projDurationList.splice(index, 1);
                             toastr.success("Project Duration Removed");
                         }, function error(errorResponse) {
@@ -633,7 +659,7 @@
                     modalInstance.result.then(function (keyToRemove) {
                         var index = $scope.projStatusList.indexOf(ps);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        HOUSING_TYPE.delete({ id: ps.HOUSING_TYPE_ID }, ps, function success(response) {
+                        PROJ_STATUS.delete({ id: ps.PROJ_STATUS_ID }, function success(response) {
                             $scope.projStatusList.splice(index, 1);
                             toastr.success("Project Status Removed");
                         }, function error(errorResponse) {
@@ -707,7 +733,7 @@
                     modalInstance.result.then(function (keyToRemove) {
                         var index = $scope.siteStatusList.indexOf(ss);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        STATUS_TYPE.delete({ id: ss.STATUS_ID }, ss, function success(response) {
+                        STATUS_TYPE.delete({ id: ss.STATUS_ID }, function success(response) {
                             $scope.siteStatusList.splice(index, 1);
                             toastr.success("Site Status Type Removed");
                         }, function error(errorResponse) {
