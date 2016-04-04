@@ -170,7 +170,7 @@
                     url: "/Resources",
                     abstract: true,
                     authenticate: true,
-                    template: "<div>... WORK IN PROGRESS ...</div><div ui-view></div>", //Url: "partials/Resources/resourcesHolderView.html",
+                    template: "<div ui-view></div>",
                     controller: "resourcesCtrl",
                     resolve: {
                         f: 'FREQUENCY_TYPE',

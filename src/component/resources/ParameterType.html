@@ -1,13 +1,14 @@
 ﻿<div ng-if="accountRole =='Admin'">
-    <table class="table">
+    <table class="table table-condensed">
         <thead>
             <tr>
                 <th style="width:0"></th>
-                <th>Parameter Type</th>
+                <th class="PARAMETER">Parameter Type&nbsp;<a ng-click="sort_by('PARAMETER')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="PARAMETER_GROUP">Parameter Group&nbsp;<a ng-click="sort_by('PARAMETER_GROUP')"><i class="glyphicon glyphicon-sort"></i></a></th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="pt in paramTypeList | orderBy: 'PARAMETER'">
+            <tr ng-repeat="pt in paramTypeList | orderBy:sortingOrder:reverse">
                 <td style="white-space: nowrap">
                     <!-- form -->
                     <form editable-form name="PTrowform" onaftersave="saveParameterType($data, pt.PARAMETER_TYPE_ID)" ng-show="PTrowform.$visible" class="form-buttons form-inline" shown="inserted == pt">
@@ -23,14 +24,14 @@
                         <button class="btn btn-danger" ng-click="deleteParameterType(pt)">del</button>
                     </div>
                 </td>
-                <td>
-                    <div style="display:none"><span editable-text="pt.PARAMETER_TYPE_ID" e-form="PTrowform" e-name="PARAMETER_TYPE_ID">{{pt.PARAMETER_TYPE_ID}}</span></div>
+                <td>                    
                     <span editable-text="pt.PARAMETER" e-name="PARAMETER" e-form="PTrowform">{{ pt.PARAMETER || '' }}</span>
                 </td>
 
-                <td> <!-- TODO : group this new parameter belongs to select-->
-                    <div style="display:none"><span editable-text="pt.PARAMETER_TYPE_ID" e-form="PTrowform" e-name="PARAMETER_TYPE_ID">{{pt.PARAMETER_TYPE_ID}}</span></div>
-                    <span editable-text="pt.PARAMETER" e-name="PARAMETER" e-form="PTrowform">{{ pt.PARAMETER || '' }}</span>
+                <td>                      
+                    <span editable-select="pt.PARAMETER_GROUP" e-name="PARAMETER_GROUP" e-form="PTrowform" e-ng-options="pg.text as pg.text for pg in paramGroupTypes">
+                        {{ (paramGroupTypes | filter:{text: pt.PARAMETER_GROUP})[0].text}}
+                    </span>                    
                 </td>
             </tr>
         </tbody>
@@ -44,7 +45,7 @@
         <form class="form-horizontal" name="lookupForm.ParamTypeFm">
             <fieldset>
                 <div class="form-group required">
-                    <label class="col-md-3 control-label req" for="inputPARAMETER">Parameter Type:</label>
+                    <label class="col-md-3 control-label req" for="PARAMETER">Parameter Type:</label>
                     <div class="col-md-6">
                         <input class="form-control" name="PARAMETER" type="text" placeholder="" ng-model="newPT.PARAMETER" required />
                     </div>
@@ -53,7 +54,10 @@
                 <div class="form-group required">
                     <label class="col-md-3 control-label req" for="inputPARAMETER">Parameter Group:</label>
                     <div class="col-md-6">
-                        <input class="form-control" name="PARAMETER" type="text" placeholder="" ng-model="newPT.PARAMETER" required />
+                        <select class ="form-control" name="PARAMETER_GROUP" ng-model="newPT.PARAMETER_GROUP"
+                                     ng-options="p.text as p.text for p in paramGroupTypes" required>
+                            <option value=""></option>
+                        </select>
                     </div>
                 </div>
 

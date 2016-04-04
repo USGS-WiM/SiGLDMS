@@ -1,5 +1,5 @@
 ﻿<div ng-if="accountRole =='Admin'">
-    <table class="table">
+    <table class="table table-condensed">
         <thead>
             <tr>
                 <th style="width:0"></th>
@@ -25,7 +25,7 @@
                 </td>
                 <td>
                     <div style="display:none"><span editable-text="ps.PROJ_STATUS_ID" e-form="PSrowform" e-name="PROJ_STATUS_ID">{{ps.PROJ_STATUS_ID}}</span></div>
-                    <span editable-text="ps.STATUS_VALUE" e-name="STATUS_VALUE" e-form="PSrowform">{{ ps.STATUS_VALUE || '' }}</span>
+                    <span editable-textarea="ps.STATUS_VALUE" e-rows="1" e-cols="40" e-name="STATUS_VALUE" e-form="PSrowform">{{ ps.STATUS_VALUE || '' }}</span>
                 </td>
             </tr>
         </tbody>
