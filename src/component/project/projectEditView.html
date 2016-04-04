@@ -6,12 +6,16 @@
     <div class="edit-section-heading">
         {{title}}
         <div id="edit-publish-buttons">
-            <h4>Publish project on SiGL Mapper?</h4>
-            <div class="btn-group">
+            <h4>Project published on SiGL Mapper?</h4>
+            <span ng-click="Flagged(aProject,readyFlagModel)">
+                <toggle-switch ng-model="readyFlagModel" class="switch-small switch-info" off-label="No" on-label="Yes">
+                </toggle-switch>
+            </span>
+            <!--<div class="btn-group">
                 <label class="btn btn-success" ng-model="readyFlagModel" ng-click="Flagged('Yes', aProject)" uib-btn-radio="'Yes'" uib-uncheckable="uncheckable">Yes</label>
                 <label class="btn btn-success" ng-model="readyFlagModel" ng-click="Flagged('No', aProject)" uib-btn-radio="'No'" uib-uncheckable="uncheckable">No</label>
             </div>
-            <!--<label ng-model="aProject.READY_FLAG" uib-uncheckable="true" ng-click="Flagged('Yes', aProject)" uib-btn-radio="'1'" class="publish-yes">Yes</label>
+            <label ng-model="aProject.READY_FLAG" uib-uncheckable="true" ng-click="Flagged('Yes', aProject)" uib-btn-radio="'1'" class="publish-yes">Yes</label>
             <label ng-model="aProject.READY_FLAG" uib-uncheckable="true" ng-click="Flagged('No', aProject)" uib-btn-radio="'0'" class="publish-no">No</label>-->
         </div>
     </div>
