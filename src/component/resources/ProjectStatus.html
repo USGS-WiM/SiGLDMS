@@ -3,11 +3,12 @@
         <thead>
             <tr>
                 <th style="width:0"></th>
-                <th>Project Status</th>
+                <th class="STATUS_VALUE">Project Status&nbsp;<a ng-click="PSsort_by('STATUS_VALUE')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Projects.length">Project Cnt&nbsp;<a ng-click="PSsort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="projStatCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="ps in projStatusList | orderBy: 'STATUS_VALUE'">
+            <tr ng-repeat="ps in projStatusList | orderBy: PSsortingOrder:PSreverse">
                 <td style="white-space: nowrap">
                     <!-- form -->
                     <form editable-form name="PSrowform" onaftersave="saveProjStatus($data, ps.PROJ_STATUS_ID)" ng-show="PSrowform.$visible" class="form-buttons form-inline" shown="inserted == ps">
@@ -24,8 +25,10 @@
                     </div>
                 </td>
                 <td>
-                    <div style="display:none"><span editable-text="ps.PROJ_STATUS_ID" e-form="PSrowform" e-name="PROJ_STATUS_ID">{{ps.PROJ_STATUS_ID}}</span></div>
                     <span editable-textarea="ps.STATUS_VALUE" e-rows="1" e-cols="40" e-name="STATUS_VALUE" e-form="PSrowform">{{ ps.STATUS_VALUE || '' }}</span>
+                </td>
+                <td>
+                    <span>{{ps.Projects.length}}</span>
                 </td>
             </tr>
         </tbody>

@@ -3,11 +3,12 @@
         <thead>
             <tr>
                 <th style="width:0"></th>
-                <th>Lake Type</th>
+                <th class="LAKE">Lake Type&nbsp;<a ng-click="Lsort_by('LAKE')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Projects.length">Project Cnt&nbsp;<a ng-click="Lsort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="lakeCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="lt in lakeTypeList | orderBy: 'LAKE'">
+            <tr ng-repeat="lt in lakeTypeList | orderBy: LsortingOrder:Lreverse">
                 <td style="white-space: nowrap">
                     <!-- form -->
                     <form editable-form name="LTrowform" onaftersave="saveLakeType($data, lt.LAKE_TYPE_ID)" ng-show="LTrowform.$visible" class="form-buttons form-inline" shown="inserted == lt">
@@ -24,8 +25,10 @@
                     </div>
                 </td>
                 <td>
-                    <div style="display:none"><span editable-text="lt.LAKE_TYPE_ID" e-form="LTrowform" e-name="LAKE_TYPE_ID">{{lt.LAKE_TYPE_ID}}</span></div>
                     <span editable-text="lt.LAKE" e-name="LAKE" e-form="LTrowform">{{ lt.LAKE || '' }}</span>
+                </td>
+                <td>
+                    <span>{{lt.Projects.length}}</span>
                 </td>
             </tr>
         </tbody>

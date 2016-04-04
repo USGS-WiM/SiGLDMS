@@ -3,11 +3,12 @@
         <thead>
             <tr>
                 <th style="width:0"></th>
-                <th>Objective Type</th>
+                <th class="OBJECTIVE">Objective Type&nbsp;<a ng-click="Osort_by('OBJECTIVE')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Projects.length">Project Cnt&nbsp;<a ng-click="Osort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="objCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="ot in objTypeList | orderBy: 'OBJECTIVE'">
+            <tr ng-repeat="ot in objTypeList | orderBy: OsortingOrder:Oreverse">
                 <td style="white-space: nowrap">
                     <!-- form -->
                     <form editable-form name="OTrowform" onaftersave="saveObjectiveType($data, ot.OBJECTIVE_TYPE_ID)" ng-show="OTrowform.$visible" class="form-buttons form-inline" shown="inserted == ot">
@@ -24,8 +25,10 @@
                     </div>
                 </td>
                 <td>
-                    <div style="display:none"><span editable-text="ot.OBJECTIVE_TYPE_ID" e-form="OTrowform" e-name="OBJECTIVE_TYPE_ID">{{ot.OBJECTIVE_TYPE_ID}}</span></div>
                     <span editable-text="ot.OBJECTIVE" e-name="OBJECTIVE" e-form="OTrowform">{{ ot.OBJECTIVE || '' }}</span>
+                </td>
+                <td>
+                    <span>{{ot.Projects.length}}</span>
                 </td>
             </tr>
         </tbody>

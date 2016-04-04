@@ -3,11 +3,12 @@
         <thead>
             <tr>
                 <th style="width:0"></th>
-                <th>Media Type</th>
+                <th class="MEDIA">Media Type&nbsp;<a ng-click="Msort_by('MEDIA')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Projects.length">Project Cnt&nbsp;<a ng-click="Msort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="medCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="mt in mediaTypeList | orderBy: 'MEDIA'">
+            <tr ng-repeat="mt in mediaTypeList | orderBy: MsortingOrder:Mreverse">
                 <td style="white-space: nowrap">
                     <!-- form -->
                     <form editable-form name="MTrowform" onaftersave="saveMediaType($data, mt.MEDIA_TYPE_ID)" ng-show="MTrowform.$visible" class="form-buttons form-inline" shown="inserted == mt">
@@ -24,8 +25,10 @@
                     </div>
                 </td>
                 <td>
-                    <div style="display:none"><span editable-text="mt.MEDIA_TYPE_ID" e-form="MTrowform" e-name="MEDIA_TYPE_ID">{{mt.MEDIA_TYPE_ID}}</span></div>
                     <span editable-text="mt.MEDIA" e-name="MEDIA" e-form="MTrowform">{{ mt.MEDIA || '' }}</span>
+                </td>
+                <td>
+                    <span>{{mt.Projects.length}}</span>
                 </td>
             </tr>
         </tbody>

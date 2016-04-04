@@ -63,6 +63,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                getFreqProj: {method:'GET', isArray: true, cache:false, url: rootURL + '/frequency/:id/projects.json'},
                 update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
@@ -75,6 +76,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                getLakeProj: { method: 'GET', isArray: true, cache: false, url: rootURL + '/lakes/:id/projects.json' },
                 update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
@@ -87,6 +89,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                getMediaProj: { method: 'GET', isArray: true, cache: false, url: rootURL + '/media/:id/projects.json' },
                 update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
@@ -99,6 +102,7 @@
             {},{
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                getObjProj: { method: 'GET', isArray: true, cache: false, url: rootURL + '/objectives/:id/projects.json'},
                 save: { method: 'POST', cache: false, isArray: false },
                 update: { method: 'PUT', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
@@ -144,6 +148,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                getParamProj: { method: 'GET', isArray: true, cache: false, url: rootURL + '/parameters/:id/projects.json' },
                 update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
@@ -192,7 +197,8 @@
         return $resource(rootURL + '/ProjectDuration/:id.json',
             {}, {
                 query: { isArray: true },
-                getAll: { method: 'GET', isArray: true },
+                getAll: { method: 'GET', isArray: true }, 
+                getProjDurProj: { method: 'GET', isArray: true, cache: false, url: rootURL + '/ProjectDuration/:id/projects.json'},
                 update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
@@ -205,6 +211,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                getProjStatProj: { method: 'GET', isArray: true, cache: false, url: rootURL + '/ProjectStatus/:id/projects.json' },
                 save: { method: 'POST', cache: false, isArray: false },
                 update: { method: 'PUT', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
@@ -229,6 +236,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                getResourceProj: { method: 'GET', isArray: true, cache: false, url: rootURL + '/resourcetypes/:id/projects.json' },
                 update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
@@ -294,6 +302,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                getSiteStatusProj: {method: 'GET', isArray:true, cache:false, url: rootURL + '/status/:id/projects.json'},
                 update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }

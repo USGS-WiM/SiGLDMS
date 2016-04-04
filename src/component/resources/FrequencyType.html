@@ -3,11 +3,14 @@
         <thead>
             <tr>
                 <th style="width:0"></th>
-                <th>Frequency Type</th>
+                <th class="FREQUENCY">Frequency Type&nbsp;<a ng-click="Fsort_by('FREQUENCY')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Projects.lengt">
+                    Project Cnt&nbsp;<a ng-click="Fsort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="freqCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span>
+                </th>               
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="ft in freqTypeList | orderBy: 'FREQUENCY'">
+            <tr ng-repeat="ft in freqTypeList | orderBy: FsortingOrder:Freverse">
                 <td style="white-space: nowrap">
                     <!-- form -->
                     <form editable-form name="FTrowform" onaftersave="saveFrequencyType($data, ft.FREQUENCY_TYPE_ID)" ng-show="FTrowform.$visible" class="form-buttons form-inline" shown="inserted == ft">
@@ -24,8 +27,10 @@
                     </div>
                 </td>
                 <td>
-                    <div style="display:none"><span editable-text="ft.FREQUENCY_TYPE_ID" e-form="FTrowform" e-name="FREQUENCY_TYPE_ID">{{ft.FREQUENCY_TYPE_ID}}</span></div>
                     <span editable-text="ft.FREQUENCY" e-name="FREQUENCY" e-form="FTrowform">{{ ft.FREQUENCY || '' }}</span>
+                </td>
+                <td>
+                    <span>{{ft.Projects.length}}</span>
                 </td>
             </tr>
         </tbody>
@@ -60,11 +65,7 @@
         </button>
     </div>
 </div><!--end admin view-->
-<div ng-if="accountRole !='Admin'">
-    <script>
-        //var sortingOrder = 'FREQUENCY';
-    </script>
-
+<div ng-if="accountRole !='Admin'">    
     <table class="table table-striped table-condensed">
         <thead>
             <tr>

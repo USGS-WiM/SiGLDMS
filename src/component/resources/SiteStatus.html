@@ -3,11 +3,12 @@
         <thead>
             <tr>
                 <th style="width:0"></th>
-                <th>Site Status</th>
+                <th class="STATUS">Site Status&nbsp;<a ng-click="SSsort_by('STATUS')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Projects.length">Project Cnt&nbsp;<a ng-click="SSsort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="siteStatCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="ss in siteStatusList | orderBy: 'STATUS'">
+            <tr ng-repeat="ss in siteStatusList | orderBy: SSsortingOrder:SSreverse">
                 <td style="white-space: nowrap">
                     <!-- form -->
                     <form editable-form name="SSrowform" onaftersave="saveSiteStatus($data, ss.STATUS_ID)" ng-show="SSrowform.$visible" class="form-buttons form-inline" shown="inserted == ss">
@@ -24,8 +25,10 @@
                     </div>
                 </td>
                 <td>
-                    <div style="display:none"><span editable-text="ss.STATUS_ID" e-form="SSrowform" e-name="STATUS_ID">{{ss.STATUS_ID}}</span></div>
                     <span editable-text="ss.STATUS" e-name="STATUS" e-form="SSrowform">{{ ss.STATUS || '' }}</span>
+                </td>
+                <td>
+                    <span>{{ss.Projects.length}}</span>
                 </td>
             </tr>
         </tbody>

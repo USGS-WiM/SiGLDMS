@@ -3,12 +3,13 @@
         <thead>
             <tr>
                 <th style="width:0"></th>
-                <th class="PARAMETER">Parameter Type&nbsp;<a ng-click="sort_by('PARAMETER')"><i class="glyphicon glyphicon-sort"></i></a></th>
-                <th class="PARAMETER_GROUP">Parameter Group&nbsp;<a ng-click="sort_by('PARAMETER_GROUP')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="PARAMETER">Parameter Type&nbsp;<a ng-click="Psort_by('PARAMETER')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="PARAMETER_GROUP">Parameter Group&nbsp;<a ng-click="Psort_by('PARAMETER_GROUP')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Projects.length">Project Cnt&nbsp;<a ng-click="Psort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="paramCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="pt in paramTypeList | orderBy:sortingOrder:reverse">
+            <tr ng-repeat="pt in paramTypeList | orderBy: PsortingOrder:Preverse">
                 <td style="white-space: nowrap">
                     <!-- form -->
                     <form editable-form name="PTrowform" onaftersave="saveParameterType($data, pt.PARAMETER_TYPE_ID)" ng-show="PTrowform.$visible" class="form-buttons form-inline" shown="inserted == pt">
@@ -32,6 +33,9 @@
                     <span editable-select="pt.PARAMETER_GROUP" e-name="PARAMETER_GROUP" e-form="PTrowform" e-ng-options="pg.text as pg.text for pg in paramGroupTypes">
                         {{ (paramGroupTypes | filter:{text: pt.PARAMETER_GROUP})[0].text}}
                     </span>                    
+                </td>
+                <td>
+                    <span>{{pt.Projects.length}}</span>
                 </td>
             </tr>
         </tbody>
