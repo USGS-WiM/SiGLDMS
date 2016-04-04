@@ -199,6 +199,7 @@
                     projContacts.DivName = thisOrgRes.DivisionName;
                     projContacts.SecName = thisOrgRes.SectionName;
                     retur = projContacts;
+                    $scope.projectForm.Contact.$setPristine(true);
                     toastr.success("Contact Updated");                    
                 }, function error(errorResponse) {
                     toastr.error("Error: " + errorResponse.statusText);

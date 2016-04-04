@@ -14,7 +14,7 @@
             $scope.DurationList = allDurationList;
             $scope.StatusList = allStatsList;
             $scope.projectForm = {}; //holder for all the forms
-            $scope.readyFlagModel = "No";
+            $scope.readyFlagModel = false;
             $scope.uncheckable = true;
           //#region changing tabs handler /////////////////////
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
@@ -114,7 +114,7 @@
             if (thisProject !== undefined) {
                 //this is an existing project = build for details view
                 $scope.aProject = thisProject;
-                $scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? "Yes" : "No";
+                $scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? true : false;
                 $scope.coopCount = { total: projOrgs.length };
                 $scope.datumCount = { total: projDatum.length };
                 $scope.contactCount = { total: projContacts.length };
@@ -180,9 +180,9 @@
             }
 
             //flag radio clicked
-            $scope.Flagged = function (data, p) {
-                //can not uncheck a checked radio
-                if ((data == "No" && p.READY_FLAG > 0) || (data == "Yes" && (p.READY_FLAG == 0 || p.READY_FLAG === null))) {
+            $scope.Flagged = function (p,flag) {
+                //if flag is false, they are unpublishing it, if true they are publishing it
+                
                     //modal
                     var changeFlagModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Publish Project</h3></div>' +
@@ -190,37 +190,41 @@
                                     '<div class="modal-footer"><button class="sigl-btn btn-orange" ng-click="cancel()">Cancel</button><button class="sigl-btn" ng-click="ok()">OK</button></div>',
                         controller: function ($scope, $uibModalInstance) {
                             //don't let them uncheck.. either click yes or no .. can't unYes or unNo
-                            $scope.message = data == "Yes" ? "Are you sure this project is ready to publish on the SiGL Mapper?" : "Are you sure you want to remove this project from being published on the SiGL Mapper?";
-
+                            $scope.message = flag ? "Are you sure this project is ready to publish on the SiGL Mapper?" : "Are you sure you want to remove this project from being published on the SiGL Mapper?";
                             $scope.ok = function () {
                                 //$scope.aProject.READY_FLAG = data == "Yes" ? 1 : 0;
-                                p.READY_FLAG = data == "Yes" ? 1 : 0;
+                                p.READY_FLAG = flag ? 1 : 0;
                                 $uibModalInstance.close(p);
                             };
                             $scope.cancel = function () {
-                                //undo
-                                //$scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? "Yes" : "No";
-                                $uibModalInstance.dismiss();
+                                //undo.. if flag == true, means it was unpublished..
+                                $uibModalInstance.close(flag);
+                                //$scope.readyFlagModel = flag ? false: true;
+                                //$uibModalInstance.dismiss();
                             };
                         },
                         size: 'sm'
                     });
                     changeFlagModal.result.then(function (pr) {
-                        //yes, PUT the project with the updated flag set
-                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        $http.defaults.headers.common.Accept = 'application/json';
-                        PROJECT.update({ id: pr.PROJECT_ID }, pr, function success(response) {
-                            $scope.aProject = response;
-                            $scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? "Yes" : "No";
-                            toastr.success("Project Updated");
-                        }, function error(errorResponse) {
-                            toastr.error("Error: " + errorResponse.statusText);
-                        });
-                    }, function () {
-                        //logic for cancel
+                        if (pr.PROJECT_ID !== undefined) {
+                            //yes, PUT the project with the updated flag set
+                            $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                            $http.defaults.headers.common.Accept = 'application/json';
+                            PROJECT.update({ id: pr.PROJECT_ID }, pr, function success(response) {
+                                $scope.aProject = response;
+                                $scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? true : false;
+                                toastr.success("Project Updated");
+                            }, function error(errorResponse) {
+                                toastr.error("Error: " + errorResponse.statusText);
+                            });
+                        } else {
+                            //they cancelled.. reset it
+                            $scope.readyFlagModel = pr ? false : true;
+                            
+                        }
                     });
                     //end modal
-                }
+                
             };
 
             $scope.cancel = function () {

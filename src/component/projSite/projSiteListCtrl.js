@@ -50,7 +50,7 @@
                 aSITE.LATITUDE = aSite.latitude;
                 aSITE.LONGITUDE = aSite.longitude;
                 aSITE.WATERBODY = aSite.Waterbody !== undefined ? aSite.Waterbody : "";
-                aSITE.STATUS_TYPE_ID = aSite.StatType !== undefined ? aSite.StatType[0].STATUS_ID : "0";
+                aSITE.STATUS_TYPE_ID = aSite.StatType !== undefined ? aSite.StatType.STATUS_ID : "0";
                 aSITE.LAKE_TYPE_ID = aSite.LakeType.LAKE_TYPE_ID;
                 aSITE.COUNTRY = aSite.Country;
                 aSITE.STATE_PROVINCE = aSite.State;

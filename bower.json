@@ -41,7 +41,8 @@
     "ng-file-upload": "~11.1.1",
     "leaflet": "^0.7.7",
     "bootstrap-table": "^1.10.0",
-    "ngMask": "angular-mask#~3.0.16"
+    "ngMask": "angular-mask#~3.0.16",
+    "angular-bootstrap-toggle-switch": "~0.5.6"
   },
   "devDependencies": {
     "angular-mocks": "^1.2.23",

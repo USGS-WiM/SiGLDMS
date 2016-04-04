@@ -1,8 +1,8 @@
 ﻿(function () {
     "use strict"; 
     var app = angular.module('app',
-        ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'isteven-multi-select', 'ngInputModified', 'ui.validate', 'angular.filter', 'xeditable', 'ngMask',
-            'laMPResource', 'siGLControllers', 'ModalControllers', 'LogInOutController']);
+        ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'isteven-multi-select', 'ngInputModified', 'ui.validate', 'angular.filter', 'xeditable',
+            'ngMask', 'toggle-switch', 'laMPResource', 'siGLControllers', 'ModalControllers', 'LogInOutController']);
     
     app.run(function ($rootScope, $cookies, $state) {
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {                    
