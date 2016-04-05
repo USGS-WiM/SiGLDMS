@@ -28,7 +28,7 @@
                     <span editable-textarea="ps.STATUS_VALUE" e-rows="1" e-cols="40" e-name="STATUS_VALUE" e-form="PSrowform">{{ ps.STATUS_VALUE || '' }}</span>
                 </td>
                 <td>
-                    <span>{{ps.Projects.length}}</span>
+                    <span><a ng-click="showProjectCntModal(ps.Projects, 'Project Status')">{{ps.Projects.length}}</a></span>
                 </td>
             </tr>
         </tbody>

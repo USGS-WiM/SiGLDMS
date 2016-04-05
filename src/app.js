@@ -4,7 +4,7 @@
         ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'isteven-multi-select', 'ngInputModified', 'ui.validate', 'angular.filter', 'xeditable',
             'ngMask', 'toggle-switch', 'laMPResource', 'siGLControllers', 'ModalControllers', 'LogInOutController']);
     
-    app.run(function ($rootScope, $cookies, $state) {
+    app.run(['$rootScope', '$cookies', '$state', '$uibModalStack', function ($rootScope, $cookies, $state, $uibModalStack) {
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {                    
             if (($cookies.get('siGLCreds') === undefined || $cookies.get('siGLCreds') === "") && toState.authenticate) {
                 $rootScope.returnToState = toState.name;
@@ -14,6 +14,8 @@
                 //$("#ui-view").html("");
             } else {
                 $rootScope.stateIsLoading = { showLoading: true }; //loading...
+                //close all modals when changing states (site create open, want to use a nearby site or just change the url up top, close the modal too)
+                $uibModalStack.dismissAll();
 
                 //check to see if they are going to project info
                 if (toState.url == "/") {
@@ -31,7 +33,7 @@
             alert("Error occurred: Status" + error.status + ", " + error.statusText + ". The following request was unsuccessful: " + error.config.url + " Please refresh and try again.");
         });
        
-    });
+    }]);
 
     //app.config(function that defines the config code. 'ui.select', 'ngSanitize',
     app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 
@@ -173,6 +175,12 @@
                     template: "<div ui-view></div>",
                     controller: "resourcesCtrl",
                     resolve: {
+                        dm: 'DATA_MANAGER',
+                        allDMs: function (dm, $http, $cookies) {
+                            $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                            $http.defaults.headers.common.Accept = 'application/json';
+                            return dm.getAll().$promise;
+                        },
                         f: 'FREQUENCY_TYPE',
                         allFreqs: function (f) {
                             return f.getAll().$promise;

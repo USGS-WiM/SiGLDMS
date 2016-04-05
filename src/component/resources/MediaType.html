@@ -28,7 +28,7 @@
                     <span editable-text="mt.MEDIA" e-name="MEDIA" e-form="MTrowform">{{ mt.MEDIA || '' }}</span>
                 </td>
                 <td>
-                    <span>{{mt.Projects.length}}</span>
+                    <span><a ng-click="showProjectCntModal(mt.Projects, 'Media Type')">{{mt.Projects.length}}</a></span>
                 </td>
             </tr>
         </tbody>

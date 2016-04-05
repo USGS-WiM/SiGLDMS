@@ -28,7 +28,7 @@
                     <span editable-text="lt.LAKE" e-name="LAKE" e-form="LTrowform">{{ lt.LAKE || '' }}</span>
                 </td>
                 <td>
-                    <span>{{lt.Projects.length}}</span>
+                    <span><a ng-click="showProjectCntModal(lt.Projects, 'Lake Type')">{{lt.Projects.length}}</a></span>
                 </td>
             </tr>
         </tbody>

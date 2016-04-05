@@ -30,7 +30,7 @@
                     <span editable-text="ft.FREQUENCY" e-name="FREQUENCY" e-form="FTrowform">{{ ft.FREQUENCY || '' }}</span>
                 </td>
                 <td>
-                    <span>{{ft.Projects.length}}</span>
+                    <span><a ng-click="showProjectCntModal(ft.Projects, 'Frequency Type')">{{ft.Projects.length}}</a></span>
                 </td>
             </tr>
         </tbody>
