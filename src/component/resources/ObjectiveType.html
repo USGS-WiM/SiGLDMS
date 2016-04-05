@@ -28,7 +28,7 @@
                     <span editable-text="ot.OBJECTIVE" e-name="OBJECTIVE" e-form="OTrowform">{{ ot.OBJECTIVE || '' }}</span>
                 </td>
                 <td>
-                    <span>{{ot.Projects.length}}</span>
+                    <span><a ng-click="showProjectCntModal(ot.Projects, 'Objective Type')">{{ot.Projects.length}}</a></span>
                 </td>
             </tr>
         </tbody>

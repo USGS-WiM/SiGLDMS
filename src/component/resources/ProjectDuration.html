@@ -28,7 +28,7 @@
                     <span editable-textarea="pd.DURATION_VALUE" e-rows="1" e-cols="40" e-name="DURATION_VALUE" e-form="PDrowform">{{ pd.DURATION_VALUE || '' }}</span>
                 </td>
                 <td>
-                    <span>{{pd.Projects.length}}</span>
+                    <span><a ng-click="showProjectCntModal(pd.Projects, 'Project Duration')">{{pd.Projects.length}}</a></span>
                 </td>
             </tr>
         </tbody>

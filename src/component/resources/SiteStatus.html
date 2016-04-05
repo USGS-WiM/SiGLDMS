@@ -28,7 +28,7 @@
                     <span editable-text="ss.STATUS" e-name="STATUS" e-form="SSrowform">{{ ss.STATUS || '' }}</span>
                 </td>
                 <td>
-                    <span>{{ss.Projects.length}}</span>
+                    <span><a ng-click="showProjectCntModal(ss.Projects, 'Site Status Type')">{{ss.Projects.length}}</a></span>
                 </td>
             </tr>
         </tbody>

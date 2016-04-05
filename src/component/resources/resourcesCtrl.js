@@ -4,14 +4,15 @@
     var siGLControllers = angular.module('siGLControllers');
 
     siGLControllers.controller('resourcesCtrl', ['$scope', '$cookies', '$q', '$location', '$state', '$http', '$filter', '$uibModal', 'FREQUENCY_TYPE', 'LAKE_TYPE', 'MEDIA_TYPE', 'OBJECTIVE_TYPE', 'PARAMETER_TYPE',
-        'RESOURCE_TYPE', 'PROJ_DURATION', 'PROJ_STATUS', 'STATUS_TYPE', 'allFreqs', 'allLakes', 'allMedias', 'allObjectives', 'allParams', 'allResources', 'allProjDurations', 'allProjStats', 'allSiteStats',
+        'RESOURCE_TYPE', 'PROJ_DURATION', 'PROJ_STATUS', 'STATUS_TYPE', 'allDMs', 'allFreqs', 'allLakes', 'allMedias', 'allObjectives', 'allParams', 'allResources', 'allProjDurations', 'allProjStats', 'allSiteStats',
         function ($scope, $cookies, $q, $location, $state, $http, $filter, $uibModal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, PARAMETER_TYPE, RESOURCE_TYPE,
-        PROJ_DURATION, PROJ_STATUS, STATUS_TYPE, allFreqs, allLakes, allMedias, allObjectives, allParams, allResources, allProjDurations, allProjStats, allSiteStats) {
+        PROJ_DURATION, PROJ_STATUS, STATUS_TYPE, allDMs, allFreqs, allLakes, allMedias, allObjectives, allParams, allResources, allProjDurations, allProjStats, allSiteStats) {
             if ($cookies.get('siGLCreds') === undefined || $cookies.get('siGLCreds') === "") {
                 $scope.auth = false;
                 $location.path('/login');
             } else {
                 $scope.accountRole = $cookies.get('usersRole');
+                
                 // change sorting order
                 //$scope.sortingOrder = ''; // TODO :: SET THIS
                 //$scope.sort_by = function (newSortingOrder) {
@@ -1037,6 +1038,47 @@
                 };
                 //#endregion Site Status Add/Update/Delete
 
+                $scope.showProjectCntModal = function (p, type) {
+                    var projModal = $uibModal.open({
+                        templateUrl: 'lookupProjectListModal.html',
+                        controller: function ($scope, $uibModalInstance, DMList) {
+                            $scope.plsortingOrder = 'STATUS';
+                            $scope.plreverse = false;
+                            $scope.plsort_by = function (newSortingOrder) {
+                                if ($scope.plsortingOrder == newSortingOrder) {
+                                    $scope.plreverse = !$scope.plreverse;
+                                }
+                                $scope.plsortingOrder = newSortingOrder;
+                                // icon setup
+                                $('th i').each(function () {
+                                    // icon reset
+                                    $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                                });
+                                if ($scope.plreverse) {
+                                    $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                                } else {
+                                    $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                                }
+                            };
+
+                            $scope.Type = type;
+                            $scope.ProjectList = p;
+                            angular.forEach($scope.ProjectList, function (p) {
+                                p.DataManager = DMList.filter(function (d) { return d.DATA_MANAGER_ID == p.DATA_MANAGER_ID; })[0];
+                            });
+
+                            $scope.ok = function () {
+                                $uibModalInstance.dismiss();
+                            };
+                        },
+                        size: 'lg',
+                        resolve: {                            
+                            DMList: function () {
+                                return allDMs;
+                            }
+                        }
+                    });
+                };
                 //#endregion ALL LOOKUPS (add/update/delete)
             }//end else auth
         }]);

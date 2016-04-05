@@ -28,7 +28,7 @@
                     <span editable-text="rt.RESOURCE_NAME" e-name="RESOURCE_NAME" e-form="RTrowform">{{ rt.RESOURCE_NAME || '' }}</span>
                 </td>
                 <td>
-                    <span>{{rt.Projects.length}}</span>
+                    <span><a ng-click="showProjectCntModal(rt.Projects, 'Resource Type')">{{rt.Projects.length}}</a></span>
                 </td>
             </tr>
         </tbody>

@@ -22,15 +22,10 @@
             $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
             $http.defaults.headers.common.Accept = 'application/json';
 
-            //TODO:::: Make this a VIEW so that I don't have to get all the projects again. NAME, Organization, Role, # of Projects
             DATA_MANAGER.getDMListModel().$promise.then(function (result) {
                 for (var x = 0; x < result.length; x++) {
                     var orgName = allOrgRes.filter(function (or) { return or.OrganizationSystemID == result[x].ORGANIZATION_SYSTEM_ID; })[0];
                     result[x].OrgName = orgName !== undefined ? orgName.OrganizationName : "";
-                    //result[x].roleName = $scope.allROLEs.filter(function (ro) { return ro.ROLE_ID == result[x].ROLE_ID; })[0].ROLE_NAME;
-                    //result[x].FULLNAME = result[x].FNAME + " " + result[x].LNAME;
-                    //var theseProjs = allProj.filter(function (p) { return p.DataManagerID == result[x].DATA_MANAGER_ID; });
-                    //result[x].projCount = theseProjs.length;
                 }
                 $scope.allDMs = result;
             });
