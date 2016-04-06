@@ -163,3 +163,36 @@
         <button class="sigl-btn" ng-click="ok()">Close</button>
     </div>
 </script>
+
+<!-- Project List with specific Lookup Modal -->
+<script type="text/ng-template" id="lookupProjectListModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Project List</h3>
+    </div>
+    <div class="modal-body">
+        <div>List of Projects that have this {{Type}}:</div>
+        <table class="sigl-table">
+            <thead>
+                <tr>
+                    <th class="NAME">Project Name&nbsp;<a ng-click="plsort_by('Name')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="START_DATE">Start Date&nbsp;<a ng-click="plsort_by('START_DATE')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="END_DATE">End Date&nbsp;<a ng-click="plsort_by('END_DATE')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="DataManager.LNAME">Data Manager&nbsp;<a ng-click="plsort_by('DataManager.LNAME')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr ng-repeat="pr in ProjectList | orderBy:plsortingOrder:plreverse">
+                    <td><a ui-sref="projectEdit.info({id: pr.PROJECT_ID})">{{pr.NAME}}</a></td>
+                    <td>{{pr.START_DATE | date: 'MM/dd/yyyy'}}</td>
+                    <td>{{pr.END_DATE | date: 'MM/dd/yyyy'}}</td>
+                    <td>{{pr.DataManager.FNAME}} {{pr.DataManager.LNAME}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button>
+    </div>
+
+</script>

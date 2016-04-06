@@ -11,30 +11,10 @@
                 $scope.auth = false;
                 $location.path('/login');
             } else {
-                $scope.accountRole = $cookies.get('usersRole');
-                
-                // change sorting order
-                //$scope.sortingOrder = ''; // TODO :: SET THIS
-                //$scope.sort_by = function (newSortingOrder) {
-                //    if ($scope.sortingOrder == newSortingOrder) {
-                //        $scope.reverse = !$scope.reverse;
-                //    }
-                //    $scope.sortingOrder = newSortingOrder;
-                //    // icon setup
-                //    $('th i').each(function () {
-                //        // icon reset
-                //        $(this).removeClass().addClass('glyphicon glyphicon-sort');
-                //    });
-                //    if ($scope.reverse) {
-                //        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
-                //    } else {
-                //        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
-                //    }
-                //};
+                $scope.accountRole = $cookies.get('usersRole');                
                 $scope.lookupForm = {};
 
                 //#region ALL LOOKUPS (add/update/delete)
-
                 //#region Frequency Types Add/Update/Delete
                 $scope.FsortingOrder = 'FREQUENCY';
                 $scope.Freverse = false;
@@ -1042,7 +1022,7 @@
                     var projModal = $uibModal.open({
                         templateUrl: 'lookupProjectListModal.html',
                         controller: function ($scope, $uibModalInstance, DMList) {
-                            $scope.plsortingOrder = 'STATUS';
+                            $scope.plsortingOrder = 'NAME';
                             $scope.plreverse = false;
                             $scope.plsort_by = function (newSortingOrder) {
                                 if ($scope.plsortingOrder == newSortingOrder) {
