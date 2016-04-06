@@ -14,6 +14,7 @@
                 //$("#ui-view").html("");
             } else {
                 $rootScope.stateIsLoading = { showLoading: true }; //loading...
+
                 //close all modals when changing states (site create open, want to use a nearby site or just change the url up top, close the modal too)
                 $uibModalStack.dismissAll();
 
@@ -139,9 +140,32 @@
                      url: "/organizations",
                      abstract: true,
                      authenticate: true,
-                     template: "<div ui-view></div>",//Url: "partials/Org/orgHolderView.html",
-                     controller: "organizationCtrl"
-                     
+                     template: "<div ui-view></div>",
+                     controller: "organizationCtrl",
+                     resolve: {
+                         dm: 'DATA_MANAGER',
+                         allDMs: function (dm, $http, $cookies) {
+                             $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                             $http.defaults.headers.common.Accept = 'application/json';
+                             return dm.getAll().$promise;
+                         },
+                         orgRes: 'ORGANIZATION_RESOURCE',
+                         allOrgRes: function (orgRes) {
+                             return orgRes.getAll().$promise;
+                         },
+                         org: 'ORGANIZATION',
+                         allOrgs: function (org) {
+                             return org.getAll().$promise;
+                         },
+                         div: 'DIVISION',
+                         allDivs: function (div) {
+                             return div.getAll().$promise;
+                         },
+                         sec: 'SECTION',
+                         allSecs: function (sec) {
+                             return sec.getAll().$promise;
+                         }
+                     }
                  })
                 //#endregion organizations ABSTRACT
 

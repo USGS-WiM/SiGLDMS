@@ -176,7 +176,7 @@ a.disabled {
 }
 
 #sidebar-wrapper {
-    z-index: 1000;
+    /*z-index: 1000;*/
     position: absolute; /*set to absolute instead of fixed because wasn't scrolling for long sidebar*/
     left: 250px;
     margin-left: -130px;

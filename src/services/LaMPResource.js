@@ -126,6 +126,7 @@
             {}, {
                 query: { isArray: true },
                 getAll: { method: 'GET', isArray: true },
+                getOrgProjects: {method: 'GET', isArray: true, url: rootURL + '/OrganizationSystems/:id/projects'},
                 save: { method: 'POST', cache: false, isArray: false },
                 delete: { method: 'DELETE', cache: false, isArray: false }
             });
