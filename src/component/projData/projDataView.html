@@ -61,14 +61,10 @@
         <div class="sigl-edit-form-group">
             <label for="inputHOST_NAME">
                 Data Hosting Entity:
-                <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                      title="Enter the entity, person, or organization that hosts or holds your data."
-                      data-placement="right" tooltip>
+                <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Enter the entity, person, or organization that hosts or holds your data." data-placement="right" tooltip>
                 </span>
             </label>
-            <input class="form-control" id="inputHOST_NAME" name="HOST_NAME"
-                   type="text" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
-                   ng-model="newData.HOST_NAME" />
+            <input class="form-control" name="HOST_NAME" type="text" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)" ng-model="newData.HOST_NAME" />
         </div>
 
         <!-- Online Data Location -->
@@ -76,12 +72,10 @@
             <label for="inputPORTAL_URL">
                 Online Data Location:
                 <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-                      title="If data is available online, provide the entire URL of the data’s location (be sure to include the ' http://'). Only enter one address."
-                      data-placement="right" tooltip>
+                      title="If data is available online, provide the entire URL of the data’s location (be sure to include the ' http://'). Only enter one address." data-placement="right" tooltip>
                 </span>
             </label>
-            <input class="form-control" id="inputPORTAL_URL" name="PORTAL_URL"
-                   type="url" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
+            <input class="form-control" name="PORTAL_URL" type="url" placeholder="" ng-required="!(newData.HOST_NAME.length || newData.PORTAL_URL.length || newData.DESCRIPTION.length)"
                    ng-model="newData.PORTAL_URL" http-prefix />
         </div>
 

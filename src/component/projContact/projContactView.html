@@ -67,11 +67,12 @@
                 <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Enter the contact's first and last name." data-placement="right" tooltip>
                 </span>
             </label>
-            <input class="form-control" id="inputNAME" name="NAME" type="text" placeholder="" ng-model="newContact.NAME" required />
+            <input class="form-control" id="inputNAME" name="NAME" type="text" ng-model="newContact.NAME" required />
         </div>
         <div class="sigl-edit-form-group">
             <label class="req">Organization</label>
-            <select style="display:block;" class="form-control" name="NAME" ng-model="selectedOrgID" ng-options="o.ORGANIZATION_ID as o.ORGANIZATION_NAME for o in allOrganizations | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID)" required></select>
+            <select style="display:block;" class="form-control" name="NAME" ng-model="selectedOrgID" ng-options="o.ORGANIZATION_ID as o.ORGANIZATION_NAME for o in allOrganizations | orderBy: 'ORGANIZATION_NAME'" 
+                    ng-change="getDivs(selectedOrgID)" required></select>
             <button class="sigl-form-add-new" ng-click="addNewOrg()">
                 Add New
             </button>
@@ -102,7 +103,7 @@
             <input type="email" placeholder="" ng-model="newContact.EMAIL" required />
         </div>
 
-        <!-- Phone -->
+        <!-- Phone restrict="reject" mask-validate="false" ng-value="newContact.PHONE"  -->
         <div class="sigl-edit-form-group">
             <label class="req" for="inputPHONE">
                 Phone:
@@ -111,7 +112,7 @@
                       data-placement="right" tooltip>
                 </span>
             </label>
-            <input type="text" mask="(999) 999-9999 x?9?9?9?9?9?" restrict="reject" ng-model="newContact.PHONE" ng-value="newContact.PHONE" mask-validate="false" required>            
+            <input type="text" mask="(999) 999-9999 x?9?9?9?9?9?" ng-model="newContact.PHONE" required>            
         </div>
 
 
