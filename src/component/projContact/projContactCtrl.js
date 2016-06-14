@@ -130,6 +130,7 @@
 
             $scope.EditRowClicked = function (i) {
                 //editing: only show (add org button) for this row, and disable inputs for new contact below
+                $scope.projectForm.Contact.$pristine = false;
                 var showAtag = document.getElementsByClassName("showHide")[this.$index];
                 showAtag.style.display = "block";
                 $scope.isEditing = true;
@@ -139,6 +140,7 @@
                 var showAtag = document.getElementsByClassName("showHide")[this.$index];
                 showAtag.style.display = "none";
                 $scope.isEditing = false;
+                $scope.projectForm.Contact.$setPristine(true);
             };
             $scope.checkRequiredFields = function (which, data) {
                 //            if null -- you must populate, else if which== email .. valid email

@@ -54,7 +54,7 @@
 
             };
             $scope.submit = function () {
-                //$scope.sub = true;
+                $rootScope.stateIsLoading = { showLoading: true }; //loading...
                 var postData = {
                     "username": $scope.username,
                     "password": $scope.password
@@ -95,12 +95,11 @@
                                     break;
                             }
                             $cookies.put('usersRole', roleName);
-
-
                             $rootScope.isAuth.val = true;
                             $rootScope.usersName = usersNAME;
                             $rootScope.userID = user.DATA_MANAGER_ID;
                             $rootScope.Role = roleName;
+                            
                             if ($rootScope.returnToState !== undefined) {
                                 $state.go($rootScope.returnToState, { id: $rootScope.returnToStateParams });
                             } else {
@@ -108,11 +107,13 @@
                             }
                         }
                         else {
+                            $rootScope.stateIsLoading = { showLoading: false }; //loading...
                             $scope.error = "Login Failed";
                         }
                     },
                     function error(errorResponse) {
                         //modal for error
+                        $rootScope.stateIsLoading = { showLoading: false }; //loading...
                         var modalInstance = $uibModal.open({
                             template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                        '<div class="modal-body"><p>There was an error.</p><p>Error: {{status}} - {{statusText}}</p></div>' +

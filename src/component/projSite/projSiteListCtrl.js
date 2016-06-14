@@ -155,7 +155,7 @@
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
                     var siteId = "";
-                    SITE.save({}, aSITE, function success(response) {
+                    SITE.save(aSITE, function success(response) {
                         $rootScope.stateIsLoading.showLoading = true; //loading... 
                         thisSite.SiteId = response.SITE_ID;
                         $scope.projectSites.push(thisSite);
@@ -164,57 +164,21 @@
                         //projSites.push(response);
                         $scope.sitesCount.total = $scope.sitesCount.total + 1;
                         //post frequencies added
-                        for (var o = $scope.FrequenciesToAdd.length; o--;) {
-                            SITE.addSiteFrequency({
-                                id: siteId
-                            }, $scope.FrequenciesToAdd[o],
-                                function success(response) {
-                                    //                toastr.success("Site Frequency added");
-                                },
-                                function error(errorResponse) {
-                                    toastr.error("Error: " + errorResponse.statusText);
-                                }
-                            );
-                        }
+                        angular.forEach($scope.FrequenciesToAdd, function (freq) {
+                            SITE.addSiteFrequency({ id: siteId }, freq).$promise;
+                        });
                         //post media
-                        for (var k = $scope.MediaToAdd.length; k--;) {
-                            SITE.addSiteMedia({
-                                id: siteId
-                            }, $scope.MediaToAdd[k],
-                                function success(response) {
-                                    //                toastr.success("Site Media Added");
-                                },
-                                function error(errorResponse) {
-                                    toastr.error("Error: " + errorResponse.statusText);
-                                }
-                            );
-                        }
+                        angular.forEach($scope.MediaToAdd, function (med) {
+                            SITE.addSiteMedia({ id: siteId }, med).$promise;
+                        });
                         //post parameters
-                        for (var pk = $scope.ParameterToAdd.length; pk--;) {
-                            SITE.addSiteParameter({
-                                id: siteId
-                            }, $scope.ParameterToAdd[pk],
-                                function success(response) {
-                                    //                toastr.success("Site Parameter Added");
-                                },
-                                function error(errorResponse) {
-                                    toastr.error("Error: " + errorResponse.statusText);
-                                }
-                            );
-                        }
+                        angular.forEach($scope.ParameterToAdd, function (par) {
+                            SITE.addSiteParameter({ id: siteId }, par).$promise;
+                        });
                         //post resources
-                        for (var rk = $scope.ResourceToAdd.length; rk--;) {
-                            SITE.addSiteResource({
-                                id: siteId
-                            }, $scope.ResourceToAdd[rk],
-                                function success(response) {
-                                    //                toastr.success("Site Resource Added");
-                                },
-                                function error(errorResponse) {
-                                    toastr.error("Error: " + errorResponse.statusText);
-                                }
-                            );
-                        }
+                        angular.forEach($scope.ResourceToAdd, function (res) {
+                            SITE.addSiteResource({ id: siteId }, res).$promise;
+                        });
                     }, function error(errorResponse) {
                         toastr.success("Error: " + errorResponse.statusText);
                     }).$promise.then(function () {
