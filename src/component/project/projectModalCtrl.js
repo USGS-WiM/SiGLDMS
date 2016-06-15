@@ -117,7 +117,7 @@
 
             //start or end date was changed -- compare to ensure end date comes after start date
             $scope.compareDates = function (d) {
-                if ($scope.aProject.END_DATE !== undefined) {
+                if ($scope.aProject.END_DATE !== undefined && $scope.aProject.END_DATE !== null && $scope.aProject.END_DATE !== "") {
                     if (new Date($scope.aProject.END_DATE) < new Date($scope.aProject.START_DATE)) {
                         var dateModal = $uibModal.open({
                             template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
@@ -410,6 +410,24 @@
                         });
                     });
                 }//end valid
+                else {
+                    if ($scope.projectForm.Info.$error.date != undefined) {
+                        var dateErrorMdl = $uibModal.open({
+                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                '<div class="modal-body"><p>One of the dates is incorrectly formatted. Please correct before submitting.</p></div>' +
+                                '<div class="modal-footer"><button type="button" class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                            controller: ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
+                                $scope.ok = function () {
+                                    $uibModalInstance.close();
+                                };
+                            }],
+                            size: 'sm'
+                        });
+                        dateErrorMdl.result.then(function () {
+                            angular.element("[name='" + $scope.projectForm.Info.$name + "']").find('.ng-invalid:visible:first').focus();
+                        });
+                    }
+                }
             };//end save
 
             //cancel modal

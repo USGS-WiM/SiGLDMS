@@ -82,6 +82,7 @@
                     controller: 'projectModalCtrl',
                     size: 'lg',
                     backdrop: 'static',
+                    keyboard: false,
                     windowClass: 'rep-dialog',
                     resolve: {
                         allDropDownParts: function () {

@@ -72,6 +72,7 @@
                     controller: 'AddOrgModalCtrl',
                     size: 'md',
                     backdrop: 'static',
+                    keyboard: false,
                     resolve: {
                         chosenParts: function () { return chosenparts; },
                         allOrgs: function () { return $scope.$parent.allORGs; },

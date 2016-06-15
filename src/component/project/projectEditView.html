@@ -49,7 +49,7 @@
                 <!-- Project Name -->
                 <div class="sigl-modal-form-group required" ng-class="{'has-error':projectForm.Info.NAME.$invalid && projectForm.Info.NAME.$dirty}">
                     <label class="req" for="NAME">Project Name:</label>
-                    <input id="NAME" name="NAME" ng-enter="save(projectForm.Info.$valid)" ng-model="aProject.NAME" type="text" placeholder="Project Name" required />
+                    <input name="NAME" ng-enter="save(projectForm.Info.$valid)" ng-model="aProject.NAME" type="text" placeholder="Project Name" required />
                 </div>
 
                 <hr />
@@ -83,9 +83,9 @@
                 </div>
 
                 <!-- Project Start Date -->
-                <div class="sigl-modal-form-group">
+                <div class="sigl-modal-form-group" ng-class="{'has-error':projectForm.Info.sd.$invalid && projectForm.Info.sd.$dirty}">
                     <label for="START_DATE">Project Start Date:</label>
-                    <input class="input-calendar dateInputStyle" id="START_DATE" name="sd" type="date" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.sd"
+                    <input class="input-calendar dateInputStyle" id="START_DATE" name="sd" type="date" uib-datepicker-popup="MM/dd/yyyy" is-open="datepickrs.sd"
                            show-weeks="false" ng-change="compareDates('start')" ng-model="aProject.START_DATE" show-button-bar="false" />
                     <button type="button" class="btn-cal" ng-click="open($event, 'sd')">
                         <i class="glyphicon glyphicon-calendar" />
@@ -93,7 +93,7 @@
                 </div>
 
                 <!-- Project Completion Date -->
-                <div class="sigl-modal-form-group">
+                <div class="sigl-modal-form-group" ng-class="{'has-error':projectForm.Info.END_DATE.$invalid && projectForm.Info.END_DATE.$dirty}">
                     <label for="END_DATE">
                         Project Completion Date:
                         <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='If project is ongoing, leave this field blank.'>
