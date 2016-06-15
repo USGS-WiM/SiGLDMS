@@ -61,7 +61,7 @@
     <fieldset ng-disabled="isEditing">
         <div class="subhead">Add new contact</div>
         <!-- NAME -->
-        <div class="sigl-edit-form-group">
+        <div class="sigl-edit-form-group" ng-class="{'has-error':projectForm.Contact.NAME.$invalid && projectForm.Contact.NAME.$dirty}">
             <label class="req" for="inputNAME">
                 Name:
                 <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Enter the contact's first and last name." data-placement="right" tooltip>
@@ -71,7 +71,7 @@
         </div>
         <div class="sigl-edit-form-group">
             <label class="req">Organization</label>
-            <select style="display:block;" class="form-control" name="NAME" ng-model="selectedOrgID" ng-options="o.ORGANIZATION_ID as o.ORGANIZATION_NAME for o in allOrganizations | orderBy: 'ORGANIZATION_NAME'" 
+            <select style="display:block;" class="form-control" name="selectedOrgID" ng-model="selectedOrgID" ng-options="o.ORGANIZATION_ID as o.ORGANIZATION_NAME for o in allOrganizations | orderBy: 'ORGANIZATION_NAME'"
                     ng-change="getDivs(selectedOrgID)" required></select>
             <button class="sigl-form-add-new" ng-click="addNewOrg()">
                 Add New
@@ -95,16 +95,16 @@
         </div>
 
         <!-- Email -->
-        <div class="sigl-edit-form-group">
+        <div class="sigl-edit-form-group" ng-class="{'has-error':projectForm.Contact.EMAIL.$invalid && projectForm.Contact.EMAIL.$dirty}">
             <label class="req" for="inputEMAIL">
                 Email:
                 <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Enter the contact's email address." data-placement="right" tooltip></span>
             </label>
-            <input type="email" placeholder="" ng-model="newContact.EMAIL" required />
+            <input type="email" name="EMAIL" ng-model="newContact.EMAIL" required />
         </div>
 
         <!-- Phone restrict="reject" mask-validate="false" ng-value="newContact.PHONE"  -->
-        <div class="sigl-edit-form-group">
+        <div class="sigl-edit-form-group" ng-class="{'has-error':projectForm.Contact.PHONE.$invalid && projectForm.Contact.PHONE.$dirty}">
             <label class="req" for="inputPHONE">
                 Phone:
                 <span class="sigl-tooltip glyphicon glyphicon-question-sign" data-toggle="tooltip"
@@ -112,7 +112,7 @@
                       data-placement="right" tooltip>
                 </span>
             </label>
-            <input type="text" mask="(999) 999-9999 x?9?9?9?9?9?" ng-model="newContact.PHONE" required>            
+            <input type="text" mask="(999) 999-9999 ?x?9?9?9?9?9?" ng-model="newContact.PHONE" name="PHONE" required>
         </div>
 
 
