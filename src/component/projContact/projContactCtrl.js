@@ -39,11 +39,13 @@
             for (var x = 0; x < $scope.ProjContacts.length; x++) {
                 if ($scope.ProjContacts[x].ORGANIZATION_SYSTEM_ID !== null) {
                     var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.OrganizationSystemID == $scope.ProjContacts[x].ORGANIZATION_SYSTEM_ID; })[0];
-                    $scope.ProjContacts[x].OrgName = thisOrgRes.OrganizationName;
-                    if (thisOrgRes.DivisionID > 0)
-                        $scope.ProjContacts[x].DivName = thisOrgRes.DivisionName;
-                    if (thisOrgRes.SectionID > 0)
-                        $scope.ProjContacts[x].SecName = thisOrgRes.SectionName;
+                    if (thisOrgRes !== undefined) {
+                        $scope.ProjContacts[x].OrgName = thisOrgRes.OrganizationName;
+                        if (thisOrgRes.DivisionID > 0)
+                            $scope.ProjContacts[x].DivName = thisOrgRes.DivisionName;
+                        if (thisOrgRes.SectionID > 0)
+                            $scope.ProjContacts[x].SecName = thisOrgRes.SectionName;
+                    }
                 }
             }
 
@@ -241,6 +243,7 @@
                     controller: 'AddOrgModalCtrl',
                     size: 'md',
                     backdrop: 'static',
+                    keyboard: false,
                     resolve: {
                         chosenParts: function () { return chosenparts; },
                         allOrgs: function () { return $scope.allOrganizations; },

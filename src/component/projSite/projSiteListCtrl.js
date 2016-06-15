@@ -2,8 +2,8 @@
     'use strict';
 
     var siGLControllers = angular.module('siGLControllers');
-    siGLControllers.controller('projSiteListCtrl', ['$scope', '$rootScope', '$location', '$cookies', '$uibModal', '$http', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'CountryList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE',
-        function ($scope, $rootScope, $location, $cookies, $uibModal, $http, projS, thisProject, siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList, SITE) {
+    siGLControllers.controller('projSiteListCtrl', ['$scope', '$rootScope', '$location', '$cookies', '$uibModal', '$http', '$q', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'CountryList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE',
+        function ($scope, $rootScope, $location, $cookies, $uibModal, $http, $q, projS, thisProject, siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList, SITE) {
             $scope.projectSites = projS;
             for (var psu = 0; psu < $scope.projectSites.length; psu++) {
                 var ind = psu;
@@ -163,28 +163,37 @@
                         siteId = response.SITE_ID;
                         //projSites.push(response);
                         $scope.sitesCount.total = $scope.sitesCount.total + 1;
+                        //use $q for async call to add frequencies, media, parameters, resources
+                        var defer = $q.defer();
+                        var AddPromises = [];
                         //post frequencies added
                         angular.forEach($scope.FrequenciesToAdd, function (freq) {
-                            SITE.addSiteFrequency({ id: siteId }, freq).$promise;
+                            var addFreqPromise = SITE.addSiteFrequency({ id: siteId }, freq).$promise;
+                            AddPromises.push(addFreqPromise);
                         });
                         //post media
                         angular.forEach($scope.MediaToAdd, function (med) {
-                            SITE.addSiteMedia({ id: siteId }, med).$promise;
+                            var addMedPromise = SITE.addSiteMedia({ id: siteId }, med).$promise;
+                            AddPromises.push(addMedPromise);
                         });
                         //post parameters
                         angular.forEach($scope.ParameterToAdd, function (par) {
-                            SITE.addSiteParameter({ id: siteId }, par).$promise;
+                            var addParamPromise = SITE.addSiteParameter({ id: siteId }, par).$promise;
+                            AddPromises.push(addParamPromise);
                         });
                         //post resources
                         angular.forEach($scope.ResourceToAdd, function (res) {
-                            SITE.addSiteResource({ id: siteId }, res).$promise;
+                            var addResPromise = SITE.addSiteResource({ id: siteId }, res).$promise;
+                            AddPromises.push(addResPromise);
+                        });
+                        $q.all(AddPromises).then(function () {
+                            $scope.openSiteCreate(thisSite);
+                        }).catch(function error(msg) {
+                            toastr.error(msg);
                         });
                     }, function error(errorResponse) {
                         toastr.success("Error: " + errorResponse.statusText);
-                    }).$promise.then(function () {
-                        $scope.openSiteCreate(thisSite);
-                    });
-
+                    }).$promise;
                 });
             };//end CopyToNew
 
@@ -235,6 +244,7 @@
                     controller: 'siteModalCtrl',
                     size: 'lg',
                     backdrop: 'static',
+                    keyboard: false,
                     windowClass: 'rep-dialog',
                     resolve: {
                         allDropDownParts: function () {
