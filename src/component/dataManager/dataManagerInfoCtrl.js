@@ -271,6 +271,10 @@
                     $scope.changePass === false ? $scope.changePass = true : $scope.changePass = false;
                 }; //end changeMyPassBtn
 
+                Date.prototype.addHours = function (h) {
+                    this.setHours(this.getHours() + h);
+                    return this;
+                };
                 $scope.ChangePassword = function () {
                     //change User's password
                     if ($scope.pass.newP === "" || $scope.pass.confirmP === "") {
@@ -295,27 +299,28 @@
                         DATA_MANAGER.changePW({ username: $scope.DM.USERNAME, newP: $scope.pass.newP },
                             function success(response) {
                                 toastr.success("Password Updated");
-                                //update creds
-                                var enc = btoa($scope.DM.USERNAME.concat(":", $scope.pass.newP));
-                                var expireDate = new Date().addHours(8);
-                                $cookies.put('siGLCreds', enc, { 'expires': expireDate });
-                                $cookies.put('siGLUsername', $scope.aMember.USERNAME);
-                                $cookies.put('usersName', $scope.$parent.loggedInUser.Name);
-                                $cookies.put('mID', $scope.DM.DATA_MANAGER_ID);
-                                var roleName;
-                                switch ($scope.DM.ROLE_ID) {
-                                    case 1:
-                                        roleName = "Admin";
-                                        break;
-                                    case 2:
-                                        roleName = "Manager";
-                                        break;
-                                    default:
-                                        roleName = "Public";
-                                        break;
+                                //update creds if same user logged in as just updated
+                                if ($scope.matchingUsers) {
+                                    var enc = btoa($scope.DM.USERNAME.concat(":", $scope.pass.newP));
+                                    var expireDate = new Date().addHours(8);
+                                    $cookies.put('siGLCreds', enc, { 'expires': expireDate });
+                                    $cookies.put('siGLUsername', $scope.DM.USERNAME);
+                                    $cookies.put('usersName', $scope.DM.FNAME + " " + $scope.DM.LNAME);
+                                    $cookies.put('mID', $scope.DM.DATA_MANAGER_ID);
+                                    var roleName;
+                                    switch ($scope.DM.ROLE_ID) {
+                                        case 1:
+                                            roleName = "Admin";
+                                            break;
+                                        case 2:
+                                            roleName = "Manager";
+                                            break;
+                                        default:
+                                            roleName = "Public";
+                                            break;
+                                    }
+                                    $cookies.put('usersRole', roleName);
                                 }
-                                $cookies.put('usersRole', roleName);
-
 
                                 $scope.changePass = false;
                                 $scope.pass.newP = '';
