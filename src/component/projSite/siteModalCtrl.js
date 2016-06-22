@@ -456,29 +456,29 @@
                             //#endregion
                             //#region ADDS
                             //add Frequencies only if $scope.freqDirty = true;
-                            if ($scope.freqDirty) {
+                            //if ($scope.freqDirty) {
                                 angular.forEach($scope.Frequencymodel.value, function (FaddValue) {
                                     $scope.freqCommaSep.push(FaddValue.FREQUENCY);
                                     var freqProm = SITE.addSiteFrequency({ id: $scope.thisSite.SITE_ID }, FaddValue).$promise;
                                     AddPromises.push(freqProm);
                                 });
-                            }
+                           // }
                             //add Media only if $scope.medDirty = true;
-                            if ($scope.medDirty) {
+                           // if ($scope.medDirty) {
                                 angular.forEach($scope.Mediamodel.value, function (MaddValue) {
                                     $scope.medCommaSep.push(MaddValue.MEDIA);
                                     var medProm = SITE.addSiteMedia({ id: $scope.thisSite.SITE_ID }, MaddValue).$promise;
                                     AddPromises.push(medProm);
                                 });
-                            }
+                           // }
                             //add Resources only if $scope.resDirty = true;
-                            if ($scope.resDirty) {
+                            //if ($scope.resDirty) {
                                 angular.forEach($scope.Resourcemodel.value, function (RaddValue) {
                                     $scope.resCommaSep.push(RaddValue.RESOURCE_NAME);
                                     var resProm = SITE.addSiteResource({ id: $scope.thisSite.SITE_ID }, RaddValue).$promise;
                                     AddPromises.push(resProm);
                                 });
-                            }
+                           // }
                             //add Parameters only if $scope.paramDirty = true;
                             $scope.pParams =[]; $scope.bParams =[]; $scope.cParams =[]; $scope.mBioParams =[]; $scope.tParams =[];
                         
