@@ -187,7 +187,8 @@
                             AddPromises.push(addResPromise);
                         });
                         $q.all(AddPromises).then(function () {
-                            $scope.openSiteCreate(thisSite);
+                            // $scope.openSiteCreate(thisSite);
+                            $rootScope.stateIsLoading.showLoading = false; //Loading...
                         }).catch(function error(msg) {
                             toastr.error(msg);
                         });
