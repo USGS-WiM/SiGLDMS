@@ -72,7 +72,7 @@
         };
         $scope.storeExistingOrg = function (data) {
             $scope.thisOrg = angular.copy(data);
-        }
+        };
         
         $scope.saveOrg = function (data, id) {
             var b4ChangeOrg = $scope.thisOrg;

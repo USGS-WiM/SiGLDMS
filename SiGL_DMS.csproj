@@ -112,7 +112,6 @@
     <Content Include="src\component\organization\organizationInfoCtrl.js" />
     <Content Include="src\component\resources\resourcesCtrl.js" />
     <Content Include="src\component\settings\settings.html" />
-    <Content Include="src\services\businessServices.js" />
     <Content Include="src\component\logInOut\login.html" />
     <Content Include="src\component\projCooperator\projCooperatorView.html" />
     <Content Include="src\component\projData\projDataView.html" />

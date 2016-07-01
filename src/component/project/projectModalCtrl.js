@@ -411,7 +411,7 @@
                     });
                 }//end valid
                 else {
-                    if ($scope.projectForm.Info.$error.date != undefined) {
+                    if ($scope.projectForm.Info.$error.date !== undefined) {
                         var dateErrorMdl = $uibModal.open({
                             template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                 '<div class="modal-body"><p>One of the dates is incorrectly formatted. Please correct before submitting.</p></div>' +
@@ -432,7 +432,7 @@
 
             //cancel modal
             $scope.cancel = function () {
-                $uibModalInstance.dismiss('cancel');
+                $uibModalInstance.close('cancel');
             };
 
         }]);
