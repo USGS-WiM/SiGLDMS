@@ -5,6 +5,7 @@
     siGLControllers.controller('projSiteListCtrl', ['$scope', '$rootScope', '$location', '$cookies', '$uibModal', '$http', '$q', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'CountryList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE',
         function ($scope, $rootScope, $location, $cookies, $uibModal, $http, $q, projS, thisProject, siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList, SITE) {
             $scope.projectSites = projS;
+
             for (var psu = 0; psu < $scope.projectSites.length; psu++) {
                 var ind = psu;
                 if ($scope.projectSites[ind].URL !== undefined && !$scope.projectSites[ind].URL.startsWith('http')) {
@@ -12,8 +13,18 @@
                 }
             }
             $scope.thisProject = thisProject;
-            $scope.LakeList = lakeList; $scope.StatusList = siteStatList; $scope.ResourceList = resourceList; $scope.MediaList = mediaList; $scope.FreqList = frequencyList; $scope.ParamList = parameterList;
-            $scope.FrequenciesToAdd = []; $scope.MediaToAdd = []; $scope.ParameterToAdd = []; $scope.ResourceToAdd = [];
+            $scope.LakeList = lakeList;
+            $scope.StatusList = siteStatList;
+            $scope.ResourceList = resourceList;
+            $scope.MediaList = mediaList;
+            $scope.FreqList = frequencyList;
+            $scope.ParamList = parameterList;
+
+            $scope.FrequenciesToAdd = [];
+            $scope.MediaToAdd = [];
+            $scope.ParameterToAdd = [];
+            $scope.ResourceToAdd = [];
+
             // change sorting order
             $scope.sortingOrder = $cookies.get('siteListSortOrder') !== undefined ? $cookies.get('siteListSortOrder') : 'Name';
             $scope.reverse = $cookies.get('sl_reverse') !== undefined ? Boolean($cookies.get('sl_reverse')) : false;
@@ -60,7 +71,7 @@
                 return aSITE;
             };
 
-            //copy to new site using this site's info, show edit page populated with create button
+            //copy to new site using this site's info
             $scope.CopyToNew = function (siteId) {
                 //ask for new name: (modal)
                 var modalInstance = $uibModal.open({
@@ -80,6 +91,8 @@
                     thisSite.Name = newSiteName.name;
                     thisSite.StatType = $scope.StatusList.filter(function (st) { return st.STATUS == thisSite.Status; })[0];
                     thisSite.LakeType = $scope.LakeList.filter(function (st) { return st.LAKE == thisSite.GreatLake; })[0];
+                    $scope.FrequenciesToAdd = []; $scope.MediaToAdd = []; $scope.ParameterToAdd = []; $scope.ResourceToAdd = [];
+
                     //properly form the site
                     var aSITE = formatSite(thisSite);
                     var freqSplit = thisSite.Frequency !== undefined ? thisSite.Frequency.split(',') : [];

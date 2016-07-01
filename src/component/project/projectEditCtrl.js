@@ -101,14 +101,18 @@
                 modalInstance.result.then(function (r) {
                     //$scope.aProject, projObjectives, projKeywords
                     $rootScope.stateIsLoading.showLoading = false; //loading...  
-                    $scope.aProject = r[0];
-                    if ($scope.aProject.URL) {
-                        //split string into an array
-                        if (($scope.aProject.URL).indexOf('|') > -1) $scope.urls = ($scope.aProject.URL).split("|");
-                        else $scope.urls[0] = $scope.aProject.URL;
+                    if (r !== 'cancel') {
+                        $scope.aProject = r[0];
+                        if ($scope.aProject.URL) {
+                            //split string into an array
+                            if (($scope.aProject.URL).indexOf('|') > -1) $scope.urls = ($scope.aProject.URL).split("|");
+                            else $scope.urls[0] = $scope.aProject.URL;
+                        }
+                        $scope.ProjectObjectives = r[1];
+                        $scope.ProjectKeywords = r[2];
+                    } else {
+                        $state.go('home');
                     }
-                    $scope.ProjectObjectives = r[1];
-                    $scope.ProjectKeywords = r[2];
                 });
             };
 

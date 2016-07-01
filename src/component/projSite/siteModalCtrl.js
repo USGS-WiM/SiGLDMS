@@ -96,7 +96,7 @@
 
                 //start or end date was changed -- compare to ensure end date comes after start date
                 $scope.compareSiteDates = function (d) {
-                    if ($scope.thisSite.END_DATE !== undefined) {
+                    if ($scope.thisSite.END_DATE !== undefined && $scope.thisSite.END_DATE !== null) {
                         if (new Date($scope.thisSite.END_DATE) < new Date($scope.thisSite.START_DATE)) {
                             var dateModal = $uibModal.open({
                                 template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
@@ -525,11 +525,11 @@
                                         'Frequency': $scope.freqCommaSep.join(", "),
                                         'Parameters': $scope.paramCommaSep,
                                         'ParameterStrings': {
-                                            'Biological': $scope.bParams.join(", "),
-                                            'Chemical': $scope.cParams.join(", "),
-                                            'Microbiological': $scope.mBioParams.join(", "),
-                                            'Physical': $scope.pParams.join(", "),
-                                            'Toxicological': $scope.tParams.join(", ")
+                                            'Biological': $scope.bParams.join("; "),
+                                            'Chemical': $scope.cParams.join("; "),
+                                            'Microbiological': $scope.mBioParams.join("; "),
+                                            'Physical': $scope.pParams.join("; "),
+                                            'Toxicological': $scope.tParams.join("; ")
                                         }
                                     };
                                     var siteParts = [newSiteFormatted, 'update'];
@@ -623,11 +623,11 @@
                                         'Frequency': $scope.freqCommaSep.join(", "),
                                         'Parameters': $scope.paramCommaSep,
                                         'ParameterStrings': {
-                                            'Biological': $scope.bParams.join(", "),
-                                            'Chemical': $scope.cParams.join(", "),
-                                            'Microbiological': $scope.mBioParams.join(", "),
-                                            'Physical': $scope.pParams.join(", "),
-                                            'Toxicological': $scope.tParams.join(", ")
+                                            'Biological': $scope.bParams.join("; "),
+                                            'Chemical': $scope.cParams.join("; "),
+                                            'Microbiological': $scope.mBioParams.join("; "),
+                                            'Physical': $scope.pParams.join("; "),
+                                            'Toxicological': $scope.tParams.join("; ")
                                         }
                                     };
 
