@@ -25,7 +25,7 @@
     "angular-xeditable": "~0.1.9",
     "angular-resource": "~1.4.7",
     "angular-cookies": "~1.4.7",
-    "angular-ui-mask": "~1.5.1",
+    "angular-ui-mask": "^1.8.7",
     "isteven-angular-multiselect": "~4.0.0",
     "angular-filter": "~0.5.7",
     "angular-input-modified": "~2.2.5",
@@ -36,12 +36,12 @@
     "ladda-angular": "~1.0.1",
     "angular-ui-bootstrap-datetimepicker": "~0.14.4",
     "bootstrap": "^3.3.6",
-    "jquery": "~2.2.0",
+    "jquery": "^3.1.0",
     "angular-ui-validate": "~1.2.2",
     "ng-file-upload": "~11.1.1",
     "leaflet": "^0.7.7",
     "bootstrap-table": "^1.10.0",
-    "ngMask": "angular-mask#^3.1.1",
+   // "ngMask": "angular-mask#^3.1.1",
     "angular-bootstrap-toggle-switch": "~0.5.6"
   },
   "devDependencies": {
@@ -51,7 +51,9 @@
   "resolutions": {
     "angular-bootstrap": ">=0.14.0",
     "angular": "1.4.7",
-    "checklist-model": "~0.6.0",
-    "ngMask": "~3.0.16"
+    "checklist-model": "~0.6.0"//,
+    //"ngMask": "~3.0.16",
+    //"angular-ui-mask": "~1.5.1",
+   // "jquery": "~2.2.0"
   }
 }

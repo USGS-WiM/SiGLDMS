@@ -1,0 +1,35 @@
+<div class="sigl-section">
+    <div class="section-heading">{{User}} : Your Projects ({{ProjCnt}})</div>
+        <script>
+            //var sortingOrder = 'Name';
+        </script>
+
+        <p class="section-text">Click on a project name to view full record.</p>
+
+        <table class="sigl-table">
+            <thead>
+                <tr>
+                    <th class="name">Project Name&nbsp;<a ng-click="sort_by('name')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th ng-if="userRole == 'Admin'" class="lname">Manager Last Name&nbsp;<a ng-click="sort_by('lname')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th ng-if="userRole == 'Admin'" class="fname">Manager Fisrt Name&nbsp;<a ng-click="sort_by('fname')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th ng-if="userRole == 'Admin'" class="organization_name">Organization&nbsp;<a ng-click="sort_by('organization_name')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="site_count">SiteCount&nbsp;<a ng-click="sort_by('site_count')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr ng-repeat="pr in projects | orderBy:sortingOrder:reverse">
+                    <td><a ui-sref="projectEdit.info({id: pr.project_id})">{{pr.name}}</a></td>
+                    <td ng-if="userRole == 'Admin'">{{pr.lname}}</td>
+                    <td ng-if="userRole == 'Admin'">{{pr.fname}}</td>
+                    <td ng-if="userRole == 'Admin'">{{pr.organization_name}}</td>
+                    <td>{{pr.site_count}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a ui-sref="projectEdit.info({id:0})" class="section-bottom-button">
+            <i class="glyphicon glyphicon-plus"></i>
+            Create new Project
+        </a>
+</div>

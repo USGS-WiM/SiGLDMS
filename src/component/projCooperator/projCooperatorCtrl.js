@@ -4,10 +4,10 @@
     var siGLControllers = angular.module('siGLControllers');
     siGLControllers.controller('projCooperatorCtrl', ['$scope', '$http', '$cookies', '$filter', '$uibModal', 'thisProject', 'projOrgs', 'allOrgList', 'allDivisionList', 'allSectionList', 'PROJECT',
         function ($scope, $http, $cookies, $filter, $uibModal, thisProject, projOrgs, allOrgList, allDivisionList, allSectionList, PROJECT) {
-            $scope.ProjOrgs = projOrgs; // ORGANIZATION_RESOURCE
-            $scope.allOrgs = allOrgList; //ORGANIZATION
-            $scope.allDivisions = allDivisionList; //DIVISION
-            $scope.allSections = allSectionList; //SECTION
+            $scope.ProjOrgs = projOrgs; 
+            $scope.allOrgs = allOrgList; 
+            $scope.allDivisions = allDivisionList; 
+            $scope.allSections = allSectionList; 
 
             $scope.selectedOrgID = "";
             $scope.selectedDivID = "";
@@ -16,14 +16,14 @@
             $scope.getDivs = function (orgID) {
                 $scope.alldivs = {}; $scope.selectedDivID = ""; $scope.selectedSecID = "";
                 $scope.alldivs = $scope.allDivisions.filter(function (d) {
-                    return d.ORG_ID == orgID;
+                    return d.org_id == orgID;
                 });
                 $scope.allsecs = {};
             };
 
             $scope.getSecs = function (divID) {
                 $scope.selectedSecID = "";
-                $scope.allsecs = $scope.allSections.filter(function (s) { return s.DIV_ID == divID; });
+                $scope.allsecs = $scope.allSections.filter(function (s) { return s.div_id == divID; });
             };
 
             //ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)
@@ -53,13 +53,13 @@
                     $scope.selectedOrgID = updatedOrgDivSec[3];
                     //need to populate all divs before making one selected
                     if ($scope.selectedOrgID !== "")
-                        $scope.alldivs = $scope.allDivisions.filter(function (d) { return d.ORG_ID == $scope.selectedOrgID; });
+                        $scope.alldivs = $scope.allDivisions.filter(function (d) { return d.org_id == $scope.selectedOrgID; });
 
                     $scope.selectedDivID = updatedOrgDivSec[4];
 
                     //need to populate all secs before making one selected
                     if ($scope.selectedDivID !== "")
-                        $scope.allsecs = $scope.allSections.filter(function (s) { return s.DIV_ID == $scope.selectedDivID; });
+                        $scope.allsecs = $scope.allSections.filter(function (s) { return s.div_id == $scope.selectedDivID; });
 
                     $scope.selectedSecID = updatedOrgDivSec[5];
                 }, function () {
@@ -89,17 +89,17 @@
                         }
                     });
                 } else {
-                    var secID = $scope.selectedSecID !== "" ? $scope.selectedSecID : "0";
-                    var divID = $scope.selectedDivID !== "" ? $scope.selectedDivID : "0";
-                    var orgID = $scope.selectedOrgID !== "" ? $scope.selectedOrgID : "0";
-                    var alreadyExist = $scope.ProjOrgs.filter(function (po) { return po.OrganizationID == orgID && po.DivisionID == divID && po.SectionID == secID; })[0];
+                    var secId = $scope.selectedSecID !== "" ? $scope.selectedSecID : "0";
+                    var divId = $scope.selectedDivID !== "" ? $scope.selectedDivID : "0";
+                    var orgId = $scope.selectedOrgID !== "" ? $scope.selectedOrgID : "0";
+                    var alreadyExist = $scope.ProjOrgs.filter(function (po) { return po.org_id == orgId && po.div_id == divId && po.sec_id == secId; })[0];
                     if (alreadyExist !== undefined) {
                         alert("This Organization is already a part of this Project.");
                     } //end this project doesn't already have this org
                     else {
-                        PROJECT.addProjOrg({ id: thisProject.PROJECT_ID, organizationId: orgID, divisionId: divID, sectionId: secID }, function success(response) {
+                        PROJECT.addProjOrg({ id: thisProject.project_id, orgId: orgId, divId: divId, secId: secId }, function success(response) {
                             //array of all the ORGANIZATION_RESOURCES for this project
-                            var postedORG = response.filter(function (postedO) { return postedO.OrganizationID == orgID && postedO.DivisionID == divID && postedO.SectionID == secID; })[0];
+                            var postedORG = response.filter(function (postedO) { return postedO.org_id == orgId && postedO.div_id == divId && postedO.sec_id == secId; })[0];
                             $scope.ProjOrgs.push(postedORG);
 
                             //$scope.ProjOrgs = response;
@@ -135,7 +135,7 @@
                     //DELETE it
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
-                    PROJECT.deleteProjOrg({ id: thisProject.PROJECT_ID, orgId: org.OrganizationSystemID }, function success(response) {
+                    PROJECT.deleteProjOrg({ id: thisProject.project_id, OrgSystemId: org.organization_system_id }, function success(response) {
                         $scope.ProjOrgs.splice(index, 1);
                         $scope.coopCount.total = $scope.coopCount.total - 1;
                         toastr.success("Organization Removed");

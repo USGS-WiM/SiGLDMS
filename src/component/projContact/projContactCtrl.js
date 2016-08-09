@@ -10,22 +10,22 @@
             //make sure phone is formatted
             for (var p = 0; p < $scope.ProjContacts.length; p++) {
                 var theI = p;
-                if ($scope.ProjContacts[theI].PHONE !== null && !$scope.ProjContacts[theI].PHONE.startsWith("(")) {
+                if ($scope.ProjContacts[theI].phone !== null && !$scope.ProjContacts[theI].phone.startsWith("(")) {
                     //not formatted..remove any spaces, dashes or parenthesis to then do it properly
-                    var phNo = $scope.ProjContacts[theI].PHONE.replace("[()\\s-]+", "");
+                    var phNo = $scope.ProjContacts[theI].phone.replace("[()\\s-]+", "");
                     if (phNo.length >= 10) {
                         //format it
-                        $scope.ProjContacts[theI].PHONE = "(" + phNo.substring(0, 3) + ") " + phNo.substring(3, 6) + "-" + phNo.substring(6);
+                        $scope.ProjContacts[theI].phone = "(" + phNo.substring(0, 3) + ") " + phNo.substring(3, 6) + "-" + phNo.substring(6);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common.Accept = 'application/json';
-                        CONTACT.update({ id: $scope.ProjContacts[theI].CONTACT_ID }, $scope.ProjContacts[theI]).$promise;
+                        CONTACT.update({ id: $scope.ProjContacts[theI].contact_id }, $scope.ProjContacts[theI]).$promise;
                     }
                 }
             }
-            $scope.allOrgResources = orgResources; //ORGANIZATION_RESOURCE
-            $scope.allOrganizations = allOrgList; //ORGANIZATION
-            $scope.allDivisions = allDivisionList; //DIVISION
-            $scope.allSections = allSectionList; //SECTION
+            $scope.allOrgResources = orgResources; 
+            $scope.allOrganizations = allOrgList; 
+            $scope.allDivisions = allDivisionList;
+            $scope.allSections = allSectionList; 
             $scope.selectedOrgID = "";
             $scope.selectedDivID = "";
             $scope.selectedSecID = "";
@@ -37,13 +37,13 @@
 
             //format contacts for display with org parts (if there is one.. all should have one, but a few don't..)
             for (var x = 0; x < $scope.ProjContacts.length; x++) {
-                if ($scope.ProjContacts[x].ORGANIZATION_SYSTEM_ID !== null) {
-                    var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.OrganizationSystemID == $scope.ProjContacts[x].ORGANIZATION_SYSTEM_ID; })[0];
+                if ($scope.ProjContacts[x].organization_system_id !== null) {
+                    var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.organization_system_id == $scope.ProjContacts[x].organization_system_id; })[0];
                     if (thisOrgRes !== undefined) {
                         $scope.ProjContacts[x].OrgName = thisOrgRes.OrganizationName;
-                        if (thisOrgRes.DivisionID > 0)
+                        if (thisOrgRes.div_id > 0)
                             $scope.ProjContacts[x].DivName = thisOrgRes.DivisionName;
-                        if (thisOrgRes.SectionID > 0)
+                        if (thisOrgRes.sec_id > 0)
                             $scope.ProjContacts[x].SecName = thisOrgRes.SectionName;
                     }
                 }
@@ -52,7 +52,7 @@
             //org was chosen, go get the divs
             $scope.getDivs = function (orgID) {
                 $scope.alldivs = {}; $scope.selectedDivID = ""; $scope.selectedSecID = "";
-                $scope.alldivs = $scope.allDivisions.filter(function (d) { return d.ORG_ID == orgID; });
+                $scope.alldivs = $scope.allDivisions.filter(function (d) { return d.org_id == orgID; });
                 $scope.allsecs = {};
             };
 
@@ -60,7 +60,7 @@
             $scope.getSecs = function (divID) {
                 $scope.selectedSecID = "";
                 $scope.allsecs = $scope.allSections.filter(function (s) {
-                    return s.DIV_ID == divID;
+                    return s.div_id == divID;
                 });
             };
 
@@ -68,14 +68,14 @@
             function postProjContact(orgSys) {
                 $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common.Accept = 'application/json';
-                PROJECT.addProjContact({ id: thisProject.PROJECT_ID }, $scope.newContact, function success(response) {
+                PROJECT.addProjContact({ id: thisProject.project_id }, $scope.newContact, function success(response) {
                     $scope.ProjContacts = response;
                     for (var pc = 0; pc < $scope.ProjContacts.length; pc++) {
-                        var thisOrgSysRes = $scope.allOrgResources.filter(function (allOrgRe) { return allOrgRe.OrganizationSystemID == $scope.ProjContacts[pc].ORGANIZATION_SYSTEM_ID; })[0];
+                        var thisOrgSysRes = $scope.allOrgResources.filter(function (allOrgRe) { return allOrgRe.organization_system_id == $scope.ProjContacts[pc].organization_system_id; })[0];
                         $scope.ProjContacts[pc].OrgName = thisOrgSysRes.OrganizationName;
-                        if (orgSys.DivisionID > 0)
+                        if (orgSys.div_id > 0)
                             $scope.ProjContacts[pc].DivName = thisOrgSysRes.DivisionName;
-                        if (orgSys.SectionID > 0)
+                        if (orgSys.sec_id > 0)
                             $scope.ProjContacts[pc].SecName = thisOrgSysRes.SectionName;
                     }
                     $scope.contactCount.total = $scope.contactCount.total + 1;
@@ -98,26 +98,26 @@
                     var secID = $scope.selectedSecID !== "" ? $scope.selectedSecID : "0";
                     var divID = $scope.selectedDivID !== "" ? $scope.selectedDivID : "0";
                     var orgID = $scope.selectedOrgID !== "" ? $scope.selectedOrgID : "0";
-                    var chosenOrg = $scope.allOrgResources.filter(function (orgS) { return orgS.SectionID == secID && orgS.DivisionID == divID && orgS.OrganizationID == orgID; })[0];
+                    var chosenOrg = $scope.allOrgResources.filter(function (orgS) { return orgS.sec_id == secID && orgS.div_id == divID && orgS.org_id == orgID; })[0];
                     if (chosenOrg !== undefined) {
-                        $scope.newContact.ORGANIZATION_SYSTEM_ID = chosenOrg.OrganizationSystemID;
+                        $scope.newContact.organization_system_id = chosenOrg.organization_system_id;
                         postProjContact(chosenOrg);
                     } else {
                         //need to post the organization_system first
-                        var newORG_SYS = { ORG_ID: orgID, DIV_ID: divID, SEC_ID: secID };
+                        var newORG_SYS = { org_id: orgID, div_id: divID, sec_id: secID };
                         ORGANIZATION_SYSTEM.save(newORG_SYS, function success(responseOS) {
-                            $scope.newContact.ORGANIZATION_SYSTEM_ID = responseOS.ORGANIZATION_SYSTEM_ID;
-                            var org = $scope.allOrganizations.filter(function (o) { return o.ORGANIZATION_ID == responseOS.ORG_ID; })[0];
-                            var div = responseOS.DIV_ID > 0 ? $scope.allDivisions.filter(function (d) { return d.DIVISION_ID == responseOS.DIV_ID; })[0] : null;
-                            var sec = responseOS.SEC_ID > 0 ? $scope.allSections.filter(function (s) { return s.SECTION_ID == responseOS.SEC_ID; })[0] : null;
+                            $scope.newContact.organization_system_id = responseOS.organization_system_id;
+                            var org = $scope.allOrganizations.filter(function (o) { return o.organization_id == responseOS.org_id; })[0];
+                            var div = responseOS.div_id > 0 ? $scope.allDivisions.filter(function (d) { return d.division_id == responseOS.div_id; })[0] : null;
+                            var sec = responseOS.sec_id > 0 ? $scope.allSections.filter(function (s) { return s.section_id == responseOS.sec_id; })[0] : null;
                             var newOrgRes = {
-                                OrganizationSystemID: responseOS.ORGANIZATION_SYSTEM_ID,
-                                OrganizationID: org.ORGANIZATION_ID,
-                                OrganizationName: org.ORGANIZATION_NAME,
-                                DivisionID: div !== null ? div.DIVISION_ID : 0,
-                                DivisionName: div !== null ? div.DIVISION_NAME : null,
-                                SectionID: sec !== null ? sec.SECTION_ID : 0,
-                                SectionName: sec !== null ? sec.SECTION_NAME : null
+                                organization_system_id: responseOS.organization_system_id,
+                                org_id: org.organization_id,
+                                OrganizationName: org.organization_name,
+                                div_id: div !== null ? div.division_id : 0,
+                                DivisionName: div !== null ? div.division_name : null,
+                                sec_id: sec !== null ? sec.section_id : 0,
+                                SectionName: sec !== null ? sec.section_name : null
                             };
                             $scope.allOrgResources.push(newOrgRes);
                             postProjContact(newOrgRes);
@@ -164,21 +164,21 @@
                 showAtag.style.display = "none";
                 if ($scope.updatedContactOrg) {
                     //they updated the org for this contact
-                    var projContactBeingUpdated = $scope.ProjContacts.filter(function (pc) { return pc.CONTACT_ID == contact.CONTACT_ID; })[0];
+                    var projContactBeingUpdated = $scope.ProjContacts.filter(function (pc) { return pc.contact_id == contact.contact_id; })[0];
                     var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.OrganizationName == projContactBeingUpdated.OrgName && or.DivisionName == (projContactBeingUpdated.DivName !== "" ? projContactBeingUpdated.DivName : null) && or.SectionName == (projContactBeingUpdated.SecName !== "" ? projContactBeingUpdated.SecName : null); })[0];
                     if (thisOrgRes !== undefined) {
                         //they didn't create a new one, just add the orgsysid to hidden input
-                        contact.ORGANIZATION_SYSTEM_ID = thisOrgRes.OrganizationSystemID;
+                        contact.organization_system_id = thisOrgRes.organization_system_id;
                         PUTcontact(contact, id);
                         //do a put now
                     } else {
                         //create the org_sys then add the id then put
-                        var orgId = $scope.allOrganizations.filter(function (aorg) { return aorg.ORGANIZATION_NAME == projContactBeingUpdated.OrgName; })[0].ORGANIZATION_ID;
-                        var divId = projContactBeingUpdated.DivName !== "" ? $scope.allDivisions.filter(function (adiv) { return adiv.DIVISION_NAME == projContactBeingUpdated.DivName; })[0].DIVISION_ID : 0;
-                        var secID = projContactBeingUpdated.SecName !== "" ? $scope.allSections.filter(function (asec) { return asec.SECTION_NAME == projContactBeingUpdated.SecName; })[0].SECTION_ID : 0;
-                        var newORGSYS = { ORG_ID: orgId, DIV_ID: divId, SEC_ID: secID };
+                        var orgId = $scope.allOrganizations.filter(function (aorg) { return aorg.organization_name == projContactBeingUpdated.OrgName; })[0].organization_id;
+                        var divId = projContactBeingUpdated.DivName !== "" ? $scope.allDivisions.filter(function (adiv) { return adiv.division_name == projContactBeingUpdated.DivName; })[0].division_id : 0;
+                        var secID = projContactBeingUpdated.SecName !== "" ? $scope.allSections.filter(function (asec) { return asec.section_name == projContactBeingUpdated.SecName; })[0].section_id : 0;
+                        var newORGSYS = { org_id: orgId, div_id: divId, sec_id: secID };
                         ORGANIZATION_SYSTEM.save(newORGSYS, function success(response) {
-                            contact.ORGANIZATION_SYSTEM_ID = response.ORGANIZATION_SYSTEM_ID;
+                            contact.organization_system_id = response.organization_system_id;
                             PUTcontact(contact, id);
                         }, function error(errorResponse) {
                             toastr.error("Error: " + errorResponse.statusText);
@@ -198,7 +198,7 @@
                 $http.defaults.headers.common.Accept = 'application/json';
                 CONTACT.update({ id: id }, contactToUpdate, function success(response) {
                     var projContact = response;
-                    var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.OrganizationSystemID == response.ORGANIZATION_SYSTEM_ID; })[0];
+                    var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.organization_system_id == response.organization_system_id; })[0];
                     projContacts.OrgName = thisOrgRes.OrganizationName;
                     projContacts.DivName = thisOrgRes.DivisionName;
                     projContacts.SecName = thisOrgRes.SectionName;
@@ -210,11 +210,7 @@
                 });
                 return retur;
             }
-
-            $scope.secChosen = function (s) {
-                //TODO: a section was chosen
-            };
-
+            
             //ADD ORG MODAL CONTENT (Add New ORG NAME, DIVISION, OR SECTION)
             $scope.addNewOrg = function () {
                 //modal
@@ -226,9 +222,9 @@
                 var chosenparts = [];
                 if ($scope.isEditing) {
                     //editing contact's org, pass their org id's to the modal for prepopulating
-                    var orgId = editingContact.OrgName !== undefined ? $scope.allOrganizations.filter(function (o) { return o.ORGANIZATION_NAME == editingContact.OrgName; })[0].ORGANIZATION_ID : 0;
-                    var divId = editingContact.DivName !== undefined && editingContact.DivName !== "" ? $scope.allDivisions.filter(function (d) { return d.DIVISION_NAME == editingContact.DivName; })[0].DIVISION_ID : 0;
-                    var secId = editingContact.SecName !== undefined && editingContact.SecName !== "" ? $scope.allSections.filter(function (s) { return s.SECTION_NAME == editingContact.SecName; })[0].SECTION_ID : 0;
+                    var orgId = editingContact.OrgName !== undefined ? $scope.allOrganizations.filter(function (o) { return o.organization_name == editingContact.OrgName; })[0].organization_id : 0;
+                    var divId = editingContact.DivName !== undefined && editingContact.DivName !== "" ? $scope.allDivisions.filter(function (d) { return d.division_name == editingContact.DivName; })[0].division_id : 0;
+                    var secId = editingContact.SecName !== undefined && editingContact.SecName !== "" ? $scope.allSections.filter(function (s) { return s.section_name == editingContact.SecName; })[0].section_id : 0;
                     chosenparts.push(orgId);
                     chosenparts.push(divId);
                     chosenparts.push(secId);
@@ -268,30 +264,30 @@
 
                         var i = $scope.ProjContacts.indexOf(thisContact);
                         //update this contact's binded org info
-                        $scope.ProjContacts[i].OrgName = $scope.allOrganizations.filter(function (o) { return o.ORGANIZATION_ID == chosenOrgID; })[0].ORGANIZATION_NAME;
-                        $scope.ProjContacts[i].DivName = chosenDivID > 0 ? $scope.allDivisions.filter(function (o) { return o.DIVISION_ID == chosenDivID; })[0].DIVISION_NAME : "";
-                        $scope.ProjContacts[i].SecName = chosenSecID > 0 ? $scope.allSections.filter(function (o) { return o.SECTION_ID == chosenSecID; })[0].SECTION_NAME : "";
-                        var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.OrganizationID == chosenOrgID && or.DivisionID == chosenDivID && or.SectionID == chosenSecID; })[0];
+                        $scope.ProjContacts[i].OrgName = $scope.allOrganizations.filter(function (o) { return o.organization_id == chosenOrgID; })[0].organization_name;
+                        $scope.ProjContacts[i].DivName = chosenDivID > 0 ? $scope.allDivisions.filter(function (o) { return o.division_id == chosenDivID; })[0].division_name : "";
+                        $scope.ProjContacts[i].SecName = chosenSecID > 0 ? $scope.allSections.filter(function (o) { return o.section_id == chosenSecID; })[0].section_name : "";
+                        var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.org_id == chosenOrgID && or.div_id == chosenDivID && or.sec_id == chosenSecID; })[0];
                         if (thisOrgRes !== undefined) {
                             //they didn't create a new one, just add the orgsysid to hidden input
-                            $scope.ProjContacts[i].ORGANIZATION_SYSTEM_ID = thisOrgRes.OrganizationSystemID;
+                            $scope.ProjContacts[i].organization_system_id = thisOrgRes.organization_system_id;
                         } else {
                             //post the orgSys and then apply the id to hidden input
-                            var newORGSYS = { ORG_ID: chosenOrgID, DIV_ID: chosenDivID, SEC_ID: chosenSecID };
+                            var newORGSYS = { org_id: chosenOrgID, div_id: chosenDivID, sec_id: chosenSecID };
                             ORGANIZATION_SYSTEM.save(newORGSYS, function success(response) {
                                 var test;
                                 //update the orgResourceList
                                 var orgResToAdd = {
-                                    OrganizationSystemID: response.ORGANIZATION_SYSTEM_ID,
-                                    OrganizationID: response.ORG_ID,
+                                    organization_system_id: response.organization_system_id,
+                                    org_id: response.org_id,
                                     OrganizationName: $scope.ProjContacts[i].OrgName,
-                                    DivisionID: response.DIV_ID,
+                                    div_id: response.div_id,
                                     DivisionName: $scope.ProjContacts[i].DivName,
-                                    SectionID: response.SEC_ID,
+                                    sec_id: response.sec_id,
                                     SectionName: $scope.ProjContacts[i].SecName
                                 };
                                 $scope.allOrgResources.push(orgResToAdd);
-                                $scope.ProjContacts[i].ORGANIZATION_SYSTEM_ID = response.ORGANIZATION_SYSTEM_ID;
+                                $scope.ProjContacts[i].organization_system_id = response.organization_system_id;
                             }, function error(errorResponse) { toastr.error(errorResponse.statusText); }).$promise;
 
                         }
@@ -302,13 +298,13 @@
                         $scope.selectedOrgID = updatedOrgDivSec[3];
                         //need to populate all divs before making one selected
                         if ($scope.selectedOrgID !== "")
-                            $scope.alldivs = $scope.allDivisions.filter(function (d) { return d.ORG_ID == $scope.selectedOrgID; });
+                            $scope.alldivs = $scope.allDivisions.filter(function (d) { return d.org_id == $scope.selectedOrgID; });
 
                         $scope.selectedDivID = updatedOrgDivSec[4];
 
                         //need to populate all secs before making one selected
                         if ($scope.selectedDivID !== "")
-                            $scope.allsecs = $scope.allSections.filter(function (s) { return s.DIV_ID == $scope.selectedDivID; });
+                            $scope.allsecs = $scope.allSections.filter(function (s) { return s.div_id == $scope.selectedDivID; });
 
                         $scope.selectedSecID = updatedOrgDivSec[5];
                     }//end else (new contact)
@@ -338,19 +334,19 @@
                     var index = $scope.ProjContacts.indexOf(con);
                     //put it back to a CONTACT
                     var aCONTACT = {
-                        CONTACT_ID: con.CONTACT_ID,
-                        NAME: con.NAME,
-                        EMAIL: con.EMAIL,
-                        PHONE: con.PHONE,
-                        ORGANIZATION_SYSTEM_ID: con.ORGANIZATION_SYSTEM_ID,
-                        SCIENCE_BASE_ID: con.SCIENCE_BASE_ID
+                        contact_id: con.contact_id,
+                        name: con.name,
+                        email: con.email,
+                        phone: con.phone,
+                        organization_system_id: con.organization_system_id,
+                        science_base_id: con.science_base_id
                     };
                     //DELETE it
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
                    // $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
-                    PROJECT.deleteProjContact({ id: thisProject.PROJECT_ID, contId: aCONTACT.CONTACT_ID }, function success(response) {
+                    PROJECT.deleteProjContact({ id: thisProject.project_id, ContactId: aCONTACT.contact_id }, function success(response) {
                         $scope.ProjContacts.splice(index, 1);
                         $scope.contactCount.total = $scope.contactCount.total - 1;
                         //TODO: Make sure services are removing the organizationsystem object

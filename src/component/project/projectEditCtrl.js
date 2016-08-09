@@ -89,7 +89,7 @@
                             return dropdownParts;
                         },
                         thisProjectStuff: function () {
-                            if ($scope.aProject.PROJECT_ID !== undefined) {
+                            if ($scope.aProject.project_id !== undefined) {
                                 var projObjectives = $scope.ProjectObjectives;
                                 var projKeywords = $scope.ProjectKeywords;
                                 var projectRelatedStuff = [$scope.aProject, projObjectives, projKeywords];
@@ -103,13 +103,14 @@
                     $rootScope.stateIsLoading.showLoading = false; //loading...  
                     if (r !== 'cancel') {
                         $scope.aProject = r[0];
-                        if ($scope.aProject.URL) {
-                            //split string into an array
-                            if (($scope.aProject.URL).indexOf('|') > -1) $scope.urls = ($scope.aProject.URL).split("|");
-                            else $scope.urls[0] = $scope.aProject.URL;
-                        }
+                        //if ($scope.aProject.url) {
+                        //    //split string into an array
+                        //    if (($scope.aProject.url).indexOf('|') > -1) $scope.urls = ($scope.aProject.url).split("|");
+                        //    else $scope.urls[0] = $scope.aProject.url;
+                        //}
                         $scope.ProjectObjectives = r[1];
                         $scope.ProjectKeywords = r[2];
+                        $scope.urls = r[3];
                     } else {
                         $state.go('home');
                     }
@@ -119,13 +120,13 @@
             if (thisProject !== undefined) {
                 //this is an existing project = build for details view
                 $scope.aProject = thisProject;
-                $scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? true : false;
+                $scope.readyFlagModel = $scope.aProject.ready_flag > 0 ? true : false;
                 $scope.coopCount = { total: projOrgs.length };
                 $scope.datumCount = { total: projDatum.length };
                 $scope.contactCount = { total: projContacts.length };
                 $scope.pubCount = { total: projPubs.length };
                 $scope.sitesCount = { total: projSites.length };
-                $scope.title = "Project: " + $scope.aProject.NAME;
+                $scope.title = "Project: " + $scope.aProject.name;
                 $scope.ProjectKeywords = projKeywords;
                 $scope.ProjectObjectives = projObjectives;
 
@@ -134,24 +135,24 @@
                 //if any ProjSites, make sure the url (if one) is formatted properly
                 for (var psu = 0; psu < projSites.length; psu++) {
                     var ind = psu;
-                    if (projSites[ind].URL !== null && !projSites[ind].URL.startsWith('http')) {
+                    if ((projSites[ind].url !== null && projSites[ind].url !== undefined) && !projSites[ind].url.startsWith('http')) {
                         //there is a url and it's not formatted
                         neededUpdating = true;
-                        projSites[ind].URL = 'http://' + projSites[ind].URL;
+                        projSites[ind].url = 'http://' + projSites[ind].url;
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common.Accept = 'application/json';
-                        SITE.update({ id: projSites[ind].SITE_ID }, projSites[ind]).$promise;
+                        SITE.update({ id: projSites[ind].site_id }, projSites[ind]).$promise;
                     }
                 }
                 //#endregion loop to put each site's url in proper way (http://)
 
                 //put string ProjURLs into array by '|' and then ensure proper url format
-                if ($scope.aProject.URL) {
+                if ($scope.aProject.url) {
                     //split string into an array
-                    if (($scope.aProject.URL).indexOf('|') > -1) {
-                        $scope.urls = ($scope.aProject.URL).split("|");
+                    if (($scope.aProject.url).indexOf('|') > -1) {
+                        $scope.urls = ($scope.aProject.url).split("|");
                     } else {
-                        $scope.urls[0] = $scope.aProject.URL;
+                        $scope.urls[0] = $scope.aProject.url;
                     }
                     //make sure they are formatted.. if not, format and PUT
                     var neededUpdating1 = false;
@@ -165,14 +166,14 @@
                     if (neededUpdating1) {
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common.Accept = 'application/json';
-                        $scope.aProject.URL = ($scope.urls).join('|');
-                        PROJECT.update({ id: $scope.aProject.PROJECT_ID }, $scope.aProject).$promise.then(function (response) {
+                        $scope.aProject.url = ($scope.urls).join('|');
+                        PROJECT.update({ id: $scope.aProject.project_id }, $scope.aProject).$promise.then(function (response) {
                             $scope.aProject = response;
                             //split string into an array
-                            if (($scope.aProject.URL).indexOf('|') > -1) {
-                                $scope.urls = ($scope.aProject.URL).split("|");
+                            if (($scope.aProject.url).indexOf('|') > -1) {
+                                $scope.urls = ($scope.aProject.url).split("|");
                             } else {
-                                $scope.urls[0] = $scope.aProject.URL;
+                                $scope.urls[0] = $scope.aProject.url;
                             }
                         });
                     }
@@ -197,8 +198,8 @@
                             //don't let them uncheck.. either click yes or no .. can't unYes or unNo
                             $scope.message = flag ? "Are you sure this project is ready to publish on the SiGL Mapper?" : "Are you sure you want to remove this project from being published on the SiGL Mapper?";
                             $scope.ok = function () {
-                                //$scope.aProject.READY_FLAG = data == "Yes" ? 1 : 0;
-                                p.READY_FLAG = flag ? 1 : 0;
+                                //$scope.aProject.ready_flag = data == "Yes" ? 1 : 0;
+                                p.ready_flag = flag ? 1 : 0;
                                 $uibModalInstance.close(p);
                             };
                             $scope.cancel = function () {
@@ -211,13 +212,13 @@
                         size: 'sm'
                     });
                     changeFlagModal.result.then(function (pr) {
-                        if (pr.PROJECT_ID !== undefined) {
+                        if (pr.project_id !== undefined) {
                             //yes, PUT the project with the updated flag set
                             $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                             $http.defaults.headers.common.Accept = 'application/json';
-                            PROJECT.update({ id: pr.PROJECT_ID }, pr, function success(response) {
+                            PROJECT.update({ id: pr.project_id }, pr, function success(response) {
                                 $scope.aProject = response;
-                                $scope.readyFlagModel = $scope.aProject.READY_FLAG > 0 ? true : false;
+                                $scope.readyFlagModel = $scope.aProject.ready_flag > 0 ? true : false;
                                 toastr.success("Project Updated");
                             }, function error(errorResponse) {
                                 toastr.error("Error: " + errorResponse.statusText);

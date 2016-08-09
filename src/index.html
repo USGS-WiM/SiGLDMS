@@ -29,7 +29,7 @@
         <h2><b>SiGL</b><em>:</em>Data Management System (DMS)</h2>
 
         <div id="account-controls" ng-show="isAuth.val">
-            <h3>Welcome, <a ui-sref="dataManagers.DMInfo({id: userID})">{{usersName}}</a></h3>
+            <h3>Welcome, <a ui-sref="dataManagers.DMList({id: userID})">{{usersName}}</a></h3>
             <button ng-controller="logoutCtrl" ng-click="logout()">LOG OFF</button>
         </div>
 
@@ -41,7 +41,7 @@
             <li ng-if="Role == 'Admin'"><a ui-sref="settings" ui-sref-active="active">Settings</a></li>
             <!--
             -->
-            <li><a ui-sref="dataManagers.DMInfo({id: userID})" ui-sref-active="active">Your account</a></li>
+            <li><a ui-sref="dataManagers.DMList({id: userID})" ui-sref-active="active">Your account</a></li>
             <!--
             -->
             <li><a ui-sref="help" ui-sref-active="active">FAQs/Help</a></li>
@@ -73,9 +73,9 @@
         <div class="modal-body">
             <form name="newSiteName">
                 <div class="form-group">
-                    <label class="col-md-10 control-label req" for="inputNAME">New Site Name:</label>
+                    <label class="col-md-10 control-label req" for="name">New Site Name:</label>
                     <div class="col-md-12">
-                        <input class="form-control" id="inputNAME" name="NAME" ng-enter="ok()" ng-model="newSite.NAME" type="text" required />
+                        <input class="form-control" id="name" name="name" ng-enter="ok()" ng-model="newSite.name" type="text" required />
                     </div>
                 </div>
             </form><br clear="all" />
@@ -113,11 +113,11 @@
                 <div class="sigl-modal-form-group">
                     <label>Organization:</label>
                     <div ng-show="!showAddNAMEinput">
-                        <select ng-disabled="disableOrgSelect" ng-model="selectedOrgID.id" ng-options="org.ORGANIZATION_ID as org.ORGANIZATION_NAME for org in orgList | orderBy: 'ORGANIZATION_NAME'" ng-change="getDivs(selectedOrgID.id)"></select>
+                        <select ng-disabled="disableOrgSelect" ng-model="selectedOrgID.id" ng-options="org.organization_id as org.organization_name for org in orgList | orderBy: 'organization_name'" ng-change="getDivs(selectedOrgID.id)"></select>
                         <span ng-show="!showAddDIVISIONinput && !showAddSECTIONinput" style="display: block; font-size: 8pt;"><a href ng-click="addOrgName()">Add Organization</a></span>
                     </div>
                     <div ng-show="showAddNAMEinput">
-                        <input class="form-control" id="inputNAME" name="NAME" ng-model="OrgName.value" type="text" placeholder="New Organization Name" />
+                        <input class="form-control" id="name" name="name" ng-model="OrgName.value" type="text" placeholder="New Organization Name" />
                         <button class="sigl-btn btn-small" ng-click="addThisName(OrgName.value)">Add</button>
                         <button class="sigl-btn btn-small" ng-click="neverMind('org')">Cancel</button>
                     </div>
@@ -127,8 +127,8 @@
                 <div class="sigl-modal-form-group">
                     <label>Division</label>
                     <div ng-show="!showAddDIVISIONinput">
-                        <select ng-disabled="disableDivSelect" ng-model="selectedDivID.id" ng-options="div.DIVISION_ID as div.DIVISION_NAME for div in divList | orderBy: 'DIVISION_NAME'" ng-change="getSecs(selectedDivID.id)">
-                            <!--<option ng-repeat="div in divList | orderBy: 'DIVISION_NAME'" value="{{div.DIVISION_ID}}">{{div.DIVISION_NAME}}</option>-->
+                        <select ng-disabled="disableDivSelect" ng-model="selectedDivID.id" ng-options="div.division_id as div.division_name for div in divList | orderBy: 'division_name'" ng-change="getSecs(selectedDivID.id)">
+                            <!--<option ng-repeat="div in divList | orderBy: 'division_name'" value="{{div.division_id}}">{{div.division_name}}</option>-->
                         </select>
                         <span ng-show="orgsBeenChosen && !showAddSECTIONinput" style="display: block; font-size: 8pt;"><a href ng-click="addDivName()">Add Division</a></span>
                     </div>
@@ -144,11 +144,11 @@
                 <div class="sigl-modal-form-group">
                     <label>Section</label>
                     <div ng-show="!showAddSECTIONinput">
-                        <select ng-disabled="disableSecSelect" ng-model="selectedSecID.id" ng-options="sec.SECTION_ID as sec.SECTION_NAME for sec in secList | orderBy: 'SECTION_NAME'" ng-change="setSecs(selectedSecID.id)"></select>
+                        <select ng-disabled="disableSecSelect" ng-model="selectedSecID.id" ng-options="sec.section_id as sec.section_name for sec in secList | orderBy: 'section_name'" ng-change="setSecs(selectedSecID.id)"></select>
                         <span ng-show="divsBeenChosen" style="display: block; font-size: 8pt;"><a href ng-click="addSecName()">Add Section</a></span>
                     </div>
                     <div ng-show="showAddSECTIONinput">
-                        <input id="inputSECTION" name="SECTION" ng-model="sectionName.value" type="text" placeholder="New Section" />
+                        <input id="section" name="section" ng-model="sectionName.value" type="text" placeholder="New Section" />
                         <button class="sigl-btn btn-small" ng-click="addThisSection(sectionName.value, selectedDivID.id)">Add</button>
                         <button class="sigl-btn btn-small" ng-click="neverMind('sec')">Cancel</button>
                     </div>
@@ -174,19 +174,19 @@
         <table class="sigl-table">
             <thead>
                 <tr>
-                    <th class="NAME">Project Name&nbsp;<a ng-click="plsort_by('Name')"><i class="glyphicon glyphicon-sort"></i></a></th>
-                    <th class="START_DATE">Start Date&nbsp;<a ng-click="plsort_by('START_DATE')"><i class="glyphicon glyphicon-sort"></i></a></th>
-                    <th class="END_DATE">End Date&nbsp;<a ng-click="plsort_by('END_DATE')"><i class="glyphicon glyphicon-sort"></i></a></th>
-                    <th class="DataManager.LNAME">Data Manager&nbsp;<a ng-click="plsort_by('DataManager.LNAME')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="name">Project Name&nbsp;<a ng-click="plsort_by('Name')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="start_date">Start Date&nbsp;<a ng-click="plsort_by('start_date')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="end_date">End Date&nbsp;<a ng-click="plsort_by('end_date')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="DataManager.lname">Data Manager&nbsp;<a ng-click="plsort_by('DataManager.lname')"><i class="glyphicon glyphicon-sort"></i></a></th>
                 </tr>
             </thead>
 
             <tbody>
                 <tr ng-repeat="pr in ProjectList | orderBy:plsortingOrder:plreverse">
-                    <td><a ui-sref="projectEdit.info({id: pr.PROJECT_ID})">{{pr.NAME}}</a></td>
-                    <td>{{pr.START_DATE | date: 'MM/dd/yyyy'}}</td>
-                    <td>{{pr.END_DATE | date: 'MM/dd/yyyy'}}</td>
-                    <td>{{pr.DataManager.FNAME}} {{pr.DataManager.LNAME}}</td>
+                    <td><a ui-sref="projectEdit.info({id: pr.project_id})">{{pr.name}}</a></td>
+                    <td>{{pr.start_date | date: 'MM/dd/yyyy'}}</td>
+                    <td>{{pr.end_date | date: 'MM/dd/yyyy'}}</td>
+                    <td>{{pr.DataManager.fname}} {{pr.DataManager.lname}}</td>
                 </tr>
             </tbody>
         </table>

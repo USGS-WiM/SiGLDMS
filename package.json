@@ -17,7 +17,7 @@
   "bugs": {
     "url": "https://github.com/USGS-WiM/STNWeb2/issues"
   },
-  "homepage": "https://github.com/USGS-WiM/STNWeb2#readme",
+  "homepage": "https://github.com/USGS-WiM/SiGLDMS#readme",
   "devDependencies": {
     "body-parser": "^1.14.2",
     "bower": "^1.7.2",

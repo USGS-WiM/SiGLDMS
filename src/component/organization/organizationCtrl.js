@@ -3,8 +3,8 @@
 
     var siGLControllers = angular.module('siGLControllers');
 
-    siGLControllers.controller('organizationCtrl', ['$scope','$q', '$http', '$cookies', '$uibModal', 'allDMs', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'ORGANIZATION_RESOURCE',
-    function ($scope, $q, $http, $cookies, $uibModal, allDMs, allOrgRes, allOrgs, allDivs, allSecs, ORGANIZATION_RESOURCE) {
+    siGLControllers.controller('organizationCtrl', ['$scope', '$q', '$http', '$cookies', '$uibModal', 'allDMs', 'allOrgRes', 'allOrgs', 'allDivs', 'allSecs', 'ORGANIZATION_SYSTEM',
+    function ($scope, $q, $http, $cookies, $uibModal, allDMs, allOrgRes, allOrgs, allDivs, allSecs, ORGANIZATION_SYSTEM) {
         $scope.accountRole = $cookies.get('usersRole');
         $scope.OrgListModel = allOrgRes;
         $scope.orgCntLoading = true; // show/hide loading next to proj cnt
@@ -13,7 +13,7 @@
         //get all the projects at these lakes
         angular.forEach($scope.OrgListModel, function (o) {
             var oDeferred = $q.defer();
-            ORGANIZATION_RESOURCE.getOrgProjects({ id: o.OrganizationSystemID }, function success(response) {
+            ORGANIZATION_SYSTEM.getOrgProjects({ id: o.organization_system_id }, function success(response) {
                 o.Projects = response;
                 oDeferred.resolve(response);
             });
@@ -114,7 +114,7 @@
             modalInstance.result.then(function (keyToRemove) {
                 var index = $scope.lakeTypeList.indexOf(lt);
                 $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                //LAKE_TYPE.delete({ id: lt.LAKE_TYPE_ID }, function success(response) {
+                //LAKE_TYPE.delete({ id: lt.lake_type_id }, function success(response) {
                 //    $scope.lakeTypeList.splice(index, 1);
                 //    toastr.success("Lake Type Removed");
                 //}, function error(errorResponse) {
@@ -129,7 +129,7 @@
             var projModal = $uibModal.open({
                 templateUrl: 'lookupProjectListModal.html',
                 controller: function ($scope, $uibModalInstance, DMList) {
-                    $scope.plsortingOrder = 'NAME';
+                    $scope.plsortingOrder = 'name';
                     $scope.plreverse = false;
                     $scope.plsort_by = function (newSortingOrder) {
                         if ($scope.plsortingOrder == newSortingOrder) {
@@ -151,7 +151,7 @@
                     $scope.Type = type;
                     $scope.ProjectList = p;
                     angular.forEach($scope.ProjectList, function (p) {
-                        p.DataManager = DMList.filter(function (d) { return d.DATA_MANAGER_ID == p.DATA_MANAGER_ID; })[0];
+                        p.DataManager = DMList.filter(function (d) { return d.data_manager_id == p.data_manager_id; })[0];
                     });
 
                     $scope.ok = function () {

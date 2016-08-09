@@ -54,21 +54,21 @@
             if (thisProjectStuff !== undefined) {
                 //#region existing project (edit)
                 $scope.aProject = angular.copy(thisProjectStuff[0]);
-                $scope.aProject.START_DATE = $scope.aProject.START_DATE !== null ? makeAdate($scope.aProject.START_DATE) : null;
-                $scope.aProject.END_DATE = $scope.aProject.END_DATE !== null ? makeAdate($scope.aProject.END_DATE) : null;
+                $scope.aProject.start_date = $scope.aProject.start_date !== null ? makeAdate($scope.aProject.start_date) : null;
+                $scope.aProject.end_date = $scope.aProject.end_date !== null ? makeAdate($scope.aProject.end_date) : null;
 
                 ////put string ProjURLs into array by '|' and then ensure proper url format
-                if ($scope.aProject.URL) {
+                if ($scope.aProject.url) {
                     //split string into an array
-                    if (($scope.aProject.URL).indexOf('|') > -1) {
-                        $scope.urls = ($scope.aProject.URL).split("|");
+                    if (($scope.aProject.url).indexOf('|') > -1) {
+                        $scope.urls = ($scope.aProject.url).split("|");
                     } else {
-                        $scope.urls[0] = $scope.aProject.URL;
+                        $scope.urls[0] = $scope.aProject.url;
                     }
                 } //end there's a url*-/-
 
                 //check status for disabling of end date
-                if ($scope.aProject.PROJ_STATUS_ID == 1) {
+                if ($scope.aProject.proj_status_id == 1) {
                     $scope.undetermined = true;
                 }
 
@@ -84,7 +84,7 @@
                     for (var i = 0; i < $scope.objectiveTypeList.length; i++) {
                         //for each one, if projObjectives has this id, add 'selected:true' else add 'selected:false'
                         for (var y = 0; y < $scope.projObjs.length; y++) {
-                            if ($scope.projObjs[y].OBJECTIVE_TYPE_ID == $scope.objectiveTypeList[i].OBJECTIVE_TYPE_ID) {
+                            if ($scope.projObjs[y].objective_type_id == $scope.objectiveTypeList[i].objective_type_id) {
                                 $scope.objectiveTypeList[i].selected = true;
                                 y = $scope.projObjs.length; //ensures it doesn't set it as false after setting it as true
                             }
@@ -117,8 +117,8 @@
 
             //start or end date was changed -- compare to ensure end date comes after start date
             $scope.compareDates = function (d) {
-                if ($scope.aProject.END_DATE !== undefined && $scope.aProject.END_DATE !== null && $scope.aProject.END_DATE !== "") {
-                    if (new Date($scope.aProject.END_DATE) < new Date($scope.aProject.START_DATE)) {
+                if ($scope.aProject.end_date !== undefined && $scope.aProject.end_date !== null && $scope.aProject.end_date !== "") {
+                    if (new Date($scope.aProject.end_date) < new Date($scope.aProject.start_date)) {
                         var dateModal = $uibModal.open({
                             template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                         '<div class="modal-body"><p>Completion date must come after Start date.</p></div>' +
@@ -132,11 +132,11 @@
                         });
                         dateModal.result.then(function (wrongDate) {
                             if (wrongDate == "start") {
-                                $scope.aProject.START_DATE = "";
-                                angular.element("#START_DATE").focus();
+                                $scope.aProject.start_date = "";
+                                angular.element("#start_date").focus();
                             } else {
-                                $scope.aProject.END_DATE = "";
-                                angular.element("#END_DATE").focus();
+                                $scope.aProject.end_date = "";
+                                angular.element("#end_date").focus();
                             }
                         });
                     }
@@ -148,17 +148,17 @@
                 //store this to handle in PUT or POST
                 if (data.selected) { //selected
                     $scope.ObjectivesToAdd.push(data); //add to ObjectivesToAdd
-                    if ($scope.aProject.PROJECT_ID !== undefined) { //if this is edit
+                    if ($scope.aProject.project_id !== undefined) { //if this is edit
                         //editing (remove from remove list if there)
-                        var i = $scope.ObjectivesToRemove.map(function (e) { return e.OBJECTIVE_TYPE_ID; }).indexOf(data.OBJECTIVE_TYPE_ID);
+                        var i = $scope.ObjectivesToRemove.map(function (e) { return e.objective_type_id; }).indexOf(data.objective_type_id);
                         if (i >= 0) $scope.ObjectivesToRemove.splice(i, 1); //remove from removeList ..in case they removed and then added it back
                     }
                 } else {
                     //data.selected == false
-                    var ind = $scope.ObjectivesToAdd.map(function (e) { return e.OBJECTIVE_TYPE_ID; }).indexOf(data.OBJECTIVE_TYPE_ID);
+                    var ind = $scope.ObjectivesToAdd.map(function (e) { return e.objective_type_id; }).indexOf(data.objective_type_id);
                     if (ind >= 0) $scope.ObjectivesToAdd.splice(ind, 1); //remove it from addList if they added then removed
 
-                    if ($scope.aProject.PROJECT_ID !== undefined) { //edit
+                    if ($scope.aProject.project_id !== undefined) { //edit
                         $scope.ObjectivesToRemove.push(data); //add it to removeList
 
                     }
@@ -188,7 +188,7 @@
                         });
                         repeatedModal.result.then(function (fieldFocus) {
                             if (fieldFocus == "url") {
-                                $("#URL").focus();
+                                $("#url").focus();
                             }
                         });
                     }
@@ -207,7 +207,7 @@
                     });
                     modalInstance.result.then(function (fieldFocus) {
                         if (fieldFocus == "url") {
-                            $("#URL").focus();
+                            $("#url").focus();
                         }
                     });
                 }
@@ -225,7 +225,7 @@
                             return key;
                         },
                         what: function () {
-                            return "URL";
+                            return "url";
                         }
                     }
                 });
@@ -242,8 +242,8 @@
             //add keyword
             $scope.addThisKeyword = function () {
                 if ($scope.newKey.value !== undefined) {
-                    $scope.KeywordsToAdd.push({ TERM: $scope.newKey.value });
-                    $scope.ProjectKeywords.push({ TERM: $scope.newKey.value });
+                    $scope.KeywordsToAdd.push({ term: $scope.newKey.value });
+                    $scope.ProjectKeywords.push({ term: $scope.newKey.value });
                     $scope.newKey = {};
                 } else {
                     // the value is empty
@@ -287,10 +287,10 @@
                     //yes, remove this keyword
                     var index1 = $scope.ProjectKeywords.indexOf(key);
 
-                    if ($scope.aProject.PROJECT_ID !== undefined){
+                    if ($scope.aProject.project_id !== undefined) {
                         $scope.KeywordsToRemove.push(key);
                         //check and see if they are adding then removing
-                        var isInKeysToAdd = $scope.KeywordsToAdd.map(function (k) { return k.TERM; }).indexOf(key.TERM);
+                        var isInKeysToAdd = $scope.KeywordsToAdd.map(function (k) { return k.term; }).indexOf(key.term);
                         if (isInKeysToAdd >= 0) { $scope.KeywordsToAdd.splice(isInKeysToAdd, 1); }
                     }  else
                         $scope.KeywordsToAdd.splice(index, 1);
@@ -305,9 +305,9 @@
 
             //disable end date if status has 'end date undetermined'
             $scope.statusChanged = function () {
-                if ($scope.aProject.PROJ_STATUS_ID == 1) {
-                    if ($scope.aProject.END_DATE !== undefined || $scope.aProject.END_DATE !== "") {
-                        $scope.aProject.END_DATE = "";
+                if ($scope.aProject.proj_status_id == 1) {
+                    if ($scope.aProject.end_date !== undefined || $scope.aProject.end_date !== "") {
+                        $scope.aProject.end_date = "";
                     }
                     $scope.undetermined = true;
 
@@ -322,17 +322,17 @@
                 if (valid) {
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
-                    $scope.aProject.URL = ($scope.urls).join('|');
+                    $scope.aProject.url = ($scope.urls).join('|');
                     var projID;
                     // $(".page-loading").removeClass("hidden");
                     $rootScope.stateIsLoading.showLoading = true; //loading...
                     PROJECT.save({}, $scope.aProject, function success(response) {
                         toastr.success("Project Created");
                         $scope.aProject = response;
-                        projID = response.PROJECT_ID;
+                        projID = response.project_id;
                         //post objectives added
                         for (var o = $scope.ObjectivesToAdd.length; o--;) {
-                            PROJECT.addProjObjective({ id: projID }, $scope.ObjectivesToAdd[o], function success(response) {
+                            PROJECT.addProjObjective({ id: projID, objectiveTypeId: $scope.ObjectivesToAdd[o].objective_type_id }, function success(response) {
                                 $scope.Objectivesdata = response;
                                 toastr.success("Project Objectives added");
                             }, function error(errorResponse) {
@@ -341,7 +341,7 @@
                         }
                         //post keywords
                         for (var k = $scope.KeywordsToAdd.length; k--;) {
-                            PROJECT.addProjKeyword({ id: projID }, $scope.KeywordsToAdd[k], function success(response) {
+                            PROJECT.addProjKeyword({ id: projID, term: $scope.KeywordsToAdd[k].term }, function success(response) {
                                 $scope.ProjectKeywords = response;
                                 toastr.success("Keyword Added");
                             }, function error(errorResponse) {
@@ -366,32 +366,32 @@
                     $rootScope.stateIsLoading.showLoading = true; //loading... 
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
-                    $scope.aProject.URL = $scope.urls.join("|");
-                    PROJECT.update({ id: $scope.aProject.PROJECT_ID }, $scope.aProject, function success(ProjResponse) {                       
+                    $scope.aProject.url = $scope.urls.join("|");
+                    PROJECT.update({ id: $scope.aProject.project_id }, $scope.aProject, function success(ProjResponse) {
                         //use $q for async call to delete and add objectives and keywords
                         var defer = $q.defer();
                         var RemovePromises = [];
                         var AddPromises = [];
                         //remove objectives
                         angular.forEach($scope.ObjectivesToRemove, function (Ovalue) {
-                            var delObjProm = PROJECT.deleteProjObjective({ id: $scope.aProject.PROJECT_ID, objId: Ovalue.OBJECTIVE_TYPE_ID }).$promise;
+                            var delObjProm = PROJECT.deleteProjObjective({ id: $scope.aProject.project_id, ObjectiveTypeId: Ovalue.objective_type_id }).$promise;
                             RemovePromises.push(delObjProm);                            
                         });
                         //remove keywords
                         angular.forEach($scope.KeywordsToRemove, function (Kvalue) {
-                            if (Kvalue.KEYWORD_ID !== undefined) {
-                                var delKeyProm = PROJECT.deleteProjKeyword({ id: $scope.aProject.PROJECT_ID, keyId: Kvalue.KEYWORD_ID }).$promise;
+                            if (Kvalue.keyword_id !== undefined) {
+                                var delKeyProm = PROJECT.deleteProjKeyword({ id: $scope.aProject.project_id, KeywordId: Kvalue.keyword_id }).$promise;
                                 RemovePromises.push(delKeyProm);
                             }
                         });
                         //add objectives
                         angular.forEach($scope.ObjectivesToAdd, function (OaddValue) {
-                            var objProm = PROJECT.addProjObjective({ id: $scope.aProject.PROJECT_ID }, OaddValue).$promise;
+                            var objProm = PROJECT.addProjObjective({ id: $scope.aProject.project_id, objectiveTypeId: OaddValue.objective_type_id }).$promise;
                             AddPromises.push(objProm);
                         });
                         //add keywords
                         angular.forEach($scope.KeywordsToAdd, function (KaddValue) {
-                            var keyProm = PROJECT.addProjKeyword({ id: $scope.aProject.PROJECT_ID }, KaddValue).$promise;
+                            var keyProm = PROJECT.addProjKeyword({ id: $scope.aProject.project_id }, KaddValue).$promise;
                             AddPromises.push(keyProm);
                         });
                         //ok now run the removes, then the adds and then pass the stuff back out of here.
@@ -399,7 +399,7 @@
                             $scope.ObjectivesToRemove = []; $scope.KeywordsToRemove = []; //clear remove arrays
                             $q.all(AddPromises).then(function (response) {
                                 $scope.ObjectivesToAdd = []; $scope.KeywordsToAdd = [];
-                                var prjectParts = [$scope.aProject, $scope.Objectivesmodel.value, $scope.ProjectKeywords];
+                                var prjectParts = [$scope.aProject, $scope.Objectivesmodel.value, $scope.ProjectKeywords, $scope.urls];
                                 toastr.success("Project Updated");
                                 $uibModalInstance.close(prjectParts);
                             }).catch(function error(msg) {

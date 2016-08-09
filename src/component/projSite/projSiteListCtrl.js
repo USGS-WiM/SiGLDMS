@@ -4,14 +4,24 @@
     var siGLControllers = angular.module('siGLControllers');
     siGLControllers.controller('projSiteListCtrl', ['$scope', '$rootScope', '$location', '$cookies', '$uibModal', '$http', '$q', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'CountryList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE',
         function ($scope, $rootScope, $location, $cookies, $uibModal, $http, $q, projS, thisProject, siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList, SITE) {
-            $scope.projectSites = projS;
+            $scope.projectSites = projS; //this looks different now TODO //////////
 
             for (var psu = 0; psu < $scope.projectSites.length; psu++) {
+                //fix urls
                 var ind = psu;
-                if ($scope.projectSites[ind].URL !== undefined && !$scope.projectSites[ind].URL.startsWith('http')) {
-                    $scope.projectSites[ind].URL = 'http://' + $scope.projectSites[ind].URL;
+                if ($scope.projectSites[ind].url !== undefined && !$scope.projectSites[ind].url.startsWith('http')) {
+                    $scope.projectSites[ind].url = 'http://' + $scope.projectSites[ind].url;
+                }
+                if ($scope.projectSites[ind].StartDate !== "") {
+                    var spaceSIndex = $scope.projectSites[ind].StartDate.indexOf(" ");
+                    $scope.projectSites[ind].StartDate = $scope.projectSites[ind].StartDate.substring(0, spaceSIndex);
+                }
+                if ($scope.projectSites[ind].EndDate !== "") {
+                    var spaceEIndex = $scope.projectSites[ind].EndDate.indexOf(" ");
+                    $scope.projectSites[ind].EndDate = $scope.projectSites[ind].EndDate.substring(0, spaceEIndex);
                 }
             }
+                        
             $scope.thisProject = thisProject;
             $scope.LakeList = lakeList;
             $scope.StatusList = siteStatList;
@@ -51,22 +61,22 @@
             var formatSite = function (aSite) {
                 //format it properly
                 var aSITE = {};
-                aSITE.START_DATE = aSite.StartDate !== undefined ? aSite.StartDate : "";
-                aSITE.END_DATE = aSite.EndDate !== undefined ? aSite.EndDate : "";
-                aSITE.PROJECT_ID = aSite.ProjID;
-                aSITE.SAMPLE_PLATFORM = aSite.SamplePlatform !== undefined ? aSite.SamplePlatform : "";
-                aSITE.ADDITIONAL_INFO = aSite.AdditionalInfo;
-                aSITE.NAME = aSite.Name;
-                aSITE.DESCRIPTION = aSite.Description !== undefined ? aSite.Description : "";
-                aSITE.LATITUDE = aSite.latitude;
-                aSITE.LONGITUDE = aSite.longitude;
-                aSITE.WATERBODY = aSite.Waterbody !== undefined ? aSite.Waterbody : "";
-                aSITE.STATUS_TYPE_ID = aSite.StatType !== undefined ? aSite.StatType.STATUS_ID : "0";
-                aSITE.LAKE_TYPE_ID = aSite.LakeType.LAKE_TYPE_ID;
-                aSITE.COUNTRY = aSite.Country;
-                aSITE.STATE_PROVINCE = aSite.State;
-                aSITE.WATERSHED_HUC8 = aSite.WatershedHUC8 !== undefined ? aSite.WatershedHUC8 : "";
-                aSITE.URL = aSite.URL !== undefined ? aSite.URL : "";
+                aSITE.start_date = aSite.StartDate !== undefined ? aSite.StartDate : "";
+                aSITE.end_date = aSite.EndDate !== undefined ? aSite.EndDate : "";
+                aSITE.project_id = aSite.ProjID;
+                aSITE.sample_platform = aSite.SamplePlatform !== undefined ? aSite.SamplePlatform : "";
+                aSITE.additional_info = aSite.AdditionalInfo;
+                aSITE.name = aSite.Name;
+                aSITE.description = aSite.Description !== undefined ? aSite.Description : "";
+                aSITE.latitude = aSite.latitude;
+                aSITE.longitude = aSite.longitude;
+                aSITE.waterbody = aSite.Waterbody !== undefined ? aSite.Waterbody : "";
+                aSITE.status_type_id = aSite.StatType !== undefined ? aSite.StatType.status_id : "0";
+                aSITE.lake_type_id = aSite.LakeType.lake_type_id;
+                aSITE.country = aSite.Country;
+                aSITE.state_province = aSite.State;
+                aSITE.watershed_huc8 = aSite.WatershedHUC8 !== undefined ? aSite.WatershedHUC8 : "";
+                aSITE.url = aSite.url !== undefined ? aSite.url : "";
 
                 return aSITE;
             };
@@ -87,93 +97,27 @@
                 modalInstance.result.then(function (newSiteName) {
                     //go use this (newSiteName.name and newSiteName.id) (new with this new name and duplicate everything and then direct to it
                     var thisSite = angular.copy($scope.projectSites.filter(function (s) { return s.SiteId == newSiteName.id; })[0]);
-                    thisSite.ProjID = $scope.thisProject.PROJECT_ID;
+                    thisSite.ProjID = $scope.thisProject.project_id;
                     thisSite.Name = newSiteName.name;
-                    thisSite.StatType = $scope.StatusList.filter(function (st) { return st.STATUS == thisSite.Status; })[0];
-                    thisSite.LakeType = $scope.LakeList.filter(function (st) { return st.LAKE == thisSite.GreatLake; })[0];
-                    $scope.FrequenciesToAdd = []; $scope.MediaToAdd = []; $scope.ParameterToAdd = []; $scope.ResourceToAdd = [];
-
+                    thisSite.StatType = $scope.StatusList.filter(function (st) { return st.status == thisSite.Status; })[0];
+                    thisSite.LakeType = $scope.LakeList.filter(function (st) { return st.lake == thisSite.Lake; })[0];
+                    
                     //properly form the site
                     var aSITE = formatSite(thisSite);
-                    var freqSplit = thisSite.Frequency !== undefined ? thisSite.Frequency.split(',') : [];
-                    var medSplit = thisSite.Media !== undefined ? thisSite.Media.split(',') : [];
-                    var resSplit = thisSite.Resources !== undefined ? thisSite.Resources.split(',') : [];
-
-                    var paramSorted = [];
-                    var bioSplit = thisSite.ParameterStrings.Biological.split(';');
-                    var chemSplit = thisSite.ParameterStrings.Chemical.split(';');
-                    var micSplit = thisSite.ParameterStrings.Microbiological.split(';');
-                    var phySplit = thisSite.ParameterStrings.Physical.split(';');
-                    var toxSplit = thisSite.ParameterStrings.Toxicological.split(';');
-
-                    for (var b = 0; b < bioSplit.length; b++) {
-                        //add biological string
-                        paramSorted.push(bioSplit[b]);
-                    }
-                    for (var c = 0; c < chemSplit.length; c++) {
-                        //add chemical string
-                        paramSorted.push(chemSplit[c]);
-                    }
-                    for (var m = 0; m < micSplit.length; m++) {
-                        //add microbiological string
-                        paramSorted.push(micSplit[m]);
-                    }
-                    for (var p = 0; p < phySplit.length; p++) {
-                        //add physical string
-                        paramSorted.push(phySplit[p]);
-                    }
-                    for (var t = 0; t < toxSplit.length; t++) {
-                        //add tox string
-                        paramSorted.push(toxSplit[t]);
-                    }
-                    var paramsSplit = paramSorted;
-
-                    //now that they are all arrays, go get them to add for posting
-                    for (var sf = 0; sf < freqSplit.length; sf++) {
-                        for (var f = 0; f < $scope.FreqList.length; f++) {
-                            //remove spaces for accurate compare with Replace
-                            if (freqSplit[sf].replace(/\s/g, '') == $scope.FreqList[f].FREQUENCY.replace(/\s/g, '')) {
-                                $scope.FrequenciesToAdd.push($scope.FreqList[f]);
-                                f = $scope.FreqList.length;
-                            }
-                        }
-                    }
-                    for (var sm = 0; sm < medSplit.length; sm++) {
-                        for (var med = 0; med < $scope.MediaList.length; med++) {
-                            //remove spaces for accurate compare with Replace
-                            if (medSplit[sm].replace(/\s/g, '') == $scope.MediaList[med].MEDIA.replace(/\s/g, '')) {
-                                $scope.MediaToAdd.push($scope.MediaList[med]);
-                                med = $scope.MediaList.length;
-                            }
-                        }
-                    }
-                    for (var sr = 0; sr < resSplit.length; sr++) {
-                        for (var r = 0; r < $scope.ResourceList.length; r++) {
-                            //remove spaces for accurate compare with Replace
-                            if (resSplit[sr].replace(/\s/g, '') == $scope.ResourceList[r].RESOURCE_NAME.replace(/\s/g, '')) {
-                                $scope.ResourceToAdd.push($scope.ResourceList[r]);
-                                r = $scope.ResourceList.length;
-                            }
-                        }
-                    }
-                    for (var sp = 0; sp < paramsSplit.length; sp++) {
-                        for (var pa = 0; pa < $scope.ParamList.length; pa++) {
-                            //remove spaces for accurate compare with Replace
-                            if (paramsSplit[sp].replace(/\s/g, '') == $scope.ParamList[pa].PARAMETER.replace(/\s/g, '')) {
-                                $scope.ParameterToAdd.push($scope.ParamList[pa]);
-                                pa = $scope.ParamList.length;
-                            }
-                        }
-                    }
+                    $scope.FrequenciesToAdd = thisSite.Frequencies;
+                    $scope.MediaToAdd = thisSite.Media;                   
+                    $scope.ResourceToAdd = thisSite.Resources;
+                    $scope.ParameterToAdd = thisSite.Parameters;
+                    
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
                     var siteId = "";
                     SITE.save(aSITE, function success(response) {
                         $rootScope.stateIsLoading.showLoading = true; //loading... 
-                        thisSite.SiteId = response.SITE_ID;
+                        thisSite.SiteId = response.site_id;
                         $scope.projectSites.push(thisSite);
                         toastr.success("Site Created");
-                        siteId = response.SITE_ID;
+                        siteId = response.site_id;
                         //projSites.push(response);
                         $scope.sitesCount.total = $scope.sitesCount.total + 1;
                         //use $q for async call to add frequencies, media, parameters, resources
@@ -181,22 +125,22 @@
                         var AddPromises = [];
                         //post frequencies added
                         angular.forEach($scope.FrequenciesToAdd, function (freq) {
-                            var addFreqPromise = SITE.addSiteFrequency({ id: siteId }, freq).$promise;
+                            var addFreqPromise = SITE.addSiteFrequency({ id: siteId, frequencyTypeId: freq.frequency_type_id }).$promise;
                             AddPromises.push(addFreqPromise);
                         });
                         //post media
                         angular.forEach($scope.MediaToAdd, function (med) {
-                            var addMedPromise = SITE.addSiteMedia({ id: siteId }, med).$promise;
+                            var addMedPromise = SITE.addSiteMedia({ id: siteId, mediaTypeId: med.media_type_id }).$promise;
                             AddPromises.push(addMedPromise);
                         });
                         //post parameters
                         angular.forEach($scope.ParameterToAdd, function (par) {
-                            var addParamPromise = SITE.addSiteParameter({ id: siteId }, par).$promise;
+                            var addParamPromise = SITE.addSiteParameter({ id: siteId, parameterTypeId: par.parameter_type_id }).$promise;
                             AddPromises.push(addParamPromise);
                         });
                         //post resources
                         angular.forEach($scope.ResourceToAdd, function (res) {
-                            var addResPromise = SITE.addSiteResource({ id: siteId }, res).$promise;
+                            var addResPromise = SITE.addSiteResource({ id: siteId, resourceTypeId: res.resource_type_id }).$promise;
                             AddPromises.push(addResPromise);
                         });
                         $q.all(AddPromises).then(function () {
@@ -271,27 +215,27 @@
                             if (site !== 0) {
                                 return site;
                             }
-                        },
-                        siteFreq: function () {
-                            if (site !== 0) {
-                                return SITE.getSiteFrequencies({ id: site.SiteId }).$promise;
-                            }
-                        },
-                        siteMed: function () {
-                            if (site !== 0) {
-                                return SITE.getSiteMedia({ id: site.SiteId }).$promise;
-                            }
-                        },
-                        siteRes: function () {
-                            if (site !== 0) {
-                                return SITE.getSiteResources({ id: site.SiteId }).$promise;
-                            }
-                        },
-                        siteParams: function () {
-                            if (site !== 0) {
-                                return SITE.getSiteParameters({ id: site.SiteId }).$promise;
-                            }
-                        }
+                        }//,
+                        //siteFreq: function () {
+                        //    if (site !== 0) {
+                        //        return site.Frequencies;//SITE.getSiteFrequencies({ id: site.SiteId }).$promise;
+                        //    }
+                        //},
+                        //siteMed: function () {
+                        //    if (site !== 0) {
+                        //        return SITE.getSiteMedia({ id: site.SiteId }).$promise;
+                        //    }
+                        //},
+                        //siteRes: function () {
+                        //    if (site !== 0) {
+                        //        return SITE.getSiteResources({ id: site.SiteId }).$promise;
+                        //    }
+                        //},
+                        //siteParams: function () {
+                        //    if (site !== 0) {
+                        //        return SITE.getSiteParameters({ id: site.SiteId }).$promise;
+                        //    }
+                        //}
                     }
                 });
                 modalInstance.result.then(function (r) {

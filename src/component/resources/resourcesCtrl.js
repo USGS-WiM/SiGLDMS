@@ -16,7 +16,7 @@
 
                 //#region ALL LOOKUPS (add/update/delete)
                 //#region Frequency Types Add/Update/Delete
-                $scope.FsortingOrder = 'FREQUENCY';
+                $scope.FsortingOrder = 'frequency';
                 $scope.Freverse = false;
                 $scope.Fsort_by = function (newSortingOrder) {
                     if ($scope.FsortingOrder == newSortingOrder) {
@@ -42,7 +42,7 @@
                 $http.defaults.headers.common.Accept = 'application/json';
                 angular.forEach($scope.freqTypeList, function (f) {
                     var Fdeferred = $q.defer();
-                    FREQUENCY_TYPE.getFreqProj({ id: f.FREQUENCY_TYPE_ID }, function success(response) {
+                    FREQUENCY_TYPE.getFreqProj({ id: f.frequency_type_id }, function success(response) {
                         f.Projects = response;
                         //defer so can capture when all done here
                         Fdeferred.resolve(response); 
@@ -120,7 +120,7 @@
                         var index = $scope.freqTypeList.indexOf(ft);
                         //DELETE it
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        FREQUENCY_TYPE.delete({ id: ft.FREQUENCY_TYPE_ID }, function success(response) {
+                        FREQUENCY_TYPE.delete({ id: ft.frequency_type_id }, function success(response) {
                             $scope.freqTypeList.splice(index, 1);
                             toastr.success("Frequency Type Removed");
                         }, function error(errorResponse) {
@@ -133,7 +133,7 @@
                 //#endregion Frequency Types Add/Update/Delete
 
                 //#region Lake Type Add/Update/Delete
-                $scope.LsortingOrder = 'LAKE';
+                $scope.LsortingOrder = 'lake';
                 $scope.Lreverse = false;
                 $scope.Lsort_by = function (newSortingOrder) {
                     if ($scope.LsortingOrder == newSortingOrder) {
@@ -159,7 +159,7 @@
                 //get all the projects at these lakes
                 angular.forEach($scope.lakeTypeList, function (l) {
                     var Ldeferred = $q.defer();
-                    LAKE_TYPE.getLakeProj({ id: l.LAKE_TYPE_ID }, function success(response) {
+                    LAKE_TYPE.getLakeProj({ id: l.lake_type_id }, function success(response) {
                         l.Projects = response;
                         Ldeferred.resolve(response);
                     });
@@ -229,7 +229,7 @@
                     modalInstance.result.then(function (keyToRemove) {
                         var index = $scope.lakeTypeList.indexOf(lt);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        LAKE_TYPE.delete({ id: lt.LAKE_TYPE_ID }, function success(response) {
+                        LAKE_TYPE.delete({ id: lt.lake_type_id }, function success(response) {
                             $scope.lakeTypeList.splice(index, 1);
                             toastr.success("Lake Type Removed");
                         }, function error(errorResponse) {
@@ -242,7 +242,7 @@
                 //#endregion Lake Type Add/Update/Delete
 
                 //#region Media Type Add/Update/Delete
-                $scope.MsortingOrder = 'MEDIA';
+                $scope.MsortingOrder = 'media';
                 $scope.Mreverse = false;
                 $scope.Msort_by = function (newSortingOrder) {
                     if ($scope.MsortingOrder == newSortingOrder) {
@@ -267,7 +267,7 @@
                 $http.defaults.headers.common.Accept = 'application/json';
                 angular.forEach($scope.mediaTypeList, function (m) {
                     var Mdeferred = $q.defer();
-                    MEDIA_TYPE.getMediaProj({ id: m.MEDIA_TYPE_ID }, function success(response) {
+                    MEDIA_TYPE.getMediaProj({ id: m.media_type_id }, function success(response) {
                         m.Projects = response;
                         Mdeferred.resolve(response);
                     });
@@ -337,7 +337,7 @@
                     modalInstance.result.then(function (keyToRemove) {
                         var index = $scope.mediaTypeList.indexOf(mt);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        MEDIA_TYPE.delete({ id: mt.MEDIA_TYPE_ID },function success(response) {
+                        MEDIA_TYPE.delete({ id: mt.media_type_id }, function success(response) {
                             $scope.mediaTypeList.splice(index, 1);
                             toastr.success("Media Type Removed");
                         }, function error(errorResponse) {
@@ -350,7 +350,7 @@
                 //#endregion Media Type Add/Update/Delete
 
                 //#region Objective Type Add/Update/Delete
-                $scope.OsortingOrder = 'OBJECTIVE';
+                $scope.OsortingOrder = 'objective';
                 $scope.Oreverse = false;
                 $scope.Osort_by = function (newSortingOrder) {
                     if ($scope.OsortingOrder == newSortingOrder) {
@@ -375,7 +375,7 @@
                 $http.defaults.headers.common.Accept = 'application/json';
                 angular.forEach($scope.objTypeList, function (o) {
                     var Odeferred = $q.defer();
-                    OBJECTIVE_TYPE.getObjProj({ id: o.OBJECTIVE_TYPE_ID }, function success(response) {
+                    OBJECTIVE_TYPE.getObjProj({ id: o.objective_type_id }, function success(response) {
                         o.Projects = response;
                         Odeferred.resolve(response);
                     });
@@ -451,7 +451,7 @@
                         var index = $scope.objTypeList.indexOf(ot);
                         //DELETE it
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        OBJECTIVE_TYPE.delete({ id: ot.OBJECTIVE_TYPE_ID }, function success(response) {
+                        OBJECTIVE_TYPE.delete({ id: ot.objective_type_id }, function success(response) {
                             $scope.objTypeList.splice(index, 1);
                             toastr.success("Objective Type Removed");
                         }, function error(errorResponse) {
@@ -464,7 +464,7 @@
                 //#endregion Objective Type Add/Update/Delete
 
                 //#region Parameter Type Add/Update/Delete
-                 $scope.PsortingOrder = 'PARAMETER';
+                $scope.PsortingOrder = 'parameter';
                 $scope.Preverse = false;
 
                 $scope.Psort_by = function (newSortingOrder) {                   
@@ -497,7 +497,7 @@
                 $http.defaults.headers.common.Accept = 'application/json';
                 angular.forEach($scope.paramTypeList, function (p) {
                     var Pdeferred = $q.defer();
-                    PARAMETER_TYPE.getParamProj({ id: p.PARAMETER_TYPE_ID }, function success(response) {
+                    PARAMETER_TYPE.getParamProj({ id: p.parameter_type_id }, function success(response) {
                         p.Projects = response;
                         Pdeferred.resolve(response);
                     });
@@ -568,7 +568,7 @@
                     modalInstance.result.then(function (keyToRemove) {
                         var index = $scope.paramTypeList.indexOf(pt);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        PARAMETER_TYPE.delete({ id: pt.PARAMETER_TYPE_ID }, function success(response) {
+                        PARAMETER_TYPE.delete({ id: pt.parameter_type_id }, function success(response) {
                             $scope.paramTypeList.splice(index, 1);
                             toastr.success("Parameter Type Removed");
                         }, function error(errorResponse) {
@@ -581,7 +581,7 @@
                 //#endregion Parameter Type Add/Update/Delete
 
                 //#region Resource Type Add/Update/Delete
-                $scope.RsortingOrder = 'RESOURCE_NAME';
+                $scope.RsortingOrder = 'resource_name';
                 $scope.Rreverse = false;
                 $scope.Rsort_by = function (newSortingOrder) {
                     if ($scope.RsortingOrder == newSortingOrder) {
@@ -606,7 +606,7 @@
                 $http.defaults.headers.common.Accept = 'application/json';
                 angular.forEach($scope.resourceTypeList, function (rt) {
                     var Rdeferred = $q.defer();
-                    RESOURCE_TYPE.getResourceProj({ id: rt.RESOURCE_TYPE_ID }, function success(response) {
+                    RESOURCE_TYPE.getResourceProj({ id: rt.resource_type_id }, function success(response) {
                         rt.Projects = response;
                         Rdeferred.resolve(response);
                     });
@@ -676,7 +676,7 @@
                     modalInstance.result.then(function (keyToRemove) {
                         var index = $scope.resourceTypeList.indexOf(rt);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        RESOURCE_TYPE.delete({ id: rt.RESOURCE_TYPE_ID }, function success(response) {
+                        RESOURCE_TYPE.delete({ id: rt.resource_type_id }, function success(response) {
                             $scope.resourceTypeList.splice(index, 1);
                             toastr.success("Resource Type Removed");
                         }, function error(errorResponse) {
@@ -689,7 +689,7 @@
                 //#endregion Resource Type Add/Update/Delete
 
                 //#region Proj Duration Add/Update/Delete
-                $scope.PDsortingOrder = 'DURATION_VALUE';
+                $scope.PDsortingOrder = 'duration_value';
                 $scope.PDreverse = false;
                 $scope.PDsort_by = function (newSortingOrder) {
                     if ($scope.PDsortingOrder == newSortingOrder) {
@@ -714,7 +714,7 @@
                 $http.defaults.headers.common.Accept = 'application/json';
                 angular.forEach($scope.projDurationList, function (pd) {
                     var PDdeferred = $q.defer();
-                    PROJ_DURATION.getProjDurProj({ id: pd.PROJ_DURATION_ID }, function success(response) {
+                    PROJ_DURATION.getProjDurProj({ id: pd.proj_duration_id }, function success(response) {
                         pd.Projects = response;
                         PDdeferred.resolve(response);
                     });
@@ -790,7 +790,7 @@
                         var index = $scope.projDurationList.indexOf(pd);
                         //DELETE it
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        PROJ_DURATION.delete({ id: pd.PROJ_DURATION_ID }, function success(response) {
+                        PROJ_DURATION.delete({ id: pd.proj_duration_id }, function success(response) {
                             $scope.projDurationList.splice(index, 1);
                             toastr.success("Project Duration Removed");
                         }, function error(errorResponse) {
@@ -803,7 +803,7 @@
                 //#endregion Proj Duration Add/Update/Delete
 
                 //#region Proj Status Add/Update/Delete
-                $scope.PSsortingOrder = 'STATUS_VALUE';
+                $scope.PSsortingOrder = 'status_value';
                 $scope.PSreverse = false;
                 $scope.PSsort_by = function (newSortingOrder) {
                     if ($scope.PSsortingOrder == newSortingOrder) {
@@ -828,7 +828,7 @@
                 $http.defaults.headers.common.Accept = 'application/json';
                 angular.forEach($scope.projStatusList, function (ps) {
                     var PSdeferred = $q.defer();
-                    PROJ_STATUS.getProjStatProj({ id: ps.PROJ_STATUS_ID }, function success(response) {
+                    PROJ_STATUS.getProjStatProj({ id: ps.proj_status_id }, function success(response) {
                         ps.Projects = response;
                         PSdeferred.resolve(response);
                     });
@@ -898,7 +898,7 @@
                     modalInstance.result.then(function (keyToRemove) {
                         var index = $scope.projStatusList.indexOf(ps);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        PROJ_STATUS.delete({ id: ps.PROJ_STATUS_ID }, function success(response) {
+                        PROJ_STATUS.delete({ id: ps.proj_status_id }, function success(response) {
                             $scope.projStatusList.splice(index, 1);
                             toastr.success("Project Status Removed");
                         }, function error(errorResponse) {
@@ -911,7 +911,7 @@
                 //#endregion Proj Status Add/Update/Delete
 
                 //#region Site Status Add/Update/Delete
-                $scope.SSsortingOrder = 'STATUS';
+                $scope.SSsortingOrder = 'status';
                 $scope.SSreverse = false;
                 $scope.SSsort_by = function (newSortingOrder) {
                     if ($scope.SSsortingOrder == newSortingOrder) {
@@ -936,7 +936,7 @@
                 $http.defaults.headers.common.Accept = 'application/json';
                 angular.forEach($scope.siteStatusList, function (ss) {
                     var SSdeferred = $q.defer();
-                    STATUS_TYPE.getSiteStatusProj({ id: ss.STATUS_ID }, function success(response) {
+                    STATUS_TYPE.getSiteStatusProj({ id: ss.status_id }, function success(response) {
                         ss.Projects = response;
                         SSdeferred.resolve(response);
                     });
@@ -1006,7 +1006,7 @@
                     modalInstance.result.then(function (keyToRemove) {
                         var index = $scope.siteStatusList.indexOf(ss);
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        STATUS_TYPE.delete({ id: ss.STATUS_ID }, function success(response) {
+                        STATUS_TYPE.delete({ id: ss.status_id }, function success(response) {
                             $scope.siteStatusList.splice(index, 1);
                             toastr.success("Site Status Type Removed");
                         }, function error(errorResponse) {
@@ -1022,7 +1022,7 @@
                     var projModal = $uibModal.open({
                         templateUrl: 'lookupProjectListModal.html',
                         controller: function ($scope, $uibModalInstance, DMList) {
-                            $scope.plsortingOrder = 'NAME';
+                            $scope.plsortingOrder = 'name';
                             $scope.plreverse = false;
                             $scope.plsort_by = function (newSortingOrder) {
                                 if ($scope.plsortingOrder == newSortingOrder) {
@@ -1044,7 +1044,7 @@
                             $scope.Type = type;
                             $scope.ProjectList = p;
                             angular.forEach($scope.ProjectList, function (p) {
-                                p.DataManager = DMList.filter(function (d) { return d.DATA_MANAGER_ID == p.DATA_MANAGER_ID; })[0];
+                                p.DataManager = DMList.filter(function (d) { return d.data_manager_id == p.data_manager_id; })[0];
                             });
 
                             $scope.ok = function () {

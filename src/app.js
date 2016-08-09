@@ -2,7 +2,7 @@
     "use strict"; 
     var app = angular.module('app',
         ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'isteven-multi-select', 'ngInputModified', 'ui.validate', 'angular.filter', 'xeditable',
-            'ngMask', 'toggle-switch', 'laMPResource', 'siGLControllers', 'ModalControllers', 'LogInOutController']);
+             'toggle-switch', 'laMPResource', 'siGLControllers', 'ModalControllers', 'LogInOutController']);
     
     app.run(['$rootScope', '$cookies', '$state', '$uibModalStack', function ($rootScope, $cookies, $state, $uibModalStack) {
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {                    
@@ -11,7 +11,7 @@
                 $rootScope.returnToStateParams = toParams.id;
                 event.preventDefault();
                 $state.go('home');
-                //$("#ui-view").html("");
+                //$("#ui-view").html(""); 'ngMask',
             } else {
                 $rootScope.stateIsLoading = { showLoading: true }; //loading...
 
@@ -66,13 +66,14 @@
                  .state("dataManagers", {
                      url: "/dataManager",
                      abstract: true,
+                     params: { id: null },
                      authenticate: true,
                      template: "<div ui-view></div>",//"partials/DM/dmHolderView.html",
                      controller: "dataManagerCtrl",
                      resolve: {                         
-                         orgS: 'ORGANIZATION_RESOURCE',
+                         orgS: 'ORGANIZATION_SYSTEM',
                          allOrgRes: function (orgS) {
-                             return orgS.getAll().$promise;
+                             return orgS.getOrgResources().$promise;
                          },
                          org: 'ORGANIZATION',
                          allOrgs: function (org) {
@@ -86,10 +87,11 @@
                          allSecs: function (secs) {
                              return secs.getAll().$promise;
                          },                         
-                         //p: 'PROJECT',
-                         //allProj: function (p) {
-                         //    return p.getAll().$promise;
-                         //},
+                         userProfileId: function ($stateParams) {
+                             if ($stateParams.id !== undefined)
+                                 return $stateParams.id;
+
+                         },
                          r: 'ROLE',
                          allRoles: function (r) {                             
                              return r.getAll().$promise;
@@ -149,9 +151,9 @@
                              $http.defaults.headers.common.Accept = 'application/json';
                              return dm.getAll().$promise;
                          },
-                         orgRes: 'ORGANIZATION_RESOURCE',
+                         orgRes: 'ORGANIZATION_SYSTEM',
                          allOrgRes: function (orgRes) {
-                             return orgRes.getAll().$promise;
+                             return orgRes.getOrgResources().$promise;
                          },
                          org: 'ORGANIZATION',
                          allOrgs: function (org) {
@@ -359,7 +361,7 @@
                                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                                     $http.defaults.headers.common.Accept = 'application/json';
                                     DATA_MANAGER.getDMProject({ id: useID }, function sucess(response) {
-                                        dmProjs = response.filter(function (p) { return p.ProjId == $stateParams.id; });
+                                        dmProjs = response.filter(function (p) { return p.project_id == $stateParams.id; });
                                         if (dmProjs.length > 0) {
                                             defer.resolve();
                                         } else {
@@ -501,9 +503,9 @@
                                     { id: projectId }).$promise;
                             }
                         },
-                        orgRes: 'ORGANIZATION_RESOURCE',
+                        orgRes: 'ORGANIZATION_SYSTEM',
                         orgResources: function (orgRes) {
-                            return orgRes.getAll().$promise;
+                            return orgRes.getOrgResources().$promise;
                         }
                     }
                 })
@@ -520,7 +522,7 @@
 
                 //#region region projectEdit.site
                 .state("projectEdit.site", {
-                    template: '<div class="panel panel-primary"><div ui-view=""></div></div>',
+                    template: '<div class=""><div ui-view=""></div></div>',
                     url: "/site",
                     abstract: true,
                     authenticate: true,

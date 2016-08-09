@@ -1,0 +1,101 @@
+<div ng-if="accountRole =='Admin'">
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th style="width:0"></th>
+                <th class="parameter">Parameter Type&nbsp;<a ng-click="Psort_by('parameter')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="parameter_group">Parameter Group&nbsp;<a ng-click="Psort_by('parameter_group')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Projects.length">Project Cnt&nbsp;<a ng-click="Psort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="paramCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="pt in paramTypeList | orderBy: PsortingOrder:Preverse">
+                <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="PTrowform" onaftersave="saveParameterType($data, pt.parameter_type_id)" ng-show="PTrowform.$visible" class="form-buttons form-inline" shown="inserted == pt">
+                        <button type="submit" ng-disabled="PTrowform.$waiting" class="btn btn-primary">
+                            save
+                        </button>
+                        <button type="button" ng-disabled="PTrowform.$waiting" ng-click="PTrowform.$cancel()" class="btn btn-default">
+                            cancel
+                        </button>
+                    </form>
+                    <div class="buttons" ng-show="!PTrowform.$visible">
+                        <button class="btn btn-primary" ng-click="PTrowform.$show()">edit</button>
+                        <button class="btn btn-danger" ng-click="deleteParameterType(pt)">del</button>
+                    </div>
+                </td>
+                <td>                    
+                    <span editable-text="pt.parameter" e-name="parameter" e-form="PTrowform">{{ pt.parameter || '' }}</span>
+                </td>
+
+                <td>                      
+                    <span editable-select="pt.parameter_group" e-name="parameter_group" e-form="PTrowform" e-ng-options="pg.text as pg.text for pg in paramGroupTypes">
+                        {{ (paramGroupTypes | filter:{text: pt.parameter_group})[0].text}}
+                    </span>                    
+                </td>
+                <td>
+                    <span><a ng-click="showProjectCntModal(pt.Projects, 'Parameter Type')">{{pt.Projects.length}}</a></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr />
+
+    <button ng-show="addPTButtonShowing" class="btn btn-primary" ng-click="showAddPTClicked()">Add New Parameter Type</button>
+
+    <div ng-show="showAddPTForm">
+        <form class="form-horizontal" name="lookupForm.ParamTypeFm">
+            <fieldset>
+                <div class="form-group required">
+                    <label class="col-md-3 control-label req" for="parameter">Parameter Type:</label>
+                    <div class="col-md-6">
+                        <input class="form-control" name="parameter" type="text" placeholder="" ng-model="newPT.parameter" required />
+                    </div>
+                </div>
+                <!-- TODO : group this new parameter belongs to select-->
+                <div class="form-group required">
+                    <label class="col-md-3 control-label req" for="parameter_group">Parameter Group:</label>
+                    <div class="col-md-6">
+                        <select class="form-control" name="parameter_group" ng-model="newPT.parameter_group"
+                                ng-options="p.text as p.text for p in paramGroupTypes" required>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+
+                <!--submit button-->
+                <div class="form-group">
+                    <div class="col-md-2 col-md-offset-2">
+                        <span>
+                            <button class="btn btn-primary" ng-click="AddParameterType(lookupForm.ParamTypeFm.$valid, newPT)">
+                                Add
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+        </form><button class="btn btn-default center-block" style="margin-top:-48px;" ng-click="NeverMindPT()">
+                   Cancel
+        </button>
+    </div>
+</div><!--end admin view-->
+<div ng-if="accountRole !='Admin'">
+    <script>
+        //var sortingOrder = 'PARAMETER';
+    </script>
+
+    <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
+                <th>Parameter Type&nbsp;<a ng-click="sort_by('parameter')"><i class="glyphicon glyphicon-sort"></i></a></th>
+            </tr>
+        </thead>
+        <tbody><!-- TODO : group this new parameter belongs to select-->
+            <tr ng-repeat="pt in paramTypeList | orderBy:sortingOrder:reverse">
+                <td>{{ pt.parameter || '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -10,6 +10,18 @@
         };
     });
 
+    siGLControllers.directive('myInputMask', function () {
+        return {
+            restrict: 'AC',
+            link: function (scope, el, attrs) {
+                el.inputmask(scope.$eval(attrs.myInputMask));
+                el.on('change', function () {
+                    scope.$eval(attrs.ngModel + "='" + el.val() + "'");
+                    // or scope[attrs.ngModel] = el.val() if your expression doesn't contain dot.
+                });
+            }
+        };
+    });
     //validate password
     siGLControllers.directive('passwordValidate', ['RegExp', function (regex) {
         return {
@@ -18,7 +30,7 @@
                 elm.unbind('keydown').unbind('change');
                 elm.bind('blur', function (viewValue) {
                     scope.$apply(function () {
-                        if ((regex.PASSWORD).test(viewValue.target.value)) {
+                        if ((regex.password).test(viewValue.target.value)) {
                             //it is valid
                             ctrl.$setValidity("passwordValidate", true);
                             return viewValue;
@@ -165,8 +177,8 @@
     //            model: '=ngModel',
     //        },
     //        replace: true,
-    //        template: '<label ng-model="aProject.READY_FLAG" uib-uncheckable="uncheckable" ng-click="Flagged("Yes", aProject)" uib-btn-radio="1" class="publish-yes">Yes</label>' +
-    //                    '<label ng-model="aProject.READY_FLAG" uib-uncheckable="uncheckable" ng-click="Flagged("No", aProject)" uib-btn-radio="0" class="publish-no">No</label>',
+    //        template: '<label ng-model="aProject.ready_flag" uib-uncheckable="uncheckable" ng-click="Flagged("Yes", aProject)" uib-btn-radio="1" class="publish-yes">Yes</label>' +
+    //                    '<label ng-model="aProject.ready_flag" uib-uncheckable="uncheckable" ng-click="Flagged("No", aProject)" uib-btn-radio="0" class="publish-no">No</label>',
     //        controller: [
     //            '$scope', '$state', 'SITE', '$uibModal',
     //            function ($scope, $state, SITE, $uibModal) {
@@ -222,7 +234,7 @@
     //                        //reset search and go to the site dash
     //                        $scope.searchTerm = '';
     //                        $scope.searchBy = { val: 'bySiteNo' };
-    //                        $state.go('site.dashboard', { id: s.SITE_ID });
+    //                        $state.go('site.dashboard', { id: s.site_id });
     //                    }
     //                };
     //            }

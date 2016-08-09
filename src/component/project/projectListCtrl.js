@@ -15,7 +15,7 @@
                 //get the projects to list
                 PROJECT.getIndexProjects(function success(data) {
                     data.sort(function (a, b) {
-                        var nameA = a.Name.toLowerCase(), nameB = b.Name.toLowerCase();
+                        var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
                         if (nameA < nameB)
                             return -1;
                         if (nameA > nameB)
@@ -34,7 +34,7 @@
                 }).$promise;
 
                 //see if sorting order has already been set, preserve if so, otherwise set to 'Name'
-                $scope.sortingOrder = $cookies.get('projListSortOrder') !== undefined ? $cookies.get('projListSortOrder') : 'Name';
+                $scope.sortingOrder = $cookies.get('projListSortOrder') !== undefined ? $cookies.get('projListSortOrder') : 'name';
                 $scope.reverse = $cookies.get('pl_reverse') !== undefined ? Boolean($cookies.get('pl_reverse')) : false;
 
                 $scope.sort_by = function (newSortingOrder) {

@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th style="width:0"></th>
-                <th class="LAKE">Lake Type&nbsp;<a ng-click="Lsort_by('LAKE')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="lake">Lake Type&nbsp;<a ng-click="Lsort_by('lake')"><i class="glyphicon glyphicon-sort"></i></a></th>
                 <th class="Projects.length">Project Cnt&nbsp;<a ng-click="Lsort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="lakeCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
             </tr>
         </thead>
@@ -11,7 +11,7 @@
             <tr ng-repeat="lt in lakeTypeList | orderBy: LsortingOrder:Lreverse">
                 <td style="white-space: nowrap">
                     <!-- form -->
-                    <form editable-form name="LTrowform" onaftersave="saveLakeType($data, lt.LAKE_TYPE_ID)" ng-show="LTrowform.$visible" class="form-buttons form-inline" shown="inserted == lt">
+                    <form editable-form name="LTrowform" onaftersave="saveLakeType($data, lt.lake_type_id)" ng-show="LTrowform.$visible" class="form-buttons form-inline" shown="inserted == lt">
                         <button type="submit" ng-disabled="LTrowform.$waiting" class="btn btn-primary">
                             save
                         </button>
@@ -25,7 +25,7 @@
                     </div>
                 </td>
                 <td>
-                    <span editable-text="lt.LAKE" e-name="LAKE" e-form="LTrowform">{{ lt.LAKE || '' }}</span>
+                    <span editable-text="lt.lake" e-name="lake" e-form="LTrowform">{{ lt.lake || '' }}</span>
                 </td>
                 <td>
                     <span><a ng-click="showProjectCntModal(lt.Projects, 'Lake Type')">{{lt.Projects.length}}</a></span>
@@ -42,9 +42,9 @@
         <form class="form-horizontal" name="lookupForm.lakeTypeFm">
             <fieldset>
                 <div class="form-group required">
-                    <label class="col-md-3 control-label req" for="inputLAKE">Lake Type:</label>
+                    <label class="col-md-3 control-label req" for="lake">Lake Type:</label>
                     <div class="col-md-6">
-                        <input class="form-control" id="inputLAKE" name="LAKE" type="text" placeholder="" ng-model="newLT.LAKE" required />
+                        <input class="form-control" id="lake" name="lake" type="text" placeholder="" ng-model="newLT.lake" required />
                     </div>
                 </div>
                 <!--submit button-->
@@ -65,18 +65,18 @@
 </div><!--end admin view-->
 <div ng-if="accountRole !='Admin'">
     <script>
-        //var sortingOrder = 'LAKE';
+        //var sortingOrder = 'lake';
     </script>
 
     <table class="table table-striped table-condensed">
         <thead>
             <tr>
-                <th class="LAKE">Lake Type&nbsp;<a ng-click="sort_by('LAKE')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="lake">Lake Type&nbsp;<a ng-click="sort_by('lake')"><i class="glyphicon glyphicon-sort"></i></a></th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="lt in lakeTypeList | orderBy:sortingOrder:reverse">
-                <td>{{ lt.LAKE || '' }}</td>
+                <td>{{ lt.lake || '' }}</td>
             </tr>
         </tbody>
     </table>

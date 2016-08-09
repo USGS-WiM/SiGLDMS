@@ -1,0 +1,59 @@
+<div class="">
+    <h3>Resources</h3>
+    <!-- Sidebar -->
+    <div id="wrapper">
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li ng-class="{active: activeMenu == 'freqTy'}"><a ui-sref="resources.ResourcesList.frequencyType" ng-click="activeMenu = 'freqTy'">Frequency Types</a></li>
+                <li ng-class="{active: activeMenu == 'lakeTy'}"><a ui-sref="resources.ResourcesList.LakeType" ng-click="activeMenu = 'lakeTy'">Lake Types</a></li>
+                <li ng-class="{active: activeMenu == 'mediaTy'}"><a ui-sref="resources.ResourcesList.MediaType" ng-click="activeMenu = 'mediaTy'">Media Types</a></li>
+                <li ng-class="{active: activeMenu == 'objTy'}"><a ui-sref="resources.ResourcesList.ObjectiveType" ng-click="activeMenu = 'objTy'">Objective Types</a></li>
+                <li ng-class="{active: activeMenu == 'paramTy'}"><a ui-sref="resources.ResourcesList.ParameterType" ng-click="activeMenu = 'paramTy'">Parameter Types</a></li>
+                <li ng-class="{active: activeMenu == 'projDur'}"><a ui-sref="resources.ResourcesList.ProjectDuration" ng-click="activeMenu = 'projDur'">Project Durations</a></li>
+                <li ng-class="{active: activeMenu == 'projStat'}"><a ui-sref="resources.ResourcesList.ProjectStatus" ng-click="activeMenu = 'projStat'">Project Statuses</a></li>
+                <li ng-class="{active: activeMenu == 'resTy'}"><a ui-sref="resources.ResourcesList.ResourceType" ng-click="activeMenu = 'resTy'">Resource Types</a></li>
+                <li ng-class="{active: activeMenu == 'siteStat'}"><a ui-sref="resources.ResourcesList.SiteStatus" ng-click="activeMenu = 'siteStat'">Site Statuses</a></li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="page-content">
+                <div ui-view></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Project List with specific Lookup Modal
+<script type="text/ng-template" id="lookupProjectListModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Project List</h3>
+    </div>
+    <div class="modal-body">
+        <div>List of Projects that have this {{Type}}:</div>
+        <table class="sigl-table">
+            <thead>
+                <tr>
+                    <th class="name">Project Name&nbsp;<a ng-click="plsort_by('Name')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="start_date">Start Date&nbsp;<a ng-click="plsort_by('start_date')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="end_date">End Date&nbsp;<a ng-click="plsort_by('end_date')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="DataManager.lname">Data Manager&nbsp;<a ng-click="plsort_by('DataManager.lname')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr ng-repeat="pr in ProjectList | orderBy:plsortingOrder:plreverse">
+                    <td><a ui-sref="projectEdit.info({id: pr.project_id})">{{pr.name}}</a></td>
+                    <td>{{pr.start_date | date: 'MM/dd/yyyy'}}</td>
+                    <td>{{pr.end_date | date: 'MM/dd/yyyy'}}</td>
+                    <td>{{pr.DataManager.fname}} {{pr.DataManager.lname}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button>
+    </div>
+
+</script> -->

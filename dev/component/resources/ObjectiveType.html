@@ -1,0 +1,83 @@
+<div ng-if="accountRole =='Admin'">
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th style="width:0"></th>
+                <th class="objective">Objective Type&nbsp;<a ng-click="Osort_by('objective')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Projects.length">Project Cnt&nbsp;<a ng-click="Osort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="objCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="ot in objTypeList | orderBy: OsortingOrder:Oreverse">
+                <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="OTrowform" onaftersave="saveObjectiveType($data, ot.objective_type_id)" ng-show="OTrowform.$visible" class="form-buttons form-inline" shown="inserted == ot">
+                        <button type="submit" ng-disabled="OTrowform.$waiting" class="btn btn-primary">
+                            save
+                        </button>
+                        <button type="button" ng-disabled="OTrowform.$waiting" ng-click="OTrowform.$cancel()" class="btn btn-default">
+                            cancel
+                        </button>
+                    </form>
+                    <div class="buttons" ng-show="!OTrowform.$visible">
+                        <button class="btn btn-primary" ng-click="OTrowform.$show()">edit</button>
+                        <button class="btn btn-danger" ng-click="deleteObjectiveType(ot)">del</button>
+                    </div>
+                </td>
+                <td>
+                    <span editable-text="ot.objective" e-name="objective" e-form="OTrowform">{{ ot.objective || '' }}</span>
+                </td>
+                <td>
+                    <span><a ng-click="showProjectCntModal(ot.Projects, 'Objective Type')">{{ot.Projects.length}}</a></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr />
+
+    <button ng-show="addOTButtonShowing" class="btn btn-primary" ng-click="showAddOTClicked()">Add New Objective Type</button>
+
+    <div ng-show="showAddOTForm">
+        <form class="form-horizontal" name="lookupForm.objTypeFm">
+            <fieldset>
+                <div class="form-group required">
+                    <label class="col-md-3 control-label req" for="objective">Objective Type:</label>
+                    <div class="col-md-6">
+                        <input class="form-control" id="objective" name="objective" type="text" placeholder="" ng-model="newOT.objective" required />
+                    </div>
+                </div>
+                <!--submit button-->
+                <div class="form-group">
+                    <div class="col-md-2 col-md-offset-2">
+                        <span>
+                            <button class="btn btn-primary" ng-click="AddObjectiveType(lookupForm.objTypeFm.$valid, newOT)">
+                                Add
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+        </form><button class="btn btn-default center-block" style="margin-top:-48px;" ng-click="NeverMindOT()">
+            Cancel
+        </button>
+    </div>
+</div><!--end admin view-->
+<div ng-if="accountRole !='Admin'">
+    <script>
+        //var sortingOrder = 'objective_type';
+    </script>
+
+    <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
+                <th class="objective">Objective Type&nbsp;<a ng-click="sort_by('objective')"><i class="glyphicon glyphicon-sort"></i></a></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="ot in objTypeList | orderBy:sortingOrder:reverse">
+                <td>{{ ot.objective || '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
