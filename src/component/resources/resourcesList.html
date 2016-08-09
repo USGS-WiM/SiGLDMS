@@ -35,19 +35,19 @@
         <table class="sigl-table">
             <thead>
                 <tr>
-                    <th class="NAME">Project Name&nbsp;<a ng-click="plsort_by('Name')"><i class="glyphicon glyphicon-sort"></i></a></th>
-                    <th class="START_DATE">Start Date&nbsp;<a ng-click="plsort_by('START_DATE')"><i class="glyphicon glyphicon-sort"></i></a></th>
-                    <th class="END_DATE">End Date&nbsp;<a ng-click="plsort_by('END_DATE')"><i class="glyphicon glyphicon-sort"></i></a></th>
-                    <th class="DataManager.LNAME">Data Manager&nbsp;<a ng-click="plsort_by('DataManager.LNAME')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="name">Project Name&nbsp;<a ng-click="plsort_by('Name')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="start_date">Start Date&nbsp;<a ng-click="plsort_by('start_date')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="end_date">End Date&nbsp;<a ng-click="plsort_by('end_date')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                    <th class="DataManager.lname">Data Manager&nbsp;<a ng-click="plsort_by('DataManager.lname')"><i class="glyphicon glyphicon-sort"></i></a></th>
                 </tr>
             </thead>
 
             <tbody>
                 <tr ng-repeat="pr in ProjectList | orderBy:plsortingOrder:plreverse">
-                    <td><a ui-sref="projectEdit.info({id: pr.PROJECT_ID})">{{pr.NAME}}</a></td>
-                    <td>{{pr.START_DATE | date: 'MM/dd/yyyy'}}</td>
-                    <td>{{pr.END_DATE | date: 'MM/dd/yyyy'}}</td>
-                    <td>{{pr.DataManager.FNAME}} {{pr.DataManager.LNAME}}</td>
+                    <td><a ui-sref="projectEdit.info({id: pr.project_id})">{{pr.name}}</a></td>
+                    <td>{{pr.start_date | date: 'MM/dd/yyyy'}}</td>
+                    <td>{{pr.end_date | date: 'MM/dd/yyyy'}}</td>
+                    <td>{{pr.DataManager.fname}} {{pr.DataManager.lname}}</td>
                 </tr>
             </tbody>
         </table>

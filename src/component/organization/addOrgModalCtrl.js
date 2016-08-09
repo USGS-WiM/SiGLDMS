@@ -35,14 +35,14 @@
             //if they did choose an org before opening modal, go get the divs for this org
             if ($scope.selectedOrgID.id !== "") {
                 $scope.orgsBeenChosen = true;
-                $scope.divList = $scope.allDivList.filter(function (d) { return d.ORG_ID == $scope.selectedOrgID.id; });
+                $scope.divList = $scope.allDivList.filter(function (d) { return d.org_id == $scope.selectedOrgID.id; });
             }
             $scope.selectedDivID = {};
             $scope.selectedDivID.id = chosenParts[1] !== "" ? Number(chosenParts[1]) : "";
             //if they did choose an div before opening modal, go get the sec for this div
             if ($scope.selectedDivID.id !== "") {
                 $scope.divsBeenChosen = true;
-                $scope.secList = $scope.allSecList.filter(function (s) { return s.DIV_ID == $scope.selectedDivID.id; });
+                $scope.secList = $scope.allSecList.filter(function (s) { return s.div_id == $scope.selectedDivID.id; });
             }
 
             $scope.selectedSecID = {}; //not going to preset this because if they are in the modal, they will at the least be created a new section
@@ -53,7 +53,7 @@
                 $scope.selectedOrgID.id = orgID;
                 $scope.selectedDivID.id = ""; $scope.selectedSecID.id = "";
                 $scope.divList = [];
-                $scope.divList = $scope.allDivList.filter(function (d) { return d.ORG_ID == orgID; });
+                $scope.divList = $scope.allDivList.filter(function (d) { return d.org_id == orgID; });
 
                 $scope.secList = [];
                 $scope.orgsBeenChosen = true;
@@ -63,7 +63,7 @@
             $scope.getSecs = function (divID) {
                 $scope.selectedDivID.id = divID;
                 $scope.selectedSecID.id = "";
-                $scope.secList = $scope.allSecList.filter(function (s) { return s.DIV_ID == divID; });
+                $scope.secList = $scope.allSecList.filter(function (s) { return s.div_id == divID; });
                 $scope.divsBeenChosen = true;
             };
 
@@ -79,7 +79,7 @@
                 //make sure they typed something in to add
                 if (nameToAdd !== "") {
                     var orgToPost = {
-                        ORGANIZATION_NAME: nameToAdd
+                        organization_name: nameToAdd
                     };
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
@@ -87,9 +87,9 @@
                         //add this new one to the lists
                         $scope.orgList.push(response);
                         //Make just added one selected
-                        $scope.selectedOrgID.id = response.ORGANIZATION_ID;
+                        $scope.selectedOrgID.id = response.organization_id;
                         //they added it, so update the originalOrgID too 
-                        $scope.originalOrgId = response.ORGANIZATION_ID;
+                        $scope.originalOrgId = response.organization_id;
                         $scope.orgsBeenChosen = true;
 
                         //clear input, hide input
@@ -111,16 +111,16 @@
             //this is the one they want to add
             $scope.addThisDivision = function (divToAdd, orgID) {
                 if (divToAdd !== "" && orgID !== "") {
-                    var divToPost = { DIVISION_NAME: divToAdd, ORG_ID: orgID };
+                    var divToPost = { division_name: divToAdd, org_id: orgID };
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
                     DIVISION.save(divToPost, function success(response) {
                         $scope.allDivList.push(response);
                         $scope.divList.push(response); //push to the dropdown (these divs for this org)
                         //Make just added one selected
-                        $scope.selectedDivID.id = response.DIVISION_ID;
+                        $scope.selectedDivID.id = response.division_id;
                         //they added it, so update the originalDivID with it
-                        $scope.originalDivId = response.DIVISION_ID;
+                        $scope.originalDivId = response.division_id;
                         $scope.divsBeenChosen = true; //show "add section" button text
 
                         //clear input, hide input
@@ -142,16 +142,16 @@
             //this is the one they want to add
             $scope.addThisSection = function (secToAdd, divID) {
                 if (secToAdd !== "" && divID !== "") {
-                    var secToPost = { SECTION_NAME: secToAdd, DIV_ID: divID };
+                    var secToPost = { section_name: secToAdd, div_id: divID };
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
                     SECTION.save(secToPost, function success(response) {
                         $scope.allSecList.push(response); //push to all sections 
                         $scope.secList.push(response); //push to the dropdown (these secs for this div)
                         //Make just added one selected
-                        $scope.selectedSecID.id = response.SECTION_ID;
+                        $scope.selectedSecID.id = response.section_id;
                         //they added it, so update the originalDivID with it
-                        $scope.originalSecId = response.SECTION_ID;
+                        $scope.originalSecId = response.section_id;
 
                         //clear input, hide input
                         $scope.sectionName.value = "";

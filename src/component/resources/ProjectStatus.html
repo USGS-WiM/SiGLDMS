@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th style="width:0"></th>
-                <th class="STATUS_VALUE">Project Status&nbsp;<a ng-click="PSsort_by('STATUS_VALUE')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="status_value">Project Status&nbsp;<a ng-click="PSsort_by('status_value')"><i class="glyphicon glyphicon-sort"></i></a></th>
                 <th class="Projects.length">Project Cnt&nbsp;<a ng-click="PSsort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="projStatCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
             </tr>
         </thead>
@@ -11,7 +11,7 @@
             <tr ng-repeat="ps in projStatusList | orderBy: PSsortingOrder:PSreverse">
                 <td style="white-space: nowrap">
                     <!-- form -->
-                    <form editable-form name="PSrowform" onaftersave="saveProjStatus($data, ps.PROJ_STATUS_ID)" ng-show="PSrowform.$visible" class="form-buttons form-inline" shown="inserted == ps">
+                    <form editable-form name="PSrowform" onaftersave="saveProjStatus($data, ps.proj_status_id)" ng-show="PSrowform.$visible" class="form-buttons form-inline" shown="inserted == ps">
                         <button type="submit" ng-disabled="PSrowform.$waiting" class="btn btn-primary">
                             save
                         </button>
@@ -25,7 +25,7 @@
                     </div>
                 </td>
                 <td>
-                    <span editable-textarea="ps.STATUS_VALUE" e-rows="1" e-cols="40" e-name="STATUS_VALUE" e-form="PSrowform">{{ ps.STATUS_VALUE || '' }}</span>
+                    <span editable-textarea="ps.status_value" e-rows="1" e-cols="40" e-name="status_value" e-form="PSrowform">{{ ps.status_value || '' }}</span>
                 </td>
                 <td>
                     <span><a ng-click="showProjectCntModal(ps.Projects, 'Project Status')">{{ps.Projects.length}}</a></span>
@@ -42,9 +42,9 @@
         <form class="form-horizontal" name="lookupForm.projStatFm">
             <fieldset>
                 <div class="form-group required">
-                    <label class="col-md-3 control-label req" for="inputSTATUS_VALUE">Project Status:</label>
+                    <label class="col-md-3 control-label req" for="status_value">Project Status:</label>
                     <div class="col-md-6">
-                        <input class="form-control" id="inputSTATUS_VALUE" name="STATUS_VALUE" type="text" placeholder="" ng-model="newPS.STATUS_VALUE" required />
+                        <input class="form-control" id="status_value" name="status_value" type="text" placeholder="" ng-model="newPS.status_value" required />
                     </div>
                 </div>
                 <!--submit button-->
@@ -65,18 +65,18 @@
 </div><!--end admin view-->
 <div ng-if="accountRole !='Admin'">
     <script>
-        //var sortingOrder = 'STATUS_VALUE';
+        //var sortingOrder = 'status_value';
     </script>
 
     <table class="table table-striped table-condensed">
         <thead>
             <tr>
-                <th class="STATUS_VALUE">Project Status&nbsp;<a ng-click="sort_by('STATUS_VALUE')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="status_value">Project Status&nbsp;<a ng-click="sort_by('status_value')"><i class="glyphicon glyphicon-sort"></i></a></th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="ps in projStatusList | orderBy:sortingOrder:reverse">
-                <td>{{ ps.STATUS_VALUE || '' }}</td>
+                <td>{{ ps.status_value || '' }}</td>
             </tr>
         </tbody>
     </table>

@@ -1,0 +1,83 @@
+<div ng-if="accountRole =='Admin'">
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th style="width:0"></th>
+                <th class="media">Media Type&nbsp;<a ng-click="Msort_by('media')"><i class="glyphicon glyphicon-sort"></i></a></th>
+                <th class="Projects.length">Project Cnt&nbsp;<a ng-click="Msort_by('Projects.length')"><i class="glyphicon glyphicon-sort"></i></a><span ng-if="medCntLoading"><img style="max-width:20px" src="images/loading1.gif" /></span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="mt in mediaTypeList | orderBy: MsortingOrder:Mreverse">
+                <td style="white-space: nowrap">
+                    <!-- form -->
+                    <form editable-form name="MTrowform" onaftersave="saveMediaType($data, mt.media_type_id)" ng-show="MTrowform.$visible" class="form-buttons form-inline" shown="inserted == mt">
+                        <button type="submit" ng-disabled="MTrowform.$waiting" class="btn btn-primary">
+                            save
+                        </button>
+                        <button type="button" ng-disabled="MTrowform.$waiting" ng-click="MTrowform.$cancel()" class="btn btn-default">
+                            cancel
+                        </button>
+                    </form>
+                    <div class="buttons" ng-show="!MTrowform.$visible">
+                        <button class="btn btn-primary" ng-click="MTrowform.$show()">edit</button>
+                        <button class="btn btn-danger" ng-click="deleteMediaType(mt)">del</button>
+                    </div>
+                </td>
+                <td>
+                    <span editable-text="mt.media" e-name="media" e-form="MTrowform">{{ mt.media || '' }}</span>
+                </td>
+                <td>
+                    <span><a ng-click="showProjectCntModal(mt.Projects, 'Media Type')">{{mt.Projects.length}}</a></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr />
+
+    <button ng-show="addMTButtonShowing" class="btn btn-primary" ng-click="showAddMTClicked()">Add New Media Type</button>
+
+    <div ng-show="showAddMTForm">
+        <form class="form-horizontal" name="lookupForm.mediaTypeFm">
+            <fieldset>
+                <div class="form-group required">
+                    <label class="col-md-3 control-label req" for="media">Media Type:</label>
+                    <div class="col-md-6">
+                        <input class="form-control" id="media" name="media" type="text" placeholder="" ng-model="newMT.media" required />
+                    </div>
+                </div>
+                <!--submit button-->
+                <div class="form-group">
+                    <div class="col-md-2 col-md-offset-2">
+                        <span>
+                            <button class="btn btn-primary" ng-click="AddMediaType(lookupForm.mediaTypeFm.$valid, newMT)">
+                                Add
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+        </form><button class="btn btn-default center-block" style="margin-top:-48px;" ng-click="NeverMindMT()">
+            Cancel
+        </button>
+    </div>
+</div><!--end admin view-->
+<div ng-if="accountRole !='Admin'">
+    <script>
+        //var sortingOrder = 'media';
+    </script>
+
+    <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
+                <th class="media">Media Type&nbsp;<a ng-click="sort_by('media')"><i class="glyphicon glyphicon-sort"></i></a></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="mt in mediaTypeList | orderBy:sortingOrder:reverse">
+                <td>{{ mt.media || '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

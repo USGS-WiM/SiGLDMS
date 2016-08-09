@@ -9,7 +9,7 @@
             $scope.isEditing = false; //disables form inputs while user is editing existing data up top
             $scope.newPub = {
             };
-            var thisProjID = thisProject.PROJECT_ID;
+            var thisProjID = thisProject.project_id;
 
             //modal for required at least 1 field..
             var openModal = function () {
@@ -26,7 +26,7 @@
                 });
                 modalInstance.result.then(function (fieldFocus) {
                     if (fieldFocus == "req") {
-                        $("#TITLE").focus();
+                        $("#title").focus();
                     }
                 });
             };
@@ -36,8 +36,8 @@
                 if (valid) {
                     //add it
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                    $http.defaults.headers.common.Accept = 'application/json';
-                    PROJECT.addProjPublication({ id: thisProjID }, p, function success(response) {
+                    $http.defaults.headers.common.Accept = 'application/json';                    
+                    PROJECT.addProjPublication({ id: thisProjID}, p, function success(response) {
                         $scope.ProjPubs = response;
 
                         $scope.pubCount.total = $scope.ProjPubs.length;
@@ -78,7 +78,7 @@
                     $http.defaults.headers.common.Accept = 'application/json';
                    // $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
-                    PROJECT.deleteProjPublication({ id: thisProjID, pubId: pub.PUBLICATION_ID}, function success(response) {
+                    PROJECT.deleteProjPublication({ id: thisProjID, PublicationId: pub.publication_id }, function success(response) {
                         $scope.ProjPubs.splice(index, 1);
                         $scope.pubCount.total = $scope.pubCount.total - 1;
                         toastr.success("Publication Removed");
@@ -95,7 +95,7 @@
 
             //validate that at least 1 field is populated before saving edit
             $scope.ValidateAtLeastOne = function (d) {
-                if ((d.TITLE === "" || d.TITLE === null) && (d.DESCRIPTION === "" || d.DESCRIPTION === null) && (d.URL === "" || d.URL === null)) {
+                if ((d.title === "" || d.title === null) && (d.description === "" || d.description === null) && (d.url === "" || d.url === null)) {
                     toastr.error("Publication not updated.");
                     openModal();
                     return "You need to populate at least one field."; //way to stop it from closing edit..just return something cuz modal is opening

@@ -34,13 +34,13 @@
                 var modalInstance = $uibModal.open({
                     template: '<div class="modal-header"><h3 class="modal-title">Forgot your password?</h3></div>' +
                         '<div class="modal-body"><p>Not working yet......</p></div>' +
-                        '<form name="newSiteName"><div class="form-group"><label class="col-md-2 control-label req" for="EMAIL">Email:</label>' +
-                        '<div class="col-md-8" style="margin-bottom:20px"><input class="form-control" id="EMAIL" name="EMAIL" ng-enter="ok()" ng-model="EMAIL" type="text" required /></div></div></form><br clear="all" />' +
+                        '<form name="newSiteName"><div class="form-group"><label class="col-md-2 control-label req" for="email">Email:</label>' +
+                        '<div class="col-md-8" style="margin-bottom:20px"><input class="form-control" id="email" name="email" ng-enter="ok()" ng-model="email" type="text" required /></div></div></form><br clear="all" />' +
                         '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">Reset</button></div>',
                     controller: function ($scope, $uibModalInstance) {
-                        $scope.EMAIL = "";
+                        $scope.email = "";
                         $scope.ok = function () {
-                            $uibModalInstance.close($scope.EMAIL);
+                            $uibModalInstance.close($scope.email);
                         };
                     },
                     size: 'md'
@@ -68,12 +68,12 @@
                     return this;
                 };
 
-                LOGIN.login({}, postData,
+                LOGIN.login({}, 
                     function success(response) {
                         var user = response;
                         if (user !== undefined) {
                             //set user cookies (cred, username, name, role
-                            var usersNAME = user.FNAME + " " + user.LNAME;
+                            var usersNAME = user.fname + " " + user.lname;
                             var enc = btoa($scope.username.concat(":", $scope.password));
                             //set expiration on cookies
                             var expireDate = new Date().addHours(8);
@@ -81,9 +81,9 @@
                             $cookies.put('siGLCreds', enc, { expires: expireDate });
                             $cookies.put('siGLUsername', $scope.username);
                             $cookies.put('usersName', usersNAME);
-                            $cookies.put('dmID', user.DATA_MANAGER_ID);
+                            $cookies.put('dmID', user.data_manager_id);
                             var roleName;
-                            switch (user.ROLE_ID) {
+                            switch (user.role_id) {
                                 case 1:
                                     roleName = "Admin";
                                     break;
@@ -97,7 +97,7 @@
                             $cookies.put('usersRole', roleName);
                             $rootScope.isAuth.val = true;
                             $rootScope.usersName = usersNAME;
-                            $rootScope.userID = user.DATA_MANAGER_ID;
+                            $rootScope.userID = user.data_manager_id;
                             $rootScope.Role = roleName;
                             
                             if ($rootScope.returnToState !== undefined) {

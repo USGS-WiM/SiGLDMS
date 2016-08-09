@@ -25,7 +25,7 @@ module.exports = function(config) {
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress'],
+    reporters: ['progress','saucelabs'],
 
 
     // web server port
@@ -71,7 +71,9 @@ module.exports = function(config) {
 
     config.set({
       sauceLabs: {
-        testName: 'UI Mask CI'
+        testName: 'UI Mask CI',
+        tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+        startConnect: false
       },
       captureTimeout:  120000,
       singleRun: true

@@ -9,18 +9,18 @@
             var neededUpdating = false; //if the url isn't formatted, flag so know to PUT it after fixing
             $scope.isEditing = false; //disables form inputs while user is editing existing data up top
             $scope.newData = {}; //holder
-            var thisProjID = thisProject.PROJECT_ID; //projectID
+            var thisProjID = thisProject.project_id; //projectID
 
             //if any ProjDatum, make sure the url (if one) is formatted properly
             for (var pdu = 0; pdu < $scope.ProjData.length; pdu++) {
                 var ind = pdu;
-                if ($scope.ProjData[ind].PORTAL_URL !== null && !$scope.ProjData[ind].PORTAL_URL.startsWith('http')) {
+                if ($scope.ProjData[ind].portal_url !== undefined && !$scope.ProjData[ind].portal_url.startsWith('http')) {
                     //there is a url and it's not formatted
                     neededUpdating = true;
-                    $scope.ProjData[ind].PORTAL_URL = 'http://' + $scope.ProjData[ind].PORTAL_URL;
+                    $scope.ProjData[ind].portal_url = 'http://' + $scope.ProjData[ind].portal_url;
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
-                    DATA_HOST.update({ id: $scope.ProjData[ind].DATA_HOST_ID }, $scope.ProjData[ind]).$promise;
+                    DATA_HOST.update({ id: $scope.ProjData[ind].data_host_id }, $scope.ProjData[ind]).$promise;
                 }
             }
 
@@ -39,7 +39,7 @@
                 });
                 modalInstance.result.then(function (fieldFocus) {
                     if (fieldFocus == "req") {
-                        $("#DESCRIPTION").focus();
+                        $("#description").focus();
                     }
                 });
             };
@@ -50,7 +50,8 @@
                     //add it
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
-                    PROJECT.addProjData({ id: thisProjID }, d, function success(response) {                    
+                    d.project_id = thisProjID;
+                    DATA_HOST.save(d, function success(response) {                    
                         $scope.ProjData = response;
 
                         $scope.datumCount.total = $scope.ProjData.length;
@@ -84,29 +85,24 @@
                 });
                 modalInstance.result.then(function (keyToRemove) {
                     //yes, remove this keyword
-                    var index = $scope.ProjData.indexOf(dataH);
+                    var Dindex = $scope.ProjData.indexOf(dataH);
                     //DELETE it
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     $http.defaults.headers.common.Accept = 'application/json';
-                   // $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
-
-                    PROJECT.deleteProjData({ id: thisProjID, dataId: dataH.DATA_HOST_ID }, function success(response) {
-                        $scope.ProjData.splice(index, 1); projDatum.splice(index, 1);
+                    DATA_HOST.delete({ id: dataH.data_host_id }, function success(response) {
+                        $scope.ProjData.splice(Dindex, 1);
                         $scope.datumCount.total = $scope.datumCount.total - 1;
                         toastr.success("Data Removed");
                     }, function error(errorResponse) {
                         toastr.error("Error: " + errorResponse.statusText);
                     });
-                   // delete $http.defaults.headers.common['X-HTTP-Method-Override'];
-                }, function () {
-                    //logic for cancel
                 });
                 //end modal
             };
 
             //validate that at least 1 field is populated before saving edit
             $scope.ValidateAtLeastOne = function (d) {
-                if ((d.DESCRIPTION === "" || d.DESCRIPTION === null) && (d.HOST_NAME === "" || d.HOST_NAME === null) && (d.PORTAL_URL === "" || d.PORTAL_URL === null)) {
+                if ((d.description === "" || d.description === null) && (d.host_name === "" || d.host_name === null) && (d.portal_url === "" || d.portal_url === null)) {
                     toastr.error("Data Source not updated.");
                     openModal();
                     return "You need to populate at least one field."; //way to stop it from closing edit..just return something cuz modal is opening

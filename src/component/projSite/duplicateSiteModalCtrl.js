@@ -8,7 +8,7 @@
             var nameToSendBack = {};
             $scope.newSite = {};
             $scope.ok = function () {
-                nameToSendBack.name = $scope.newSite.NAME;
+                nameToSendBack.name = $scope.newSite.name;
                 nameToSendBack.id = thisSiteID;
                 $uibModalInstance.close(nameToSendBack);
             };

@@ -1,0 +1,38 @@
+<p class="home-text">
+    This Data Management System (DMS) supports the <a href="http://wim.usgs.gov/sigl" target="_blank">Science in the Great Lakes (SiGL) Mapper</a>, which is a metadata-discovery tool that captures information about a wide range of scientific activities occuring in the Great Lakes and provides details on how to access associated data and products.
+    <br><br>
+    You can use the SiGL DMS to submit, edit, and delete your project and site information.
+
+</p>
+
+<div id="login-form-wrapper">
+    <form ng-submit="submit()" ng-controller="loginCtrl">
+          <div class="sigl-login-error">{{error}}</div>
+
+        <label for="username">USERNAME:</label>
+        <input type="text" ng-model="username" id="userNameFocus" name="username" placeholder="Enter User Name" required focus />
+
+
+        <label for="password">PASSWORD:</label>
+        <input type="password" ng-model="password" name="password" placeholder="Enter Password" required
+                     data-toggle="tooltip" data-trigger="manual" data-title="Caps lock is on" />
+          <!--<div class="">
+              <a href="" ng-click="forgotPassword()">forgot my password</a>
+          </div>-->
+        <button type="submit" id="sigl-login-button">Sign in</button>
+    </form>
+</div>
+
+<p class="home-text">
+    If you are interested in having your project included in SiGL and would like access to the SiGL DMS, please fill out this <a href="https://docs.google.com/forms/d/1UvcbKdjhwar1GS0218V3TLQrDz6_mTe55Y9C-j1KBiQ" target="_blank">account request form</a>.
+    <br><br>
+    If you have questions about SiGL or need assistance, please contact:
+    <br>
+    <span id="home-contact">
+        Jennifer Bruce<br>
+        SiGL Project Lead<br>
+        USGS Wisconsin Water Science Center<br>
+        jlbruce@usgs.gov<br>
+        608-821-3906<br>
+    </span>
+</p>

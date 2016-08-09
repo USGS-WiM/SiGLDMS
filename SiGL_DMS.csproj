@@ -80,7 +80,6 @@
     <Content Include="src\component\help\helpCtrl.js" />
     <Content Include="src\component\organization\OrgInfoView.html" />
     <Content Include="src\component\organization\OrgListView.html" />
-    <Content Include="src\component\dataManager\dataManagerInfo.html" />
     <Content Include="src\component\dataManager\DMList.html" />
     <Content Include="src\component\help\helpView.html" />
     <Content Include="src\component\projSite\projMultiSiteEditView.html" />
@@ -897,7 +896,7 @@
     <Content Include="src\css\bootstrap-theme.css.map" />
     <Content Include="src\css\bootstrap.css.map" />
     <Content Include="src\component\dataManager\dataManagerCtrl.js" />
-    <Content Include="src\component\dataManager\dataManagerInfoCtrl.js" />
+    <Content Include="src\component\dataManager\dataManagerModal.js" />
     <Content Include="src\component\settings\settingsCtrl.js" />
     <Content Include="src\shared\directives\SiGLDirectives.js" />
     <Content Include="Web.config">

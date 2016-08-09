@@ -3,9 +3,8 @@
 
     var ModalControllers = angular.module('ModalControllers');
     
-    ModalControllers.controller('siteModalCtrl', ['$scope', '$rootScope', '$q', '$location', '$cookies', '$http', '$uibModal', '$uibModalInstance', '$state', 'thisProject', 'allDropDownParts', 'thisSite',
-        'siteFreq', 'siteMed', 'siteRes', 'siteParams', 'SITE',
-        function ($scope, $rootScope, $q, $location, $cookies, $http, $uibModal, $uibModalInstance, $state, thisProject, allDropDownParts, thisSite, siteFreq, siteMed, siteRes, siteParams, SITE) {
+    ModalControllers.controller('siteModalCtrl', ['$scope', '$rootScope', '$q', '$location', '$cookies', '$http', '$uibModal', '$uibModalInstance', '$state', 'thisProject', 'allDropDownParts', 'thisSite', 'SITE',
+        function ($scope, $rootScope, $q, $location, $cookies, $http, $uibModal, $uibModalInstance, $state, thisProject, allDropDownParts, thisSite, SITE) {
             if ($cookies.get('siGLCreds') === undefined || $cookies.get('siGLCreds') === "") {
                 $scope.auth = false;
                 $location.path('/login');
@@ -18,7 +17,7 @@
                 $scope.medDirty = false; $scope.medToRemove = [];
                 $scope.resDirty = false; $scope.resToRemove = [];
                 $scope.paramDirty = false; $scope.paramToRemove = [];
-                $scope.freqCommaSep = []; $scope.medCommaSep = []; $scope.resCommaSep = []; $scope.paramCommaSep = [];
+                $scope.freqAdded = []; $scope.medAdded = []; $scope.resAdded = []; $scope.paramAdded = [];
                 $scope.showParams = false;// div containing all parameters (toggles show/hide)
                 $scope.showHide = "Show"; //button text for show/hide parameters
 
@@ -49,23 +48,23 @@
                 };
                 var formatSITE = function (s) {
                     var site = {
-                        SITE_ID: s.SiteId,
-                        START_DATE: s.StartDate !== undefined && s.StartDate !== "" ? new Date(s.StartDate) : null,
-                        END_DATE: s.EndDate !== undefined && s.EndDate !== "" ? new Date(s.EndDate) : null,
-                        PROJECT_ID: thisProject.PROJECT_ID,
-                        SAMPLE_PLATFORM: s.SamplePlatform,
-                        ADDITIONAL_INFO: s.AdditionalInfo,
-                        NAME: s.Name,
-                        DESCRIPTION: s.Description,
-                        LATITUDE: s.latitude,
-                        LONGITUDE: s.longitude,
-                        WATERBODY: s.Waterbody,
-                        STATUS_TYPE_ID: s.Status !== "" && s.Status !== undefined ? $scope.allStats.filter(function (st) { return st.STATUS == s.Status; })[0].STATUS_ID : 0,
-                        LAKE_TYPE_ID: $scope.allLakes.filter(function (l) { return l.LAKE == s.GreatLake; })[0].LAKE_TYPE_ID,
-                        COUNTRY: s.Country,
-                        STATE_PROVINCE: s.State,
-                        WATERSHED_HUC8: s.WatershedHUC8,
-                        URL: s.URL
+                        site_id: s.SiteId,
+                        start_date: s.StartDate !== undefined && s.StartDate !== "" ? new Date(s.StartDate) : null,
+                        end_date: s.EndDate !== undefined && s.EndDate !== "" ? new Date(s.EndDate) : null,
+                        project_id: thisProject.project_id,
+                        sample_platform: s.SamplePlatform,
+                        additional_info: s.AdditionalInfo,
+                        name: s.Name,
+                        description: s.Description,
+                        latitude: s.latitude,
+                        longitude: s.longitude,
+                        waterbody: s.Waterbody,
+                        status_type_id: s.Status !== "" && s.Status !== undefined ? $scope.allStats.filter(function (st) { return st.status == s.Status; })[0].status_id : 0,
+                        lake_type_id: $scope.allLakes.filter(function (l) { return l.lake == s.Lake; })[0].lake_type_id,
+                        country: s.Country,
+                        state_province: s.State,
+                        watershed_huc8: s.Watershed,
+                        url: s.url
                     };
                     return site;
                 };
@@ -81,23 +80,23 @@
 
                     $scope.datepickrs[which] = true;
                 };
-                $scope.format = 'MMM dd, yyyy';
+                $scope.format = 'MM/dd/yyyy';
                 //#endregion Datepicker
             
                 //make sure lat/long are right number range
                 $scope.checkValue = function () {
-                    if ($scope.thisSite.LATITUDE < 0 || $scope.thisSite.LATITUDE > 73) {
+                    if ($scope.thisSite.latitude < 0 || $scope.thisSite.latitude > 73) {
                         openLatModal();
                     }
-                    if ($scope.thisSite.LONGITUDE < -175 || $scope.thisSite.LONGITUDE > -60) {
+                    if ($scope.thisSite.longitude < -175 || $scope.thisSite.longitude > -60) {
                         openLongModal();
                     }
                 };
 
                 //start or end date was changed -- compare to ensure end date comes after start date
                 $scope.compareSiteDates = function (d) {
-                    if ($scope.thisSite.END_DATE !== undefined && $scope.thisSite.END_DATE !== null) {
-                        if (new Date($scope.thisSite.END_DATE) < new Date($scope.thisSite.START_DATE)) {
+                    if ($scope.thisSite.end_date !== undefined && $scope.thisSite.end_date !== null) {
+                        if (new Date($scope.thisSite.end_date) < new Date($scope.thisSite.start_date)) {
                             var dateModal = $uibModal.open({
                                 template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                             '<div class="modal-body"><p>Sampling end date must come after start date.</p></div>' +
@@ -111,11 +110,11 @@
                             });
                             dateModal.result.then(function (wrongDate) {
                                 if (wrongDate == "start") {
-                                    $scope.thisSite.START_DATE = "";
-                                    angular.element("#START_DATE").focus();
+                                    $scope.thisSite.start_date = "";
+                                    angular.element("#start_date").focus();
                                 } else {
-                                    $scope.thisSite.END_DATE = "";
-                                    angular.element("#END_DATE").focus();
+                                    $scope.thisSite.end_date = "";
+                                    angular.element("#end_date").focus();
                                 }
                             });
                         }
@@ -130,25 +129,26 @@
                     var siteModel = angular.copy(thisSite);
                     $scope.thisSite = formatSITE(siteModel);
                                 
-                    // $scope.title = "Site: " + $scope.thisSite.NAME;
+                    // $scope.title = "Site: " + $scope.thisSite.name;
 
                     //convert the multiSelects for isteven (add new property for checked flag
                     //#region siteFrequencies
                     //pull these from dropdownsToSend filter frequencies var siteFreqs = siteFrequencies;
                
                     //go through allFrequencies and add selected property
+                    $scope.siteFreq = thisSite.Frequencies;
                     for (var i = 0; i < $scope.allFrequencies.length; i++) {
                         //for each one, if siteFreq has this id, add 'selected:true' else add 'selected:false'
-                        for (var y = 0; y < siteFreq.length; y++) {
-                            if (siteFreq[y].FREQUENCY_TYPE_ID == $scope.allFrequencies[i].FREQUENCY_TYPE_ID) {
+                        for (var y = 0; y < $scope.siteFreq.length; y++) {
+                            if ($scope.siteFreq[y].frequency_type_id == $scope.allFrequencies[i].frequency_type_id) {
                                 $scope.allFrequencies[i].selected = true;
-                                y = siteFreq.length;
+                                y = $scope.siteFreq.length;
                             }
                             else {
                                 $scope.allFrequencies[i].selected = false;
                             }
                         }
-                        if (siteFreq.length === 0) {
+                        if ($scope.siteFreq.length === 0) {
                             $scope.allFrequencies[i].selected = false;
                         }
                     }
@@ -157,18 +157,19 @@
 
                     //#region siteMedia              
                     //go through allMeds and add selected property
+                    $scope.siteMed = thisSite.Media;
                     for (var mi = 0; mi < $scope.allMedia.length; mi++) {
                         //for each one, if siteMeds has this id, add 'selected:true' else add 'selected:false'
-                        for (var sm = 0; sm < siteMed.length; sm++) {
-                            if (siteMed[sm].MEDIA_TYPE_ID == $scope.allMedia[mi].MEDIA_TYPE_ID) {
+                        for (var sm = 0; sm < $scope.siteMed.length; sm++) {
+                            if ($scope.siteMed[sm].media_type_id == $scope.allMedia[mi].media_type_id) {
                                 $scope.allMedia[mi].selected = true;
-                                sm = siteMed.length;
+                                sm = $scope.siteMed.length;
                             }
                             else {
                                 $scope.allMedia[mi].selected = false;
                             }
                         }
-                        if (siteMed.length === 0) {
+                        if ($scope.siteMed.length === 0) {
                             $scope.allMedia[mi].selected = false;
                         }
                     }
@@ -177,36 +178,37 @@
 
                     //#region siteParameters
                     //go through siteParams and add selected property
+                    $scope.siteParams = thisSite.Parameters;
                     for (var pi = 0; pi < $scope.allParametes.length; pi++) {
                         //for each one, if siteParams has this id, add 'selected:true' else add 'selected:false'
-                        for (var sp = 0; sp < siteParams.length; sp++) {
-                            if (siteParams[sp].PARAMETER_TYPE_ID == $scope.allParametes[pi].PARAMETER_TYPE_ID) {
+                        for (var sp = 0; sp < $scope.siteParams.length; sp++) {
+                            if ($scope.siteParams[sp].parameter_type_id == $scope.allParametes[pi].parameter_type_id) {
                                 $scope.allParametes[pi].selected = true;
-                                sp = siteParams.length;
+                                sp = $scope.siteParams.length;
                             }
                             else {
                                 $scope.allParametes[pi].selected = false;
                             }
                         }
-                        if (siteParams.length === 0) {
+                        if ($scope.siteParams.length === 0) {
                             $scope.allParametes[pi].selected = false;
                         }
                     }
                     $scope.physParams = []; $scope.bioParams = []; $scope.chemParams = []; $scope.microBioParams = []; $scope.toxiParams = [];
                     $scope.physParams.push($scope.allParametes.filter(function (p) {
-                        return p.PARAMETER_GROUP == "Physical";
+                        return p.parameter_group == "Physical";
                     }));
                     $scope.bioParams.push($scope.allParametes.filter(function (p) {
-                        return p.PARAMETER_GROUP == "Biological";
+                        return p.parameter_group == "Biological";
                     }));
                     $scope.chemParams.push($scope.allParametes.filter(function (p) {
-                        return p.PARAMETER_GROUP == "Chemical";
+                        return p.parameter_group == "Chemical";
                     }));
                     $scope.microBioParams.push($scope.allParametes.filter(function (p) {
-                        return p.PARAMETER_GROUP == "Microbiological";
+                        return p.parameter_group == "Microbiological";
                     }));
                     $scope.toxiParams.push($scope.allParametes.filter(function (p) {
-                        return p.PARAMETER_GROUP == "Toxicological";
+                        return p.parameter_group == "Toxicological";
                     }));
 
                     //$scope.Parameterdata = allParams;
@@ -215,18 +217,19 @@
 
                     //#region siteResources
                     //go through allRes and add selected property
+                    $scope.siteRes = thisSite.Resources;
                     for (var ri = 0; ri < $scope.allResources.length; ri++) {
                         //for each one, if siteRes has this id, add 'selected:true' else add 'selected:false'
-                        for (var sr = 0; sr < siteRes.length; sr++) {
-                            if (siteRes[sr].RESOURCE_TYPE_ID == $scope.allResources[ri].RESOURCE_TYPE_ID) {
+                        for (var sr = 0; sr < $scope.siteRes.length; sr++) {
+                            if ($scope.siteRes[sr].resource_type_id == $scope.allResources[ri].resource_type_id) {
                                 $scope.allResources[ri].selected = true;
-                                sr = siteRes.length;
+                                sr = $scope.siteRes.length;
                             }
                             else {
                                 $scope.allResources[ri].selected = false;
                             }
                         }
-                        if (siteRes.length === 0) {
+                        if ($scope.siteRes.length === 0) {
                             $scope.allResources[ri].selected = false;
                         }
                     }
@@ -272,17 +275,17 @@
                     }
                     $scope.physParams = []; $scope.bioParams = []; $scope.chemParams = []; $scope.microBioParams = []; $scope.toxiParams = [];
                     $scope.physParams.push($scope.allParametes.filter(function (p) {
-                        return p.PARAMETER_GROUP == "Physical";
+                        return p.parameter_group == "Physical";
                     }));
                     $scope.bioParams.push($scope.allParametes.filter(function (p) {
-                        return p.PARAMETER_GROUP == "Biological";
+                        return p.parameter_group == "Biological";
                     }));
-                    $scope.chemParams.push($scope.allParametes.filter(function (p) { return p.PARAMETER_GROUP == "Chemical"; }));
+                    $scope.chemParams.push($scope.allParametes.filter(function (p) { return p.parameter_group == "Chemical"; }));
                     $scope.microBioParams.push($scope.allParametes.filter(function (p) {
-                        return p.PARAMETER_GROUP == "Microbiological";
+                        return p.parameter_group == "Microbiological";
                     }));
                     $scope.toxiParams.push($scope.allParametes.filter(function (p) {
-                        return p.PARAMETER_GROUP == "Toxicological";
+                        return p.parameter_group == "Toxicological";
                     }));
                     // $scope.Parameterdata = parameterList;
                     //resources
@@ -298,14 +301,14 @@
                 $scope.FreqClick = function (data) {
                     $scope.freqDirty = true;
                     if (data.selected) {
-                        if ($scope.thisSite.SITE_ID !== undefined) { //editing
+                        if ($scope.thisSite.site_id !== undefined) { //editing
                             //see if it needs to be taken out of removeList
-                            var i = $scope.freqToRemove.map(function (f) { return f.FREQUENCY_TYPE_ID; }).indexOf(data.FREQUENCY_TYPE_ID);
+                            var i = $scope.freqToRemove.map(function (f) { return f.frequency_type_id; }).indexOf(data.frequency_type_id);
                             if (i >= 0) $scope.freqToRemove.splice(i, 1); //remove from removeList (in case they removed and then added it back)
                         }
                     } else {
                         //data.selected == false
-                        if ($scope.thisSite.SITE_ID !== undefined) { //edit
+                        if ($scope.thisSite.site_id !== undefined) { //edit
                             $scope.freqToRemove.push(data); //add it to removeList
                         }
                     }
@@ -316,14 +319,14 @@
                 $scope.MedClick = function (data) {
                     $scope.medDirty = true;
                     if (data.selected) {
-                        if ($scope.thisSite.SITE_ID !== undefined) { //editing
+                        if ($scope.thisSite.site_id !== undefined) { //editing
                             //see if it needs to be taken out of removeList
-                            var i = $scope.medToRemove.map(function (m) { return m.MEDIA_TYPE_ID; }).indexOf(data.MEDIA_TYPE_ID);
+                            var i = $scope.medToRemove.map(function (m) { return m.media_type_id; }).indexOf(data.media_type_id);
                             if (i >= 0) $scope.medToRemove.splice(i, 1); //remove from removeList (in case they removed and then added it back)
                         }
                     } else {
                         //data.selected == false
-                        if ($scope.thisSite.SITE_ID !== undefined) { //edit
+                        if ($scope.thisSite.site_id !== undefined) { //edit
                             $scope.medToRemove.push(data); //add it to removeList
                         }
                     }
@@ -335,14 +338,14 @@
                     $scope.resDirty = true;
                     if (data.selected)  {
                         //  $scope.resToAdd.push(data);
-                        if ($scope.thisSite.SITE_ID !== undefined) { //editing
+                        if ($scope.thisSite.site_id !== undefined) { //editing
                             //see if it needs to be taken out of removeList
-                            var i = $scope.resToRemove.map(function (r) { return r.RESOURCE_TYPE_ID; }).indexOf(data.RESOURCE_TYPE_ID);
+                            var i = $scope.resToRemove.map(function (r) { return r.resource_type_id; }).indexOf(data.resource_type_id);
                             if (i >= 0) $scope.resToRemove.splice(i, 1); //remove from removeList (in case they removed and then added it back)
                         }
                     } else {
                         //data.selected == false
-                        if ($scope.thisSite.SITE_ID !== undefined) { //edit
+                        if ($scope.thisSite.site_id !== undefined) { //edit
                             $scope.resToRemove.push(data); //add it to removeList                      
                         }
                     }
@@ -353,14 +356,14 @@
                 $scope.ParamClick = function (data) {
                     $scope.paramDirty = true;
                     if (data.selected) {
-                        if ($scope.thisSite.SITE_ID !== undefined) { //editing
+                        if ($scope.thisSite.site_id !== undefined) { //editing
                             //see if it needs to be taken out of removeList
-                            var i = $scope.paramToRemove.map(function (p) { return p.PARAMETER_TYPE_ID; }).indexOf(data.PARAMETER_TYPE_ID);
+                            var i = $scope.paramToRemove.map(function (p) { return p.parameter_type_id; }).indexOf(data.parameter_type_id);
                             if (i >= 0) $scope.paramToRemove.splice(i, 1); //remove from removeList (in case they removed and then added it back)
                         }
                     } else {
                         //data.selected == false
-                        if ($scope.thisSite.SITE_ID !== undefined) { //edit
+                        if ($scope.thisSite.site_id !== undefined) { //edit
                             $scope.paramToRemove.push(data); //add it to removeList                    
                         }
                     }
@@ -393,7 +396,7 @@
                     });
                     latModal.result.then(function (fieldFocus) {
                         if (fieldFocus == "lat")
-                            $("#LATITUDE").focus();
+                            $("#latitude").focus();
                     });
                 };
 
@@ -412,7 +415,7 @@
                     });
                     longModal.result.then(function (fieldFocus) {
                         if (fieldFocus == "long")
-                            $("#LONGITUDE").focus();
+                            $("#longitude").focus();
                     });
                 };
 
@@ -423,8 +426,8 @@
                         $rootScope.stateIsLoading.showLoading = true; //loading...
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common.Accept = 'application/json';
-                        $scope.thisSite.PROJECT_ID = thisProject.PROJECT_ID;                    
-                        SITE.update({ id: $scope.thisSite.SITE_ID }, $scope.thisSite, function success(siteResponse) {
+                        $scope.thisSite.project_id = thisProject.project_id;                    
+                        SITE.update({ id: $scope.thisSite.site_id }, $scope.thisSite, function success(siteResponse) {
                             //use $q for async call to delete and add objectives and keywords
                             var defer = $q.defer();
                             var RemovePromises = [];
@@ -432,25 +435,25 @@
                             //#region REMOVES
                             //remove frequencies (freqToRemove contains those to remove ->DELETE)
                             angular.forEach($scope.freqToRemove, function (Fvalue) {
-                                var delFreqProm = SITE.deleteSiteFrequency({ id: $scope.thisSite.SITE_ID, freqId: Fvalue.FREQUENCY_TYPE_ID }).$promise;
+                                var delFreqProm = SITE.deleteSiteFrequency({ id: $scope.thisSite.site_id, frequencyTypeId: Fvalue.frequency_type_id }).$promise;
                                 RemovePromises.push(delFreqProm);
                             });
 
                             //remove media (medToRemove contains those to remove ->DELETE)
                             angular.forEach($scope.medToRemove, function (Mvalue) {                              
-                                var delMedProm = SITE.deleteSiteMedia({ id: $scope.thisSite.SITE_ID, mediaId: Mvalue.MEDIA_TYPE_ID }).$promise;
+                                var delMedProm = SITE.deleteSiteMedia({ id: $scope.thisSite.site_id, MediaTypeId: Mvalue.media_type_id }).$promise;
                                 RemovePromises.push(delMedProm);
                             });
 
                             //remove resources (resToRemove contains those to remove ->DELETE)
                             angular.forEach($scope.resToRemove, function (Rvalue) {
-                                var delResProm = SITE.deleteSiteResource({ id: $scope.thisSite.SITE_ID, resourceId: Rvalue.RESOURCE_TYPE_ID }).$promise;
+                                var delResProm = SITE.deleteSiteResource({ id: $scope.thisSite.site_id, ResourceTypeId: Rvalue.resource_type_id }).$promise;
                                 RemovePromises.push(delResProm);
                             });
 
                             //remove Paramters (paramToRemove contains those to remove ->DELETE)
                             angular.forEach($scope.paramToRemove, function (Pvalue) {
-                                var delParamProm = SITE.deleteSiteParameter({ id: $scope.thisSite.SITE_ID, paramId: Pvalue.PARAMETER_TYPE_ID }).$promise;
+                                var delParamProm = SITE.deleteSiteParameter({ id: $scope.thisSite.site_id, ParameterTypeId: Pvalue.parameter_type_id }).$promise;
                                 RemovePromises.push(delParamProm);
                             });
                             //#endregion
@@ -458,24 +461,24 @@
                             //add Frequencies only if $scope.freqDirty = true;
                             //if ($scope.freqDirty) {
                                 angular.forEach($scope.Frequencymodel.value, function (FaddValue) {
-                                    $scope.freqCommaSep.push(FaddValue.FREQUENCY);
-                                    var freqProm = SITE.addSiteFrequency({ id: $scope.thisSite.SITE_ID }, FaddValue).$promise;
+                                    $scope.freqAdded.push(FaddValue);
+                                    var freqProm = SITE.addSiteFrequency({ id: $scope.thisSite.site_id, frequencyTypeId: FaddValue.frequency_type_id }).$promise;
                                     AddPromises.push(freqProm);
                                 });
                            // }
                             //add Media only if $scope.medDirty = true;
                            // if ($scope.medDirty) {
                                 angular.forEach($scope.Mediamodel.value, function (MaddValue) {
-                                    $scope.medCommaSep.push(MaddValue.MEDIA);
-                                    var medProm = SITE.addSiteMedia({ id: $scope.thisSite.SITE_ID }, MaddValue).$promise;
+                                    $scope.medAdded.push(MaddValue);
+                                    var medProm = SITE.addSiteMedia({ id: $scope.thisSite.site_id, mediaTypeId: MaddValue.media_type_id }).$promise;
                                     AddPromises.push(medProm);
                                 });
                            // }
                             //add Resources only if $scope.resDirty = true;
                             //if ($scope.resDirty) {
                                 angular.forEach($scope.Resourcemodel.value, function (RaddValue) {
-                                    $scope.resCommaSep.push(RaddValue.RESOURCE_NAME);
-                                    var resProm = SITE.addSiteResource({ id: $scope.thisSite.SITE_ID }, RaddValue).$promise;
+                                    $scope.resAdded.push(RaddValue);
+                                    var resProm = SITE.addSiteResource({ id: $scope.thisSite.site_id, resourceTypeId: RaddValue.resource_type_id }).$promise;
                                     AddPromises.push(resProm);
                                 });
                            // }
@@ -484,14 +487,14 @@
                         
                             angular.forEach($scope.allParametes, function (p) {
                                 if (p.selected) {
-                                    $scope.paramCommaSep.push(p);
-                                    if (p.PARAMETER_GROUP == 'Physical') $scope.pParams.push(p.PARAMETER);
-                                    if (p.PARAMETER_GROUP == 'Biological') $scope.bParams.push(p.PARAMETER);
-                                    if (p.PARAMETER_GROUP == 'Chemical') $scope.cParams.push(p.PARAMETER);
-                                    if (p.PARAMETER_GROUP == 'Microbiological') $scope.mBioParams.push(p.PARAMETER);
-                                    if (p.PARAMETER_GROUP == 'Toxicological') $scope.tParams.push(p.PARAMETER);
-                                    if ($scope.resDirty) {
-                                        var paramProm = SITE.addSiteParameter({ id: $scope.thisSite.SITE_ID }, p).$promise;
+                                    $scope.paramAdded.push(p);
+                                    //if (p.parameter_group == 'Physical') $scope.pParams.push(p.parameter);
+                                    //if (p.parameter_group == 'Biological') $scope.bParams.push(p.parameter);
+                                    //if (p.parameter_group == 'Chemical') $scope.cParams.push(p.parameter);
+                                    //if (p.parameter_group == 'Microbiological') $scope.mBioParams.push(p.parameter);
+                                    //if (p.parameter_group == 'Toxicological') $scope.tParams.push(p.parameter);
+                                    if ($scope.paramDirty) {
+                                        var paramProm = SITE.addSiteParameter({ id: $scope.thisSite.site_id, parameterTypeId: p.parameter_type_id }).$promise;
                                         AddPromises.push(paramProm);
                                     }
                                 }
@@ -504,33 +507,33 @@
                                 $scope.freqToRemove = []; $scope.medToRemove = []; $scope.resToRemove = []; $scope.paramToRemove = [];
                                 $q.all(AddPromises).then(function (response) {
                                     var newSiteFormatted = {
-                                        'SiteId': $scope.thisSite.SITE_ID,
-                                        'Name': $scope.thisSite.NAME,
-                                        'latitude': $scope.thisSite.LATITUDE,
-                                        'longitude': $scope.thisSite.LONGITUDE,
-                                        'StartDate': $scope.thisSite.START_DATE !== undefined && $scope.thisSite.START_DATE !== null ? makeAdateString($scope.thisSite.START_DATE): '',
-                                        'EndDate': $scope.thisSite.END_DATE !== undefined && $scope.thisSite.END_DATE !== null ? makeAdateString($scope.thisSite.END_DATE) : '',
-                                        'SamplePlatform': $scope.thisSite.SAMPLE_PLATFORM,
-                                        'AdditionalInfo': $scope.thisSite.ADDITIONAL_INFO,
-                                        'Description': $scope.thisSite.DESCRIPTION,
-                                        'Waterbody': $scope.thisSite.WATERBODY,
-                                        'GreatLake': $scope.allLakes.filter(function (l) { return l.LAKE_TYPE_ID == $scope.thisSite.LAKE_TYPE_ID; })[0].LAKE,
-                                        'Status': $scope.thisSite.STATUS_TYPE_ID > 0 ? $scope.allStats.filter(function (s) { return s.STATUS_ID == $scope.thisSite.STATUS_TYPE_ID; })[0].STATUS : "",
-                                        'Country': $scope.thisSite.COUNTRY,
-                                        'State': $scope.thisSite.STATE_PROVINCE,
-                                        'WatershedHUC8': $scope.thisSite.WATERSHED_HUC8,
-                                        'URL': $scope.thisSite.URL,
-                                        'Media': $scope.medCommaSep.join(", "),
-                                        'Resources': $scope.resCommaSep.join(", "),
-                                        'Frequency': $scope.freqCommaSep.join(", "),
-                                        'Parameters': $scope.paramCommaSep,
-                                        'ParameterStrings': {
-                                            'Biological': $scope.bParams.join("; "),
-                                            'Chemical': $scope.cParams.join("; "),
-                                            'Microbiological': $scope.mBioParams.join("; "),
-                                            'Physical': $scope.pParams.join("; "),
-                                            'Toxicological': $scope.tParams.join("; ")
-                                        }
+                                        'SiteId': $scope.thisSite.site_id,
+                                        'Name': $scope.thisSite.name,
+                                        'latitude': $scope.thisSite.latitude,
+                                        'longitude': $scope.thisSite.longitude,
+                                        'StartDate': $scope.thisSite.start_date !== undefined && $scope.thisSite.start_date !== null ? makeAdateString($scope.thisSite.start_date): '',
+                                        'EndDate': $scope.thisSite.end_date !== undefined && $scope.thisSite.end_date !== null ? makeAdateString($scope.thisSite.end_date) : '',
+                                        'SamplePlatform': $scope.thisSite.sample_platform,
+                                        'AdditionalInfo': $scope.thisSite.additional_info,
+                                        'Description': $scope.thisSite.description,
+                                        'Waterbody': $scope.thisSite.waterbody,
+                                        'Lake': $scope.allLakes.filter(function (l) { return l.lake_type_id == $scope.thisSite.lake_type_id; })[0].lake,
+                                        'Status': $scope.thisSite.status_type_id > 0 ? $scope.allStats.filter(function (s) { return s.status_id == $scope.thisSite.status_type_id; })[0].status : "",
+                                        'Country': $scope.thisSite.country,
+                                        'State': $scope.thisSite.state_province,
+                                        'Watershed': $scope.thisSite.watershed_huc8,
+                                        'url': $scope.thisSite.url,
+                                        'Media': $scope.medAdded,
+                                        'Resources': $scope.resAdded,
+                                        'Frequencies': $scope.freqAdded,
+                                        'Parameters': $scope.paramAdded//,
+                                        //'ParameterStrings': {
+                                        //    'Biological': $scope.bParams.join("; "),
+                                        //    'Chemical': $scope.cParams.join("; "),
+                                        //    'Microbiological': $scope.mBioParams.join("; "),
+                                        //    'Physical': $scope.pParams.join("; "),
+                                        //    'Toxicological': $scope.tParams.join("; ")
+                                        //}
                                     };
                                     var siteParts = [newSiteFormatted, 'update'];
                                     toastr.success("Site Updated");
@@ -549,11 +552,11 @@
 
                 //save NEW SITE and then frequencies, media, parameters, and resources
                 $scope.create = function (valid) {
-                    if ($scope.thisSite.SITE_ID !== undefined) {
+                    if ($scope.thisSite.site_id !== undefined) {
                         $scope.save(valid);
                     } else {
                         if (valid) {
-                            $scope.thisSite.PROJECT_ID = thisProject.PROJECT_ID;
+                            $scope.thisSite.project_id = thisProject.project_id;
                             $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                             $http.defaults.headers.common.Accept = 'application/json';
                             //post site
@@ -564,24 +567,24 @@
                                 //post frequencies
                                 angular.forEach($scope.Frequencymodel.value, function (fValue) {
                                     if (fValue.selected) {
-                                        $scope.freqCommaSep.push(fValue.FREQUENCY);
-                                        var freqProm = SITE.addSiteFrequency({ id: newSite.SITE_ID }, fValue).$promise;
+                                        $scope.freqAdded.push(fValue);
+                                        var freqProm = SITE.addSiteFrequency({ id: newSite.site_id, frequencyTypeId: fValue.frequency_type_id }).$promise;
                                         postPromises.push(freqProm);
                                     }
                                 });
                                 //post media
                                 angular.forEach($scope.Mediamodel.value, function (mValue) {
                                     if (mValue.selected) {
-                                        $scope.medCommaSep.push(mValue.MEDIA);
-                                        var medProm = SITE.addSiteMedia({ id: newSite.SITE_ID }, mValue).$promise;
+                                        $scope.medAdded.push(mValue);
+                                        var medProm = SITE.addSiteMedia({ id: newSite.site_id, mediaTypeId: mValue.media_type_id }).$promise;
                                         postPromises.push(medProm);
                                     }
                                 });
                                 //post resources
                                 angular.forEach($scope.Resourcemodel.value, function (rValue) {
                                     if (rValue.selected) {
-                                        $scope.resCommaSep.push(rValue.RESOURCE_NAME);
-                                        var resProm = SITE.addSiteResource({ id: newSite.SITE_ID }, rValue).$promise;
+                                        $scope.resAdded.push(rValue);
+                                        var resProm = SITE.addSiteResource({ id: newSite.site_id, resourceTypeId: rValue.resource_type_id }).$promise;
                                         postPromises.push(resProm);
                                     }
                                 });
@@ -589,46 +592,46 @@
                                 //post parameters
                                 angular.forEach($scope.allParametes, function (pValue) {
                                     if (pValue.selected) {
-                                        $scope.paramCommaSep.push(pValue);
-                                        if (pValue.PARAMETER_GROUP == 'Physical') $scope.pParams.push(pValue.PARAMETER);
-                                        if (pValue.PARAMETER_GROUP == 'Biological') $scope.bParams.push(pValue.PARAMETER);
-                                        if (pValue.PARAMETER_GROUP == 'Chemical') $scope.cParams.push(pValue.PARAMETER);
-                                        if (pValue.PARAMETER_GROUP == 'Microbiological') $scope.mBioParams.push(pValue.PARAMETER);
-                                        if (pValue.PARAMETER_GROUP == 'Toxicological') $scope.tParams.push(pValue.PARAMETER);
+                                        $scope.paramAdded.push(pValue);
+                                        //if (pValue.parameter_group == 'Physical') $scope.pParams.push(pValue.parameter);
+                                        //if (pValue.parameter_group == 'Biological') $scope.bParams.push(pValue.parameter);
+                                        //if (pValue.parameter_group == 'Chemical') $scope.cParams.push(pValue.parameter);
+                                        //if (pValue.parameter_group == 'Microbiological') $scope.mBioParams.push(pValue.parameter);
+                                        //if (pValue.parameter_group == 'Toxicological') $scope.tParams.push(pValue.parameter);
 
-                                        var parProm = SITE.addSiteParameter({ id: newSite.SITE_ID }, pValue).$promise;
+                                        var parProm = SITE.addSiteParameter({ id: newSite.site_id, parameterTypeId: pValue.parameter_type_id }).$promise;
                                         postPromises.push(parProm);
                                     }
                                 });
                                 $q.all(postPromises).then(function (response) {
                                     var newSiteFormatted = {
-                                        'SiteId': newSite.SITE_ID,
-                                        'Name': newSite.NAME,
-                                        'latitude': newSite.LATITUDE,
-                                        'longitude': newSite.LONGITUDE,
-                                        'StartDate': newSite.START_DATE !== undefined && newSite.START_DATE !== null ? makeAdateString(newSite.START_DATE) : '',
-                                        'EndDate': newSite.END_DATE !== undefined && newSite.END_DATE !== null ? makeAdateString(newSite.END_DATE) : '',
-                                        'SamplePlatform': newSite.SAMPLE_PLATFORM,
-                                        'AdditionalInfo': newSite.ADDITIONAL_INFO,
-                                        'Description': newSite.DESCRIPTION,
-                                        'Waterbody': newSite.WATERBODY,
-                                        'GreatLake': $scope.allLakes.filter(function (l) { return l.LAKE_TYPE_ID == newSite.LAKE_TYPE_ID; })[0].LAKE,
-                                        'Status': newSite.STATUS_TYPE_ID > 0 && newSite.STATUS_TYPE_ID !== null ? $scope.allStats.filter(function (s) { return s.STATUS_ID == newSite.STATUS_TYPE_ID; })[0].STATUS : "",
-                                        'Country': newSite.COUNTRY,
-                                        'State': newSite.STATE_PROVINCE,
-                                        'WatershedHUC8': newSite.WATERSHED_HUC8,
-                                        'URL': newSite.URL,
-                                        'Resources': $scope.resCommaSep.join(", "),
-                                        'Media': $scope.medCommaSep.join(", "),
-                                        'Frequency': $scope.freqCommaSep.join(", "),
-                                        'Parameters': $scope.paramCommaSep,
-                                        'ParameterStrings': {
-                                            'Biological': $scope.bParams.join("; "),
-                                            'Chemical': $scope.cParams.join("; "),
-                                            'Microbiological': $scope.mBioParams.join("; "),
-                                            'Physical': $scope.pParams.join("; "),
-                                            'Toxicological': $scope.tParams.join("; ")
-                                        }
+                                        'SiteId': newSite.site_id,
+                                        'Name': newSite.name,
+                                        'latitude': newSite.latitude,
+                                        'longitude': newSite.longitude,
+                                        'StartDate': newSite.start_date !== undefined && newSite.start_date !== null ? makeAdateString(newSite.start_date) : '',
+                                        'EndDate': newSite.end_date !== undefined && newSite.end_date !== null ? makeAdateString(newSite.end_date) : '',
+                                        'SamplePlatform': newSite.sample_platform,
+                                        'AdditionalInfo': newSite.additional_info,
+                                        'Description': newSite.description,
+                                        'Waterbody': newSite.waterbody,
+                                        'Lake': $scope.allLakes.filter(function (l) { return l.lake_type_id == newSite.lake_type_id; })[0].lake,
+                                        'Status': newSite.status_type_id > 0 && newSite.status_type_id !== null ? $scope.allStats.filter(function (s) { return s.status_id == newSite.status_type_id; })[0].status : "",
+                                        'Country': newSite.country,
+                                        'State': newSite.state_province,
+                                        'Watershed': newSite.watershed_huc8,
+                                        'url': newSite.url,
+                                        'Resources': $scope.resAdded,
+                                        'Media': $scope.medAdded,
+                                        'Frequencies': $scope.freqAdded,
+                                        'Parameters': $scope.paramAdded//,
+                                        //'ParameterStrings': {
+                                        //    'Biological': $scope.bParams.join("; "),
+                                        //    'Chemical': $scope.cParams.join("; "),
+                                        //    'Microbiological': $scope.mBioParams.join("; "),
+                                        //    'Physical': $scope.pParams.join("; "),
+                                        //    'Toxicological': $scope.tParams.join("; ")
+                                        //}
                                     };
 
                                     var siteParts = [newSiteFormatted, 'create'];
