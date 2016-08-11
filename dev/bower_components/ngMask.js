@@ -137,7 +137,7 @@
 
                   // Update view and model values
                   if(value !== viewValueWithDivisors){
-                      controller.$viewValue = angular.copy(viewValueWithDivisors); //controller.$setViewValue(angular.copy(viewValueWithDivisors), 'input');
+                    controller.$setViewValue(angular.copy(viewValueWithDivisors), 'input');
                     controller.$render();
                   }
                 } catch (e) {
@@ -163,7 +163,7 @@
                 // but before the browser renders
                 if(options.value) {
                   $scope.$evalAsync(function($scope) {
-                      controller.$viewValue = angular.copy(options.value); //controller.$setViewValue(angular.copy(options.value), 'input');
+                    controller.$setViewValue(angular.copy(options.value), 'input');
                     controller.$render();
                   });
                 }

@@ -22,8 +22,7 @@
     "tag": "v2.2.5",
     "commit": "78e1e203766ea16c4a35d06f971b619a0f03ee19"
   },
-  "_source": "git://github.com/betsol/angular-input-modified.git",
+  "_source": "https://github.com/betsol/angular-input-modified.git",
   "_target": "~2.2.5",
-  "_originalSource": "angular-input-modified",
-  "_direct": true
+  "_originalSource": "angular-input-modified"
 }

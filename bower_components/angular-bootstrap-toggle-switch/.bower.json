@@ -27,8 +27,7 @@
     "tag": "v0.5.6",
     "commit": "872235c21affb0a99879ae51aa1bf3af83b52b49"
   },
-  "_source": "git://github.com/JumpLink/angular-toggle-switch.git",
+  "_source": "https://github.com/JumpLink/angular-toggle-switch.git",
   "_target": "~0.5.6",
-  "_originalSource": "angular-bootstrap-toggle-switch",
-  "_direct": true
+  "_originalSource": "angular-bootstrap-toggle-switch"
 }

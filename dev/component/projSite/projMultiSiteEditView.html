@@ -1,5 +1,112 @@
-<div class="panel panel-primary">
-    <div class="panel-body">
-        <!--<div ui-grid="gridOptions" ui-grid-edit ui-grid-cellnav class="myGrid"></div>-->
-    </div>
+<style type="text/css">
+    #sigl-edit-right {
+        padding: 0;
+        margin: 0;
+    }
+
+    .headerRotate {
+        -moz-transform: rotate(-90deg); /* FF3.5+ */
+        -o-transform: rotate(-90deg); /* Opera 10.5 */
+        -webkit-transform: rotate(-90deg); /* Saf3.1+, Chrome */
+        filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1); /* IE6,IE7 */
+        -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)"; /* IE8 */
+        display: block;
+    }
+
+</style>
+
+
+<div class="col-md-12" style="padding:0;margin:0;height:auto;overflow:hidden">
+    <hot-table datarows="projSites" column-sorting settings="tableSettings" hot-id="tableinstance">
+        <!--//col-headers="colHeaders" min-spare-rows="3"-->
+        <hot-column data="Name" title="'Site Name'"></hot-column><!-- 0 -->
+        <hot-column data="latitude" title="'Latitude'"></hot-column><!-- 1 -->
+        <hot-column data="longitude" title="'Longitude'"></hot-column><!-- 2 -->
+        <hot-column data="Country" title="'Country'" type="'dropdown'" source="countryArray"></hot-column><!-- 3 -->
+        <hot-column data="State" title="'State'" type="'dropdown'" source="stateArray"></hot-column><!-- 4 -->
+        <hot-column data="Lake" title="'Lake'" type="'dropdown'" source="lakeArray"></hot-column><!-- 5 -->
+        <hot-column data="Waterbody" title="'Waterbody'"></hot-column><!-- 6 -->
+        <hot-column data="Watershed" title="'Watershed (HUC8)'" type="'numeric'" format="'00000000'"></hot-column><!-- 7 -->
+        <hot-column data="Description" title="'Description'"></hot-column><!-- 8 -->
+        <hot-column data="Status" title="'Status'" type="'dropdown'" source="statusArray"></hot-column><!-- 9 -->
+        <hot-column data="ResourceStrings" title="'Resources'" type="'dropdown'" source="resourceArray"></hot-column><!-- 10 -->
+        <hot-column data="MediaStrings" title="'Media'" type="'dropdown'" multiple source="mediaArray"></hot-column><!-- 11 -->
+        <hot-column data="FrequencyStrings" title="'Frequencies'" type="'dropdown'" source="frequencyArray"></hot-column><!-- 12 -->
+        <hot-column data="StartDate" title="'Start Date'" type="'date'" dateformat="'MM/dd/yyyy'"></hot-column><!-- 13 -->
+        <hot-column data="EndDate" title="'End Date'" type="'date'" dateformat="'MM/dd/yyyy'"></hot-column><!-- 14 -->
+        <hot-column data="SamplePlatform" title="'Sample Platform'"></hot-column><!-- 15 -->
+        <hot-column data="AdditionalInfo" title="'Additional Info'"></hot-column><!-- 16 -->
+        <hot-column data="url" title="'Site URL'"></hot-column><!-- 17 -->
+        <!--  start parameters -->
+        <hot-column data="Acidity" type="'checkbox'" title="'Acidity'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 18 -->
+        <hot-column data="Alkalinity" type="'checkbox'" title="'Alkalinity'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 19 -->
+        <hot-column data="Bed sediment" type="'checkbox'" title="'Bed sediment'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 20 -->
+        <hot-column data="Conductivity, specific" type="'checkbox'" title="'Conductivity, sp'" checked-template=" 'yes' " unchecked-template=" 'no' "></hot-column><!-- 21 -->
+        <hot-column data="Discharge" type="'checkbox'" title="'Discharge'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 22 -->
+        <hot-column data="Fluorescence" type="'checkbox'" title="'Fluorescence'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 23 -->
+        <hot-column data="Habitat" type="'checkbox'" title="'Habitat'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 24 -->
+        <hot-column data="Land use/land cover" type="'checkbox'" title="'LU/LC'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 25 -->
+        <hot-column data="Photosynthetically active radiation (PAR)" type="'checkbox'" title="'PAR'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 26-->
+        <hot-column data="Precipitation" type="'checkbox'" title="'Precip'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 27-->
+        <hot-column data="Sampling depth" type="'checkbox'" title="'Sampling depth'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 28-->
+        <hot-column data="Secchi depth/light penetration" type="'checkbox'" title="'Secchi d/l pen'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 29-->
+        <hot-column data="Sediments - other" type="'checkbox'" title="'Sediments-other'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 30-->
+        <hot-column data="Solids (total dissolved, total settleable, total suspended)" type="'checkbox'" title="'Solids'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 31-->
+        <hot-column data="Suspended sediments" type="'checkbox'" title="'Suspended sediments'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 32-->
+        <hot-column data="Temperature - air" type="'checkbox'" title="'Temp-air'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 33-->
+        <hot-column data="Temperature - water" type="'checkbox'" title="'Temp-water'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 34-->
+        <hot-column data="Time of travel" type="'checkbox'" title="'Time of travel'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 35-->
+        <hot-column data="Turbidity" type="'checkbox'" title="'Turbidity'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 36-->
+        <hot-column data="Velocity" type="'checkbox'" title="'Velocity'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 37-->
+        <hot-column data="Water color" type="'checkbox'" title="'Water color'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 38-->
+        <hot-column data="Water currents" type="'checkbox'" title="'Water current'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 39-->
+        <hot-column data="Water level" type="'checkbox'" title="'Water level'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 40-->
+        <hot-column data="Wave height" type="'checkbox'" title="'Wave height'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 41-->
+        <hot-column data="Wind speed and/or direction" type="'checkbox'" title="'Wind sp &/or direction'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 42-->
+        <hot-column data="Other physical parameter" type="'checkbox'" title="'Other Phys'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 43-->
+        <hot-column data="Carbon - any form" type="'checkbox'" title="'Carbon-Any'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 44-->
+        <hot-column data="Cyanide" type="'checkbox'" title="'Cyanide'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 45-->
+        <hot-column data="Dissolved oxygen" type="'checkbox'" title="'Dis oxy'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 46-->
+        <hot-column data="Major ions" type="'checkbox'" title="'Maj ions'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 48-->
+        <hot-column data="Mercury" type="'checkbox'" title="'Mercury'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 49-->
+        <hot-column data="Metals" type="'checkbox'" title="'Metals'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 50-->
+        <hot-column data="Nutrients - nitrogen - any form" type="'checkbox'" title="'Nutrients-Nit-any'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 51-->
+        <hot-column data="Nutrients - other" type="'checkbox'" title="'Nutrients-other'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 52-->
+        <hot-column data="Nutrients - phosphorus - any form" type="'checkbox'" title="'Nutrients-Phos-any'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 53-->
+        <hot-column data="Organic compounds - other" type="'checkbox'" title="'Organic comps-other'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 54-->
+        <hot-column data="Organics - pesticides" type="'checkbox'" title="'Organic-pest'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 55-->
+        <hot-column data="Oxygen demand" type="'checkbox'" title="'Oxy demand'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 56-->
+        <hot-column data="pH" type="'checkbox'" title="'pH'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 57-->
+        <hot-column data="Radiochemicals" type="'checkbox'" title="'Radiochems'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 58-->
+        <hot-column data="Salinity" type="'checkbox'" title="'Salinity'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 59-->
+        <hot-column data="Sulphurs" type="'checkbox'" title="'Sulphurs'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 60-->
+        <hot-column data="Wastewater indicators (ppcp)" type="'checkbox'" title="'Wastewater ind'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 61-->
+        <hot-column data="Other chemical parameter" type="'checkbox'" title="'Other Chem'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 62-->
+        <hot-column data="Algae/phytoplankton" type="'checkbox'" title="'Algae/phytoplankton'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 63-->
+        <hot-column data="Amphibians" type="'checkbox'" title="'Amphibians'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 64-->
+        <hot-column data="Birds" type="'checkbox'" title="'Birds'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 65-->
+        <hot-column data="Carcasses" type="'checkbox'" title="'Carcasses'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 66-->
+        <hot-column data="Chlorophyll" type="'checkbox'" title="'Chlorophyll'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 67-->
+        <hot-column data="Disease/deformities/tumors" type="'checkbox'" title="'Disease/def/tumors'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 68-->
+        <hot-column data="Fish" type="'checkbox'" title="'Fish'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 69-->
+        <hot-column data="Invasive species" type="'checkbox'" title="'Invasive spp'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 70-->
+        <hot-column data="Invertebrates" type="'checkbox'" title="'Invertebrates'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 71-->
+        <hot-column data="Mammals" type="'checkbox'" title="'Mammals'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 72-->
+        <hot-column data="Mussels" type="'checkbox'" title="'Mussels'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 73-->
+        <hot-column data="Parasites" type="'checkbox'" title="'Parasites'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 74-->
+        <hot-column data="Plant/vegetation" type="'checkbox'" title="'Plant/vegetation'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 75-->
+        <hot-column data="Population/community" type="'checkbox'" title="'Pop/community'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 76-->
+        <hot-column data="Zooplankton" type="'checkbox'" title="'Zooplankton'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 77-->
+        <hot-column data="Other biological parameter" type="'checkbox'" title="'Other Bio'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 78-->
+        <hot-column data="Bacteria - other" type="'checkbox'" title="'Bacteria-other'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 79-->
+        <hot-column data="Fecal indicator bacteria (e.g. e. coli)" type="'checkbox'" title="'Fecal bact'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 80-->
+        <hot-column data="Pathogens" type="'checkbox'" title="'Pathogens'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 81-->
+        <hot-column data="Other microbiological parameter" type="'checkbox'" title="'Other MicroB'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 82-->
+        <hot-column data="Acute toxicity" type="'checkbox'" title="'Acute toxicity'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 83-->
+        <hot-column data="Biological toxins" type="'checkbox'" title="'Biological toxins'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 84-->
+        <hot-column data="Chronic toxicity" type="'checkbox'" title="'Chronic toxicity'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 85-->
+        <hot-column data="Other toxicological parameter" type="'checkbox'" title="'Other Tox'" checked-template="'yes'" unchecked-template="'no'"></hot-column><!-- 86-->
+        <!-- end parameters-->
+    </hot-table>
 </div>
+

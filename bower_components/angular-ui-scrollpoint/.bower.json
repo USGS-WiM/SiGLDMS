@@ -11,14 +11,14 @@
     "angular-mocks": ">=1.0.5",
     "jquery": ">=1.6"
   },
-  "version": "1.1.0",
-  "_release": "1.1.0",
+  "version": "2.1.1",
+  "_release": "2.1.1",
   "_resolution": {
     "type": "version",
-    "tag": "1.1.0",
-    "commit": "b1758faf4374562249a57376eb9acfb406a2fc7d"
+    "tag": "2.1.1",
+    "commit": "7ee00c86c155146a7d3cb25d49a189d867699189"
   },
-  "_source": "git://github.com/angular-ui/ui-scrollpoint.git",
+  "_source": "https://github.com/angular-ui/ui-scrollpoint.git",
   "_target": "*",
   "_originalSource": "angular-ui-scrollpoint"
 }

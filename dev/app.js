@@ -1,7 +1,7 @@
 (function () {
     "use strict"; 
     var app = angular.module('app',
-        ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'isteven-multi-select', 'ngInputModified', 'ui.validate', 'angular.filter', 'xeditable',
+        ['ngResource', 'ui.router', 'ngCookies', 'ui.mask', 'ui.bootstrap', 'isteven-multi-select', 'ngInputModified', 'ui.validate', 'angular.filter', 'xeditable', 'ngHandsontable',
              'toggle-switch', 'laMPResource', 'siGLControllers', 'ModalControllers', 'LogInOutController']);
     
     app.run(['$rootScope', '$cookies', '$state', '$uibModalStack', function ($rootScope, $cookies, $state, $uibModalStack) {
@@ -136,7 +136,7 @@
 
                 //#endregion datamanager
 
-                 //#region organizations
+                //#region organizations
                 //#region organizations ABSTRACT
                  .state("organizations", {
                      url: "/organizations",
@@ -527,47 +527,37 @@
                     abstract: true,
                     authenticate: true,
                     resolve: {                        
-                        //countries
                         CountryList: function () {
                             var c = [];
                             c.push("Canada"); c.push("United States Of America");
                             return c;
                         },
-                        //states
-                        //theStates: 'States',
                         stateList: function () {
                             var s = [];
                             s.push("Illinois"); s.push("Indiana"); s.push("Michigan"); s.push("Minnesota"); s.push("New York");
                             s.push("Ohio"); s.push("Pennsylvania"); s.push("Wisconsin"); s.push("Ontario"); 
                             return s;
-                            //return theStates.getAll().$promise;
                         },
-                        //lakes
                         theLakes: 'LAKE_TYPE',
                         lakeList: function (theLakes) {
                             return theLakes.getAll().$promise;
                         },
-                        //statuses
                         theSiteStats: 'STATUS_TYPE',
                         siteStatList: function (theSiteStats) {
                             return theSiteStats.getAll().$promise;
                         },
-                        //resources
                         theRes: 'RESOURCE_TYPE',
                         resourceList: function (theRes) {
                             return theRes.getAll().$promise;
                         },
-                        //media
                         theMedia: 'MEDIA_TYPE',
                         mediaList: function (theMedia) {
                             return theMedia.getAll().$promise;
                         },
-                        //frequencies
                         theFreq: 'FREQUENCY_TYPE',
                         frequencyList: function (theFreq) {
                             return theFreq.getAll().$promise;
                         },
-                        //parameters
                         theParams: 'PARAMETER_TYPE',
                         parameterList: function (theParams) {
                             return theParams.getAll().$promise;
@@ -640,11 +630,64 @@
                 //})
                 //#endregion region projectEdit.site.siteInfo
 
-                .state("projectEdit.site.siteEditAll", {
-                    url: "/siteEditAll",
+                .state("multipleSite", {
+                    url: "/siteEditAll/Project/:id",
+                    params: { id: null },
                     authenticate: true,
                     templateUrl: "component/projSite/projMultiSiteEditView.html",
-                    controller: "projectEditAllSitesCtrl"
+                    controller: "projMultiSiteEditCtrl",
+                    resolve: {
+                        p: 'PROJECT',
+                        allProjSites: function (p, $http, $stateParams) {
+                            $http.defaults.headers.common.Accept = 'application/json';
+                            if ($stateParams.id !== undefined) {
+                                return p.getFullSiteList({ projId: $stateParams.id }).$promise;
+                            }
+                                
+                        },                        
+                        thisProject: function (p, $stateParams) {
+                            var projectId = $stateParams.id;
+                            if (projectId > 0) {
+                                return p.query(
+                                    { id: projectId }).$promise;
+                            }
+                        },                        
+                        CountryList: function () {
+                            var c = [];
+                            c.push("Canada"); c.push("United States Of America");
+                            return c;
+                        },
+                        stateList: function () {
+                            var s = [];
+                            s.push("Illinois"); s.push("Indiana"); s.push("Michigan"); s.push("Minnesota"); s.push("New York");
+                            s.push("Ohio"); s.push("Pennsylvania"); s.push("Wisconsin"); s.push("Ontario");
+                            return s;
+                        },
+                        theLakes: 'LAKE_TYPE',
+                        lakeList: function (theLakes) {
+                            return theLakes.getAll().$promise;
+                        },
+                        theSiteStats: 'STATUS_TYPE',
+                        siteStatList: function (theSiteStats) {
+                            return theSiteStats.getAll().$promise;
+                        },
+                        theRes: 'RESOURCE_TYPE',
+                        resourceList: function (theRes) {
+                            return theRes.getAll().$promise;
+                        },
+                        theMedia: 'MEDIA_TYPE',
+                        mediaList: function (theMedia) {
+                            return theMedia.getAll().$promise;
+                        },
+                        theFreq: 'FREQUENCY_TYPE',
+                        frequencyList: function (theFreq) {
+                            return theFreq.getAll().$promise;
+                        },
+                        theParams: 'PARAMETER_TYPE',
+                        parameterList: function (theParams) {
+                            return theParams.getAll().$promise;
+                        }
+                    }
                 });
 
               
