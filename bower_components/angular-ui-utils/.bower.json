@@ -21,8 +21,7 @@
     "tag": "v3.0.0",
     "commit": "0debc182ae81694d96afde5ab1b4af06f9446237"
   },
-  "_source": "git://github.com/angular-ui/ui-utils.git",
+  "_source": "https://github.com/angular-ui/ui-utils.git",
   "_target": "~3.0.0",
-  "_originalSource": "angular-ui-utils",
-  "_direct": true
+  "_originalSource": "angular-ui-utils"
 }

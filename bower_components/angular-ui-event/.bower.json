@@ -18,7 +18,7 @@
     "tag": "v1.0.0",
     "commit": "58e1b06e888ca3704ddade6d84fcce63405b5a9c"
   },
-  "_source": "git://github.com/angular-ui/ui-event.git",
+  "_source": "https://github.com/angular-ui/ui-event.git",
   "_target": "*",
   "_originalSource": "angular-ui-event"
 }

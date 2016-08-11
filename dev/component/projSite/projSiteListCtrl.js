@@ -2,8 +2,8 @@
     'use strict';
 
     var siGLControllers = angular.module('siGLControllers');
-    siGLControllers.controller('projSiteListCtrl', ['$scope', '$rootScope', '$location', '$cookies', '$uibModal', '$http', '$q', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'CountryList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE',
-        function ($scope, $rootScope, $location, $cookies, $uibModal, $http, $q, projS, thisProject, siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList, SITE) {
+    siGLControllers.controller('projSiteListCtrl', ['$scope', '$rootScope', '$location', '$cookies', '$uibModal', '$http', '$q', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'CountryList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE', 'PROJECT',
+        function ($scope, $rootScope, $location, $cookies, $uibModal, $http, $q, projS, thisProject, siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList, SITE, PROJECT) {
             $scope.projectSites = projS; //this looks different now TODO //////////
 
             for (var psu = 0; psu < $scope.projectSites.length; psu++) {
@@ -236,6 +236,45 @@
                         //        return SITE.getSiteParameters({ id: site.SiteId }).$promise;
                         //    }
                         //}
+                    }
+                });
+                modalInstance.result.then(function (r) {
+                    //$scope.aProject, projObjectives, projKeywords
+                    $rootScope.stateIsLoading.showLoading = false; //loading... 
+                    if (r[1] == 'create') {
+                        $scope.projectSites.push(r[0]);
+                        $scope.sitesCount.total = $scope.projectSites.length;
+                    }
+                    if (r[1] == 'update') {
+                        //this is from edit -- refresh page?
+                        $scope.projectSites[indexClicked] = r[0];
+                    }
+                });
+            };
+
+            //multi edit
+            $scope.openMultiSiteModal = function (pid) {
+                $rootScope.stateIsLoading.showLoading = true; //Loading...
+                var dropdownParts = [siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList];
+               
+                //modal
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'component/projSite/projMultiSiteEditView.html',
+                    controller: 'projMultiSiteEditCtrl',
+                    size: 'lg',
+                    backdrop: 'static',
+                    keyboard: false,
+                    windowClass: 'rep-dialog',
+                    resolve: {
+                        allDropDownParts: function () {
+                            return dropdownParts;
+                        },
+                        thisProject: function () {
+                            return thisProject;
+                        },
+                        allProjSites: function () {
+                            return PROJECT.getFullSiteList({ projId: pid }).$promise;
+                        }
                     }
                 });
                 modalInstance.result.then(function (r) {
