@@ -301,4 +301,73 @@
             });
     }]);//end of Login
     //#endregion
+
+    //#region service to hold all the dropdowns so they don't have to be gotten over and over
+    laMPResource.factory('dropdown_Service', [function () {
+        var parameters = []; var frequencies = []; var media = []; var statuses = []; var resources = []; var lakes = []; var states = []; var countries = [];
+        return {
+            setAllSiteDropdowns: function (p,f,m,s,r,l, st, co) {
+                parameters = p; frequencies = f; media = m; statuses = s; resources = r; lakes = l; states = st; countries = co;
+            },
+            getAllSiteDropdowns: function (){
+                var allDrops = {};
+                allDrops.Parameters = parameters; allDrops.Frequencies = frequencies; allDrops.Media = media; allDrops.Statuses = statuses;
+                allDrops.Resources = resources; allDrops.Lakes = lakes; allDrops.States = states; allDrops.Countries = countries;
+                return allDrops;
+            }
+        }
+    }]);
+    //#region service to get/set project Orgs, data, contacts, pubs and sites
+    laMPResource.factory('ProjParts_Service', [function () {
+        var allProjectOrgs = []; var allProjectData = []; var allProjectContacts = []; var allOrgResources = []; var allProjectPubs = []; var allProjectSites = [];
+        
+        return {
+            //#region orgs
+            getAllProjectOrgs: function () {
+                return allProjectOrgs;
+            },
+            setAllProjectOrgs: function (stuff) {
+                allProjectOrgs = stuff;
+            },
+            //#endregion
+            //#region data
+            getAllProjectData: function () {
+                return allProjectData;
+            },
+            setAllProjectData: function (stuff) {
+                allProjectData = stuff;
+            },
+            //#endregion
+            //#region contacts
+            getAllProjectContacts: function () {
+                return allProjectContacts;
+            },
+            setAllProjectContacts: function (stuff) {
+                allProjectContacts = stuff;
+            },
+            //getAllOrgResources: function () {
+            //    return allOrgResources;
+            //},
+            //setAllOrgResources: function(stuff){
+            //    allOrgResources = stuff;
+            //},
+            //#endregion
+            //#region Pubs
+            getAllProjectPubs: function () {
+                return allProjectPubs;
+            },
+            setAllProjectPubs: function (stuff) {
+                allProjectPubs = stuff;
+            },
+            //#endregion
+            //#region Sites
+            getAllProjectSites: function () {
+                return allProjectSites;
+            },
+            setAllProjectSites: function (stuff) {
+                allProjectSites = stuff;
+            }
+            //#endregion
+        };
+    }]);
 })();

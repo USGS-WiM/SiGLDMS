@@ -20,7 +20,7 @@
                 $scope.freqAdded = []; $scope.medAdded = []; $scope.resAdded = []; $scope.paramAdded = [];
                 $scope.showParams = false;// div containing all parameters (toggles show/hide)
                 $scope.showHide = "Show"; //button text for show/hide parameters
-
+                $scope.siteSaving = false; //set to true when saving for visual cue
                 //all the dropdowns [siteStatList0, lakeList1, stateList2, CountryList3, resourceList4, mediaList5, frequencyList6, parameterList7];
                 $scope.allCountries = angular.copy(allDropDownParts[3]); // CountryList;
                 $scope.allStates = angular.copy(allDropDownParts[2]); //stateList;
@@ -309,7 +309,8 @@
                     } else {
                         //data.selected == false
                         if ($scope.thisSite.site_id !== undefined) { //edit
-                            $scope.freqToRemove.push(data); //add it to removeList
+                            if ($scope.siteFreq.map(function (freq) { return freq.frequency_type_id; }).indexOf(data.frequency_type_id) >= 0)
+                                $scope.freqToRemove.push(data); //add it to removeList(if it's in in siteFreq to begin with)       
                         }
                     }
                 };//end FreqClick
@@ -327,7 +328,8 @@
                     } else {
                         //data.selected == false
                         if ($scope.thisSite.site_id !== undefined) { //edit
-                            $scope.medToRemove.push(data); //add it to removeList
+                            if ($scope.siteMed.map(function (med) { return med.media_type_id; }).indexOf(data.media_type_id) >= 0)
+                                $scope.medToRemove.push(data); //add it to removeList(if it's in in siteMed to begin with)       
                         }
                     }
                 };//end MedClick
@@ -346,7 +348,8 @@
                     } else {
                         //data.selected == false
                         if ($scope.thisSite.site_id !== undefined) { //edit
-                            $scope.resToRemove.push(data); //add it to removeList                      
+                            if ($scope.siteRes.map(function (res) { return res.resource_type_id; }).indexOf(data.resource_type_id) >= 0)
+                                $scope.resToRemove.push(data); //add it to removeList  (if it's in in siteRes to begin with)                     
                         }
                     }
                 };//end ResClick
@@ -364,7 +367,8 @@
                     } else {
                         //data.selected == false
                         if ($scope.thisSite.site_id !== undefined) { //edit
-                            $scope.paramToRemove.push(data); //add it to removeList                    
+                            if ($scope.siteParams.map(function (par) { return par.parameter_type_id; }).indexOf(data.parameter_type_id) >= 0)
+                                $scope.paramToRemove.push(data); //add it to removeList   (if it's in in siteParams to begin with)     
                         }
                     }
                 };//end ParamClick
@@ -422,7 +426,8 @@
                 //PUT
                 $scope.save = function (valid) {
                     //check if they filled in all required fields
-                    if (valid){
+                    if (valid) {
+                        $scope.siteSaving = true;
                         $rootScope.stateIsLoading.showLoading = true; //loading...
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common.Accept = 'application/json';
@@ -435,7 +440,7 @@
                             //#region REMOVES
                             //remove frequencies (freqToRemove contains those to remove ->DELETE)
                             angular.forEach($scope.freqToRemove, function (Fvalue) {
-                                var delFreqProm = SITE.deleteSiteFrequency({ id: $scope.thisSite.site_id, frequencyTypeId: Fvalue.frequency_type_id }).$promise;
+                                var delFreqProm = SITE.deleteSiteFrequency({ id: $scope.thisSite.site_id, FrequencyTypeId: Fvalue.frequency_type_id }).$promise;
                                 RemovePromises.push(delFreqProm);
                             });
 
@@ -535,8 +540,8 @@
                                         //    'Toxicological': $scope.tParams.join("; ")
                                         //}
                                     };
-                                    var siteParts = [newSiteFormatted, 'update'];
-                                    toastr.success("Site Updated");
+                                    var siteParts = [newSiteFormatted, 'update'];                                    
+                                    toastr.success("Site Updated");                                    
                                     $uibModalInstance.close(siteParts);
                                 }).catch(function error(msg) {
                                     console.error(msg);
@@ -556,6 +561,7 @@
                         $scope.save(valid);
                     } else {
                         if (valid) {
+                            $scope.siteSaving = true;
                             $scope.thisSite.project_id = thisProject.project_id;
                             $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                             $http.defaults.headers.common.Accept = 'application/json';
@@ -635,8 +641,7 @@
                                     };
 
                                     var siteParts = [newSiteFormatted, 'create'];
-
-                                    toastr.success("Site Created");
+                                    toastr.success("Site Created");                                   
                                     $uibModalInstance.close(siteParts);
                                 }).catch(function error(msg) {
                                     console.error(msg);

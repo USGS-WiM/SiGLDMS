@@ -70,6 +70,7 @@
     <Content Include="src\images\loading1.gif" />
     <Content Include="src\images\Members1.png" />
     <Content Include="src\images\reports.png" />
+    <Content Include="src\images\smLoading.gif" />
     <Content Include="src\images\Tables1.png" />
     <Content Include="src\images\usgsLogo.png" />
     <Content Include="src\component\logInOut\LogInOutCtrl.js" />

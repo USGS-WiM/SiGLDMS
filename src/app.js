@@ -429,8 +429,7 @@
                         projSites: function (Proj, $stateParams) {
                             var projectId = $stateParams.id;
                             if (projectId > 0) {
-                                return Proj.getProjSites(
-                                    { id: projectId }).$promise;
+                                return Proj.getFullSiteList({ projId: projectId }).$promise;
                             }
                         },
                         prDurations: 'PROJ_DURATION',
@@ -456,6 +455,42 @@
                         allObjs: 'OBJECTIVE_TYPE',
                         allObjList: function (allObjs) {
                             return allObjs.getAll().$promise;
+                        },
+                        //site dropdowns to store in service
+                        CountryList: function () {
+                            var c = [];
+                            c.push("Canada"); c.push("United States Of America");
+                            return c;
+                        },
+                        stateList: function () {
+                            var s = [];
+                            s.push("Illinois"); s.push("Indiana"); s.push("Michigan"); s.push("Minnesota"); s.push("New York");
+                            s.push("Ohio"); s.push("Pennsylvania"); s.push("Wisconsin"); s.push("Ontario");
+                            return s;
+                        },
+                        theLakes: 'LAKE_TYPE',
+                        lakeList: function (theLakes) {
+                            return theLakes.getAll().$promise;
+                        },
+                        theSiteStats: 'STATUS_TYPE',
+                        siteStatList: function (theSiteStats) {
+                            return theSiteStats.getAll().$promise;
+                        },
+                        theRes: 'RESOURCE_TYPE',
+                        resourceList: function (theRes) {
+                            return theRes.getAll().$promise;
+                        },
+                        theMedia: 'MEDIA_TYPE',
+                        mediaList: function (theMedia) {
+                            return theMedia.getAll().$promise;
+                        },
+                        theFreq: 'FREQUENCY_TYPE',
+                        frequencyList: function (theFreq) {
+                            return theFreq.getAll().$promise;
+                        },
+                        theParams: 'PARAMETER_TYPE',
+                        parameterList: function (theParams) {
+                            return theParams.getAll().$promise;
                         }
 
                     }
@@ -495,14 +530,14 @@
                     templateUrl: "component/projContact/projContactView.html",
                     controller: "projContactCtrl",
                     resolve: {
-                        Proj: 'PROJECT',
-                        projContacts: function (Proj, $stateParams) {
-                            var projectId = $stateParams.id;
-                            if (projectId > 0) {
-                                return Proj.getProjContacts(
-                                    { id: projectId }).$promise;
-                            }
-                        },
+                        //Proj: 'PROJECT',
+                        //projContacts: function (Proj, $stateParams) {
+                        //    var projectId = $stateParams.id;
+                        //    if (projectId > 0) {
+                        //        return Proj.getProjContacts(
+                        //            { id: projectId }).$promise;
+                        //    }
+                        //},
                         orgRes: 'ORGANIZATION_SYSTEM',
                         orgResources: function (orgRes) {
                             return orgRes.getOrgResources().$promise;
@@ -527,41 +562,41 @@
                     abstract: true,
                     authenticate: true,
                     resolve: {                        
-                        CountryList: function () {
-                            var c = [];
-                            c.push("Canada"); c.push("United States Of America");
-                            return c;
-                        },
-                        stateList: function () {
-                            var s = [];
-                            s.push("Illinois"); s.push("Indiana"); s.push("Michigan"); s.push("Minnesota"); s.push("New York");
-                            s.push("Ohio"); s.push("Pennsylvania"); s.push("Wisconsin"); s.push("Ontario"); 
-                            return s;
-                        },
-                        theLakes: 'LAKE_TYPE',
-                        lakeList: function (theLakes) {
-                            return theLakes.getAll().$promise;
-                        },
-                        theSiteStats: 'STATUS_TYPE',
-                        siteStatList: function (theSiteStats) {
-                            return theSiteStats.getAll().$promise;
-                        },
-                        theRes: 'RESOURCE_TYPE',
-                        resourceList: function (theRes) {
-                            return theRes.getAll().$promise;
-                        },
-                        theMedia: 'MEDIA_TYPE',
-                        mediaList: function (theMedia) {
-                            return theMedia.getAll().$promise;
-                        },
-                        theFreq: 'FREQUENCY_TYPE',
-                        frequencyList: function (theFreq) {
-                            return theFreq.getAll().$promise;
-                        },
-                        theParams: 'PARAMETER_TYPE',
-                        parameterList: function (theParams) {
-                            return theParams.getAll().$promise;
-                        }
+                        //CountryList: function () {
+                        //    var c = [];
+                        //    c.push("Canada"); c.push("United States Of America");
+                        //    return c;
+                        //},
+                        //stateList: function () {
+                        //    var s = [];
+                        //    s.push("Illinois"); s.push("Indiana"); s.push("Michigan"); s.push("Minnesota"); s.push("New York");
+                        //    s.push("Ohio"); s.push("Pennsylvania"); s.push("Wisconsin"); s.push("Ontario"); 
+                        //    return s;
+                        //},
+                        //theLakes: 'LAKE_TYPE',
+                        //lakeList: function (theLakes) {
+                        //    return theLakes.getAll().$promise;
+                        //},
+                        //theSiteStats: 'STATUS_TYPE',
+                        //siteStatList: function (theSiteStats) {
+                        //    return theSiteStats.getAll().$promise;
+                        //},
+                        //theRes: 'RESOURCE_TYPE',
+                        //resourceList: function (theRes) {
+                        //    return theRes.getAll().$promise;
+                        //},
+                        //theMedia: 'MEDIA_TYPE',
+                        //mediaList: function (theMedia) {
+                        //    return theMedia.getAll().$promise;
+                        //},
+                        //theFreq: 'FREQUENCY_TYPE',
+                        //frequencyList: function (theFreq) {
+                        //    return theFreq.getAll().$promise;
+                        //},
+                        //theParams: 'PARAMETER_TYPE',
+                        //parameterList: function (theParams) {
+                        //    return theParams.getAll().$promise;
+                        //}
                     }
                 })
                 //#endregion region projectEdit.site
@@ -571,15 +606,15 @@
                     url: "/siteList",
                     authenticate: true,
                     templateUrl: "component/projSite/projSiteList.html",
-                    resolve: {
-                        Proj: 'PROJECT',
-                        projS: function (Proj, $stateParams) {
-                            var projectId = $stateParams.id;
-                            if (projectId > 0) {
-                                return Proj.getFullSiteList({ projId: projectId }).$promise;
-                            }
-                        }
-                    },
+                    //resolve: {
+                    //    Proj: 'PROJECT',
+                    //    projS: function (Proj, $stateParams) {
+                    //        var projectId = $stateParams.id;
+                    //        if (projectId > 0) {
+                    //            return Proj.getFullSiteList({ projId: projectId }).$promise;
+                    //        }
+                    //    }
+                    //},
                     controller: 'projSiteListCtrl'
                 })
                 //#endregion region projectEdit.site.siteList
@@ -630,6 +665,7 @@
                 //})
                 //#endregion region projectEdit.site.siteInfo
 
+                //#region multiSite
                 .state("multipleSite", {
                     url: "/siteEditAll/Project/:id",
                     params: { id: null },
@@ -689,6 +725,7 @@
                         }
                     }
                 });
+            //#endregion
 
               
            // $locationProvider.html5Mode(false).hashPrefix('!');

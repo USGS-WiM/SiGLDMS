@@ -2,9 +2,9 @@
     'use strict';
 
     var siGLControllers = angular.module('siGLControllers');
-    siGLControllers.controller('projSiteListCtrl', ['$scope', '$rootScope', '$location', '$cookies', '$uibModal', '$http', '$q', 'projS', 'thisProject', 'siteStatList', 'lakeList', 'stateList', 'CountryList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE', 'PROJECT',
-        function ($scope, $rootScope, $location, $cookies, $uibModal, $http, $q, projS, thisProject, siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList, SITE, PROJECT) {
-            $scope.projectSites = projS; //this looks different now TODO //////////
+    siGLControllers.controller('projSiteListCtrl', ['$scope', '$rootScope', '$location', '$cookies', '$uibModal', '$http', '$q', 'ProjParts_Service', 'dropdown_Service', 'thisProject', 'SITE', 'PROJECT',
+        function ($scope, $rootScope, $location, $cookies, $uibModal, $http, $q, ProjParts_Service, dropdown_Service, thisProject, SITE, PROJECT) {
+            $scope.projectSites = ProjParts_Service.getAllProjectSites();// projS; 
 
             for (var psu = 0; psu < $scope.projectSites.length; psu++) {
                 //fix urls
@@ -21,14 +21,17 @@
                     $scope.projectSites[ind].EndDate = $scope.projectSites[ind].EndDate.substring(0, spaceEIndex);
                 }
             }
-                        
+            ProjParts_Service.setAllProjectSites($scope.projectSites);
+            var siteDrops = dropdown_Service.getAllSiteDropdowns();// .Parameters, .Frequencies, .Media, .Statuses, .Resources, .Lakes, .States, .Countries
             $scope.thisProject = thisProject;
-            $scope.LakeList = lakeList;
-            $scope.StatusList = siteStatList;
-            $scope.ResourceList = resourceList;
-            $scope.MediaList = mediaList;
-            $scope.FreqList = frequencyList;
-            $scope.ParamList = parameterList;
+            $scope.LakeList = siteDrops.Lakes;// lakeList;
+            $scope.StatusList = siteDrops.Statuses;// siteStatList;
+            $scope.ResourceList = siteDrops.Resources;// resourceList;
+            $scope.MediaList = siteDrops.Media;// mediaList;
+            $scope.FreqList = siteDrops.Frequencies;// frequencyList;
+            $scope.States = siteDrops.States;
+            $scope.Countries = siteDrops.Countries;
+            $scope.ParamList = siteDrops.Parameters;// parameterList;
 
             $scope.FrequenciesToAdd = [];
             $scope.MediaToAdd = [];
@@ -57,7 +60,7 @@
                 }
             };
 
-            //used in CopyToNew for formatting the new Site
+            //used in DuplicateSite for formatting the new Site
             var formatSite = function (aSite) {
                 //format it properly
                 var aSITE = {};
@@ -82,7 +85,7 @@
             };
 
             //copy to new site using this site's info
-            $scope.CopyToNew = function (siteId) {
+            $scope.DuplicateSite = function (siteId) {
                 //ask for new name: (modal)
                 var modalInstance = $uibModal.open({
                     templateUrl: 'duplicateSiteMdlView.html',
@@ -115,7 +118,7 @@
                     SITE.save(aSITE, function success(response) {
                         $rootScope.stateIsLoading.showLoading = true; //loading... 
                         thisSite.SiteId = response.site_id;
-                        $scope.projectSites.push(thisSite);
+                        $scope.projectSites.push(thisSite); ProjParts_Service.setAllProjectSites($scope.projectSites);
                         toastr.success("Site Created");
                         siteId = response.site_id;
                         //projSites.push(response);
@@ -153,7 +156,7 @@
                         toastr.success("Error: " + errorResponse.statusText);
                     }).$promise;
                 });
-            };//end CopyToNew
+            };//end DuplicateSite
 
             //DELETE Site
             $scope.DeleteSite = function (site) {
@@ -178,7 +181,7 @@
 
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     SITE.delete({ id: site.SiteId }, function success(response) {
-                        $scope.projectSites.splice(index, 1);
+                        $scope.projectSites.splice(index, 1); ProjParts_Service.setAllProjectSites($scope.projectSites);
                         $scope.sitesCount.total = $scope.sitesCount.total - 1;
                         toastr.success("Site Removed");
                     }, function error(errorResponse) {
@@ -192,8 +195,8 @@
 
             //open modal to edit or create a project
             $scope.openSiteCreate = function (site) {
-                $rootScope.stateIsLoading.showLoading = true; //Loading...
-                var dropdownParts = [siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList];
+                $rootScope.stateIsLoading.showLoading = true; //Loading...  $scope.LakeList   $scope.StatusList $scope.ResourceList  $scope.MediaList  $scope.FreqList   $scope.ParamList  
+                var dropdownParts = [$scope.StatusList, $scope.LakeList, $scope.States, $scope.Countries, $scope.ResourceList, $scope.MediaList, $scope.FreqList, $scope.ParamList];
                 var indexClicked = $scope.projectSites.indexOf(site);
 
                 //modal
@@ -242,12 +245,13 @@
                     //$scope.aProject, projObjectives, projKeywords
                     $rootScope.stateIsLoading.showLoading = false; //loading... 
                     if (r[1] == 'create') {
-                        $scope.projectSites.push(r[0]);
+                        $scope.projectSites.push(r[0]); ProjParts_Service.setAllProjectSites($scope.projectSites);
                         $scope.sitesCount.total = $scope.projectSites.length;
                     }
                     if (r[1] == 'update') {
                         //this is from edit -- refresh page?
                         $scope.projectSites[indexClicked] = r[0];
+                        ProjParts_Service.setAllProjectSites($scope.projectSites);
                     }
                 });
             };
@@ -255,7 +259,7 @@
             //multi edit
             $scope.openMultiSiteModal = function (pid) {
                 $rootScope.stateIsLoading.showLoading = true; //Loading...
-                var dropdownParts = [siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList];
+                var dropdownParts = [$scope.StatusList, $scope.LakeList, $scope.States, $scope.Countries, $scope.ResourceList, $scope.MediaList, $scope.FreqList, $scope.ParamList];
                
                 //modal
                 var modalInstance = $uibModal.open({
@@ -281,12 +285,13 @@
                     //$scope.aProject, projObjectives, projKeywords
                     $rootScope.stateIsLoading.showLoading = false; //loading... 
                     if (r[1] == 'create') {
-                        $scope.projectSites.push(r[0]);
+                        $scope.projectSites.push(r[0]); ProjParts_Service.setAllProjectSites($scope.projectSites);
                         $scope.sitesCount.total = $scope.projectSites.length;
                     }
                     if (r[1] == 'update') {
                         //this is from edit -- refresh page?
                         $scope.projectSites[indexClicked] = r[0];
+                        ProjParts_Service.setAllProjectSites($scope.projectSites);
                     }
                 });
             };

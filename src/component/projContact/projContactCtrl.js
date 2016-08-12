@@ -3,9 +3,9 @@
 
     var siGLControllers = angular.module('siGLControllers');
 
-    siGLControllers.controller('projContactCtrl', ['$scope', '$cookies', '$http', '$filter', '$uibModal', 'PROJECT', 'CONTACT', 'ORGANIZATION_SYSTEM', 'projContacts', 'thisProject', 'orgResources', 'allOrgList', 'allDivisionList', 'allSectionList',
-        function ($scope, $cookies, $http, $filter, $uibModal, PROJECT, CONTACT, ORGANIZATION_SYSTEM, projContacts, thisProject, orgResources, allOrgList, allDivisionList, allSectionList) {
-            $scope.ProjContacts = projContacts;
+    siGLControllers.controller('projContactCtrl', ['$scope', '$cookies', '$http', '$filter', '$uibModal', 'ProjParts_Service', 'PROJECT', 'CONTACT', 'ORGANIZATION_SYSTEM', 'thisProject', 'orgResources', 'allOrgList', 'allDivisionList', 'allSectionList',
+        function ($scope, $cookies, $http, $filter, $uibModal, ProjParts_Service, PROJECT, CONTACT, ORGANIZATION_SYSTEM, thisProject, orgResources, allOrgList, allDivisionList, allSectionList) {
+            $scope.ProjContacts = ProjParts_Service.getAllProjectContacts();//  projContacts;
 
             //make sure phone is formatted
             for (var p = 0; p < $scope.ProjContacts.length; p++) {
@@ -22,6 +22,8 @@
                     }
                 }
             }
+            //set them back to the service just in case any were updated from fixing a phone
+            ProjParts_Service.setAllProjectContacts($scope.ProjContacts);
             $scope.allOrgResources = orgResources; 
             $scope.allOrganizations = allOrgList; 
             $scope.allDivisions = allDivisionList;
@@ -69,7 +71,7 @@
                 $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common.Accept = 'application/json';
                 PROJECT.addProjContact({ id: thisProject.project_id }, $scope.newContact, function success(response) {
-                    $scope.ProjContacts = response;
+                    $scope.ProjContacts = response; ProjParts_Service.setAllProjectContacts(response);
                     for (var pc = 0; pc < $scope.ProjContacts.length; pc++) {
                         var thisOrgSysRes = $scope.allOrgResources.filter(function (allOrgRe) { return allOrgRe.organization_system_id == $scope.ProjContacts[pc].organization_system_id; })[0];
                         $scope.ProjContacts[pc].OrgName = thisOrgSysRes.OrganizationName;
@@ -347,7 +349,7 @@
                    // $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
                     PROJECT.deleteProjContact({ id: thisProject.project_id, ContactId: aCONTACT.contact_id }, function success(response) {
-                        $scope.ProjContacts.splice(index, 1);
+                        $scope.ProjContacts.splice(index, 1); ProjParts_Service.setAllProjectContacts($scope.ProjContacts);
                         $scope.contactCount.total = $scope.contactCount.total - 1;
                         //TODO: Make sure services are removing the organizationsystem object
                         toastr.success("Contact Removed");
