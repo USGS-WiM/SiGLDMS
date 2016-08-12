@@ -19,16 +19,14 @@
 
             var addParametersToPsite = function (ps){
                 for (var para = 0; para < $scope.parameters.length; para++) {
-                    ps[$scope.parameters[para].parameter] = "no";
+                    ps[$scope.parameters[para].parameter] = "n";
                 }
                 return ps;
             }
             //convert each array objects to array of strings for handsontable dropdown
             angular.forEach($scope.lakes, function (l) { $scope.lakeArray.push(l.lake); });
             angular.forEach($scope.siteStatuses, function (s) { $scope.statusArray.push(s.status); });
-            angular.forEach($scope.resources, function (r) { $scope.resourceArray.push(r.resource_name); });
-            angular.forEach($scope.medias, function (m) { $scope.mediaArray.push(m.media) });
-            angular.forEach($scope.frequencies, function (f) { $scope.frequencyArray.push(f.frequency) });
+            //angular.forEach($scope.resources, function (r) { $scope.resourceArray.push(r.resource_name); }); //angular.forEach($scope.medias, function (m) { $scope.mediaArray.push(m.media) });//angular.forEach($scope.frequencies, function (f) { $scope.frequencyArray.push(f.frequency) });
            
             //format data object for handsontable
             angular.forEach(allProjSites, function (psite) {
@@ -73,15 +71,187 @@
                 //#region deal with pulling apart parameters for individual checkboxs
                 if (psite.Parameters.length > 0) {
                     angular.forEach(psite.Parameters, function (p) {
-                        psite[p.parameter] = "yes";
+                        psite[p.parameter] = "y";
                     });
                 }
                 //#endregion
                 $scope.projSites.push(psite);
             });
             
-            $scope.cellClicks = 0;
-            $scope.rowCell = [];
+            //they want to add/remove resources 
+            var getResourcesModal = function (col, row, prevValues) {
+                //Resources modal to pick from
+                var resModal = $uibModal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Resources</h3></div>' +
+                        '<div class="modal-body"><p>Choose Resources:</p><p><ul><li style="list-style:none;" ng-repeat="r in resourceList">' +
+                        '<input type="checkbox" name="resources" ng-model="r.selected" ng-click="addRes(r)"/><span>{{ r.resource_name }}</span></li></ul></p></div>' +
+                        '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                    backdrop: 'static',
+                    keyboard: false,
+                    resolve: {
+                        allResources: function () { return $scope.resources; },
+                        chosenValues: function () { return prevValues; }
+                    },
+                    controller: function ($scope, $uibModalInstance, allResources, chosenValues) {
+                        //add selected prop to each resource
+                        $scope.resourceList = angular.copy(allResources);
+                        $scope.chosenResStringArray = [];
+                        if (chosenValues != null) {
+                            $scope.resourceString = angular.copy(chosenValues.split(","));
+                            angular.forEach($scope.resourceString, function (crs) {
+                                $scope.chosenResStringArray.push(crs.trim());
+                            });
+                        }
+                        //add selected and select if in chosenResStringArray
+                        for (var i = 0; i < $scope.resourceList.length; i++) {
+                            for (var y = 0; y < $scope.chosenResStringArray.length; y++) {
+                                if ($scope.chosenResStringArray[y] == $scope.resourceList[i].resource_name) {
+                                    $scope.resourceList[i].selected = true;
+                                    y = $scope.chosenResStringArray.length;
+                                }
+                                else $scope.resourceList[i].selected = false;
+                            }
+                            if ($scope.chosenResStringArray.length === 0) $scope.resourceList[i].selected = false;
+                        }//end foreach resource
+
+                        //selected or not selected ..add or remove from chosen ones to pass back
+                        $scope.addRes = function (res) {
+                            if (res.selected) {
+                                $scope.chosenResStringArray.push(res.resource_name);
+                            } else {
+                                var resInd = $scope.chosenResStringArray.map(function (r) { return r; }).indexOf(res.resource_name);
+                                if (resInd >= 0) $scope.chosenResStringArray.splice(resInd, 1);
+                            }
+                        }
+                        $scope.ok = function () {
+                            $uibModalInstance.close($scope.chosenResStringArray.join(", "));
+                        };
+                    },
+                    size: 'md'
+                });
+                resModal.result.then(function (newVal) {
+                    hotRegisterer.getInstance('tableinstance').setDataAtCell(row, col, newVal);
+                });
+            }
+
+            //they want to add/remove media 
+            var getMediaModal = function (col, row, prevValues) {
+                //Resources modal to pick from
+                var medModal = $uibModal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Media</h3></div>' +
+                        '<div class="modal-body"><p>Choose Media:</p><p><ul><li style="list-style:none;" ng-repeat="m in mediaList">' +
+                        '<input type="checkbox" name="media" ng-model="m.selected" ng-click="addMed(m)"/><span>{{ m.media }}</span></li></ul></p></div>' +
+                        '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                    backdrop: 'static',
+                    keyboard: false,
+                    resolve: {
+                        allMedia: function () { return $scope.medias; },
+                        chosenValues: function () { return prevValues; }
+                    },
+                    controller: function ($scope, $uibModalInstance, allMedia, chosenValues) {
+                        //add selected prop to each resource
+                        $scope.mediaList = angular.copy(allMedia);
+                        $scope.chosenMedStringArray = [];
+                        if (chosenValues != null) {
+                            $scope.medString = angular.copy(chosenValues.split(","));
+                            angular.forEach($scope.medString, function (crs) {
+                                $scope.chosenMedStringArray.push(crs.trim());
+                            });
+                        }
+                        //add selected and select if in chosenResStringArray
+                        for (var i = 0; i < $scope.mediaList.length; i++) {
+                            for (var y = 0; y < $scope.chosenMedStringArray.length; y++) {
+                                if ($scope.chosenMedStringArray[y] == $scope.mediaList[i].media) {
+                                    $scope.mediaList[i].selected = true;
+                                    y = $scope.chosenMedStringArray.length;
+                                }
+                                else $scope.mediaList[i].selected = false;
+                            }
+                            if ($scope.chosenMedStringArray.length === 0) $scope.mediaList[i].selected = false;
+                        }//end foreach resource
+
+                        //selected or not selected ..add or remove from chosen ones to pass back
+                        $scope.addMed = function (med) {
+                            if (med.selected) {
+                                $scope.chosenMedStringArray.push(med.media);
+                            } else {
+                                var mInd = $scope.chosenMedStringArray.map(function (m) { return m; }).indexOf(med.media);
+                                if (mInd >= 0) $scope.chosenMedStringArray.splice(mInd, 1);
+                            }
+                        }
+                        $scope.ok = function () {
+                            $uibModalInstance.close($scope.chosenMedStringArray.join(", "));
+                        };
+                    },
+                    size: 'md'
+                });
+                medModal.result.then(function (newVal) {
+                    hotRegisterer.getInstance('tableinstance').setDataAtCell(row, col, newVal);
+                });
+            }
+
+            //they want to add/remove freq 
+            var getFrequencyModal = function (col, row, prevValues) {
+                //Resources modal to pick from
+                var freqModal = $uibModal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Frequency</h3></div>' +
+                        '<div class="modal-body"><p>Choose Resources:</p><p><ul><li style="list-style:none;" ng-repeat="f in frequencyList">' +
+                        '<input type="checkbox" name="freq" ng-model="f.selected" ng-click="addFreq(f)"/><span>{{ f.frequency }}</span></li></ul></p></div>' +
+                        '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                    backdrop: 'static',
+                    keyboard: false,
+                    resolve: {
+                        allFrequencies: function () { return $scope.frequencies; },
+                        chosenValues: function () { return prevValues; }
+                    },
+                    controller: function ($scope, $uibModalInstance, allFrequencies, chosenValues) {
+                        $scope.frequencyList = angular.copy(allFrequencies);
+                        $scope.chosenFreqStringArray = [];
+                        if (chosenValues != null) {
+                            $scope.frequencyString = angular.copy(chosenValues.split(","));
+                            angular.forEach($scope.frequencyString, function (crs) {
+                                $scope.chosenFreqStringArray.push(crs.trim());
+                            });
+                        }
+                        //add selected and select if in chosenResStringArray
+                        for (var i = 0; i < $scope.frequencyList.length; i++) {
+                            for (var y = 0; y < $scope.chosenFreqStringArray.length; y++) {
+                                if ($scope.chosenFreqStringArray[y] == $scope.frequencyList[i].frequency) {
+                                    $scope.frequencyList[i].selected = true;
+                                    y = $scope.chosenFreqStringArray.length;
+                                }
+                                else $scope.frequencyList[i].selected = false;
+                            }
+                            if ($scope.chosenFreqStringArray.length === 0) $scope.frequencyList[i].selected = false;
+                        }//end foreach resource
+
+                        //selected or not selected ..add or remove from chosen ones to pass back
+                        $scope.addFreq = function (freq) {
+                            if (freq.selected) {
+                                $scope.chosenFreqStringArray.push(freq.frequency);
+                            } else {
+                                var resInd = $scope.chosenFreqStringArray.map(function (r) { return r; }).indexOf(freq.frequency);
+                                if (resInd >= 0) $scope.chosenFreqStringArray.splice(resInd, 1);
+                            }
+                        }
+                        $scope.ok = function () {
+                            $uibModalInstance.close($scope.chosenFreqStringArray.join(", "));
+                        };
+                    },
+                    size: 'md'
+                });
+                freqModal.result.then(function (newVal) {
+                    hotRegisterer.getInstance('tableinstance').setDataAtCell(row, col, newVal);
+                });
+            }
+
+            var colorRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+                Handsontable.renderers.TextRenderer.apply(this, arguments);
+                td.style.background = '#EEE';
+                return td;
+            };
+
+            //handsontable settings
             $scope.tableSettings = {
                 colHeaders: true,
                 rowHeaders: true,
@@ -92,44 +262,36 @@
                 manualColumnResize: true,
                 manualRowResize: true,
                 wordWrap: false,
-                viewportColumnRenderingOffsetNumber: 1,               
-                afterOnCellMouseDown: function (r, p, r2, p2) { //(r: Number, p: Number, r2: Number, p2: Number)
-                    $scope.cellClicks++;
-                    $scope.rowCell.push({ c: p.col, r: p.row });
-                    if ($scope.cellClicks == 2 && ($scope.rowCell[0].c == $scope.rowCell[1].c && $scope.rowCell[0].r == $scope.rowCell[1].r)) {
-                        if (p.col == 10) {
-                            var values = hotRegisterer.getInstance('tableinstance').getDataAtCell(p.row, p.col);
-                            //Resources
-                            var resModal = $uibModal.open({
-                                template: '<div class="modal-header"><h3 class="modal-title">Resources</h3></div>' +
-                                    '<div class="modal-body"><p>Choose Resources:</p><p><ul><li style="list-style:none;" ng-repeat="r in resourceList">' +
-                                    '<input type="checkbox" name="resources" ng-click="addRes(r)"/><span>{{ r }}</span></li></ul></p></div>' +
-                                    '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
-                                backdrop: 'static',
-                                keyboard: false,
-                                resolve: {
-                                    allResources: function () { return $scope.resourceArray; }, chosenValues: function () { return values; }
-                                },
-                                controller: function ($scope, $uibModalInstance, allResources, chosenValues) {
-                                    $scope.resourceList = allResources;
-                                    $scope.resourceString = chosenValues;
-                                    $scope.addRes = function (res) {
-                                        $scope.resourceString += res + ", ";
-                                    }
-                                    $scope.ok = function () {
-                                        $uibModalInstance.close($scope.resourceString);
-                                    };
-                                },
-                                size: 'md'
-                            });
-                            resModal.result.then(function (r) {
-                                //Handsontable.setDataAtCell(p.row, p.col, 'new value');
-                                hotRegisterer.getInstance('tableinstance').setDataAtCell(p.row, p.col, r);
-                            });
-                        }
-                        //p.col = 11 == Media, 12 == Frequencies, 10 == Resources
-                        //p.row                        
-                    } else { if ($scope.cellClicks >= 2) { $scope.cellClicks = 0; $scope.rowCell = []; } }
+                viewportColumnRenderingOffsetNumber: 1,
+                colWidths: [130, 80, 84, 98, 92, 88, 98, 92, 120, 90, 120, 120, 120, 100, 100, 120, 120, 100,
+                    20, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, //phys
+                    20, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80,  //chem
+                    20, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, //bio
+                    20, 80, 80, 80, 80, //micro
+                    20, 80, 80, 80,80],
+                cells: function (row, col, prop) {
+                    //physical, chemical,biological, microbio, tox
+                    if (col == 18 || col == 45 || col == 64 || col == 81 || col == 86) {
+                        var cellprops = {}; cellprops.renderer = colorRenderer;
+                    }
+                    return cellprops;
+                },
+                afterOnCellMouseDown: function (event,coords,td){
+                    if (coords.col == 10 && event.realTarget.className == "htAutocompleteArrow") {
+                        var c = coords.col; var r = coords.row;
+                        var values = hotRegisterer.getInstance('tableinstance').getDataAtCell(r, c);
+                        getResourcesModal(c, r, values);
+                    };
+                    if (coords.col == 11 && event.realTarget.className == "htAutocompleteArrow") {
+                        var c = coords.col; var r = coords.row;
+                        var values = hotRegisterer.getInstance('tableinstance').getDataAtCell(r, c);
+                        getMediaModal(c, r, values);
+                    };
+                    if (coords.col == 12 && event.realTarget.className == "htAutocompleteArrow") {
+                        var c = coords.col; var r = coords.row;
+                        var values = hotRegisterer.getInstance('tableinstance').getDataAtCell(r, c);
+                        getFrequencyModal(c, r, values);
+                    };
                 }//afterOnCellMouseDown
             };
         

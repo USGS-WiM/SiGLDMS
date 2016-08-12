@@ -201,10 +201,10 @@
                 CONTACT.update({ id: id }, contactToUpdate, function success(response) {
                     var projContact = response;
                     var thisOrgRes = $scope.allOrgResources.filter(function (or) { return or.organization_system_id == response.organization_system_id; })[0];
-                    projContacts.OrgName = thisOrgRes.OrganizationName;
-                    projContacts.DivName = thisOrgRes.DivisionName;
-                    projContacts.SecName = thisOrgRes.SectionName;
-                    retur = projContacts;
+                    projContact.OrgName = thisOrgRes.OrganizationName;
+                    projContact.DivName = thisOrgRes.DivisionName;
+                    projContact.SecName = thisOrgRes.SectionName;
+                    retur = projContact;
                     $scope.projectForm.Contact.$setPristine(true);
                     toastr.success("Contact Updated");                    
                 }, function error(errorResponse) {

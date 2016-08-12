@@ -121,7 +121,6 @@
                         $scope.projectSites.push(thisSite); ProjParts_Service.setAllProjectSites($scope.projectSites);
                         toastr.success("Site Created");
                         siteId = response.site_id;
-                        //projSites.push(response);
                         $scope.sitesCount.total = $scope.sitesCount.total + 1;
                         //use $q for async call to add frequencies, media, parameters, resources
                         var defer = $q.defer();
