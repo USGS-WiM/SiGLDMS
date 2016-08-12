@@ -3,9 +3,10 @@
 
     var siGLControllers = angular.module('siGLControllers'); 
     
-    siGLControllers.controller('projDataCtrl', ['$scope', '$cookies', '$http', '$uibModal', 'PROJECT', 'DATA_HOST', 'thisProject', 'projDatum',
-        function ($scope, $cookies, $http, $uibModal, PROJECT, DATA_HOST, thisProject, projDatum) {
-            $scope.ProjData = projDatum;
+    siGLControllers.controller('projDataCtrl', ['$scope', '$cookies', '$http', '$uibModal', 'PROJECT', 'DATA_HOST', 'ProjParts_Service', 'thisProject', //'projDatum',
+        function ($scope, $cookies, $http, $uibModal, PROJECT, DATA_HOST, ProjParts_Service, thisProject) {
+            $scope.ProjData = ProjParts_Service.getAllProjectData();// projDatum;
+
             var neededUpdating = false; //if the url isn't formatted, flag so know to PUT it after fixing
             $scope.isEditing = false; //disables form inputs while user is editing existing data up top
             $scope.newData = {}; //holder
@@ -53,7 +54,7 @@
                     d.project_id = thisProjID;
                     DATA_HOST.save(d, function success(response) {                    
                         $scope.ProjData = response;
-
+                        ProjParts_Service.setAllProjectData($scope.ProjData); //projDatum = response;
                         $scope.datumCount.total = $scope.ProjData.length;
                         $scope.newData = {};
                         $scope.projectForm.Data.$setPristine(true);
@@ -91,6 +92,7 @@
                     $http.defaults.headers.common.Accept = 'application/json';
                     DATA_HOST.delete({ id: dataH.data_host_id }, function success(response) {
                         $scope.ProjData.splice(Dindex, 1);
+                        ProjParts_Service.setAllProjectData($scope.ProjData);// projDatum.splice(Dindex, 1);
                         $scope.datumCount.total = $scope.datumCount.total - 1;
                         toastr.success("Data Removed");
                     }, function error(errorResponse) {

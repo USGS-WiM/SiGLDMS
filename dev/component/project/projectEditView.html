@@ -578,19 +578,12 @@
                 </div>
 
                 <!--submit and cancel buttons-->
-                <div class="sigl-modal-form-group" style="text-align: right;">
-
-                    <button type="button" class="sigl-btn btn-orange" ng-click="cancel()">
-                        Cancel
-                    </button>
-                    <button ng-show="thisSite.site_id == undefined" class="sigl-btn" ng-click="create(projectForm.SiteInfo.$valid)">
-                        Create
-                    </button>
-                    <button ng-show="thisSite.site_id != undefined" class="sigl-btn" ng-click="save(projectForm.SiteInfo.$valid)">
-                        Save
-                    </button>
-
+                <div ng-show="!siteSaving" class="sigl-modal-form-group" style="text-align: right;">
+                    <button type="button" class="sigl-btn btn-orange" ng-click="cancel()">Cancel</button>
+                    <button ng-show="thisSite.site_id == undefined" class="sigl-btn" ng-click="create(projectForm.SiteInfo.$valid)">Create</button>
+                    <button ng-show="thisSite.site_id != undefined" class="sigl-btn" ng-click="save(projectForm.SiteInfo.$valid)">Save</button>
                 </div>
+                <div class="pull-right" style="padding:10px" ng-show="siteSaving"><img src="images/smLoading.gif" /></div>
             </div>
         </fieldset>
     </form>

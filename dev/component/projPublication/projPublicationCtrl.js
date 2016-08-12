@@ -3,9 +3,9 @@
 
     var siGLControllers = angular.module('siGLControllers');
 
-    siGLControllers.controller('projPublicationCtrl', ['$scope', '$cookies', '$http', '$uibModal', 'PROJECT', 'thisProject', 'PUBLICATION', 'projPubs',
-        function ($scope, $cookies, $http, $uibModal, PROJECT, thisProject, PUBLICATION, projPubs) {
-            $scope.ProjPubs = projPubs;
+    siGLControllers.controller('projPublicationCtrl', ['$scope', '$cookies', '$http', '$uibModal', 'PROJECT', 'thisProject', 'PUBLICATION', 'ProjParts_Service',
+        function ($scope, $cookies, $http, $uibModal, PROJECT, thisProject, PUBLICATION, ProjParts_Service) {
+            $scope.ProjPubs = ProjParts_Service.getAllProjectPubs();// projPubs;
             $scope.isEditing = false; //disables form inputs while user is editing existing data up top
             $scope.newPub = {
             };
@@ -39,7 +39,7 @@
                     $http.defaults.headers.common.Accept = 'application/json';                    
                     PROJECT.addProjPublication({ id: thisProjID}, p, function success(response) {
                         $scope.ProjPubs = response;
-
+                        ProjParts_Service.setAllProjectPubs($scope.ProjPubs);
                         $scope.pubCount.total = $scope.ProjPubs.length;
                         $scope.newPub = {};
                         $scope.projectForm.Pubs.$setPristine(true);
@@ -79,7 +79,7 @@
                    // $http.defaults.headers.common['X-HTTP-Method-Override'] = 'DELETE';
 
                     PROJECT.deleteProjPublication({ id: thisProjID, PublicationId: pub.publication_id }, function success(response) {
-                        $scope.ProjPubs.splice(index, 1);
+                        $scope.ProjPubs.splice(index, 1); ProjParts_Service.setAllProjectPubs($scope.ProjPubs);
                         $scope.pubCount.total = $scope.pubCount.total - 1;
                         toastr.success("Publication Removed");
                     }, function error(errorResponse) {

@@ -2,9 +2,9 @@
     'use strict';
 
     var siGLControllers = angular.module('siGLControllers');
-    siGLControllers.controller('projCooperatorCtrl', ['$scope', '$http', '$cookies', '$filter', '$uibModal', 'thisProject', 'projOrgs', 'allOrgList', 'allDivisionList', 'allSectionList', 'PROJECT',
-        function ($scope, $http, $cookies, $filter, $uibModal, thisProject, projOrgs, allOrgList, allDivisionList, allSectionList, PROJECT) {
-            $scope.ProjOrgs = projOrgs; 
+    siGLControllers.controller('projCooperatorCtrl', ['$scope', '$http', '$cookies', '$filter', '$uibModal', 'ProjParts_Service', 'thisProject', 'allOrgList', 'allDivisionList', 'allSectionList', 'PROJECT',
+        function ($scope, $http, $cookies, $filter, $uibModal, ProjParts_Service, thisProject, allOrgList, allDivisionList, allSectionList, PROJECT) {
+            $scope.ProjOrgs = ProjParts_Service.getAllProjectOrgs();// projOrgs;
             $scope.allOrgs = allOrgList; 
             $scope.allDivisions = allDivisionList; 
             $scope.allSections = allSectionList; 
@@ -101,7 +101,7 @@
                             //array of all the ORGANIZATION_RESOURCES for this project
                             var postedORG = response.filter(function (postedO) { return postedO.org_id == orgId && postedO.div_id == divId && postedO.sec_id == secId; })[0];
                             $scope.ProjOrgs.push(postedORG);
-
+                            ProjParts_Service.setAllProjectOrgs($scope.ProjOrgs);
                             //$scope.ProjOrgs = response;
                             $scope.coopCount.total = $scope.coopCount.total + 1;
                             $scope.alldivs = {}; $scope.allsecs = {}; $scope.selectedOrgID = ""; $scope.selectedDivID = ""; $scope.selectedSecID = "";
@@ -137,6 +137,7 @@
                     $http.defaults.headers.common.Accept = 'application/json';
                     PROJECT.deleteProjOrg({ id: thisProject.project_id, OrgSystemId: org.organization_system_id }, function success(response) {
                         $scope.ProjOrgs.splice(index, 1);
+                        ProjParts_Service.setAllProjectOrgs($scope.ProjOrgs);
                         $scope.coopCount.total = $scope.coopCount.total - 1;
                         toastr.success("Organization Removed");
                     }, function error(errorResponse) {

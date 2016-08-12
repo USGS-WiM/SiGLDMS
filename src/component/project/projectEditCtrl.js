@@ -2,10 +2,11 @@
     'use strict';
 
     var siGLControllers = angular.module('siGLControllers');
-    siGLControllers.controller('projectEditCtrl', ['$scope', '$rootScope', '$cookies', '$location', '$state', '$http', '$filter', '$uibModal', 'thisProject', 'projOrgs',
-        'projDatum', 'projContacts', 'projPubs', 'projSites', 'projObjectives', 'projKeywords', 'PROJECT', 'SITE', 'allDurationList', 'allStatsList', 'allObjList',
-        function ($scope, $rootScope, $cookies, $location, $state, $http, $filter, $uibModal, thisProject, projOrgs, projDatum, projContacts, projPubs, projSites,
-    projObjectives, projKeywords, PROJECT, SITE, allDurationList, allStatsList, allObjList) {
+    siGLControllers.controller('projectEditCtrl', ['$scope', '$rootScope', '$cookies', '$location', '$state', '$http', '$filter', '$uibModal', 'ProjParts_Service', 'dropdown_Service', 'thisProject', 'projOrgs',
+        'projDatum', 'projContacts', 'projPubs', 'projSites', 'projObjectives', 'projKeywords', 'allDurationList', 'allStatsList', 'allObjList', 'PROJECT', 'SITE', 'CountryList',
+        'stateList', 'lakeList', 'siteStatList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList',
+        function ($scope, $rootScope, $cookies, $location, $state, $http, $filter, $uibModal, ProjParts_Service, dropdown_Service, thisProject, projOrgs, projDatum, projContacts, projPubs, projSites,
+    projObjectives, projKeywords, allDurationList, allStatsList, allObjList, PROJECT, SITE, CountryList, stateList, lakeList, siteStatList, resourceList, mediaList, frequencyList, parameterList) {
             //model needed for ProjectEdit Info tab: ( Counts for Cooperators, Datum, Contacts, Publications and Sites) 1. thisProject, 2. parsed urls, 3. project Keywords, 4. all objectives, 5. all statuses, 6. all durations
         if ($cookies.get('siGLCreds') === undefined || $cookies.get('siGLCreds') === "") {
             $scope.auth = false;
@@ -70,7 +71,7 @@
             //#region GLOBALS
             $scope.aProject = {}; //holder for project (either coming in for edit, or being created on POST )
             $scope.urls = []; //holder for urls for future parsing back together ( | separated string)
-
+            dropdown_Service.setAllSiteDropdowns(parameterList, frequencyList, mediaList, siteStatList, resourceList, lakeList, stateList, CountryList);// p, f, m, s, r, l, st, co
             //#endregion GLOBALS
 
             //open modal to edit or create a project
@@ -112,7 +113,7 @@
                         $scope.ProjectKeywords = r[2];
                         $scope.urls = r[3];
                     } else {
-                        $state.go('home');
+                        if ($scope.aProject.project_id == undefined) $state.go('home');
                     }
                 });
             };
@@ -121,11 +122,16 @@
                 //this is an existing project = build for details view
                 $scope.aProject = thisProject;
                 $scope.readyFlagModel = $scope.aProject.ready_flag > 0 ? true : false;
+                ProjParts_Service.setAllProjectOrgs(projOrgs);
                 $scope.coopCount = { total: projOrgs.length };
+                ProjParts_Service.setAllProjectData(projDatum);
                 $scope.datumCount = { total: projDatum.length };
+                ProjParts_Service.setAllProjectContacts(projContacts);
                 $scope.contactCount = { total: projContacts.length };
+                ProjParts_Service.setAllProjectPubs(projPubs);
                 $scope.pubCount = { total: projPubs.length };
-                $scope.sitesCount = { total: projSites.length };
+                ProjParts_Service.setAllProjectSites(projSites);
+                $scope.sitesCount =  { total: projSites.length };
                 $scope.title = "Project: " + $scope.aProject.name;
                 $scope.ProjectKeywords = projKeywords;
                 $scope.ProjectObjectives = projObjectives;

@@ -7,17 +7,8 @@
 <div class="form-group" ng-if="ProjContacts.length > 0">
 
     <div class="current-data-list" ng-repeat="c in ProjContacts">
-        <!--<td><button ng-click="RemoveContact(c)"><i class="glyphicon glyphicon-remove"></i></button></td>-->
-        <!-- form -->
-        <!-- form -->
-        <form editable-form name="rowform" onshow="EditRowClicked($index)" onhide="    CancelEditRowClick()" onaftersave="    saveContact($data, c.contact_id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == c">
-            <button type="submit" ng-disabled="rowform.$waiting || rowform.$invalid" class="sigl-btn">
-                Save
-            </button>
-            <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="sigl-btn btn-orange">
-                Cancel
-            </button>
-        </form>
+        <!--<td><button ng-click="RemoveContact(c)"><i class="glyphicon glyphicon-remove"></i></button></td>-->        
+        
 
         <div style="display:none">
             <span editable-text="c.contact_id" e-form="rowform" e-name="contact_id">{{c.contact_id}}</span>
@@ -46,7 +37,15 @@
                     Change Contact's Organization
                 </button>
             </div>
-
+            <!-- form -->
+            <form editable-form name="rowform" onshow="EditRowClicked($index)" onhide="    CancelEditRowClick()" onaftersave="    saveContact($data, c.contact_id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == c">
+                <button type="submit" ng-disabled="rowform.$waiting || rowform.$invalid" class="sigl-btn">
+                    Save
+                </button>
+                <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="sigl-btn btn-orange">
+                    Cancel
+                </button>
+            </form>
         </div>
         <div class="data-controls" ng-show="!rowform.$visible">
             <button class="sigl-btn btn-small" ng-click="rowform.$show()">Edit</button>
