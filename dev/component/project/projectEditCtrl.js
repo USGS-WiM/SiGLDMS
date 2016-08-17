@@ -113,7 +113,7 @@
                         $scope.ProjectKeywords = r[2];
                         $scope.urls = r[3];
                     } else {
-                        if ($scope.aProject.project_id == undefined) $state.go('home');
+                        if ($scope.aProject.project_id === undefined) $state.go('home');
                     }
                 });
             };

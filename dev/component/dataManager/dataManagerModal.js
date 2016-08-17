@@ -364,7 +364,7 @@
                         toastr.success("User Updated");
                     }, function error(errorResponse) {
                         toastr.error("Error updating Data Manager");
-                    })
+                    });
                 } else { toastr.error("Please populate required fields before updating Organization"); }
             }
         }; //end saveDMNewOrg()

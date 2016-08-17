@@ -48,7 +48,7 @@
                         allOrgList: function () {
                             return allOrgs;
                         },
-                        allDivList: function (){
+                        allDivList: function () {
                             return allDivs;
                         },
                         allSecList: function () {
@@ -78,7 +78,7 @@
                         }
                     }
                 });
-            }
+            };
 
             //get all the roles and data managers
             $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
@@ -92,7 +92,7 @@
                 //if someone clicked on their name in the upper right corner or 'Your Account' tab, come in and straight away open modal
                 if (userProfileId !== undefined && userProfileId !== null) {
                     var resp = $scope.allDMs.filter(function (dm) { return dm.data_manager_id == userProfileId; })[0];
-                    $scope.stateParamId = userProfileId
+                    $scope.stateParamId = userProfileId;
                     $scope.showDataManagerModal(resp);
                 }
             });
