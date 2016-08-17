@@ -3,8 +3,9 @@
 
     //look up common service module, and register the new factory with that module
     var laMPResource = angular.module('laMPResource', ['ngResource']);
-    var rootURL = "https://sigldev.wim.usgs.gov/SiGLServices";
-   // var rootURL = "https://localhost/SiGLServices";
+    var rootURL = "https://sigl.wim.usgs.gov/SiGLServices";
+   // var rootURL = "https://sigldev.wim.usgs.gov/SiGLServices";
+    // var rootURL = "https://localhost/SiGLServices";
 
 
     //#region CONTACT
@@ -172,7 +173,7 @@
                 addProjContact: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addContact'}, //attach contact in body
                 deleteProjContact: { method: 'DELETE', cache: false, isArray: false, params: {id:'@id', ContactId:'@contactId'}, url: rootURL + '/projects/:id/removeContact'}, // ?ContactId={contactId} },
                 getProjPublications: { isArray: true, url: rootURL + '/projects/:id/publications.json' },
-                addProjPublication: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addPublication'},//?Title=:title&Url=:url&Description=:description'},
+                addProjPublication: { method: 'POST', cache: false, isArray: true, url: rootURL + '/projects/:id/addPublication'}, //p attached in body
                 deleteProjPublication: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/projects/:id/RemovePublication'}, //?PublicationId={publicationId}
                 getProjSites: { isArray: true, url: rootURL + '/projects/:id/sites.json' },
                 //getFullSiteList: { isArray: true, url: rootURL + '/Sites/FullSiteInfo/:projId.json' },
@@ -306,16 +307,16 @@
     laMPResource.factory('dropdown_Service', [function () {
         var parameters = []; var frequencies = []; var media = []; var statuses = []; var resources = []; var lakes = []; var states = []; var countries = [];
         return {
-            setAllSiteDropdowns: function (p,f,m,s,r,l, st, co) {
+            setAllSiteDropdowns: function (p, f, m, s, r, l, st, co) {
                 parameters = p; frequencies = f; media = m; statuses = s; resources = r; lakes = l; states = st; countries = co;
             },
-            getAllSiteDropdowns: function (){
+            getAllSiteDropdowns: function () {
                 var allDrops = {};
                 allDrops.Parameters = parameters; allDrops.Frequencies = frequencies; allDrops.Media = media; allDrops.Statuses = statuses;
                 allDrops.Resources = resources; allDrops.Lakes = lakes; allDrops.States = states; allDrops.Countries = countries;
                 return allDrops;
             }
-        }
+        };
     }]);
     //#region service to get/set project Orgs, data, contacts, pubs and sites
     laMPResource.factory('ProjParts_Service', [function () {
