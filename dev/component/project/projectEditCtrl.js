@@ -73,7 +73,28 @@
             $scope.urls = []; //holder for urls for future parsing back together ( | separated string)
             dropdown_Service.setAllSiteDropdowns(parameterList, frequencyList, mediaList, siteStatList, resourceList, lakeList, stateList, CountryList);// p, f, m, s, r, l, st, co
             //#endregion GLOBALS
-
+            $scope.formattedSite = function (site) {
+                var s = {
+                    site_id: site.SiteId,
+                    start_date: site.StartDate !== undefined && site.StartDate !== "" ? new Date(site.StartDate) : null,
+                    end_date: site.EndDate !== undefined && site.EndDate !== "" ? new Date(site.EndDate) : null,
+                    project_id: site.project_id,
+                    sample_platform: site.SamplePlatform,
+                    additional_info: site.AdditionalInfo,
+                    name: site.Name,
+                    description: site.Description,
+                    latitude: site.latitude,
+                    longitude: site.longitude,
+                    waterbody: site.Waterbody,
+                    status_type_id: site.Status !== "" && site.Status !== undefined ? $scope.siteStatuses.filter(function (st) { return st.status == site.Status; })[0].status_id : 0,
+                    lake_type_id: $scope.lakes.filter(function (l) { return l.lake == site.Lake; })[0].lake_type_id,
+                    country: site.Country,
+                    state_province: site.State,
+                    watershed_huc8: site.Watershed,
+                    url: site.url
+                };
+                return s;
+            };
             //open modal to edit or create a project
             $scope.openProjectCreate = function () {
                 var dropdownParts = [allDurationList, allStatsList, allObjList];
@@ -141,13 +162,14 @@
                 //if any ProjSites, make sure the url (if one) is formatted properly
                 for (var psu = 0; psu < projSites.length; psu++) {
                     var ind = psu;
-                    if ((projSites[ind].url !== null && projSites[ind].url !== undefined) && !projSites[ind].url.startsWith('http')) {
+                    if (projSites[ind].url !== null && projSites[ind].url !== undefined && projSites[ind].url !== "" && !projSites[ind].url.startsWith('http')) {
                         //there is a url and it's not formatted
                         neededUpdating = true;
                         projSites[ind].url = 'http://' + projSites[ind].url;
                         $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                         $http.defaults.headers.common.Accept = 'application/json';
-                        SITE.update({ id: projSites[ind].site_id }, projSites[ind]).$promise;
+                        var s = formattedSite(projSites[ind]);
+                        SITE.update({ id: s.site_id }, s).$promise;
                     }
                 }
                 //#endregion loop to put each site's url in proper way (http://)

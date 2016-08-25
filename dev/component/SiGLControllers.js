@@ -60,7 +60,7 @@
     siGLControllers.filter('mapCountries', function () {
         var countryHash = {
             'Canada': 'Canada',
-            'United States Of America': 'United States Of America'
+            'United States': 'United States'
         };
         return function (input) {
             if (!input) {
