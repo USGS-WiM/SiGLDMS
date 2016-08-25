@@ -459,7 +459,7 @@
                         //site dropdowns to store in service
                         CountryList: function () {
                             var c = [];
-                            c.push("Canada"); c.push("United States Of America");
+                            c.push("Canada"); c.push("United States");
                             return c;
                         },
                         stateList: function () {
@@ -564,7 +564,7 @@
                     resolve: {                        
                         //CountryList: function () {
                         //    var c = [];
-                        //    c.push("Canada"); c.push("United States Of America");
+                        //    c.push("Canada"); c.push("United States");
                         //    return c;
                         //},
                         //stateList: function () {
@@ -690,7 +690,7 @@
                         },                        
                         CountryList: function () {
                             var c = [];
-                            c.push("Canada"); c.push("United States Of America");
+                            c.push("Canada"); c.push("United States");
                             return c;
                         },
                         stateList: function () {

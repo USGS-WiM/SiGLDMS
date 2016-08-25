@@ -9,7 +9,7 @@
             for (var psu = 0; psu < $scope.projectSites.length; psu++) {
                 //fix urls
                 var ind = psu;
-                if ($scope.projectSites[ind].url !== undefined && !$scope.projectSites[ind].url.startsWith('http')) {
+                if ($scope.projectSites[ind].url !== undefined && $scope.projectSites[ind].url !== "" && !$scope.projectSites[ind].url.startsWith('http')) {
                     $scope.projectSites[ind].url = 'http://' + $scope.projectSites[ind].url;
                 }
                 if ($scope.projectSites[ind].StartDate !== "") {
@@ -274,10 +274,10 @@
                         },
                         thisProject: function () {
                             return thisProject;
-                        },
-                        allProjSites: function () {
-                            return PROJECT.getFullSiteList({ projId: pid }).$promise;
-                        }
+                        }//,
+                        //allProjSites: function () {
+                        //    return PROJECT.getFullSiteList({ projId: pid }).$promise;
+                        //}
                     }
                 });
                 modalInstance.result.then(function (r) {

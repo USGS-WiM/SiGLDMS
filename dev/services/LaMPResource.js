@@ -3,9 +3,9 @@
 
     //look up common service module, and register the new factory with that module
     var laMPResource = angular.module('laMPResource', ['ngResource']);
-    var rootURL = "https://sigl.wim.usgs.gov/SiGLServices";
-   // var rootURL = "https://sigldev.wim.usgs.gov/SiGLServices";
-    // var rootURL = "https://localhost/SiGLServices";
+  //  var rootURL = "https://sigl.wim.usgs.gov/SiGLServices";
+    var rootURL = "https://sigldev.wim.usgs.gov/SiGLServices";
+ //    var rootURL = "https://localhost/SiGLServices";
 
 
     //#region CONTACT
@@ -265,15 +265,19 @@
                 query: {},
                 getSiteParameters: { isArray: true, url: rootURL + '/sites/:id/parameters.json' },
                 addSiteParameter: { method: 'POST', cache: false, isArray: true, params: { id: '@id', ParameterTypeId: '@parameterTypeId' }, url: rootURL + '/sites/:id/addParameter' },//?ParameterTypeId=:parameterTypeId'},
+                addSiteParameterList: {method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addParameterList'},
                 deleteSiteParameter: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/sites/:id/removeParameterType' }, //?ParameterTypeId={parameterTypeId}' },
                 getSiteFrequencies: { isArray: true, url: rootURL + '/sites/:id/frequencies.json' },
                 addSiteFrequency: { method: 'POST', cache: false, isArray: true, params: { id: '@id', FrequencyTypeId: '@frequencyTypeId' }, url: rootURL + '/sites/:id/addFrequency' },//?FrequencyTypeId=:frequencyTypeId' },//'/sites/:id/addFrequency' },
-                deleteSiteFrequency: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/sites/:id/removeFrequencyType'}, //?FrequencyTypeId={frequencyTypeId}' },
+                addSiteFrequencyList: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addFrequencyList' },
+                deleteSiteFrequency: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/sites/:id/removeFrequencyType' }, //?FrequencyTypeId={frequencyTypeId}' },
                 getSiteMedia: { isArray: true, url: rootURL + '/sites/:id/media.json' },
                 addSiteMedia: { method: 'POST', cache: false, isArray: true, params: { id: '@id', MediaTypeId: '@mediaTypeId' }, url: rootURL + '/sites/:id/addMedia' },//?MediaTypeId=:mediaTypeId' },
+                addSiteMediaList: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addMediaList' },
                 deleteSiteMedia: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/sites/:id/removeMediaType'}, //?MediaTypeId:mediaId' },
                 getSiteResources: { isArray: true, url: rootURL + '/sites/:id/resourcetypes.json' },
                 addSiteResource: { method: 'POST', cache: false, isArray: true, params: { id: '@id', ResourceTypeId: '@resourceTypeId' }, url: rootURL + '/sites/:id/addResource'},//?ResourceTypeId=:resourceTypeId'},
+                addSiteResourceList: { method: 'POST', cache: false, isArray: true, url: rootURL + '/sites/:id/addResourceList' },
                 deleteSiteResource: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/sites/:id/removeResource' }, //?ResourceTypeId={resourceTypeId}
                 update: { method: 'PUT', cache: false, isArray: false },
                 save: { method: 'POST', cache: false, isArray: false },

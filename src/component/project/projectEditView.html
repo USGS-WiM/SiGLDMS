@@ -80,7 +80,7 @@
                 <div class="sigl-modal-form-group" ng-class="{'has-error':projectForm.Info.sd.$invalid && projectForm.Info.sd.$dirty}">
                     <label for="start_date">Project Start Date:</label>
                     <input class="input-calendar dateInputStyle" id="start_date" name="sd" type="date" uib-datepicker-popup="MM/dd/yyyy" is-open="datepickrs.sd"
-                           show-weeks="false" ng-change="compareDates('start')" ng-model="aProject.start_date" show-button-bar="false" />
+                           show-weeks="false" ng-model-options="{ updateOn: 'blur' }" ng-change="compareDates('start')" ng-model="aProject.start_date" show-button-bar="false" />
                     <button type="button" class="btn-cal" ng-click="open($event, 'sd')">
                         <i class="glyphicon glyphicon-calendar" />
                     </button>
@@ -95,7 +95,7 @@
                         </button>
                     </label>
                     <input class="input-calendar dateInputStyle" id="end_date" name="ed" ng-disabled="aProject.proj_status_id == 1" type="date" uib-datepicker-popup="MMM dd, yyyy" is-open="datepickrs.ed"
-                           show-weeks="false" ng-change="compareDates('end')" ng-model="aProject.end_date" show-button-bar="false" />
+                           show-weeks="false" ng-model-options="{ updateOn: 'blur' }" ng-change="compareDates('end')" ng-model="aProject.end_date" show-button-bar="false" />
                     <button type="button" class="btn-cal" ng-disabled="aProject.proj_status_id == 1" ng-click="open($event, 'ed')">
                         <i class="glyphicon glyphicon-calendar" />
                     </button>
@@ -408,7 +408,7 @@
                 <div class="sigl-modal-form-group">
                     <label for="start_date">Sampling Start Date:</label>
                     <input class="input-calendar dateInputStyle" id="start_date" name="sd" type="date" uib-datepicker-popup="MM/dd/yyyy" is-open="datepickrs.sd"
-                           show-weeks="false" ng-change="compareSiteDates('start')" ng-model="thisSite.start_date" show-button-bar="false" />
+                           show-weeks="false" ng-model-options="{ updateOn: 'blur' }" ng-change="compareSiteDates('start')" ng-model="thisSite.start_date" show-button-bar="false" />
                     <button type="button" class="btn-cal" ng-click="open($event, 'sd')">
                         <i class="glyphicon glyphicon-calendar" />
                     </button>
@@ -423,12 +423,11 @@
                         </button>
                     </label>
                     <input class="input-calendar dateInputStyle" id="end_date" name="ed" type="date" uib-datepicker-popup="MM/dd/yyyy" is-open="datepickrs.ed"
-                           show-weeks="false" ng-change="compareSiteDates('end')" ng-model="thisSite.end_date" show-button-bar="false" />
+                           show-weeks="false" ng-model-options="{ updateOn: 'blur' }" ng-change="compareSiteDates('end')" ng-model="thisSite.end_date" show-button-bar="false" />
                     <button type="button" class="btn-cal" ng-click="open($event, 'ed')">
                         <i class="glyphicon glyphicon-calendar" />
                     </button>
                 </div>
-
 
                 <!--Sampling Platform-->
                 <div class="sigl-modal-form-group">

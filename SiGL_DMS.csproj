@@ -87,7 +87,7 @@
     <Content Include="src\component\projSite\duplicateSiteModalCtrl.js" />
     <Content Include="src\component\projSite\projMultiSiteEditCtrl.js" />
     <Content Include="src\component\projSite\projSiteList.html" />
-    <Content Include="src\component\projContact\projContactCtrl.js" />
+    <Content Include="src\component\projCooperator\projContact\projContactCtrl.js" />
     <Content Include="src\component\projCooperator\projCooperatorCtrl.js" />
     <Content Include="src\component\projData\projDataCtrl.js" />
     <Content Include="src\component\project\projectEditCtrl.js" />
@@ -115,7 +115,7 @@
     <Content Include="src\component\logInOut\login.html" />
     <Content Include="src\component\projCooperator\projCooperatorView.html" />
     <Content Include="src\component\projData\projDataView.html" />
-    <Content Include="src\component\projContact\projContactView.html" />
+    <Content Include="src\component\projCooperator\projContact\projContactView.html" />
     <Content Include="src\component\projPublication\projPublicationView.html" />
     <Content Include="src\component\project\projectEditInfoView.html" />
     <Content Include="src\component\project\projectEditView.html" />
