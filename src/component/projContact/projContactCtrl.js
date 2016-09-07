@@ -10,18 +10,20 @@
             //make sure phone is formatted
             for (var p = 0; p < $scope.ProjContacts.length; p++) {
                 var theI = p;
-                if ($scope.ProjContacts[theI].phone !== null && !$scope.ProjContacts[theI].phone.startsWith("(")) {
-                    //not formatted..remove any spaces, dashes or parenthesis to then do it properly
-                    var phNo = $scope.ProjContacts[theI].phone.replace("[()\\s-]+", "");
-                    if (phNo.length >= 10) {
-                        //format it
-                        $scope.ProjContacts[theI].phone = "(" + phNo.substring(0, 3) + ") " + phNo.substring(3, 6) + "-" + phNo.substring(6);
-                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
-                        $http.defaults.headers.common.Accept = 'application/json';
-                        CONTACT.update({ id: $scope.ProjContacts[theI].contact_id }, $scope.ProjContacts[theI]).$promise;
-                    }
-                }
-            }
+                if ($scope.ProjContacts[theI].phone !== undefined) {
+                    if ($scope.ProjContacts[theI].phone !== null && !$scope.ProjContacts[theI].phone.startsWith("(")) {
+                        //not formatted..remove any spaces, dashes or parenthesis to then do it properly
+                        var phNo = $scope.ProjContacts[theI].phone.replace("[()\\s-]+", "");
+                        if (phNo.length >= 10) {
+                            //format it
+                            $scope.ProjContacts[theI].phone = "(" + phNo.substring(0, 3) + ") " + phNo.substring(3, 6) + "-" + phNo.substring(6);
+                            $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                            $http.defaults.headers.common.Accept = 'application/json';
+                            CONTACT.update({ id: $scope.ProjContacts[theI].contact_id }, $scope.ProjContacts[theI]).$promise;
+                        }
+                    } //end startsWith
+                } //end not undefined
+            }//end for loop
             //set them back to the service just in case any were updated from fixing a phone
             ProjParts_Service.setAllProjectContacts($scope.ProjContacts);
             $scope.allOrgResources = orgResources; 

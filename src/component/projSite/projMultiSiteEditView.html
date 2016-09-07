@@ -1,18 +1,4 @@
-﻿<style type="text/css">
-    #sigl-edit-right {
-        padding: 0;
-        margin: 0;
-    }
-
-    .headerRotate {
-        -moz-transform: rotate(-90deg); /* FF3.5+ */
-        -o-transform: rotate(-90deg); /* Opera 10.5 */
-        -webkit-transform: rotate(-90deg); /* Saf3.1+, Chrome */
-        filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1); /* IE6,IE7 */
-        -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)"; /* IE8 */
-        display: block;
-    }
-
+﻿<style type="text/css">   
     .dataTable th, .dataTable td {
         text-overflow: ellipsis !important;
         white-space: nowrap !important;
@@ -33,6 +19,7 @@
         <div id="loadingcontent">
             <p id="loadingspinner" style="">
                 <uib-progressbar class="maxWidth" max="max" value="dynamic">
+                    <span ng-if="dynamic <= 0">Processing...</span>
                     <span ng-if="dynamic != max" style="color:white; white-space:nowrap;">{{dynamic}} / {{max}} Sites Updated</span>
                     <span ng-if="dynamic == max">Redirecting...</span>
                 </uib-progressbar>
@@ -57,9 +44,9 @@
         <hot-column data="Watershed" title="'Watershed (HUC8)'" validator="watershedValidator"></hot-column><!-- 7 -->
         <hot-column data="Description" title="'Description'"></hot-column><!-- 8 -->
         <hot-column data="Status" title="'Status'" type="'dropdown'" source="statusArray"></hot-column><!-- 9 -->
-        <hot-column data="ResourceStrings" title="'Resources'" type="'dropdown'"></hot-column><!-- source="resourceArray" 10 -->
-        <hot-column data="MediaStrings" title="'Media'" type="'dropdown'"></hot-column><!-- 11 -->
-        <hot-column data="FrequencyStrings" title="'Frequencies'" type="'dropdown'"></hot-column><!-- 12 -->
+        <hot-column data="ResourceStrings" title="'Resources'" type="'dropdown'" validator="matchingResValue"></hot-column><!-- source="resourceArray" 10 -->
+        <hot-column data="MediaStrings" title="'Media'" type="'dropdown'" validator="matchingMedValue"></hot-column><!-- 11 -->
+        <hot-column data="FrequencyStrings" title="'Frequencies'" type="'dropdown'" validator="matchingFreqValue"></hot-column><!-- 12 -->
         <hot-column data="StartDate" title="'Start Date'" type="'date'" date-format="'MM/DD/YYYY'" validator="dateValidator"></hot-column><!-- 13 -->
         <hot-column data="EndDate" title="'End Date'" type="'date'" date-format="'MM/DD/YYYY'" validator="dateValidator"></hot-column><!-- 14 -->
         <hot-column data="SamplePlatform" title="'Sample Platform'"></hot-column><!-- 15 -->
@@ -143,7 +130,7 @@
     </hot-table>
 </div>
 <div>
-    <button ng-if="somethingChanged" class="btn btn-primary" ng-click="save()">Save</button>
+    <button class="btn btn-primary" ng-click="save()">Save</button>
     <button type="button" class="btn btn-warning" back-button>Cancel</button>
     <button type="button" class="btn btn-warning" ng-click="reset()">Reset</button>
 </div>
