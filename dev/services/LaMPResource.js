@@ -3,8 +3,8 @@
 
     //look up common service module, and register the new factory with that module
     var laMPResource = angular.module('laMPResource', ['ngResource']);
-  //  var rootURL = "https://sigl.wim.usgs.gov/SiGLServices";
-    var rootURL = "https://sigldev.wim.usgs.gov/SiGLServices";
+    var rootURL = "https://sigl.wim.usgs.gov/SiGLServices";
+   // var rootURL = "https://sigldev.wim.usgs.gov/SiGLServices";
  //    var rootURL = "https://localhost/SiGLServices";
 
 

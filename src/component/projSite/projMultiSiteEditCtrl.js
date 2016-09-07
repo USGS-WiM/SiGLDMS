@@ -14,7 +14,6 @@
             $scope.medias = mediaList;
             $scope.frequencies = frequencyList;
             $scope.parameters = parameterList;
-            $scope.somethingChanged = true; // set to false and if they change the table, switch
             $scope.hotInstance;
             $scope.invalids = [];
             $scope.max = 0; $scope.dynamic = 0;
@@ -215,11 +214,12 @@
             $scope.reset = function () {
                 $scope.setUpDataForTable();
                 $scope.hotInstance.loadData($scope.projSites);
+                $scope.invalids = [];
             };
             
             var formatJustSiteProps = function (s) {
                 var site = {
-                 //   site_id: s.SiteId,
+                    //   site_id: s.SiteId,
                     start_date: s.StartDate !== undefined && s.StartDate !== "" ? new Date(s.StartDate) : null,
                     end_date: s.EndDate !== undefined && s.EndDate !== "" ? new Date(s.EndDate) : null,
                     project_id: thisProject.project_id,
@@ -351,9 +351,43 @@
                             console.log("siteUpdates");
                             if ($scope.dynamic == $scope.max) $state.go("projectEdit.site.siteList", { id: thisProject.project_id });
                         }).catch(function error(msg) {
+                            //catch on addPromises
+                            var errorM = $uibModal.open({
+                                template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                    '<div class="modal-body"><p>Something went wrong. Error updating site {{dyn}} of {{maxS}}. Please review and try again.</p></div>' +
+                                    '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                                backdrop: 'static',
+                                keyboard: false,
+                                resolve: { whichSite: function () { return $scope.dynamic; }, maxSites: function () { return $scope.max; } },
+                                controller: function ($scope, $uibModalInstance, whichSite, maxSites) {
+                                    $scope.dyn = whichSite; $scope.maxS = maxSites;
+                                    $scope.ok = function () {
+                                        $uibModalInstance.dismiss();
+                                    };
+                                },
+                                size: 'sm'
+                            });
+                            $scope.showLoading = false; //Loading...
                             console.error("Error Adding: " + msg);
                         });
                     }).catch(function error(msg) {
+                        //catch on removePromises
+                        var errorM = $uibModal.open({
+                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                '<div class="modal-body"><p>Something went wrong. Error updating site {{dyn}} of {{maxS}}. Please review and try again.</p></div>' +
+                                '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                            backdrop: 'static',
+                            keyboard: false,
+                            resolve: { whichSite: function () { return $scope.dynamic; }, maxSites: function () { return $scope.max; } },
+                            controller: function ($scope, $uibModalInstance, whichSite, maxSites) {
+                                $scope.dyn = whichSite; $scope.maxS = maxSites;
+                                $scope.ok = function () {
+                                    $uibModalInstance.dismiss();
+                                };
+                            },
+                            size: 'sm'
+                        });
+                        $scope.showLoading = false; //Loading...
                         console.error("Error Removing Parts: " + msg);
                     });//end $q.all
                 });//end angular.forEach()
@@ -390,8 +424,43 @@
                             console.log("site created");
                             if ($scope.dynamic == $scope.max) $state.go("projectEdit.site.siteList", { id: thisProject.project_id });
                         }).catch(function error(msg) {
+                            var errorM = $uibModal.open({
+                                template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                    '<div class="modal-body"><p>Something went wrong. Error updating site {{dyn}} of {{maxS}}. Please review and try again.</p></div>' +
+                                    '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                                backdrop: 'static',
+                                keyboard: false,
+                                resolve: { whichSite: function () { return $scope.dynamic; }, maxSites: function () { return $scope.max; } },
+                                controller: function ($scope, $uibModalInstance, whichSite, maxSites) {
+                                    $scope.dyn = whichSite; $scope.maxS = maxSites;
+                                    $scope.ok = function () {
+                                        $uibModalInstance.dismiss();
+                                    };
+                                },
+                                size: 'sm'
+                            });
+                            $scope.showLoading = false; //Loading...
                             console.error("Error creating new site: " + msg);
                         });
+                    }, function (errorResponse) {
+                        //error on site.save()
+                        var errorM = $uibModal.open({
+                            template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                '<div class="modal-body"><p>Something went wrong. Error creating site {{dyn}} of {{maxS}}. Please review and try again.</p></div>' +
+                                '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                            backdrop: 'static',
+                            keyboard: false,
+                            resolve: { whichSite: function () { return $scope.dynamic; }, maxSites: function () { return $scope.max; } },
+                            controller: function ($scope, $uibModalInstance, whichSite, maxSites) {
+                                $scope.dyn = whichSite; $scope.maxS = maxSites;
+                                $scope.ok = function () {
+                                    $uibModalInstance.dismiss();
+                                };
+                            },
+                            size: 'sm'
+                        });
+                        $scope.showLoading = false; //Loading...
+                        console.error("Error Creating Site: " + errorResponse);
                     });//end SITE.save()
                 });//end angular.forEach()             
             };//end createSite()
@@ -777,8 +846,8 @@
                     });
                     callback(false);
                 } else {
-                        callback(true);
-                    }
+                    callback(true);
+                }
             };
             $scope.dateValidator = function (value, callback){
                 if (value !== "") {
@@ -830,6 +899,119 @@
                             } else callback(true);
                         } else callback(true);
                     } else callback(true);
+                } else callback(true);
+            };
+            $scope.matchingResValue = function (value, callback) {
+                if (value !== "") {
+                    var prop = this.prop; var hasError = false; var which;
+                    if (prop = "ResourceStrings") {
+                        var resArray = value.split(",");
+                        var resArrayTrimmed = [];
+                        angular.forEach(resArray, function (r) { resArrayTrimmed.push(r.trim()); });
+                        for (var r = 0; r < resArrayTrimmed.length; r++) {
+                            //if this one isn't in the Resources, callback(false)
+                            if ($scope.resources.map(function (res) { return res.resource_name; }).indexOf(resArrayTrimmed[r]) < 0) {
+                                hasError = true; which = resArrayTrimmed[r];
+                                r = resArrayTrimmed.length;
+                            }
+                        }
+                        if (hasError) {
+                            var FreqModal = $uibModal.open({
+                                template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                    '<div class="modal-body"><p>Resource Type <b>"{{wrong}}"</b> is not in the list of options. Please delete the text and click the down arrow in the lower right corner of the ' +
+                                    'cell to open the modal. Choose the appropriate Resource types by selecting the checkboxes.</p></div>' +
+                                    '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                                backdrop: 'static',
+                                keyboard: false,
+                                resolve: { thisOne: function () { return which; } },
+                                controller: function ($scope, $uibModalInstance, thisOne) {
+                                    $scope.wrong = thisOne;
+                                    $scope.ok = function () {
+                                        $uibModalInstance.dismiss();
+                                    };
+                                },
+                                size: 'md'
+                            });
+                            callback(false);
+                        }
+                        else callback(true);
+                    } else
+                        callback(true);
+                } else callback(true);
+            };
+            $scope.matchingMedValue = function (value, callback) {
+                if (value !== "") {
+                    var prop = this.prop; var hasError = false; var which;
+                    if (prop = "MediaStrings") {
+                        var medArray = value.split(",");
+                        var medArrayTr = [];
+                        angular.forEach(medArray, function (m) { medArrayTr.push(m.trim()); });
+                        for (var m = 0; m < medArrayTr.length; m++) {
+                            //if this one isn't in the Resources, callback(false)
+                            if ($scope.medias.map(function (med) { return med.media; }).indexOf(medArrayTr[m]) < 0) {
+                                hasError = true; which = medArrayTr[m];
+                                m = medArrayTr.length;
+                            }
+                        }
+                        if (hasError) {
+                            var MedModal = $uibModal.open({
+                                template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                    '<div class="modal-body"><p>Media Type <b>"{{wrong}}"</b> is not in the list of options. Please delete the text and click the down arrow in the lower right corner of the ' +
+                                    'cell to open the modal. Choose the appropriate Media types by selecting the checkboxes.</p></div>' +
+                                    '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                                backdrop: 'static',
+                                keyboard: false,
+                                resolve: { thisOne: function () { return which; } },
+                                controller: function ($scope, $uibModalInstance, thisOne) {
+                                    $scope.wrong = thisOne;
+                                    $scope.ok = function () {
+                                        $uibModalInstance.dismiss();
+                                    };
+                                },
+                                size: 'md'
+                            });
+                            callback(false);
+                        }
+                        else callback(true);
+                    } else callback(true);
+                } else callback(true);
+            };
+            $scope.matchingFreqValue = function (value, callback) {
+                if (value !== "") {
+                    var prop = this.prop; var hasError = false; var which;
+                    if (prop = "FrequencyStrings") {
+                        var freqArray = value.split(",");
+                        var freqArrayTrimmed = [];
+                        angular.forEach(freqArray, function (f) { freqArrayTrimmed.push(f.trim()); });
+                        for (var f = 0; f < freqArrayTrimmed.length; f++) {
+                            //if this one isn't in the Resources, callback(false)
+                            if ($scope.frequencies.map(function (fre) { return fre.frequency; }).indexOf(freqArrayTrimmed[f]) < 0) {
+                                hasError = true; which = freqArrayTrimmed[f];
+                                f = freqArrayTrimmed.length;
+                            }
+                        }
+                        if (hasError) {
+                            var FreqModal = $uibModal.open({
+                                template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                                    '<div class="modal-body"><p>Frequency Type <b>"{{wrong}}"</b> is not in the list of options. Please delete the text and click the down arrow in the lower right corner of the ' +
+                                    'cell to open the modal. Choose the appropriate Frequency types by selecting the checkboxes.</p></div>' +
+                                    '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                                backdrop: 'static',
+                                keyboard: false,
+                                resolve: { thisOne: function () { return which; } },
+                                controller: function ($scope, $uibModalInstance, thisOne) {
+                                    $scope.wrong = thisOne;
+                                    $scope.ok = function () {
+                                        $uibModalInstance.dismiss();
+                                    };
+                                },
+                                size: 'md'
+                            });
+                            callback(false);
+                        }
+                        else callback(true);
+                    } else
+                        callback(true);
                 } else callback(true);
             };
             //#endregion
