@@ -5,7 +5,7 @@
     siGLControllers.controller('projSiteListCtrl', ['$scope', '$rootScope', '$location', '$cookies', '$uibModal', '$http', '$q', 'ProjParts_Service', 'dropdown_Service', 'thisProject', 'SITE', 'PROJECT',
         function ($scope, $rootScope, $location, $cookies, $uibModal, $http, $q, ProjParts_Service, dropdown_Service, thisProject, SITE, PROJECT) {
             $scope.projectSites = ProjParts_Service.getAllProjectSites();// projS; 
-
+            $scope.radioModel = "Single";
             for (var psu = 0; psu < $scope.projectSites.length; psu++) {
                 //fix urls
                 var ind = psu;
@@ -14,11 +14,11 @@
                 }
                 if ($scope.projectSites[ind].StartDate !== "") {
                     var spaceSIndex = $scope.projectSites[ind].StartDate.indexOf(" ");
-                    $scope.projectSites[ind].StartDate = $scope.projectSites[ind].StartDate.substring(0, spaceSIndex);
+                    if (spaceSIndex > -1) $scope.projectSites[ind].StartDate = $scope.projectSites[ind].StartDate.substring(0, spaceSIndex);
                 }
                 if ($scope.projectSites[ind].EndDate !== "") {
                     var spaceEIndex = $scope.projectSites[ind].EndDate.indexOf(" ");
-                    $scope.projectSites[ind].EndDate = $scope.projectSites[ind].EndDate.substring(0, spaceEIndex);
+                    if (spaceEIndex > -1) $scope.projectSites[ind].EndDate = $scope.projectSites[ind].EndDate.substring(0, spaceEIndex);
                 }
             }
             ProjParts_Service.setAllProjectSites($scope.projectSites);
@@ -83,7 +83,7 @@
 
                 return aSITE;
             };
-
+            
             //copy to new site using this site's info
             $scope.DuplicateSite = function (siteId) {
                 //ask for new name: (modal)
@@ -119,6 +119,10 @@
                         $rootScope.stateIsLoading.showLoading = true; //loading... 
                         thisSite.SiteId = response.site_id;
                         $scope.projectSites.push(thisSite); ProjParts_Service.setAllProjectSites($scope.projectSites);
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                         toastr.success("Site Created");
                         siteId = response.site_id;
                         $scope.sitesCount.total = $scope.sitesCount.total + 1;
@@ -152,7 +156,7 @@
                             toastr.error(msg);
                         });
                     }, function error(errorResponse) {
-                        toastr.success("Error: " + errorResponse.statusText);
+                        toastr.error("Error: " + errorResponse.statusText);
                     }).$promise;
                 });
             };//end DuplicateSite
@@ -181,6 +185,10 @@
                     $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                     SITE.delete({ id: site.SiteId }, function success(response) {
                         $scope.projectSites.splice(index, 1); ProjParts_Service.setAllProjectSites($scope.projectSites);
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                         $scope.sitesCount.total = $scope.sitesCount.total - 1;
                         toastr.success("Site Removed");
                     }, function error(errorResponse) {
@@ -245,12 +253,20 @@
                     $rootScope.stateIsLoading.showLoading = false; //loading... 
                     if (r[1] == 'create') {
                         $scope.projectSites.push(r[0]); ProjParts_Service.setAllProjectSites($scope.projectSites);
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                         $scope.sitesCount.total = $scope.projectSites.length;
                     }
                     if (r[1] == 'update') {
                         //this is from edit -- refresh page?
                         $scope.projectSites[indexClicked] = r[0];
                         ProjParts_Service.setAllProjectSites($scope.projectSites);
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                     }
                 });
             };
@@ -286,11 +302,19 @@
                     if (r[1] == 'create') {
                         $scope.projectSites.push(r[0]); ProjParts_Service.setAllProjectSites($scope.projectSites);
                         $scope.sitesCount.total = $scope.projectSites.length;
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                     }
                     if (r[1] == 'update') {
                         //this is from edit -- refresh page?
                         $scope.projectSites[indexClicked] = r[0];
                         ProjParts_Service.setAllProjectSites($scope.projectSites);
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                     }
                 });
             };

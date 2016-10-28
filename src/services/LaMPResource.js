@@ -3,8 +3,8 @@
 
     //look up common service module, and register the new factory with that module
     var laMPResource = angular.module('laMPResource', ['ngResource']);
-    var rootURL = "https://sigl.wim.usgs.gov/SiGLServices";
-   // var rootURL = "https://sigldev.wim.usgs.gov/SiGLServices";
+   // var rootURL = "https://sigl.wim.usgs.gov/SiGLServices";
+    var rootURL = "https://sigldev.wim.usgs.gov/SiGLServices";
  //    var rootURL = "https://localhost/SiGLServices";
 
 
@@ -98,6 +98,19 @@
             });
     }]);//end of media
     //#endregion
+    //#region MONITOR_COORDINATION
+    laMPResource.factory('MONITOR_COORDINATION', ['$resource', function ($resource) {
+        return $resource(rootURL + '/MonitorCoordinations/:id.json',
+            {}, {
+                query: { isArray: true },
+                getAll: { method: 'GET', isArray: true },
+                getMonCoordProj: { method: 'GET', isArray: true, cache: false, url: rootURL + '/MonitorCoordinations/:id/projects.json' },
+                save: { method: 'POST', cache: false, isArray: false },
+                update: { method: 'PUT', cache: false, isArray: false },
+                delete: { method: 'DELETE', cache: false, isArray: false }
+            });
+    }]);//end of MONITOR_COORDINATION
+    //#endregion
     //#region OBJECTIVE_TYPE
     laMPResource.factory('OBJECTIVE_TYPE', ['$resource', function ($resource) {
         return $resource(rootURL + '/Objectives/:id.json',
@@ -164,6 +177,11 @@
                 getProjObjectives: { isArray: true, url: rootURL + '/projects/:id/objectives.json' },
                 addProjObjective: { method: 'POST', cache: false, isArray: true, params: { id: '@id', ObjectiveTypeId: '@objectiveTypeId' }, url: rootURL + '/projects/:id/addObjective' },//?ObjectiveTypeId={objectiveTypeId}
                 deleteProjObjective: { method: 'DELETE', cache: false, isArray: false, params: {id:'@id', ObjectiveTypeId: 'objectiveTypeId'}, url: rootURL + '/projects/:id/removeObjective'},//:objId' },
+
+                getProjMonCoords: { isArray: true, url: rootURL + '/projects/:id/MonitorCoordinations.json' },
+                addProjMonCoord: { method: 'POST', cache: false, isArray: true, params: { id: '@id', MonitorCoordId: '@monitorCoordId' }, url: rootURL + '/projects/:id/addMonitorCoord' },//?MonitorCoordId={monitorCoordId}
+                deleteProjMonCoord: { method: 'DELETE', cache: false, isArray: false, params: { id: '@id', MonitorCoordId: 'monitorCoordId' }, url: rootURL + '/projects/:id/removeMonitorCoord' },//:objId' },
+
                 getProjOrganizations: { isArray: true, url: rootURL + '/projects/:id/OrganizationResources.json' },
                 addProjOrg: { method: 'POST', cache: false, isArray: true, params: { id: '@id', OrganizationId: '@orgId',DivisionId: '@divId',SectionId:'@secId' }, url: rootURL + '/projects/:id/AddOrganization?OrganizationId=:orgId&DivisionId=:divId&SectionId=:secId' },
                 deleteProjOrg: { method: 'DELETE', cache: false, isArray: false, params: {id: '@id', OrgSystemId: '@orgSystemId'}, url: rootURL + '/projects/:id/removeOrganization' },//?OrgSystemId={orgSysId}
@@ -177,7 +195,7 @@
                 deleteProjPublication: { method: 'DELETE', cache: false, isArray: false, url: rootURL + '/projects/:id/RemovePublication'}, //?PublicationId={publicationId}
                 getProjSites: { isArray: true, url: rootURL + '/projects/:id/sites.json' },
                 //getFullSiteList: { isArray: true, url: rootURL + '/Sites/FullSiteInfo/:projId.json' },
-                getFullSiteList: { isArray: true, url: rootURL + '/projects/:projId/ProjectFullSites' },
+                getFullSiteList: { isArray: true, url: rootURL + '/projects/:projId/ProjectFullSites.json' },
                // updateDM: {isArray: false, cache: false, url: rootURL + '/projects/:id/ReassignProject'}, // ?DataManager={dataManagerId} now regular put
                 update: {method:'PUT', cache: false, isArray: false},
                 save: { method: 'POST', cache: false, isArray: false },
@@ -323,9 +341,9 @@
         };
     }]);
     //#region service to get/set project Orgs, data, contacts, pubs and sites
-    laMPResource.factory('ProjParts_Service', [function () {
+    laMPResource.factory('ProjParts_Service', ['$rootScope', function ($rootScope) {
         var allProjectOrgs = []; var allProjectData = []; var allProjectContacts = []; var allOrgResources = []; var allProjectPubs = []; var allProjectSites = [];
-        
+        var lastEditedStampValue = ""; var createdStampValue = "";
         return {
             //#region orgs
             getAllProjectOrgs: function () {
@@ -371,8 +389,22 @@
             },
             setAllProjectSites: function (stuff) {
                 allProjectSites = stuff;
-            }
+            },
             //#endregion
+            setLastEditedStamp: function (d){
+                lastEditedStampValue = d;
+                $rootScope.$broadcast('lastEditDateSet', lastEditedStampValue);
+            },
+            getLastEditedStamp: function(){
+                return lastEditedStampValue;
+            },
+            setCreatedStamp: function (s) {
+                createdStampValue = s;
+                $rootScope.$broadcast('createdDateSet', createdStampValue);
+            },
+            getCreatedStamp: function () {
+                return createdStampValue;
+            }
         };
     }]);
 })();

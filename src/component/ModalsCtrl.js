@@ -40,6 +40,9 @@
                 case "Media Type":
                     $scope.keyToRmv = keyToRemove.media;
                     break;
+                case "Monitoring Coordination":
+                    $scope.keyToRmv = keyToRemove.effort;
+                    break;
                 case "Objective Type":
                     $scope.keyToRmv = keyToRemove.objective;
                     break;

@@ -40,6 +40,10 @@
                     PROJECT.addProjPublication({ id: thisProjID}, p, function success(response) {
                         $scope.ProjPubs = response;
                         ProjParts_Service.setAllProjectPubs($scope.ProjPubs);
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                         $scope.pubCount.total = $scope.ProjPubs.length;
                         $scope.newPub = {};
                         $scope.projectForm.Pubs.$setPristine(true);
@@ -80,6 +84,10 @@
 
                     PROJECT.deleteProjPublication({ id: thisProjID, PublicationId: pub.publication_id }, function success(response) {
                         $scope.ProjPubs.splice(index, 1); ProjParts_Service.setAllProjectPubs($scope.ProjPubs);
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                         $scope.pubCount.total = $scope.pubCount.total - 1;
                         toastr.success("Publication Removed");
                     }, function error(errorResponse) {
@@ -125,6 +133,10 @@
 
                 PUBLICATION.update({ id: id }, data, function success(response) {
                     retur = response;
+                    //get the project here so we can update the lastEditedStamp
+                    PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                        ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                    });
                     $scope.projectForm.Pubs.$setPristine(true);
                     toastr.success("Publication Updated");
                 }, function error(errorResponse) {

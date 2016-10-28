@@ -219,6 +219,10 @@
                         allMedias: function (m) {
                             return m.getAll().$promise;
                         },
+                        mc: 'MONITOR_COORDINATION',
+                        allMonitorCoords: function (mc){
+                            return mc.getAll().$promise;
+                        },
                         o: 'OBJECTIVE_TYPE',
                         allObjectives: function (o) {
                             return o.getAll().$promise;
@@ -276,7 +280,12 @@
                     templateUrl: "component/resources/MediaType.html"
                 })
                 //#endregion resources.ResourcesList.MediaType
-
+                //#region resources.ResourcesList.MonitorCoord
+                .state("resources.ResourcesList.MonitorCoord",{
+                    url: "/MonitoringCoordination",
+                    templateUrl: "component/resources/MonitorCoordination.html"
+                })
+                //#endregion
                 //#region resources.ResourcesList.ObjectiveType
                 .state("resources.ResourcesList.ObjectiveType", {
                     url: "/ObjectiveTypes",
@@ -391,6 +400,13 @@
                                     { id: projectId }).$promise;
                             }
                         },
+                        projMonCoords: function (Proj, $stateParams) {
+                            var projectId = $stateParams.id;
+                            if (projectId > 0) {
+                                return Proj.getProjMonCoords(
+                                    { id: projectId }).$promise;
+                            }
+                        },
                         projKeywords: function (Proj, $stateParams) {
                             var projectId = $stateParams.id;
                             if (projectId > 0) {
@@ -456,6 +472,10 @@
                         allObjList: function (allObjs) {
                             return allObjs.getAll().$promise;
                         },
+                        allMonCoords: 'MONITOR_COORDINATION',
+                        allMonitorCoordsList: function (allMonCoords) {
+                            return allMonCoords.getAll().$promise;
+                        },
                         //site dropdowns to store in service
                         CountryList: function () {
                             var c = [];
@@ -465,7 +485,7 @@
                         stateList: function () {
                             var s = [];
                             s.push("Illinois"); s.push("Indiana"); s.push("Michigan"); s.push("Minnesota"); s.push("New York");
-                            s.push("Ohio"); s.push("Pennsylvania"); s.push("Wisconsin"); s.push("Ontario");
+                            s.push("Ohio"); s.push("Pennsylvania"); s.push("Wisconsin"); s.push("Ontario"); s.push("Quebec");
                             return s;
                         },
                         theLakes: 'LAKE_TYPE',
@@ -696,7 +716,7 @@
                         stateList: function () {
                             var s = [];
                             s.push("Illinois"); s.push("Indiana"); s.push("Michigan"); s.push("Minnesota"); s.push("New York");
-                            s.push("Ohio"); s.push("Pennsylvania"); s.push("Wisconsin"); s.push("Ontario");
+                            s.push("Ohio"); s.push("Pennsylvania"); s.push("Wisconsin"); s.push("Ontario"); s.push("Quebec");
                             return s;
                         },
                         theLakes: 'LAKE_TYPE',

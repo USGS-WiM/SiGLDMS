@@ -12,6 +12,7 @@
                 //array of projects
                 $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                 $rootScope.stateIsLoading.showLoading = true; //loading...
+                
                 //get the projects to list
                 PROJECT.getIndexProjects(function success(data) {
                     data.sort(function (a, b) {

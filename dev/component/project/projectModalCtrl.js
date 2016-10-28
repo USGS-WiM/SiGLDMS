@@ -8,9 +8,12 @@
             $scope.DurationList = allDropDownParts[0];
             $scope.StatusList = allDropDownParts[1];
             $scope.objectiveTypeList = allDropDownParts[2];
+            $scope.monitorCoordsList = allDropDownParts[3];
             $scope.undetermined = false; //ng-disabled on end date boolean..set to true if status = end date undefined
             $scope.ObjectivesToAdd = []; //holder for objective types added
             $scope.ObjectivesToRemove = []; //holder for objective types removed on existing projects (edit)
+            $scope.MonitorCoordToAdd = []; //holder for objective types added
+            $scope.MonitorCoordToRemove = []; //holder for objective types removed on existing projects (edit)
             $scope.ProjectKeywords = []; //add each new one to this to show on page
             $scope.KeywordsToAdd = []; //holder for keywords added
             $scope.KeywordsToRemove = []; //holder for keywords to removed on existing projects (edit)
@@ -54,8 +57,8 @@
             if (thisProjectStuff !== undefined) {
                 //#region existing project (edit)
                 $scope.aProject = angular.copy(thisProjectStuff[0]);
-                $scope.aProject.start_date = $scope.aProject.start_date !== null ? makeAdate($scope.aProject.start_date) : null;
-                $scope.aProject.end_date = $scope.aProject.end_date !== null ? makeAdate($scope.aProject.end_date) : null;
+                $scope.aProject.start_date = $scope.aProject.start_date !== null && $scope.aProject.start_date !== undefined ? makeAdate($scope.aProject.start_date) : null;
+                $scope.aProject.end_date = $scope.aProject.end_date !== null && $scope.aProject.end_date !== undefined ? makeAdate($scope.aProject.end_date) : null;
 
                 ////put string ProjURLs into array by '|' and then ensure proper url format
                 if ($scope.aProject.url) {
@@ -72,9 +75,8 @@
                     $scope.undetermined = true;
                 }
 
-                //apply any project objectives for EDIT projObjectives, projKeywords]
                 if (thisProjectStuff[1].length > 0) {
-
+                    //#region apply any project objectives for EDIT projObjectives]
                     //go through objectiveTypeList and add selected Property.
                     //get projObjectives to use in making new prop in all objectives for multi select ('selected: true')
                     $scope.projObjs = angular.copy(thisProjectStuff[1]);
@@ -103,7 +105,39 @@
                         ot.selected = false;
                     });
                     $scope.Objectivesdata = $scope.objectiveTypeList;
+                }//#endregion
+                if (thisProjectStuff[3].length > 0) {
+                    //#region apply any project monitor coordination for EDIT projObjectives]
+                    //go through objectiveTypeList and add selected Property.
+                    //get projObjectives to use in making new prop in all objectives for multi select ('selected: true')
+                    $scope.projMonCoords = angular.copy(thisProjectStuff[3]);
+
+                    ////http://isteven.github.io/angular-multi-select/#/demo-minimum
+                    ////go through allMCList and add selected Property.
+                    for (var MCi = 0; MCi < $scope.monitorCoordsList.length; MCi++) {
+                        //for each one, if projObjectives has this id, add 'selected:true' else add 'selected:false'
+                        for (var pMCy = 0; pMCy < $scope.projMonCoords.length; pMCy++) {
+                            if ($scope.projMonCoords[pMCy].monitoring_coordination_id == $scope.monitorCoordsList[MCi].monitoring_coordination_id) {
+                                $scope.monitorCoordsList[MCi].selected = true;
+                                pMCy = $scope.projMonCoords.length; //ensures it doesn't set it as false after setting it as true
+                            }
+                            else {
+                                $scope.monitorCoordsList[MCi].selected = false;
+                            }
+                        }
+                        if ($scope.projMonCoords.length === 0) {
+                            $scope.monitorCoordsList[MCi].selected = false;
+                        }
+                    }
+                    //all objectives (with new selected property)
+                    $scope.MonitorCoordsdata = $scope.monitorCoordsList;
+                } else {
+                    angular.forEach($scope.monitorCoordsList, function (mc) {
+                        mc.selected = false;
+                    });
+                    $scope.MonitorCoordsdata = $scope.monitorCoordsList;
                 }
+                //#endregion
                 $scope.ProjectKeywords = thisProjectStuff[2];
                 //#endregion existing project (edit)
             } else {
@@ -113,6 +147,12 @@
                     objTypes[a].selected = false;
                 }
                 $scope.Objectivesdata = objTypes;
+                // monitoring coordination - set all to not selected
+                var monCoordTypes = angular.copy($scope.monitorCoordsList);
+                for (var mct = monCoordTypes.length; mct--;) {
+                    monCoordTypes[mct].selected = false;
+                }
+                $scope.MonitorCoordsdata = monCoordTypes;
             }//end else (thisProjectStuff == undefined)
 
             //start or end date was changed -- compare to ensure end date comes after start date
@@ -164,6 +204,28 @@
                     }
                 }
             };//end ObjClick
+
+            //a MONITORING_COORDINATION was clicked 
+            $scope.MCClick = function (data) {
+                //store this to handle in PUT or POST
+                if (data.selected) { //selected
+                    $scope.MonitorCoordToAdd.push(data); //add to MonitorCoordToAdd
+                    if ($scope.aProject.project_id !== undefined) { //if this is edit
+                        //editing (remove from remove list if there)
+                        var i = $scope.MonitorCoordToRemove.map(function (e) { return e.monitoring_coordination_id; }).indexOf(data.monitoring_coordination_id);
+                        if (i >= 0) $scope.MonitorCoordToRemove.splice(i, 1); //remove from removeList ..in case they removed and then added it back
+                    }
+                } else {
+                    //data.selected == false
+                    var ind = $scope.MonitorCoordToAdd.map(function (e) { return e.monitoring_coordination_id; }).indexOf(data.monitoring_coordination_id);
+                    if (ind >= 0) $scope.MonitorCoordToAdd.splice(ind, 1); //remove it from addList if they added then removed
+
+                    if ($scope.aProject.project_id !== undefined) { //edit
+                        $scope.MonitorCoordToRemove.push(data); //add it to removeList
+
+                    }
+                }
+            };//end MCClick
 
             //add url TODO:check if this url is already in the urls array..if so don't add it again
             $scope.addProjURL = function (form) {
@@ -329,12 +391,21 @@
                     PROJECT.save({}, $scope.aProject, function success(response) {
                         toastr.success("Project Created");
                         $scope.aProject = response;
-                        projID = response.project_id;
+                        projID = response.project_id;                        
                         //post objectives added
                         for (var o = $scope.ObjectivesToAdd.length; o--;) {
                             PROJECT.addProjObjective({ id: projID, objectiveTypeId: $scope.ObjectivesToAdd[o].objective_type_id }, function success(response) {
                                 $scope.Objectivesdata = response;
                                 toastr.success("Project Objectives added");
+                            }, function error(errorResponse) {
+                                toastr.error("Error: " + errorResponse.statusText);
+                            });
+                        }
+                        //post monitor coords added
+                        for (var mc = $scope.MonitorCoordToAdd.length; mc--;) {
+                            PROJECT.addProjMonCoord({ id: projID, monitorCoordId: $scope.MonitorCoordToAdd[mc].monitoring_coordination_id }, function success(response) {
+                                $scope.MonitorCoordsdata = response;
+                                toastr.success("Monitoring Coordination Effort added");
                             }, function error(errorResponse) {
                                 toastr.error("Error: " + errorResponse.statusText);
                             });
@@ -352,7 +423,7 @@
                         toastr.success("Error: " + errorResponse.statusText);
                     }).$promise.then(function () {
                         $rootScope.stateIsLoading.showLoading = false; //loading...
-                        var prjectParts = [$scope.aProject, $scope.Objectivesdata, $scope.ProjectKeywords];
+                        var prjectParts = [$scope.aProject, $scope.Objectivesdata, $scope.ProjectKeywords, $scope.MonitorCoordsdata];
                         $uibModalInstance.close(prjectParts);
                         $location.path('/project/edit/' + projID + '/info').replace();//.notify(false);
                         $scope.apply;
@@ -368,6 +439,8 @@
                     $http.defaults.headers.common.Accept = 'application/json';
                     $scope.aProject.url = $scope.urls.join("|");
                     PROJECT.update({ id: $scope.aProject.project_id }, $scope.aProject, function success(ProjResponse) {
+                        var dateIndex = ProjResponse.last_edited_stamp.indexOf("T");
+                        $scope.aProject.last_edited_stamp = ProjResponse.last_edited_stamp.substring(0, dateIndex);
                         //use $q for async call to delete and add objectives and keywords
                         var defer = $q.defer();
                         var RemovePromises = [];
@@ -376,6 +449,11 @@
                         angular.forEach($scope.ObjectivesToRemove, function (Ovalue) {
                             var delObjProm = PROJECT.deleteProjObjective({ id: $scope.aProject.project_id, ObjectiveTypeId: Ovalue.objective_type_id }).$promise;
                             RemovePromises.push(delObjProm);                            
+                        });
+                        //remove monitor coordinations
+                        angular.forEach($scope.MonitorCoordToRemove, function (MCvalue) {
+                            var delMCProm = PROJECT.deleteProjMonCoord({ id: $scope.aProject.project_id, MonitorCoordId: MCvalue.monitoring_coordination_id }).$promise;
+                            RemovePromises.push(delMCProm);
                         });
                         //remove keywords
                         angular.forEach($scope.KeywordsToRemove, function (Kvalue) {
@@ -389,6 +467,11 @@
                             var objProm = PROJECT.addProjObjective({ id: $scope.aProject.project_id, objectiveTypeId: OaddValue.objective_type_id }).$promise;
                             AddPromises.push(objProm);
                         });
+                        //add monitor coordination
+                        angular.forEach($scope.MonitorCoordToAdd, function (MCaddValue) {
+                            var MCProm = PROJECT.addProjMonCoord({ id: $scope.aProject.project_id, monitorCoordId: MCaddValue.monitoring_coordination_id }).$promise;
+                            AddPromises.push(MCProm);
+                        });
                         //add keywords
                         angular.forEach($scope.KeywordsToAdd, function (KaddValue) {
                             var keyProm = PROJECT.addProjKeyword({ id: $scope.aProject.project_id }, KaddValue).$promise;
@@ -396,10 +479,10 @@
                         });
                         //ok now run the removes, then the adds and then pass the stuff back out of here.
                         $q.all(RemovePromises).then(function () {
-                            $scope.ObjectivesToRemove = []; $scope.KeywordsToRemove = []; //clear remove arrays
+                            $scope.ObjectivesToRemove = []; $scope.KeywordsToRemove = []; $scope.MonitorCoordToRemove = [];//clear remove arrays
                             $q.all(AddPromises).then(function (response) {
-                                $scope.ObjectivesToAdd = []; $scope.KeywordsToAdd = [];
-                                var prjectParts = [$scope.aProject, $scope.Objectivesmodel.value, $scope.ProjectKeywords, $scope.urls];
+                                $scope.ObjectivesToAdd = []; $scope.KeywordsToAdd = []; $scope.MonitorCoordToAdd = [];
+                                var prjectParts = [$scope.aProject, $scope.Objectivesmodel.value, $scope.ProjectKeywords, $scope.urls, $scope.MCmodel.value];
                                 toastr.success("Project Updated");
                                 $uibModalInstance.close(prjectParts);
                             }).catch(function error(msg) {
