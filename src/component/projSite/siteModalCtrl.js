@@ -435,6 +435,7 @@
                         SITE.update({ id: $scope.thisSite.site_id }, $scope.thisSite, function success(siteResponse) {
                             //use $q for async call to delete and add objectives and keywords
                             var defer = $q.defer();
+
                             var RemovePromises = [];
                             var AddPromises = [];
                             //#region REMOVES
@@ -599,11 +600,6 @@
                                 angular.forEach($scope.allParametes, function (pValue) {
                                     if (pValue.selected) {
                                         $scope.paramAdded.push(pValue);
-                                        //if (pValue.parameter_group == 'Physical') $scope.pParams.push(pValue.parameter);
-                                        //if (pValue.parameter_group == 'Biological') $scope.bParams.push(pValue.parameter);
-                                        //if (pValue.parameter_group == 'Chemical') $scope.cParams.push(pValue.parameter);
-                                        //if (pValue.parameter_group == 'Microbiological') $scope.mBioParams.push(pValue.parameter);
-                                        //if (pValue.parameter_group == 'Toxicological') $scope.tParams.push(pValue.parameter);
 
                                         var parProm = SITE.addSiteParameter({ id: newSite.site_id, parameterTypeId: pValue.parameter_type_id }).$promise;
                                         postPromises.push(parProm);
@@ -630,14 +626,7 @@
                                         'Resources': $scope.resAdded,
                                         'Media': $scope.medAdded,
                                         'Frequencies': $scope.freqAdded,
-                                        'Parameters': $scope.paramAdded//,
-                                        //'ParameterStrings': {
-                                        //    'Biological': $scope.bParams.join("; "),
-                                        //    'Chemical': $scope.cParams.join("; "),
-                                        //    'Microbiological': $scope.mBioParams.join("; "),
-                                        //    'Physical': $scope.pParams.join("; "),
-                                        //    'Toxicological': $scope.tParams.join("; ")
-                                        //}
+                                        'Parameters': $scope.paramAdded
                                     };
 
                                     var siteParts = [newSiteFormatted, 'create'];

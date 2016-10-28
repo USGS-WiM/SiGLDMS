@@ -6,6 +6,7 @@
     siGLControllers.controller('projMultiSiteEditCtrl', ['$scope', '$http', '$q', '$cookies', '$state', '$uibModal', 'hotRegisterer', 'ProjParts_Service', 'allProjSites', 'thisProject', 'CountryList', 'stateList', 'lakeList', 'siteStatList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE',
         function ($scope, $http, $q, $cookies, $state, $uibModal, hotRegisterer, ProjParts_Service, allProjSites, thisProject, CountryList, stateList, lakeList, siteStatList, resourceList, mediaList, frequencyList, parameterList , SITE) {
             //dropdowns and multiselects [siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList]
+            $scope.thisProject = thisProject;
             $scope.siteStatuses = siteStatList;
             $scope.lakes = lakeList;
             $scope.stateArray = stateList;
@@ -14,11 +15,13 @@
             $scope.medias = mediaList;
             $scope.frequencies = frequencyList;
             $scope.parameters = parameterList;
+            $scope.modalIsOpen = false;
             $scope.hotInstance;
             $scope.invalids = [];
             $scope.max = 0; $scope.dynamic = 0;
             $scope.showLoading = false;
-            $scope.columnWidths = [5, 130, 80, 84, 98, 92, 88, 98, 92, 120, 90, 120, 120, 120, 100, 100, 120, 120, 100,
+            $scope.radioModel = "Spreadsheet";
+            $scope.columnWidths = [5, 130, 80, 90, 98, 92, 88, 98, 150, 140, 90, 120, 120, 120, 100, 100, 120, 120, 100,
                     20, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, //phys
                     20, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80,  //chem
                     20, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, //bio
@@ -128,16 +131,18 @@
             
             //they want to add/remove resources 
             var getMultiModal = function (col, row, whichOne) {
+                $scope.modalIsOpen = true;
+                setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);                
                 var prevValues = $scope.hotInstance.getDataAtCell(row, col);
                 var aModal = $uibModal.open({
                     template: '<div class="modal-header"><h3 class="modal-title">{{which}}</h3></div>' +
-                        '<div class="modal-body"><p>Choose {{which}}:</p><p><ul><li style="list-style:none;" ng-repeat="r in resourceList">' +
-                        '<input type="checkbox" name="resources" ng-model="r.selected" ng-click="addRes(r)"/><span>{{ r.resource_name || r.media || r.frequency }}</span></li></ul></p></div>' +
+                        '<div class="modal-body"><p>Choose {{which}}:</p><p><ul><li style="list-style:none;" ng-repeat="r in entityList">' +
+                        '<input type="checkbox" name="resources" ng-model="r.selected"/><span>{{ r.resource_name || r.media || r.frequency }}</span></li></ul></p></div>' +
                         '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
                     backdrop: 'static',
                     keyboard: false,
-                    resolve: {
-                        allResources: function () {
+                    resolve: { 
+                        allEntitiesList: function () {
                             if (whichOne == "Resources") {
                                 return $scope.resources;
                             } else if (whichOne == "Media") {
@@ -149,59 +154,53 @@
                         chosenValues: function () { return prevValues; },
                         whichEntities: function () { return whichOne; }
                     },
-                    controller: function ($scope, $uibModalInstance, allResources, chosenValues, whichEntities) {
+                    controller: function ($scope, $uibModalInstance, allEntitiesList, chosenValues, whichEntities) {
                         //add selected prop to each resource
                         $scope.which = whichEntities;
-                        $scope.resourceList = angular.copy(allResources);
-                        $scope.chosenResStringArray = [];
+                        $scope.entityList = angular.copy(allEntitiesList);
+                        $scope.chosenValuesStringArray = [];
                         if (chosenValues !== null) {
-                            $scope.resourceString = angular.copy(chosenValues.split(","));
-                            angular.forEach($scope.resourceString, function (crs) {
-                                $scope.chosenResStringArray.push(crs.trim());
+                            $scope.chosenStringsArray = angular.copy(chosenValues.split(","));
+                            angular.forEach($scope.chosenStringsArray, function (crs) {                                
+                                $scope.chosenValuesStringArray.push(crs.trim());
                             });
                         }
-                        //add selected and select if in chosenResStringArray
-                        for (var i = 0; i < $scope.resourceList.length; i++) {
-                            for (var y = 0; y < $scope.chosenResStringArray.length; y++) {
-                                if ($scope.chosenResStringArray[y] == $scope.resourceList[i].resource_name || $scope.chosenResStringArray[y] == $scope.resourceList[i].media || $scope.chosenResStringArray[y] == $scope.resourceList[i].frequency) {
-                                    $scope.resourceList[i].selected = true;
-                                    y = $scope.chosenResStringArray.length;
+                        //add selected and select if in chosenValueStringArray
+                        for (var i = 0; i < $scope.entityList.length; i++) {
+                            for (var y = 0; y < $scope.chosenValuesStringArray.length; y++) {
+                                if ($scope.chosenValuesStringArray[y] == $scope.entityList[i].resource_name || $scope.chosenValuesStringArray[y] == $scope.entityList[i].media || $scope.chosenValuesStringArray[y] == $scope.entityList[i].frequency) {
+                                    $scope.entityList[i].selected = true;
+                                    y = $scope.chosenValuesStringArray.length;
                                 }
-                                else $scope.resourceList[i].selected = false;
+                                else $scope.entityList[i].selected = false;
                             }
-                            if ($scope.chosenResStringArray.length === 0) $scope.resourceList[i].selected = false;
-                        }//end foreach resource
-
-                        //selected or not selected ..add or remove from chosen ones to pass back
-                        $scope.addRes = function (res) {
-                            if (res.selected) {
-                                switch(whichEntities){
-                                    case "Resources":
-                                        $scope.chosenResStringArray.push(res.resource_name);
-                                        break;
-                                    case "Media":
-                                        $scope.chosenResStringArray.push(res.media);
-                                        break;
-                                    case "Frequencies":
-                                        $scope.chosenResStringArray.push(res.frequency);
-                                        break;
-                                }
-                            } else {
-                                var resInd = $scope.chosenResStringArray.map(function (r) { return r; }).indexOf(res.resource_name);
-                                var mInd = $scope.chosenResStringArray.map(function (r) { return r; }).indexOf(res.media);
-                                var fInd = $scope.chosenResStringArray.map(function (r) { return r; }).indexOf(res.frequency);
-                                if (resInd >= 0) $scope.chosenResStringArray.splice(resInd, 1);
-                                if (mInd >= 0) $scope.chosenResStringArray.splice(mInd, 1);
-                                if (fInd >= 0) $scope.chosenResStringArray.splice(fInd, 1);
-                            }
-                        };
+                            if ($scope.chosenValuesStringArray.length === 0) $scope.entityList[i].selected = false;
+                        }//end foreach resource                        
                         $scope.ok = function () {
-                            $uibModalInstance.close($scope.chosenResStringArray.join(", "));
+                            //just grab the selected=true from $scope.resourceList, join the resource_names and send it back (gets rid of any incorrectly pasted ones)
+                            var selectedOnes = [];
+                            angular.forEach($scope.entityList, function (r) {
+                                if (r.selected) {
+                                    switch (whichEntities) {
+                                        case "Resources":
+                                            selectedOnes.push(r.resource_name);
+                                            break;
+                                        case "Media":
+                                            selectedOnes.push(r.media);
+                                            break;
+                                        case "Frequencies":
+                                            selectedOnes.push(r.frequency);
+                                            break;
+                                    }
+                                }//end if selected =true
+                            });
+                            $uibModalInstance.close(selectedOnes.join(", "));
                         };
                     },
                     size: 'md'
                 });
                 aModal.result.then(function (newVal) {
+                    $scope.modalIsOpen = false;
                     $scope.hotInstance.setDataAtCell(row, col, newVal);
                 });
             };
@@ -212,11 +211,51 @@
             };
             //reset back 
             $scope.reset = function () {
-                $scope.setUpDataForTable();
-                $scope.hotInstance.loadData($scope.projSites);
-                $scope.invalids = [];
+                var resetModal = $uibModal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Revert Warning</h3></div>' +
+                        '<div class="modal-body"><p>Warning! This will revert the site table to the last saved version. All current edits will be lost.</p></div>' +
+                        '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button><button class="btn btn-primary" ng-click="cancel()">Cancel</button></div>',
+                    backdrop: 'static',
+                    keyboard: false,
+                    controller: function ($scope, $uibModalInstance) {
+                        $scope.ok = function () {
+                            $uibModalInstance.close();
+                        };
+                        $scope.cancel = function() {
+                            $uibModalInstance.dismiss();
+                        };
+                    },
+                    size: 'sm'
+                });
+                resetModal.result.then(function () {
+                    $scope.setUpDataForTable();
+                    $scope.hotInstance.loadData($scope.projSites);
+                    $scope.invalids = [];
+                });                
             };
-            
+            $scope.goBack = function () {
+                var cancelModal = $uibModal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Warning</h3></div>' +
+                        '<div class="modal-body"><p>Warning! Any edits will be lost.</p></div>' +
+                        '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button><button class="btn btn-primary" ng-click="cancel()">Cancel</button></div>',
+                    backdrop: 'static',
+                    keyboard: false,
+                    controller: function ($scope, $uibModalInstance) {
+                        $scope.ok = function () {
+                            $uibModalInstance.close();
+                        };
+                        $scope.cancel = function () {
+                            $uibModalInstance.dismiss();
+                        };
+                    },
+                    size: 'sm'
+                });
+                cancelModal.result.then(function () {
+                    history.back();
+                });
+
+
+            };
             var formatJustSiteProps = function (s) {
                 var site = {
                     //   site_id: s.SiteId,
@@ -349,7 +388,7 @@
                         $q.all(AddPromises).then(function (response) {
                             $scope.dynamic++;
                             console.log("siteUpdates");
-                            if ($scope.dynamic == $scope.max) $state.go("projectEdit.site.siteList", { id: thisProject.project_id });
+                            if ($scope.dynamic == $scope.max) $scope.showLoading = false; $state.reload(); //Loading...$state.go("projectEdit.site.siteList", { id: thisProject.project_id });
                         }).catch(function error(msg) {
                             //catch on addPromises
                             var errorM = $uibModal.open({
@@ -400,29 +439,32 @@
                     var site = formatJustSiteProps(s);
                     SITE.save({}, site).$promise.then(function (response) {
                         var createdSite = response;
+                        $scope.dynamic++;
                         var defer = $q.defer();
                         var postPromises = [];
                         //post frequencies
-                        //angular.forEach(s.Frequencies, function (fValue) {
-                        var freqProm = SITE.addSiteFrequencyList({ id: createdSite.site_id }, s.Frequencies).$promise;
-                        postPromises.push(freqProm);
-
+                        if (s.Frequencies.length > 0) {
+                            var freqProm = SITE.addSiteFrequencyList({ id: createdSite.site_id }, s.Frequencies).$promise;
+                            postPromises.push(freqProm);
+                        }
                         //post media                        
-                        var medProm = SITE.addSiteMediaList({ id: createdSite.site_id }, s.Media).$promise;
-                        postPromises.push(medProm);
-
+                        if (s.Media.length > 0) {
+                            var medProm = SITE.addSiteMediaList({ id: createdSite.site_id }, s.Media).$promise;
+                            postPromises.push(medProm);
+                        }
                         //post resources
-                        var resProm = SITE.addSiteResourceList({ id: createdSite.site_id }, s.Resources).$promise;
-                        postPromises.push(resProm);
-
+                        if (s.Resources.length > 0) {
+                            var resProm = SITE.addSiteResourceList({ id: createdSite.site_id }, s.Resources).$promise;
+                            postPromises.push(resProm);
+                        }
                         //post parameters
-                        var parProm = SITE.addSiteParameterList({ id: createdSite.site_id }, s.Parameters).$promise;
-                        postPromises.push(parProm);
-
-                        $q.all(postPromises).then(function (response) {
-                            $scope.dynamic++;
+                        if (s.Parameters.length > 0) {
+                            var parProm = SITE.addSiteParameterList({ id: createdSite.site_id }, s.Parameters).$promise;
+                            postPromises.push(parProm);
+                        }
+                        $q.all(postPromises).then(function (response) {                           
                             console.log("site created");
-                            if ($scope.dynamic == $scope.max) $state.go("projectEdit.site.siteList", { id: thisProject.project_id });
+                            if ($scope.dynamic == $scope.max) $scope.showLoading = false; $state.reload(); //Loading...$state.go("projectEdit.site.siteList", { id: thisProject.project_id });
                         }).catch(function error(msg) {
                             var errorM = $uibModal.open({
                                 template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
@@ -641,59 +683,73 @@
                 //#endregion                
                 return newSite;
             };
+            var openInvalidModal = function () {
 
+                var invalidModal = $uibModal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
+                        '<div class="modal-body"><p>Please correct all invalid fields before saving.</p></div>' +
+                        '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                    backdrop: 'static',
+                    keyboard: false,
+                    controller: function ($scope, $uibModalInstance) {
+                        $scope.ok = function () {
+                            $uibModalInstance.dismiss();
+                        };
+                    },
+                    size: 'sm'
+                });
+            };
             //all done making changes, save it and go back to siteList
             $scope.save = function () {
                 if ($scope.invalids.length > 0) {
-                    var invalidModal = $uibModal.open({
-                        template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                            '<div class="modal-body"><p>Please correct all invalid fields before saving.</p></div>' +
-                            '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
-                        backdrop: 'static',
-                        keyboard: false,
-                        controller: function ($scope, $uibModalInstance) {
-                            $scope.ok = function () {
-                                $uibModalInstance.dismiss();
-                            };
-                        },
-                        size: 'sm'
-                    });
+                    openInvalidModal();
                 } else {
-                    var newData = $scope.hotInstance.getData();
-                    var allUpdatedEdSites = []; 
-                    var allUpdatedCrSites = [];
-                    var numOfStuffToDo = 0;
-                    $scope.showLoading = true; //Loading...
-                    // drop the last 3 since they are empty
-                    for (var i = newData.length; i--;) {
-                        if (newData[i][0] === null && newData[i][1] === null && newData[i][2] === null) {
-                            newData.splice(i, 1);
-                        }
-                    }
-                    //see if they deleted any sites
-                    if (newData.length < allProjSites.length) {
-                        var sitesToDelete = difference(allProjSites, newData, "site");
-                        angular.forEach(sitesToDelete, function (sd) {
-                            SITE.delete({ id: sd.SiteId }).$promise;
-                        });//this should take care of it.. the allUpdatedSites won't have them, so they won't be accidentally saved, and the endpoint handles the cascade (should?)
-                    }
-                    for (var n = 0; n < newData.length; n++) {
-                        //$scope.Changes holds array of all changes made [0]=row, [1]=databindName, [2]=wasValue, [3]=isValue
-                        var thisRowChanges = $scope.Changes.filter(function (chang) { return chang[0] == n; });
-                        //only go through this if a change has been made to anything in the row
-                        if (thisRowChanges.length > 0) {
-                            var formattedSite = formatNewSite(newData[n], thisRowChanges);
-                            if (formattedSite.SiteId !== null)
-                                allUpdatedEdSites.push(formattedSite);
-                            else allUpdatedCrSites.push(formattedSite);
-                        }
-                    }
-                    $scope.max = allUpdatedCrSites.length + allUpdatedEdSites.length;
-                    if (allUpdatedEdSites.length > 0) UpdateSites(allUpdatedEdSites);
-                    if (allUpdatedCrSites.length > 0) CreateSites(allUpdatedCrSites);
-                    //setTimeout(function () {
-                       
-                    //}, 125000);
+                    //validate to make sure all req fields are populated for each row
+                    $scope.hotInstance.validateCells(function (valid) {
+                        if (valid) {
+                            var newData = $scope.hotInstance.getData();
+                            var allUpdatedEdSites = [];
+                            var allUpdatedCrSites = [];                            
+                            $scope.showLoading = true; //Loading...
+                            // drop the last 3 since they are empty
+                            for (var i = newData.length; i--;) {
+                                if (newData[i][0] === null && newData[i][1] === null && newData[i][2] === null) {
+                                    newData.splice(i, 1);
+                                }
+                            }
+                            //see if they deleted any sites
+                            if (newData.length < allProjSites.length) {
+                                var sitesToDelete = difference(allProjSites, newData, "site");
+                                $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                                $http.defaults.headers.common.Accept = 'application/json';
+                                angular.forEach(sitesToDelete, function (sd) {
+                                    SITE.delete({ id: sd.SiteId }).$promise;
+                                });//this should take care of it.. the allUpdatedSites won't have them, so they won't be accidentally saved, and the endpoint handles the cascade (should?)
+                            }
+                            for (var n = 0; n < newData.length; n++) {
+                                //$scope.Changes holds array of all changes made [0]=row, [1]=databindName, [2]=wasValue, [3]=isValue
+                                var thisRowChanges = $scope.Changes.filter(function (chang) { return chang[0] == n; });
+                                //only go through this if a change has been made to anything in the row
+                                if (thisRowChanges.length > 0) {
+                                    var formattedSite = formatNewSite(newData[n], thisRowChanges);
+                                    if (formattedSite.SiteId !== null)
+                                        allUpdatedEdSites.push(formattedSite);
+                                    else allUpdatedCrSites.push(formattedSite);
+                                }
+                            }
+                            $scope.max = allUpdatedCrSites.length + allUpdatedEdSites.length;
+                            if (allUpdatedEdSites.length > 0) UpdateSites(allUpdatedEdSites);
+                            if (allUpdatedCrSites.length > 0) CreateSites(allUpdatedCrSites);
+
+                            //if all they did was delete rows, (no edits or creates)
+                            if (allUpdatedCrSites.length == 0 && allUpdatedEdSites.length == 0) {
+                                $scope.dynamic = $scope.max;
+                                $scope.showLoading = false; //Loading...
+                                $state.reload();
+                               // $state.go("projectEdit.site.siteList", { id: thisProject.project_id });
+                            }
+                        } 
+                    });
                 }
             };
             
@@ -752,8 +808,30 @@
                 td.style.background = '#EEE';
                 return td;
             };
+            //due to sorting, sorting, sorting then validating, things were off-sync. this brings it back on-sync
+            var untranslateRow = function (row) {
+                var hot = $scope.hotInstance;
+                if (hot.sortingEnabled && hot.sortIndex && hot.sortIndex.length) {
+                    for (var i = 0; i < hot.sortIndex.length; i++) {
+                        if (hot.sortIndex[i][0] == row) {
+                            return i;
+                        }
+                    }
+                }
+                return row;
+            };
             $scope.requiredValidator = function (value, callback) {
-                if (!value) {
+                //only care if there's other data in this row
+                var row = this.row; var col = this.col;
+                var physicalIndex = untranslateRow(row);
+                var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
+                var otherDataInRow = false;
+                angular.forEach(dataAtRow, function (d, index) {
+                    //need the col too because right after removing req value, it's still in the .getDataAtRow..
+                    if (d !== null && d !== "" && index !== col)
+                        otherDataInRow = true;
+                });
+                if (!value && otherDataInRow) {
                     requiredModal();
                     callback(false);
                 } else {
@@ -761,7 +839,7 @@
                 }
             };
             $scope.urlValidator = function (value, callback) {
-                if (value.substring(0, 4) !== 'http' && value.substring(0,4) !== "") {
+                if (value !== null && value.substring(0, 4) !== 'http' && value.substring(0,4) !== "") {
                     var httpModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                             '<div class="modal-body"><p>Site URL must start with "http://" or "https://"</p></div>' +
@@ -783,10 +861,19 @@
             };
             $scope.latValidator = function (value, callback) {
                 //number and > 0
-                if (value < 0 || isNaN(value)) {
+                var row = this.row; var col = this.col;
+                var physicalIndex = untranslateRow(row);
+                var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
+                var otherDataInRow = false;
+                angular.forEach(dataAtRow, function (d, index) {
+                    //need the col too because right after removing req value, it's still in the .getDataAtRow..
+                    if (d !== null && d !== "" && index !== col)
+                        otherDataInRow = true;
+                });
+                if (((value < 22 || value > 55) || isNaN(value)) && otherDataInRow) {
                     var latModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                            '<div class="modal-body"><p>Latitude must be greater than 0.</p></div>' +
+                            '<div class="modal-body"><p>Latitude must be between 22.0 and 55.0 (NAD83 decimal degrees).</p></div>' +
                             '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
                         backdrop: 'static',
                         keyboard: false,
@@ -798,7 +885,7 @@
                         size: 'sm'
                     });
                     callback(false);
-                } else if (!value) {
+                } else if (!value && otherDataInRow) {
                     requiredModal();
                     callback(false);
                 } else {
@@ -806,10 +893,19 @@
                 }                
             };
             $scope.longValidator = function (value, callback) {
-                if (value > 0 || isNaN(value)) {
+                var row = this.row; var col = this.col;
+                var physicalIndex = untranslateRow(row);
+                var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
+                var otherDataInRow = false;
+                angular.forEach(dataAtRow, function (d, index) {
+                    //need the col too because right after removing req value, it's still in the .getDataAtRow..
+                    if (d !== null && d !== "" && index !== col)
+                        otherDataInRow = true;
+                });
+                if (((value < -130 || value > -55)|| isNaN(value)) && otherDataInRow) {
                     var longModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                            '<div class="modal-body"><p>Longitude must be less than 0.</p></div>' +
+                            '<div class="modal-body"><p>Longitude must be between -130.0 and -55.0 (NAD83 digital degrees).</p></div>' +
                             '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
                         backdrop: 'static',
                         keyboard: false,
@@ -821,7 +917,7 @@
                         size: 'sm'
                     });
                     callback(false);
-                } else if (!value) {
+                } else if (!value && otherDataInRow) {
                     requiredModal();
                     callback(false);
                 }
@@ -830,10 +926,10 @@
                 }
             };
             $scope.watershedValidator = function (value, callback) {               
-                if (value !== "" && (isNaN(parseInt(value)) || (value.length > 8 || value.length < 8))) {
+                if (value !== "" && value !== null && (isNaN(parseInt(value)) || (value.length > 8 || value.length < 8))) {
                     var waterModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                            '<div class="modal-body"><p>Watershed must be 8 digits long containing only numbers.</p></div>' +
+                            '<div class="modal-body"><p>Please enter an 8-digit HUC (Hydrologic Unit Code).</p></div>' +
                             '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
                         backdrop: 'static',
                         keyboard: false,
@@ -848,12 +944,13 @@
                 } else {
                     callback(true);
                 }
-            };
+            };         
             $scope.dateValidator = function (value, callback){
                 if (value !== "") {
                     var row = this.row;
                     var prop = this.prop;
-                    var dataAtRow = $scope.hotInstance.getDataAtRow(row);
+                    var physicalIndex = untranslateRow(row);
+                    var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
                     //which prop are we dealing with
                     if (prop == "StartDate") {
                         //make sure it's before EndDate col=[15]
@@ -874,9 +971,14 @@
                                     size: 'sm'
                                 });
                                 callback(false);
-                            } else callback(true);
-                        } else callback(true);
-                    } else callback(true);
+                            }//end Sdate after Edate
+                            else {                                
+                                Handsontable.DateValidator.call(this, value, callback); //callback(true);
+                            }
+                        }//end date !== "" && date !== null
+                        else Handsontable.DateValidator.call(this, value, callback);//callback(true);
+                    }//end prop is StartDate
+                    else Handsontable.DateValidator.call(this, value, callback);//callback(true);
                     if (prop == "EndDate") {
                         //make sure it's after StartDate col=[14]
                         if (dataAtRow[14] !== "" && dataAtRow[14] !== null) {
@@ -896,13 +998,13 @@
                                     size: 'sm'
                                 });
                                 callback(false);
-                            } else callback(true);
-                        } else callback(true);
-                    } else callback(true);
-                } else callback(true);
+                            } else Handsontable.DateValidator.call(this, value, callback);//callback(true);
+                        } else Handsontable.DateValidator.call(this, value, callback);//callback(true);
+                    } else Handsontable.DateValidator.call(this, value, callback);//callback(true);
+                } else Handsontable.DateValidator.call(this, value, callback);//callback(true);
             };
             $scope.matchingResValue = function (value, callback) {
-                if (value !== "") {
+                if (value !== "" && value !== null && !$scope.modalIsOpen) {
                     var prop = this.prop; var hasError = false; var which;
                     if (prop = "ResourceStrings") {
                         var resArray = value.split(",");
@@ -918,7 +1020,7 @@
                         if (hasError) {
                             var FreqModal = $uibModal.open({
                                 template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                                    '<div class="modal-body"><p>Resource Type <b>"{{wrong}}"</b> is not in the list of options. Please delete the text and click the down arrow in the lower right corner of the ' +
+                                    '<div class="modal-body"><p>Resource Type <b>"{{wrong}}"</b> is not in the list of options. Please click the down arrow in the lower right corner of the ' +
                                     'cell to open the modal. Choose the appropriate Resource types by selecting the checkboxes.</p></div>' +
                                     '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
                                 backdrop: 'static',
@@ -940,7 +1042,7 @@
                 } else callback(true);
             };
             $scope.matchingMedValue = function (value, callback) {
-                if (value !== "") {
+                if (value !== "" && value !== null && !$scope.modalIsOpen) {
                     var prop = this.prop; var hasError = false; var which;
                     if (prop = "MediaStrings") {
                         var medArray = value.split(",");
@@ -956,7 +1058,7 @@
                         if (hasError) {
                             var MedModal = $uibModal.open({
                                 template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                                    '<div class="modal-body"><p>Media Type <b>"{{wrong}}"</b> is not in the list of options. Please delete the text and click the down arrow in the lower right corner of the ' +
+                                    '<div class="modal-body"><p>Media Type <b>"{{wrong}}"</b> is not in the list of options. Please click the down arrow in the lower right corner of the ' +
                                     'cell to open the modal. Choose the appropriate Media types by selecting the checkboxes.</p></div>' +
                                     '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
                                 backdrop: 'static',
@@ -977,7 +1079,7 @@
                 } else callback(true);
             };
             $scope.matchingFreqValue = function (value, callback) {
-                if (value !== "") {
+                if (value !== "" && value !== null && !$scope.modalIsOpen) {
                     var prop = this.prop; var hasError = false; var which;
                     if (prop = "FrequencyStrings") {
                         var freqArray = value.split(",");
@@ -993,7 +1095,7 @@
                         if (hasError) {
                             var FreqModal = $uibModal.open({
                                 template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
-                                    '<div class="modal-body"><p>Frequency Type <b>"{{wrong}}"</b> is not in the list of options. Please delete the text and click the down arrow in the lower right corner of the ' +
+                                    '<div class="modal-body"><p>Frequency Type <b>"{{wrong}}"</b> is not in the list of options. Please click the down arrow in the lower right corner of the ' +
                                     'cell to open the modal. Choose the appropriate Frequency types by selecting the checkboxes.</p></div>' +
                                     '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
                                 backdrop: 'static',
@@ -1016,23 +1118,37 @@
             };
             //#endregion
 
+            //change right-click wording
+            //$scope.hotInstance.updateSettings({
+            //    contextMenu: {
+            //        items: { "remove_row": { name: "remove this row" } }
+            //    }
+            //});
             //#region handsontable settings
             $scope.tableSettings = {
-                colHeaders: true,
-                rowHeaders: true,
-                contextMenu: ['row_above', 'row_below', 'remove_row'],
-                minSpareRows: 3,
+               // colHeaders: true, //commented out or not.. no difference
+                correctFormat: true, //correct the date format if entered in incorrectly
+                rowHeaders: true, //adds row numbers down left side
+                contextMenu: { items: 
+                    {
+                        "row_above": {},
+                        "row_below":{},
+                        "remove_row": { name: "Remove this row" }
+                    }
+                },//['row_above', 'row_below', 'remove_row'], 
+                minSpareRows: 3, 
                 afterInit: function () {
-                    $scope.hotInstance = this;                  
-                },               
-                fixedColumnsLeft: 2,
+                    $scope.hotInstance = this;
+                },
+                columnSorting: true,
+                fixedColumnsLeft: 2, 
                 manualColumnResize: true,
                 manualRowResize: true,
                 wordWrap: false,                
-                viewportColumnRenderingOffsetNumber: 1,
+                viewportColumnRenderingOffsetNumber: 1, //ensures all of the table shows to the right end
                 colWidths: $scope.columnWidths,
                 cells: function (row, col, prop) {
-                    //physical, chemical,biological, microbio, tox
+                    //siteId, physical, chemical,biological, microbio, tox
                     if ([0,19,46,65,82,87].indexOf(col) > -1){
                         var cellprops = {};
                         cellprops.renderer = colorRenderer;
@@ -1040,7 +1156,8 @@
                     }
                 },
                 //afterCreateRow: function (index, amount){},
-                afterOnCellMouseDown: function (event,coords,td){
+                afterOnCellMouseDown: function (event, coords, td) {
+                    //open multi-select modal for resources, media or frequencies
                     if (coords.col == 11 && event.realTarget.className == "htAutocompleteArrow") 
                         getMultiModal(coords.col, coords.row, "Resources");
                     if (coords.col == 12 && event.realTarget.className == "htAutocompleteArrow") 
@@ -1061,21 +1178,25 @@
                             if (change[i][1] === "EndDate" && change[i][2] !== "") $scope.endDateHolder = change[i];
                         }
                     }
-                },
+                },                
                 onAfterValidate: function (isValid, value, row, prop, souce) {
                     if (!isValid)
                         $scope.invalids.push({ "isValid": isValid, "row": row, "prop": prop });
-                    if (isValid) {
-                        var vIndex = -1;
+                    if (isValid && !$scope.modalIsOpen) {
+                        var vIndex = [];
+                        //remove all invalids for this prop at this row ( in case the messed it up a few times)
                         for (var vI = 0; vI < $scope.invalids.length; vI++) {
                             if ($scope.invalids[vI].row == row && $scope.invalids[vI].prop == prop) {
-                                vIndex = vI;
-                                break;
+                                vIndex.push(vI);
                             }
                         }
-                        if (vIndex > -1)
-                            $scope.invalids.splice(vIndex, 1);
-                    }
+                        if (vIndex.length > 0) {
+                            for (var vi = vIndex.length; vi--;) {
+                                $scope.invalids.splice(vIndex[vi], 1);
+                            }
+                        }
+
+                    }                    
                 },
                 rowHeights: 50
             };

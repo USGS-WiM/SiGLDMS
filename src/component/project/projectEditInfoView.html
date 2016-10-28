@@ -51,6 +51,15 @@
                 <span ng-if="ProjectObjectives.length == 0">---</span>
             </div>
 
+            <!-- Project Monitoring Coordination -->
+            <div class="sigl-edit-form-group">
+                <label>Monitoring Coordination Effort:</label>
+                <ul ng-if="ProjectMonitorCoords.length > 0">
+                    <li style="list-style:none" ng-repeat="mc in ProjectMonitorCoords">{{mc.effort}}</li>
+                </ul>
+                <span ng-if="ProjectMonitorCoords.length == 0">---</span>
+            </div>
+
             <!-- Project Description -->
             <div class="sigl-edit-form-group">
                 <label for="description">Description:</label>

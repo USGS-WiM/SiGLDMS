@@ -88,6 +88,10 @@
                     $scope.alldivs = {}; $scope.selectedDivID = "";
                     $scope.allsecs = {}; $scope.selectedSecID = "";
                     $scope.selectedOrgID = "";
+                    //get the project here so we can update the lastEditedStamp
+                    PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                        ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                    });
                     $scope.projectForm.Contact.$setPristine(true);
                     toastr.success("Contact Added");
                 }, function error(errorResponse) {
@@ -207,6 +211,10 @@
                     projContact.DivName = thisOrgRes.DivisionName;
                     projContact.SecName = thisOrgRes.SectionName;
                     retur = projContact;
+                    //get the project here so we can update the lastEditedStamp
+                    PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                        ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                    });
                     $scope.projectForm.Contact.$setPristine(true);
                     toastr.success("Contact Updated");                    
                 }, function error(errorResponse) {
@@ -353,7 +361,10 @@
                     PROJECT.deleteProjContact({ id: thisProject.project_id, ContactId: aCONTACT.contact_id }, function success(response) {
                         $scope.ProjContacts.splice(index, 1); ProjParts_Service.setAllProjectContacts($scope.ProjContacts);
                         $scope.contactCount.total = $scope.contactCount.total - 1;
-                        //TODO: Make sure services are removing the organizationsystem object
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                         toastr.success("Contact Removed");
                     }, function error(errorResponse) {
                         toastr.error("Error: " + errorResponse.statusText);

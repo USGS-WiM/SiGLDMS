@@ -55,6 +55,10 @@
                     DATA_HOST.save(d, function success(response) {                    
                         $scope.ProjData = response;
                         ProjParts_Service.setAllProjectData($scope.ProjData); //projDatum = response;
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                         $scope.datumCount.total = $scope.ProjData.length;
                         $scope.newData = {};
                         $scope.projectForm.Data.$setPristine(true);
@@ -93,6 +97,10 @@
                     DATA_HOST.delete({ id: dataH.data_host_id }, function success(response) {
                         $scope.ProjData.splice(Dindex, 1);
                         ProjParts_Service.setAllProjectData($scope.ProjData);// projDatum.splice(Dindex, 1);
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                         $scope.datumCount.total = $scope.datumCount.total - 1;
                         toastr.success("Data Removed");
                     }, function error(errorResponse) {
@@ -132,6 +140,10 @@
                     DATA_HOST.update({ id: id }, data, function success(response) {
                         retur = response; //maybe need to update the projData that this controller gets from resolve, for returning to this tab later
                         $scope.projectForm.Data.$setPristine(true);
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                         toastr.success("Data Updated");
                     }, function error(errorResponse) {
                         retur = false;

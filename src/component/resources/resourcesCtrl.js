@@ -3,10 +3,10 @@
 
     var siGLControllers = angular.module('siGLControllers');
 
-    siGLControllers.controller('resourcesCtrl', ['$scope', '$cookies', '$q', '$location', '$state', '$http', '$filter', '$uibModal', 'FREQUENCY_TYPE', 'LAKE_TYPE', 'MEDIA_TYPE', 'OBJECTIVE_TYPE', 'PARAMETER_TYPE',
-        'RESOURCE_TYPE', 'PROJ_DURATION', 'PROJ_STATUS', 'STATUS_TYPE', 'allDMs', 'allFreqs', 'allLakes', 'allMedias', 'allObjectives', 'allParams', 'allResources', 'allProjDurations', 'allProjStats', 'allSiteStats',
-        function ($scope, $cookies, $q, $location, $state, $http, $filter, $uibModal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, PARAMETER_TYPE, RESOURCE_TYPE,
-        PROJ_DURATION, PROJ_STATUS, STATUS_TYPE, allDMs, allFreqs, allLakes, allMedias, allObjectives, allParams, allResources, allProjDurations, allProjStats, allSiteStats) {
+    siGLControllers.controller('resourcesCtrl', ['$scope', '$cookies', '$q', '$location', '$state', '$http', '$filter', '$uibModal', 'FREQUENCY_TYPE', 'LAKE_TYPE', 'MEDIA_TYPE', 'OBJECTIVE_TYPE', 'MONITOR_COORDINATION',
+        'PARAMETER_TYPE', 'RESOURCE_TYPE', 'PROJ_DURATION', 'PROJ_STATUS', 'STATUS_TYPE', 'allDMs', 'allFreqs', 'allLakes', 'allMedias', 'allObjectives', 'allMonitorCoords', 'allParams', 'allResources', 'allProjDurations', 'allProjStats', 'allSiteStats',
+        function ($scope, $cookies, $q, $location, $state, $http, $filter, $uibModal, FREQUENCY_TYPE, LAKE_TYPE, MEDIA_TYPE, OBJECTIVE_TYPE, MONITOR_COORDINATION, PARAMETER_TYPE, RESOURCE_TYPE,
+        PROJ_DURATION, PROJ_STATUS, STATUS_TYPE, allDMs, allFreqs, allLakes, allMedias, allObjectives, allMonitorCoords, allParams, allResources, allProjDurations, allProjStats, allSiteStats) {
             if ($cookies.get('siGLCreds') === undefined || $cookies.get('siGLCreds') === "") {
                 $scope.auth = false;
                 $location.path('/login');
@@ -348,6 +348,120 @@
                     });//end modal
                 };
                 //#endregion Media Type Add/Update/Delete
+
+                //#region Monitor Coordination Add/Update/Delete
+                $scope.MCsortingOrder = 'monitor';
+                $scope.MCreverse = false;
+                $scope.MCsort_by = function (newSortingOrder) {
+                    if ($scope.MCsortingOrder == newSortingOrder) {
+                        $scope.MCreverse = !$scope.MCreverse;
+                    }
+                    $scope.MCsortingOrder = newSortingOrder;
+                    // icon setup
+                    $('th i').each(function () {
+                        // icon reset
+                        $(this).removeClass().addClass('glyphicon glyphicon-sort');
+                    });
+                    if ($scope.MCreverse) {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-up');
+                    } else {
+                        $('th.' + newSortingOrder + ' i').removeClass().addClass('glyphicon glyphicon-chevron-down');
+                    }
+                };
+                $scope.monitorCoordsList = allMonitorCoords; //ot
+                $scope.MCCntLoading = true;
+                var MCpromises = [];
+                //get all projects that use each of these objectives
+                $http.defaults.headers.common.Accept = 'application/json';
+                angular.forEach($scope.monitorCoordsList, function (mc) {
+                    var MCdeferred = $q.defer();
+                    MONITOR_COORDINATION.getMonCoordProj({ id: mc.monitoring_coordination_id }, function success(response) {
+                        mc.Projects = response;
+                        MCdeferred.resolve(response);
+                    });
+                    MCpromises.push(MCdeferred.promise);
+                });
+                $q.all(MCpromises).then(function () {
+                    //now turn off loading
+                    $scope.MCCntLoading = false;
+                });
+                $scope.showAddMCForm = false; //add something new to a lookup clicked (will unhide form below it) False-> form: hidden, True-> form: visible
+                $scope.addMCButtonShowing = true; //start it at true..when clicked, show form, hide button
+                $scope.newMC = {};
+
+                //show Add New .... clicked, hide the button and show the form
+                $scope.showAddMCClicked = function () {
+                    $scope.showAddMCForm = true; //show the form
+                    $scope.addMCButtonShowing = false; //hide button
+                };
+                $scope.NeverMindMC = function () {
+                    $scope.newMC = {};
+                    $scope.showAddMCForm = false; //hide the form
+                    $scope.addMCButtonShowing = true; //show button
+
+                };
+
+                $scope.AddMonitorCoordination = function (valid) {
+                    if (valid) {
+                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                        $http.defaults.headers.common.Accept = 'application/json';
+                        MONITOR_COORDINATION.save($scope.newMC, function success(response) {
+                            $scope.monitorCoordsList.push(response);
+                            $scope.newMC = {};
+                            $scope.showAddMCForm = false; //hide the form
+                            $scope.addMCButtonShowing = true; //show the button again
+                            toastr.success("Monitor Coordination Added");
+                        }, function error(errorResponse) {
+                            toastr.error("Error: " + errorResponse.statusText);
+                        });
+                    }
+                };
+
+                $scope.saveMonitorCoordination = function (data, id) {
+                    var retur = false;
+                    $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                    $http.defaults.headers.common.Accept = 'application/json';
+                    MONITOR_COORDINATION.update({ id: id }, data, function success(response) {
+                        retur = response;
+                        toastr.success("Monitor Coordination Updated");
+                    }, function error(errorResponse) {
+                        retur = false;
+                        toastr.error("Error: " + errorResponse.statusText);
+                    });
+                    return retur;
+                };
+
+                $scope.deleteMonitorCoordination = function (mc) {
+                    //modal
+                    var modalInstance = $uibModal.open({
+                        templateUrl: 'removemodal.html',
+                        controller: 'ConfirmModalCtrl',
+                        size: 'sm',
+                        resolve: {
+                            keyToRemove: function () {
+                                return mc;
+                            },
+                            what: function () {
+                                return "Monitoring Coordination";
+                            }
+                        }
+                    });
+                    modalInstance.result.then(function (keyToRemove) {
+                        //yes, remove this keyword
+                        var index = $scope.monitorCoordsList.indexOf(mc);
+                        //DELETE it
+                        $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
+                        MONITOR_COORDINATION.delete({ id: mc.monitoring_coordination_id }, function success(response) {
+                            $scope.monitorCoordsList.splice(index, 1);
+                            toastr.success("Monitor Coordination Removed");
+                        }, function error(errorResponse) {
+                            toastr.error("Error: " + errorResponse.statusText);
+                        });
+                    }, function () {
+                        //logic for cancel
+                    });//end modal
+                };
+                //#endregion Monitor Coordination Add/Update/Delete
 
                 //#region Objective Type Add/Update/Delete
                 $scope.OsortingOrder = 'objective';

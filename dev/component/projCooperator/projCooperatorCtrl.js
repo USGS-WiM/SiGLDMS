@@ -102,6 +102,10 @@
                             var postedORG = response.filter(function (postedO) { return postedO.org_id == orgId && postedO.div_id == divId && postedO.sec_id == secId; })[0];
                             $scope.ProjOrgs.push(postedORG);
                             ProjParts_Service.setAllProjectOrgs($scope.ProjOrgs);
+                            //get the project here so we can update the lastEditedStamp
+                            PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                                ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                            });                            
                             //$scope.ProjOrgs = response;
                             $scope.coopCount.total = $scope.coopCount.total + 1;
                             $scope.alldivs = {}; $scope.allsecs = {}; $scope.selectedOrgID = ""; $scope.selectedDivID = ""; $scope.selectedSecID = "";
@@ -138,6 +142,10 @@
                     PROJECT.deleteProjOrg({ id: thisProject.project_id, OrgSystemId: org.organization_system_id }, function success(response) {
                         $scope.ProjOrgs.splice(index, 1);
                         ProjParts_Service.setAllProjectOrgs($scope.ProjOrgs);
+                        //get the project here so we can update the lastEditedStamp
+                        PROJECT.query({ id: thisProject.project_id }).$promise.then(function (response) {
+                            ProjParts_Service.setLastEditedStamp(response.last_edited_stamp);
+                        });
                         $scope.coopCount.total = $scope.coopCount.total - 1;
                         toastr.success("Organization Removed");
                     }, function error(errorResponse) {

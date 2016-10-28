@@ -61,6 +61,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="src\component\resources\MonitorCoordination.html" />
     <Content Include="src\css\bootstrap-multiselect.css" />
     <Content Include="src\css\isteven-multi-select.css" />
     <Content Include="src\css\styles.css" />
@@ -912,9 +913,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="libs\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <TypeScriptCompile Include="js\typings\angularjs\angular-animate.d.ts" />
     <TypeScriptCompile Include="js\typings\angularjs\angular-cookies.d.ts" />

@@ -47,7 +47,8 @@
             'Ohio': "Ohio",
             'Pennsylvania': "Pennsylvania",
             'Wisconsin': "Wisconsin",
-            'Ontario': "Ontario"
+            'Ontario': "Ontario",
+            'Quebec' : "Quebec"
         };
         return function (input) {
             if (!input) {

@@ -76,8 +76,7 @@
                             var usersNAME = user.fname + " " + user.lname;
                             var enc = btoa($scope.username.concat(":", $scope.password));
                             //set expiration on cookies
-                            var expireDate = new Date().addHours(8);
-                            //var d = new Date(); d.setMinutes(d.getMinutes() + 1);
+                            var expireDate = new Date().addHours(8);                            
                             $cookies.put('siGLCreds', enc, { expires: expireDate });
                             $cookies.put('siGLUsername', $scope.username);
                             $cookies.put('usersName', usersNAME);

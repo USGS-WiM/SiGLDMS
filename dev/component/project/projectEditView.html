@@ -23,6 +23,8 @@
         <a ui-sref=".contact" a-disabled="aProject.project_id == null" ui-sref-active="active">Contacts<span class="badge pull-right">{{contactCount.total}}</span></a>
         <a ui-sref=".publication" a-disabled="aProject.project_id == null" ui-sref-active="active">Publications<span class="badge pull-right">{{pubCount.total}}</span></a>
         <a ui-sref=".site.siteList" id="siteTab" a-disabled="aProject.project_id == null" ui-sref-active="active">Sites<span class="badge pull-right">{{sitesCount.total}}</span></a>
+        <span>Created: {{(createdStamp || '---') | date: 'MM/dd/yyyy'}}</span> <br />
+        <span>Last Edited: {{(lastEdited || '---') | date: 'MM/dd/yyyy'}}</span>
     </div>
     <!--
     -->
@@ -124,6 +126,27 @@
                     </div>
                 </div>
 
+                <!-- Monitoring Coordination MonitorCoordsdata    -->
+                <div class="sigl-modal-form-group">
+                    <label>
+                        Monitoring Coordination Effort:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='Use this field to associate your project with specific monitoring efforts and groups.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
+                    <div isteven-multi-select
+                         input-model="MonitorCoordsdata"
+                         output-model="MCmodel.value"
+                         button-label="effort"
+                         item-label="effort"
+                         max-height="300px"
+                         on-item-click="MCClick(data)"
+                         tick-property="selected"
+                         helper-elements="filter"
+                         class="sigl-multi-selector">
+                    </div>
+                </div>
+
                 <!-- Project Description -->
                 <div class="sigl-modal-form-group">
                     <label for="description">
@@ -188,7 +211,7 @@
                 </div>
 
                 <!--submit and cancel buttons-->
-                <div class="sigl-modal-form-group" style="text-align:center; padding-top: 15px;">                    
+                <div class="sigl-modal-form-group" style="text-align:center; padding-top: 15px;">
                     <button ng-show="aProject.project_id == undefined" class="sigl-btn" ng-click="create(projectForm.Info.$valid)">
                         Create
                     </button>

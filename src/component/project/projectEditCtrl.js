@@ -3,10 +3,10 @@
 
     var siGLControllers = angular.module('siGLControllers');
     siGLControllers.controller('projectEditCtrl', ['$scope', '$rootScope', '$cookies', '$location', '$state', '$http', '$filter', '$uibModal', 'ProjParts_Service', 'dropdown_Service', 'thisProject', 'projOrgs',
-        'projDatum', 'projContacts', 'projPubs', 'projSites', 'projObjectives', 'projKeywords', 'allDurationList', 'allStatsList', 'allObjList', 'PROJECT', 'SITE', 'CountryList',
+        'projDatum', 'projContacts', 'projPubs', 'projSites', 'projObjectives', 'projMonCoords', 'projKeywords', 'allDurationList', 'allStatsList', 'allObjList','allMonitorCoordsList', 'PROJECT', 'SITE', 'CountryList',
         'stateList', 'lakeList', 'siteStatList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList',
         function ($scope, $rootScope, $cookies, $location, $state, $http, $filter, $uibModal, ProjParts_Service, dropdown_Service, thisProject, projOrgs, projDatum, projContacts, projPubs, projSites,
-    projObjectives, projKeywords, allDurationList, allStatsList, allObjList, PROJECT, SITE, CountryList, stateList, lakeList, siteStatList, resourceList, mediaList, frequencyList, parameterList) {
+    projObjectives, projMonCoords, projKeywords, allDurationList, allStatsList, allObjList,allMonitorCoordsList, PROJECT, SITE, CountryList, stateList, lakeList, siteStatList, resourceList, mediaList, frequencyList, parameterList) {
             //model needed for ProjectEdit Info tab: ( Counts for Cooperators, Datum, Contacts, Publications and Sites) 1. thisProject, 2. parsed urls, 3. project Keywords, 4. all objectives, 5. all statuses, 6. all durations
         if ($cookies.get('siGLCreds') === undefined || $cookies.get('siGLCreds') === "") {
             $scope.auth = false;
@@ -97,7 +97,7 @@
             };
             //open modal to edit or create a project
             $scope.openProjectCreate = function () {
-                var dropdownParts = [allDurationList, allStatsList, allObjList];
+                var dropdownParts = [allDurationList, allStatsList, allObjList, allMonitorCoordsList];
                 //modal
                 var modalInstance = $uibModal.open({
                     templateUrl: 'PROJECTmodal.html',
@@ -112,9 +112,10 @@
                         },
                         thisProjectStuff: function () {
                             if ($scope.aProject.project_id !== undefined) {
-                                var projObjectives = $scope.ProjectObjectives;
+                                var projObjectives = $scope.ProjectObjectives;                                
                                 var projKeywords = $scope.ProjectKeywords;
-                                var projectRelatedStuff = [$scope.aProject, projObjectives, projKeywords];
+                                var projMonCoords = $scope.ProjectMonitorCoords;
+                                var projectRelatedStuff = [$scope.aProject, projObjectives, projKeywords, projMonCoords];
                                 return projectRelatedStuff;
                             }
                         }
@@ -123,21 +124,26 @@
                 modalInstance.result.then(function (r) {
                     //$scope.aProject, projObjectives, projKeywords
                     $rootScope.stateIsLoading.showLoading = false; //loading...  
+                    ProjParts_Service.setLastEditedStamp(r[0].last_edited_stamp);
+                    ProjParts_Service.setCreatedStamp(r[0].created_stamp);
                     if (r !== 'cancel') {
-                        $scope.aProject = r[0];
-                        //if ($scope.aProject.url) {
-                        //    //split string into an array
-                        //    if (($scope.aProject.url).indexOf('|') > -1) $scope.urls = ($scope.aProject.url).split("|");
-                        //    else $scope.urls[0] = $scope.aProject.url;
-                        //}
+                        $scope.aProject = r[0];                        
                         $scope.ProjectObjectives = r[1];
                         $scope.ProjectKeywords = r[2];
                         $scope.urls = r[3];
+                        $scope.ProjectMonitorCoords = r[4];
                     } else {
                         if ($scope.aProject.project_id === undefined) $state.go('home');
                     }
                 });
             };
+
+            $rootScope.$on('lastEditDateSet', function (event, d) {
+                $scope.lastEdited = d;
+            });
+            $rootScope.$on('createdDateSet', function (event, d) {
+                $scope.createdStamp = d;
+            });
 
             if (thisProject !== undefined) {
                 //this is an existing project = build for details view
@@ -152,10 +158,15 @@
                 ProjParts_Service.setAllProjectPubs(projPubs);
                 $scope.pubCount = { total: projPubs.length };
                 ProjParts_Service.setAllProjectSites(projSites);
+                ProjParts_Service.setLastEditedStamp(thisProject.last_edited_stamp);
+                ProjParts_Service.setCreatedStamp(thisProject.created_stamp);
+                $scope.createdStamp = ProjParts_Service.getCreatedStamp();
+                $scope.lastEdited = ProjParts_Service.getLastEditedStamp();                
                 $scope.sitesCount =  { total: projSites.length };
                 $scope.title = "Project: " + $scope.aProject.name;
                 $scope.ProjectKeywords = projKeywords;
                 $scope.ProjectObjectives = projObjectives;
+                $scope.ProjectMonitorCoords = projMonCoords;
 
                 //#region deal with project SITES url formatting here
                 var neededUpdating = false; //if url isn't formatted, flag so know to PUT after fix
