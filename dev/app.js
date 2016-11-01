@@ -580,44 +580,7 @@
                     template: '<div class=""><div ui-view=""></div></div>',
                     url: "/site",
                     abstract: true,
-                    authenticate: true,
-                    resolve: {                        
-                        //CountryList: function () {
-                        //    var c = [];
-                        //    c.push("Canada"); c.push("United States");
-                        //    return c;
-                        //},
-                        //stateList: function () {
-                        //    var s = [];
-                        //    s.push("Illinois"); s.push("Indiana"); s.push("Michigan"); s.push("Minnesota"); s.push("New York");
-                        //    s.push("Ohio"); s.push("Pennsylvania"); s.push("Wisconsin"); s.push("Ontario"); 
-                        //    return s;
-                        //},
-                        //theLakes: 'LAKE_TYPE',
-                        //lakeList: function (theLakes) {
-                        //    return theLakes.getAll().$promise;
-                        //},
-                        //theSiteStats: 'STATUS_TYPE',
-                        //siteStatList: function (theSiteStats) {
-                        //    return theSiteStats.getAll().$promise;
-                        //},
-                        //theRes: 'RESOURCE_TYPE',
-                        //resourceList: function (theRes) {
-                        //    return theRes.getAll().$promise;
-                        //},
-                        //theMedia: 'MEDIA_TYPE',
-                        //mediaList: function (theMedia) {
-                        //    return theMedia.getAll().$promise;
-                        //},
-                        //theFreq: 'FREQUENCY_TYPE',
-                        //frequencyList: function (theFreq) {
-                        //    return theFreq.getAll().$promise;
-                        //},
-                        //theParams: 'PARAMETER_TYPE',
-                        //parameterList: function (theParams) {
-                        //    return theParams.getAll().$promise;
-                        //}
-                    }
+                    authenticate: true                   
                 })
                 //#endregion region projectEdit.site
 
@@ -625,16 +588,7 @@
                 .state("projectEdit.site.siteList", {
                     url: "/siteList",
                     authenticate: true,
-                    templateUrl: "component/projSite/projSiteList.html",
-                    //resolve: {
-                    //    Proj: 'PROJECT',
-                    //    projS: function (Proj, $stateParams) {
-                    //        var projectId = $stateParams.id;
-                    //        if (projectId > 0) {
-                    //            return Proj.getFullSiteList({ projId: projectId }).$promise;
-                    //        }
-                    //    }
-                    //},
+                    templateUrl: "component/projSite/projSiteList.html",                    
                     controller: 'projSiteListCtrl'
                 })
                 //#endregion region projectEdit.site.siteList
@@ -686,12 +640,13 @@
                 //#endregion region projectEdit.site.siteInfo
 
                 //#region multiSite
-                .state("multipleSite", {
-                    url: "/siteEditAll/Project/:id",
+                .state("projectEdit.site.multipleSite", {
+                    url: "/siteSpreadsheet",
                     params: { id: null },
                     authenticate: true,
                     templateUrl: "component/projSite/projMultiSiteEditView.html",
                     controller: "projMultiSiteEditCtrl",
+                    //params: {reload: false}, //add reload param to a view you want to reload
                     resolve: {
                         p: 'PROJECT',
                         allProjSites: function (p, $http, $stateParams) {
@@ -707,41 +662,6 @@
                                 return p.query(
                                     { id: projectId }).$promise;
                             }
-                        },                        
-                        CountryList: function () {
-                            var c = [];
-                            c.push("Canada"); c.push("United States");
-                            return c;
-                        },
-                        stateList: function () {
-                            var s = [];
-                            s.push("Illinois"); s.push("Indiana"); s.push("Michigan"); s.push("Minnesota"); s.push("New York");
-                            s.push("Ohio"); s.push("Pennsylvania"); s.push("Wisconsin"); s.push("Ontario"); s.push("Quebec");
-                            return s;
-                        },
-                        theLakes: 'LAKE_TYPE',
-                        lakeList: function (theLakes) {
-                            return theLakes.getAll().$promise;
-                        },
-                        theSiteStats: 'STATUS_TYPE',
-                        siteStatList: function (theSiteStats) {
-                            return theSiteStats.getAll().$promise;
-                        },
-                        theRes: 'RESOURCE_TYPE',
-                        resourceList: function (theRes) {
-                            return theRes.getAll().$promise;
-                        },
-                        theMedia: 'MEDIA_TYPE',
-                        mediaList: function (theMedia) {
-                            return theMedia.getAll().$promise;
-                        },
-                        theFreq: 'FREQUENCY_TYPE',
-                        frequencyList: function (theFreq) {
-                            return theFreq.getAll().$promise;
-                        },
-                        theParams: 'PARAMETER_TYPE',
-                        parameterList: function (theParams) {
-                            return theParams.getAll().$promise;
                         }
                     }
                 });

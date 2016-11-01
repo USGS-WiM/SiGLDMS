@@ -4,11 +4,14 @@
         //var sortingOrder = 'Name';
     </script>
     <br/>
-    <a ui-sref="projectEdit.info({id:0})" class="section-bottom-button">
-        <i class="glyphicon glyphicon-plus"></i>Create new Project
-    </a>
+    
 
-    <p class="section-text">Click on a project name to view full record.</p>
+    <p class="section-text">
+        <span>Click on a project name to view full record.</span>
+        <a ui-sref="projectEdit.info({id:0})" class="section-bottom-button pull-right">
+            <i class="glyphicon glyphicon-plus"></i>  Create new Project</a>
+    </p>
+
     <table class="sigl-table">
         <thead>
             <tr>
@@ -33,8 +36,7 @@
         </tbody>
     </table>
 
-    <a ui-sref="projectEdit.info({id:0})" class="section-bottom-button">
-        <i class="glyphicon glyphicon-plus"></i>
-        Create new Project
+    <a style="margin-top:5px;" ui-sref="projectEdit.info({id:0})" class="section-bottom-button pull-right">
+        <i class="glyphicon glyphicon-plus"></i>  Create new Project
     </a>
 </div>
