@@ -3,18 +3,29 @@
 
     var siGLControllers = angular.module('siGLControllers');
 
-    siGLControllers.controller('projMultiSiteEditCtrl', ['$scope', '$http', '$q', '$cookies', '$state', '$uibModal', 'hotRegisterer', 'ProjParts_Service', 'allProjSites', 'thisProject', 'CountryList', 'stateList', 'lakeList', 'siteStatList', 'resourceList', 'mediaList', 'frequencyList', 'parameterList', 'SITE',
-        function ($scope, $http, $q, $cookies, $state, $uibModal, hotRegisterer, ProjParts_Service, allProjSites, thisProject, CountryList, stateList, lakeList, siteStatList, resourceList, mediaList, frequencyList, parameterList , SITE) {
+    siGLControllers.controller('projMultiSiteEditCtrl', ['$scope', '$http', '$q', '$cookies', '$state','$stateParams', '$uibModal', 'hotRegisterer', 'ProjParts_Service', 'dropdown_Service', 'allProjSites', 'thisProject', 'SITE',
+        function ($scope, $http, $q, $cookies, $state,$stateParams, $uibModal, hotRegisterer, ProjParts_Service, dropdown_Service, allProjSites, thisProject, SITE) {
             //dropdowns and multiselects [siteStatList, lakeList, stateList, CountryList, resourceList, mediaList, frequencyList, parameterList]
             $scope.thisProject = thisProject;
-            $scope.siteStatuses = siteStatList;
-            $scope.lakes = lakeList;
-            $scope.stateArray = stateList;
-            $scope.countryArray = CountryList;
-            $scope.resources = resourceList;
-            $scope.medias = mediaList;
-            $scope.frequencies = frequencyList;
-            $scope.parameters = parameterList;
+            
+            var siteDrops = dropdown_Service.getAllSiteDropdowns();// .Parameters, .Frequencies, .Media, .Statuses, .Resources, .Lakes, .States, .Countries
+            $scope.countryArray = siteDrops.Countries;
+            $scope.stateArray = siteDrops.States;
+            $scope.lakes = siteDrops.Lakes;
+            $scope.siteStatuses = siteDrops.Statuses;
+            $scope.resources = siteDrops.Resources;
+            $scope.medias = siteDrops.Media;
+            $scope.frequencies = siteDrops.Frequencies;
+            $scope.parameters = siteDrops.Parameters;           
+
+          //  $scope.siteStatuses = siteStatList;
+           // $scope.lakes = lakeList;
+          //  $scope.stateArray = stateList;
+           // $scope.countryArray = CountryList;
+           // $scope.resources = resourceList;
+         //   $scope.medias = mediaList;
+           // $scope.frequencies = frequencyList;
+          //  $scope.parameters = parameterList;
             $scope.modalIsOpen = false;
             $scope.hotInstance;
             $scope.invalids = [];
@@ -388,7 +399,13 @@
                         $q.all(AddPromises).then(function (response) {
                             $scope.dynamic++;
                             console.log("siteUpdates");
-                            if ($scope.dynamic == $scope.max) $scope.showLoading = false; $state.reload(); //Loading...$state.go("projectEdit.site.siteList", { id: thisProject.project_id });
+                            if ($scope.dynamic == $scope.max) {
+                                //$scope.showLoading = false;
+                                //$stateParams.reload = true;
+                                //$state.go($state.current, $stateParams);                                
+                                $state.reload();//go($state.current);
+                                $scope.showLoading = false;
+                            }
                         }).catch(function error(msg) {
                             //catch on addPromises
                             var errorM = $uibModal.open({
@@ -438,8 +455,7 @@
                 angular.forEach(updatedCSiteList, function (s) {
                     var site = formatJustSiteProps(s);
                     SITE.save({}, site).$promise.then(function (response) {
-                        var createdSite = response;
-                        $scope.dynamic++;
+                        var createdSite = response;                        
                         var defer = $q.defer();
                         var postPromises = [];
                         //post frequencies
@@ -462,9 +478,14 @@
                             var parProm = SITE.addSiteParameterList({ id: createdSite.site_id }, s.Parameters).$promise;
                             postPromises.push(parProm);
                         }
-                        $q.all(postPromises).then(function (response) {                           
+                        $q.all(postPromises).then(function (response) {
+                            $scope.dynamic++;
                             console.log("site created");
-                            if ($scope.dynamic == $scope.max) $scope.showLoading = false; $state.reload(); //Loading...$state.go("projectEdit.site.siteList", { id: thisProject.project_id });
+                            if ($scope.dynamic == $scope.max) {                                
+                                $state.reload();//go($state.current);
+                                $scope.showLoading = false;
+                               // $state.go('projectEdit.site.multipleSite', { id: thisProject.project_id });
+                            }
                         }).catch(function error(msg) {
                             var errorM = $uibModal.open({
                                 template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
@@ -743,9 +764,11 @@
 
                             //if all they did was delete rows, (no edits or creates)
                             if (allUpdatedCrSites.length == 0 && allUpdatedEdSites.length == 0) {
-                                $scope.dynamic = $scope.max;
-                                $scope.showLoading = false; //Loading...
-                                $state.reload();
+                                $scope.dynamic = $scope.max;                               
+                                
+                                $state.reload();//go($state.current);
+                                $scope.showLoading = false;
+                                //$state.go('projectEdit.site.multipleSite', { id: thisProject.project_id });
                                // $state.go("projectEdit.site.siteList", { id: thisProject.project_id });
                             }
                         } 
@@ -753,6 +776,31 @@
                 }
             };
             
+            //want to go back to single site editing..show confirm modal
+            $scope.goToSSE = function () {
+                var RuSureModal = $uibModal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title"></h3></div>' +
+                        '<div class="modal-body"><p>Are you sure you want to go back to the Single Site Editing page? Any unsaved edits will be lost.</p></div>' +
+                        '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button><button class="btn btn-primary" ng-click="cancel()">Cancel</button></div>',
+                    backdrop: 'static',
+                    keyboard: false,
+                    controller: function ($scope, $uibModalInstance) {
+                        $scope.ok = function () {
+                            $uibModalInstance.close();
+                        };
+                        $scope.cancel = function () {
+                            $uibModalInstance.dismiss();
+                        };
+                    },
+                    size: 'sm'
+                });
+                RuSureModal.result.then(function () {
+                    //they want to go back now
+                    $state.go('projectEdit.site.siteList', { id: thisProject.project_id });
+                });
+
+            }
+
             //#region renderer and validators for handsontable
             var requiredModal = function () {
                 var reqModal = $uibModal.open({
@@ -1117,13 +1165,7 @@
                 } else callback(true);
             };
             //#endregion
-
-            //change right-click wording
-            //$scope.hotInstance.updateSettings({
-            //    contextMenu: {
-            //        items: { "remove_row": { name: "remove this row" } }
-            //    }
-            //});
+                       
             //#region handsontable settings
             $scope.tableSettings = {
                // colHeaders: true, //commented out or not.. no difference
@@ -1155,7 +1197,8 @@
                         return cellprops;
                     }
                 },
-                //afterCreateRow: function (index, amount){},
+                onAfterRemoveRow: function (index, amount) {
+                },
                 afterOnCellMouseDown: function (event, coords, td) {
                     //open multi-select modal for resources, media or frequencies
                     if (coords.col == 11 && event.realTarget.className == "htAutocompleteArrow") 

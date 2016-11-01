@@ -35,7 +35,7 @@
                 <uib-progressbar class="maxWidth" max="max" value="dynamic">
                     <span ng-if="dynamic <= 0">Processing...</span>
                     <span ng-if="dynamic != max" style="color:white; white-space:nowrap;">{{dynamic}} / {{max}} Sites Updated</span>
-                    <!--<span ng-if="dynamic == max">Redirecting...</span>-->
+                    <span ng-if="dynamic == max">Refreshing...</span>
                 </uib-progressbar>
                 <br />
                 <img src="images/loading1.gif" />
@@ -45,14 +45,17 @@
 </div>
 
 <div class="sigl-edit-form">
-    <legend style="margin-bottom: 25px; margin-top: 0;">
-        Sites:
+    <legend class="col-md-12" style="margin-bottom: 25px; margin-top: 0;">
+        <span class="col-md-1">Sites:</span>
         <div class="btn-group">
             <label class="btn btn-primary activeClass" style="background:lightgray;" ng-model="radioModel" uib-btn-radio="'Single'">
-                <a style="color:darkgray;" ui-sref="projectEdit.site.siteList({id:thisProject.project_id})">SINGLE SITE EDITING</a>
+                <a style="color:darkgray;" ng-click="goToSSE()" >SINGLE SITE EDITING</a>
             </label>
             <label class="btn btn-primary activeClass" ng-model="radioModel" uib-btn-radio="'Spreadsheet'">SPREADSHEET MODE</label>
         </div>
+        <!--<div>                     ui-sref="projectEdit.site.siteList({id:thisProject.project_id})"
+            <a style="text-transform:none;font-size:medium" ui-sref="projectEdit.site.siteList({id:thisProject.project_id})">Return to Project</a>
+        </div>-->
     </legend>
 </div>
 
