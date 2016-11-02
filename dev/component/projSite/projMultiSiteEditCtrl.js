@@ -704,6 +704,7 @@
                 //#endregion                
                 return newSite;
             };
+            //modal when there are still invalids and they are trying to save
             var openInvalidModal = function () {
 
                 var invalidModal = $uibModal.open({
@@ -775,7 +776,6 @@
                     });
                 }
             };
-            
             //want to go back to single site editing..show confirm modal
             $scope.goToSSE = function () {
                 var RuSureModal = $uibModal.open({
@@ -800,9 +800,9 @@
                 });
 
             }
-
             //#region renderer and validators for handsontable
             var requiredModal = function () {
+                setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                 var reqModal = $uibModal.open({
                     template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                         '<div class="modal-body"><p>This field is required.</p></div>' +
@@ -887,7 +887,8 @@
                 }
             };
             $scope.urlValidator = function (value, callback) {
-                if (value !== null && value.substring(0, 4) !== 'http' && value.substring(0,4) !== "") {
+                if (value !== null && value.substring(0, 4) !== 'http' && value.substring(0, 4) !== "") {
+                    setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                     var httpModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                             '<div class="modal-body"><p>Site URL must start with "http://" or "https://"</p></div>' +
@@ -919,6 +920,7 @@
                         otherDataInRow = true;
                 });
                 if (((value < 22 || value > 55) || isNaN(value)) && otherDataInRow) {
+                    setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                     var latModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                             '<div class="modal-body"><p>Latitude must be between 22.0 and 55.0 (NAD83 decimal degrees).</p></div>' +
@@ -950,7 +952,8 @@
                     if (d !== null && d !== "" && index !== col)
                         otherDataInRow = true;
                 });
-                if (((value < -130 || value > -55)|| isNaN(value)) && otherDataInRow) {
+                if (((value < -130 || value > -55) || isNaN(value)) && otherDataInRow) {
+                    setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                     var longModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                             '<div class="modal-body"><p>Longitude must be between -130.0 and -55.0 (NAD83 digital degrees).</p></div>' +
@@ -975,6 +978,7 @@
             };
             $scope.watershedValidator = function (value, callback) {               
                 if (value !== "" && value !== null && (isNaN(parseInt(value)) || (value.length > 8 || value.length < 8))) {
+                    setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                     var waterModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                             '<div class="modal-body"><p>Please enter an 8-digit HUC (Hydrologic Unit Code).</p></div>' +
@@ -1005,6 +1009,7 @@
                         if (dataAtRow[15] !== "" && dataAtRow[15] !== null) {
                             //something to compare too
                             if (Date.parse(value) > Date.parse(dataAtRow[15])) {
+                                setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                                 var startModal = $uibModal.open({
                                     template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                         '<div class="modal-body"><p>Start Date must be before End Date.</p></div>' +
@@ -1032,6 +1037,7 @@
                         if (dataAtRow[14] !== "" && dataAtRow[14] !== null) {
                             //something to compare too
                             if (Date.parse(value) < Date.parse(dataAtRow[14])) {
+                                setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                                 var endModal = $uibModal.open({
                                     template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                         '<div class="modal-body"><p>End Date must be after Start Date.</p></div>' +
@@ -1066,6 +1072,7 @@
                             }
                         }
                         if (hasError) {
+                            setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                             var FreqModal = $uibModal.open({
                                 template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                     '<div class="modal-body"><p>Resource Type <b>"{{wrong}}"</b> is not in the list of options. Please click the down arrow in the lower right corner of the ' +
@@ -1104,6 +1111,7 @@
                             }
                         }
                         if (hasError) {
+                            setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                             var MedModal = $uibModal.open({
                                 template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                     '<div class="modal-body"><p>Media Type <b>"{{wrong}}"</b> is not in the list of options. Please click the down arrow in the lower right corner of the ' +
@@ -1141,6 +1149,7 @@
                             }
                         }
                         if (hasError) {
+                            setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                             var FreqModal = $uibModal.open({
                                 template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
                                     '<div class="modal-body"><p>Frequency Type <b>"{{wrong}}"</b> is not in the list of options. Please click the down arrow in the lower right corner of the ' +
@@ -1171,16 +1180,18 @@
                // colHeaders: true, //commented out or not.. no difference
                 correctFormat: true, //correct the date format if entered in incorrectly
                 rowHeaders: true, //adds row numbers down left side
-                contextMenu: { items: 
-                    {
-                        "row_above": {},
-                        "row_below":{},
-                        "remove_row": { name: "Remove this row" }
-                    }
-                },//['row_above', 'row_below', 'remove_row'], 
+                contextMenu: //['row_above', 'row_below', 'remove_row'],
+                {
+                    items:
+                        {
+                            "row_above": {},
+                            "row_below": {},
+                            "remove_row": { name: "Remove this row" }
+                        }
+                },
                 minSpareRows: 3, 
                 afterInit: function () {
-                    $scope.hotInstance = this;
+                    $scope.hotInstance = this;                   
                 },
                 columnSorting: true,
                 fixedColumnsLeft: 2, 
@@ -1197,7 +1208,28 @@
                         return cellprops;
                     }
                 },
-                onAfterRemoveRow: function (index, amount) {
+                onAfterRemoveRow: function (index, amount) {                  
+                    //if any $scope.invalids[i].row == index then splice it out
+                    var selected = $scope.hotInstance.getSelected(); //[startRow, startCol, endRow, endCol]
+                    if (amount > 1) {
+                        //more than 1 row being deleted. 
+                        var eachRowIndexArray = []; //holder for array index to loop thru for splicing invalids
+                        var cnt = (selected[2] - selected[0] +1); //gives me count of selected rows
+                        eachRowIndexArray.push(selected[0]);
+                        for (var c = 1; c < cnt; c++)
+                            eachRowIndexArray.push(selected[0] + 1);
+                        //loop thru invalids to see if any are in the deleting rows
+                        for (var i = $scope.invalids.length; i--;) {
+                            if (eachRowIndexArray.indexOf($scope.invalids[i].row) > -1)
+                                $scope.invalids.splice(i, 1);
+                        }
+                    } else {
+                        //just 1 row selected
+                        for (var i = $scope.invalids.length; i--;) {
+                            if ($scope.invalids[i].row == index )
+                                $scope.invalids.splice(i, 1);
+                        }
+                    }                    
                 },
                 afterOnCellMouseDown: function (event, coords, td) {
                     //open multi-select modal for resources, media or frequencies
