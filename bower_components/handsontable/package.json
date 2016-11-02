@@ -11,7 +11,7 @@
   },
   "main": "./dist/handsontable.js",
   "author": "Handsoncode <hello@handsontable.com>",
-  "version": "0.25.1",
+  "version": "0.28.4",
   "keywords": [
     "data",
     "grid",
@@ -29,6 +29,7 @@
   ],
   "dependencies": {
     "moment": "^2.13.0",
+    "numbro": "^1.8.0",
     "pikaday": "^1.4.0",
     "zeroclipboard": "^2.2.0"
   },
@@ -41,7 +42,7 @@
     "grunt-gitinfo": "~0.1.6",
     "grunt-jscs": "^2.5.0",
     "grunt-saucelabs": "~8.3.3",
-    "hot-builder": "^0.5.0",
+    "hot-builder": "^0.5.2",
     "load-grunt-tasks": "^3.3.0",
     "time-grunt": "^1.2.2"
   },
@@ -60,6 +61,22 @@
         "LICENSE"
       ],
       "global": "moment"
+    },
+    "numbro": {
+      "include": [
+        "dist/numbro.js"
+      ],
+      "ignore": [
+        "dist/languages.js"
+      ],
+      "copyable": [
+        "dist/numbro.js",
+        "dist/languages.js",
+        "dist/languages",
+        "LICENSE",
+        "LICENSE-Numeraljs"
+      ],
+      "global": "numbro"
     },
     "pikaday": {
       "include": [
@@ -83,9 +100,6 @@
         "LICENSE"
       ],
       "global": "ZeroClipboard"
-    },
-    "numeral": {
-      "global": "numeral"
     }
   }
 }

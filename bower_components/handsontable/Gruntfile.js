@@ -72,9 +72,6 @@ module.exports = function(grunt) {
       ],
       walkontable: [
         'src/3rdparty/walkontable/src/**/*.js'
-      ],
-      vendor: [
-        'lib/numeral/numeral.js'
       ]
     },
 
@@ -102,7 +99,7 @@ module.exports = function(grunt) {
       handsontableStandalone: {
         src: [
           'dist/handsontable.js',
-          'demo/js/numeral.de-de.js',
+          'dist/numbro/languages.js',
           'demo/js/backbone/lodash.underscore.js',
           'demo/js/backbone/backbone.js',
           'demo/js/backbone/backbone-relational/backbone-relational.js',
@@ -113,6 +110,8 @@ module.exports = function(grunt) {
           specs: [
             'test/jasmine/spec/*Spec.js',
             'test/jasmine/spec/!(mobile)*/*Spec.js',
+            'test/jasmine/spec/helpers/dom/*Spec.js',
+            'test/jasmine/spec/utils/dataStructures/*Spec.js',
             'src/plugins/*/test/*.spec.js',
             'plugins/*/test/*.spec.js',
             'test/jasmine/spec/MemoryLeakTest.js'
@@ -126,7 +125,7 @@ module.exports = function(grunt) {
           ],
           vendor: [
             'demo/js/jquery.min.js',
-            'lib/numeral/numeral.js',
+            'dist/numbro/numbro.js',
             'demo/js/moment/moment.js',
             'demo/js/pikaday/pikaday.js',
             'demo/js/ZeroClipboard.js',
@@ -139,13 +138,16 @@ module.exports = function(grunt) {
           ],
           outfile: 'test/jasmine/SpecRunner.html',
           template: 'test/jasmine/templates/SpecRunner.tmpl',
+          templateOptions: {
+            basePath: '',
+          },
           keepRunner: true
         }
       },
       handsontableFull: {
         src: [
           'dist/handsontable.full.min.js',
-          'demo/js/numeral.de-de.js',
+          'dist/numbro/languages.js',
           'demo/js/backbone/lodash.underscore.js',
           'demo/js/backbone/backbone.js',
           'demo/js/backbone/backbone-relational/backbone-relational.js',
@@ -156,6 +158,8 @@ module.exports = function(grunt) {
           specs: [
             'test/jasmine/spec/*Spec.js',
             'test/jasmine/spec/!(mobile)*/*Spec.js',
+            'test/jasmine/spec/helpers/dom/*Spec.js',
+            'test/jasmine/spec/utils/dataStructures/*Spec.js',
             'src/plugins/*/test/*.spec.js',
             'plugins/*/test/*.spec.js',
             'test/jasmine/spec/MemoryLeakTest.js'
@@ -179,6 +183,9 @@ module.exports = function(grunt) {
           ],
           outfile: 'test/jasmine/SpecRunner.html',
           template: 'test/jasmine/templates/SpecRunner.tmpl',
+          templateOptions: {
+            basePath: '',
+          },
           keepRunner: true
         }
       },
@@ -195,11 +202,11 @@ module.exports = function(grunt) {
           ],
           vendor: [
             'demo/js/jquery.min.js',
-            'lib/numeral/numeral.js',
+            'dist/numbro/numbro.js',
             'demo/js/moment/moment.js',
             'demo/js/pikaday/pikaday.js',
             'demo/js/ZeroClipboard.js',
-            'demo/js/numeral.de-de.js'
+            'dist/numbro/languages.js',
           ],
           helpers: [
             'src/3rdparty/walkontable/test/jasmine/SpecHelper.js',
@@ -215,7 +222,7 @@ module.exports = function(grunt) {
       mobile: {
         src: [
           'dist/handsontable.min.js',
-          'demo/js/numeral.de-de.js',
+          'dist/numbro/languages.js',
           'demo/js/backbone/lodash.underscore.js',
           'demo/js/backbone/backbone.js',
           'demo/js/backbone/backbone-relational/backbone-relational.js',
@@ -236,7 +243,7 @@ module.exports = function(grunt) {
           ],
           vendor: [
             'demo/js/jquery.min.js',
-            'lib/numeral/numeral.js',
+            'dist/numbro/numbro.js',
             'demo/js/ZeroClipboard.js',
             'demo/js/moment/moment.js',
             'demo/js/pikaday/pikaday.js',
