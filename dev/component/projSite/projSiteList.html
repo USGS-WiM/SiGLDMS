@@ -20,18 +20,18 @@
   .activeClass.active {
       background-color: #de5030;
   }
-  
+
 </style>
 <div class="sigl-edit-form">
     <legend style="margin-bottom: 25px; margin-top: 0;">Sites:
-        <div class="btn-group">
-            <label class="btn btn-primary activeClass" ng-model="radioModel" uib-btn-radio="'Single'">SINGLE SITE EDITING</label>
-            <label class="btn btn-primary activeClass" style="background:lightgray;" ng-model="radioModel" uib-btn-radio="'Spreadsheet'">
-                <a style="color:darkgray;" ui-sref="projectEdit.site.multipleSite({id:thisProject.project_id})">SPREADSHEET MODE</a></label>
+        <div class="site-edit-mode-wrapper">
+            <label class="site-edit-mode-active" ng-model="radioModel" uib-btn-radio="'Single'">SINGLE SITE EDITING</label><!--
+            --><label class="site-edit-mode" ng-model="radioModel" uib-btn-radio="'Spreadsheet'">
+                <a ui-sref="projectEdit.site.multipleSite({id:thisProject.project_id})">SPREADSHEET MODE</a></label>
         </div>
-    </legend>    
+    </legend>
 </div>
-<div>   
+<div>
     <div><i style="padding-left:10px;font-size:small;">Use single-site editing to modify one site at a time. Select spreadsheet mode to edit multiple sites at a time (similar to Excel).</i></div>
     <br/>
     <div class="col-md-8">

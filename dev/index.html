@@ -7,7 +7,8 @@
     <!--<base href="/">-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    
+
+
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/angular-toggle-switch-bootstrap-3.css">
     <link rel="stylesheet" href="bower_components/bootstrap-table.css">
@@ -57,7 +58,6 @@
     <script src="bower_components/angular-resource.js"></script>
     <script src="bower_components/angular-route.js"></script>
     <script src="bower_components/angular-toggle-switch.js"></script>
-    <script src="bower_components/angular-ui-router.js"></script>
     <script src="bower_components/bootstrap-table.js"></script>
     <script src="bower_components/bootstrap.js"></script>
     <script src="bower_components/checklist-model.js"></script>
@@ -93,15 +93,15 @@
     <!-- inject:js -->
     <script src="component/SiGLControllers.js"></script>
     <script src="shared/directives/SiGLDirectives.js"></script>
-    <script src="component/resources/resourcesCtrl.js"></script>
     <script src="component/settings/settingsCtrl.js"></script>
+    <script src="component/resources/resourcesCtrl.js"></script>
+    <script src="component/project/projectModalCtrl.js"></script>
+    <script src="component/project/projectListCtrl.js"></script>
+    <script src="component/project/projectEditCtrl.js"></script>
     <script src="component/projSite/siteModalCtrl.js"></script>
     <script src="component/projSite/projSiteListCtrl.js"></script>
     <script src="component/projSite/projMultiSiteEditCtrl.js"></script>
     <script src="component/projSite/duplicateSiteModalCtrl.js"></script>
-    <script src="component/project/projectModalCtrl.js"></script>
-    <script src="component/project/projectListCtrl.js"></script>
-    <script src="component/project/projectEditCtrl.js"></script>
     <script src="component/projPublication/projPublicationCtrl.js"></script>
     <script src="component/projData/projDataCtrl.js"></script>
     <script src="component/projCooperator/projCooperatorCtrl.js"></script>
@@ -109,19 +109,22 @@
     <script src="component/organization/organizationInfoCtrl.js"></script>
     <script src="component/organization/organizationCtrl.js"></script>
     <script src="component/organization/addOrgModalCtrl.js"></script>
-    <script src="component/help/helpCtrl.js"></script>
     <script src="component/main/mainCtrl.js"></script>
     <script src="component/logInOut/LogInOutCtrl.js"></script>
+    <script src="component/help/helpCtrl.js"></script>
     <script src="component/dataManager/dataManagerModal.js"></script>
     <script src="component/dataManager/dataManagerCtrl.js"></script>
-    <script src="services/LaMPResource.js"></script>
     <script src="services/businessServices.js"></script>
-    <script src="component/ModalsCtrl.js"></script>
+    <script src="services/LaMPResource.js"></script>
     <script src="component/jquery.inputmask.bundle.js"></script>
+    <script src="component/ModalsCtrl.js"></script>
     <script src="app.js"></script>
     <!-- endinject -->
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
     
+
+
 </head>
 
 <body ng-app="app">
