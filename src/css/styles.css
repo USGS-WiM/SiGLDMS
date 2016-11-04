@@ -489,3 +489,60 @@ p{
   position: relative; top:4px;
   padding-right: 15px;
 }
+
+
+
+/*
+Edit site page toggle between spreadsheet/single site
+*/
+.site-edit-mode-wrapper{
+    display: inline-block;
+    margin-left: 25px;
+    margin-top: -6px;
+
+}
+.site-edit-mode,
+.site-edit-mode-active{
+    display: inline-block;
+    letter-spacing: 1px;
+    box-sizing: border-box;
+    padding: 5px 10px;
+    font-size: 10pt;
+    text-transform: lowercase;
+    letter-spacing: 0.5px;
+    border: 2px solid fade(black, 50%);
+    font-weight: lighter;
+    transition: 0.2s;
+    margin: 0 auto;
+    font-family: 'Nunito', sans-serif;
+    background-color: rgba(0,0,0,0.2);
+    color: rgba(0,0,0,0.6);
+}
+.site-edit-mode a{
+    color: rgba(0,0,0,0.6);
+    font-weight: 400;
+}
+.site-edit-mode a:hover{
+    cursor: pointer;
+}
+.site-edit-mode:hover{
+    background-color: #55B5AE;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.site-edit-mode-active{
+    background-color: #DE5030;
+    color: white;
+}
+
+
+
+/*
+Published on SigL Switch
+*/
+.switch-left{
+    margin-left: 58px;
+}
+.knob{
+    display: none !important;
+}

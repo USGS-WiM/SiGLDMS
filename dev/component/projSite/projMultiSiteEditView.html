@@ -17,8 +17,8 @@
       background-color: #de5030;
   }
     .btn-black {
-        background: #444444;    
-        border:1px solid black !important;           
+        background: #444444;
+        border:1px solid black !important;
     }
     .btn-black:hover, btn-black:focus{
         background-color: black;
@@ -47,11 +47,11 @@
 <div class="sigl-edit-form">
     <legend class="col-md-12" style="margin-bottom: 25px; margin-top: 0;">
         <span class="col-md-1">Sites:</span>
-        <div class="btn-group">
-            <label class="btn btn-primary activeClass" style="background:lightgray;" ng-model="radioModel" uib-btn-radio="'Single'">
-                <a style="color:darkgray;" ng-click="goToSSE()" >SINGLE SITE EDITING</a>
-            </label>
-            <label class="btn btn-primary activeClass" ng-model="radioModel" uib-btn-radio="'Spreadsheet'">SPREADSHEET MODE</label>
+        <div class="btn-group site-edit-mode-wrapper">
+            <label class="site-edit-mode" ng-model="radioModel" uib-btn-radio="'Single'">
+                <a ng-click="goToSSE()" >SINGLE SITE EDITING</a>
+            </label><!--
+            --><label class="site-edit-mode-active" ng-model="radioModel" uib-btn-radio="'Spreadsheet'">SPREADSHEET MODE</label>
         </div>
         <!--<div>                     ui-sref="projectEdit.site.siteList({id:thisProject.project_id})"
             <a style="text-transform:none;font-size:medium" ui-sref="projectEdit.site.siteList({id:thisProject.project_id})">Return to Project</a>
@@ -59,12 +59,12 @@
     </legend>
 </div>
 
-<div><i style="font-size:small;">Spreadsheet mode works much like Excel; each row is an individual site. You can highlight and copy multiple cells or rows, 
+<div><i style="font-size:small;">Spreadsheet mode works much like Excel; each row is an individual site. You can highlight and copy multiple cells or rows,
     or you can click and drag from the lower right cell corner to populate an entire column. You can also copy and paste directly from the Excel SiGL Site Worksheet.</i>
     <br/>
     <i style="font-size:small;">Right-click any cell to add or remove a row (site). Drag column headers to adjust column widths.</i>
     <br/>
-    <i style="font-size:small;">Gray cells cannot be modified. Some cells have data validation applied and will turn red if the value entered does not meet 
+    <i style="font-size:small;">Gray cells cannot be modified. Some cells have data validation applied and will turn red if the value entered does not meet
     the requirements. Red cells must be resolved before saving. The more sites, the longer the save will take. Please be patient.</i>
 </div>
 <div class="col-md-12" style="padding:0;margin:0;height:600px;overflow:hidden">
@@ -171,4 +171,3 @@
     <button type="button" class="sigl-btn btn-black btn-small" ng-click="reset()">Revert</button>
     <button type="button" class="sigl-btn btn-orange btn-small" ng-click="goBack()">Cancel</button>
 </div>
-
