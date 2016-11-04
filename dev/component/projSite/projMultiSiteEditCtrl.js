@@ -18,14 +18,6 @@
             $scope.frequencies = siteDrops.Frequencies;
             $scope.parameters = siteDrops.Parameters;           
 
-          //  $scope.siteStatuses = siteStatList;
-           // $scope.lakes = lakeList;
-          //  $scope.stateArray = stateList;
-           // $scope.countryArray = CountryList;
-           // $scope.resources = resourceList;
-         //   $scope.medias = mediaList;
-           // $scope.frequencies = frequencyList;
-          //  $scope.parameters = parameterList;
             $scope.modalIsOpen = false;
             $scope.hotInstance;
             $scope.invalids = [];
@@ -38,7 +30,7 @@
                     20, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, //bio
                     20, 80, 80, 80, 80, //micro
                     20, 80, 80, 80, 80];//tox
-           
+            
             $scope.lakeArray = []; $scope.statusArray = []; $scope.resourceArray = []; $scope.mediaArray = []; $scope.frequencyArray = []; 
             $scope.Changes = []; //track changes made to compare for saving
             $scope.ParamChanges = [];// track param changes made to compare for saving
@@ -280,7 +272,7 @@
                     latitude: s.latitude,
                     longitude: s.longitude,
                     waterbody: s.Waterbody,
-                    status_type_id: s.Status !== "" && s.Status !== undefined ? $scope.siteStatuses.filter(function (st) { return st.status == s.Status; })[0].status_id : 0,
+                    status_type_id: s.Status !== "" && s.Status !== undefined && s.Status !== null ? $scope.siteStatuses.filter(function (st) { return st.status == s.Status; })[0].status_id : 0,
                     lake_type_id: $scope.lakes.filter(function (l) { return l.lake == s.Lake; })[0].lake_type_id,
                     country: s.Country,
                     state_province: s.State,
@@ -781,7 +773,7 @@
                 var RuSureModal = $uibModal.open({
                     template: '<div class="modal-header"><h3 class="modal-title"></h3></div>' +
                         '<div class="modal-body"><p>Are you sure you want to go back to the Single Site Editing page? Any unsaved edits will be lost.</p></div>' +
-                        '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button><button class="btn btn-primary" ng-click="cancel()">Cancel</button></div>',
+                        '<div class="modal-footer"><button class="sigl-btn btn-small" ng-enter="ok()" ng-click="ok()">OK</button>&nbsp;<button class="sigl-btn btn-small btn-orange" ng-click="cancel()">Cancel</button></div>',
                     backdrop: 'static',
                     keyboard: false,
                     controller: function ($scope, $uibModalInstance) {
@@ -870,16 +862,16 @@
             };
             $scope.requiredValidator = function (value, callback) {
                 //only care if there's other data in this row
-                var row = this.row; var col = this.col;
-                var physicalIndex = untranslateRow(row);
-                var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
-                var otherDataInRow = false;
-                angular.forEach(dataAtRow, function (d, index) {
-                    //need the col too because right after removing req value, it's still in the .getDataAtRow..
-                    if (d !== null && d !== "" && index !== col)
-                        otherDataInRow = true;
-                });
-                if (!value && otherDataInRow) {
+                //var row = this.row; var col = this.col;
+                //var physicalIndex = untranslateRow(row);
+                //var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
+                //var otherDataInRow = false;
+                //angular.forEach(dataAtRow, function (d, index) {
+                //    //need the col too because right after removing req value, it's still in the .getDataAtRow..
+                //    if (d !== null && d !== "" && index !== col)
+                //        otherDataInRow = true;
+                //});
+                if (!value){// && otherDataInRow) {
                     requiredModal();
                     callback(false);
                 } else {
@@ -910,16 +902,16 @@
             };
             $scope.latValidator = function (value, callback) {
                 //number and > 0
-                var row = this.row; var col = this.col;
-                var physicalIndex = untranslateRow(row);
-                var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
-                var otherDataInRow = false;
-                angular.forEach(dataAtRow, function (d, index) {
-                    //need the col too because right after removing req value, it's still in the .getDataAtRow..
-                    if (d !== null && d !== "" && index !== col)
-                        otherDataInRow = true;
-                });
-                if (((value < 22 || value > 55) || isNaN(value)) && otherDataInRow) {
+                //var row = this.row; var col = this.col;
+                //var physicalIndex = untranslateRow(row);
+                //var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
+                //var otherDataInRow = false;
+                //angular.forEach(dataAtRow, function (d, index) {
+                //    //need the col too because right after removing req value, it's still in the .getDataAtRow..
+                //    if (d !== null && d !== "" && index !== col)
+                //        otherDataInRow = true;
+                //});
+                if ((value < 22 || value > 55) || isNaN(value)){// && otherDataInRow) {
                     setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                     var latModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
@@ -935,7 +927,7 @@
                         size: 'sm'
                     });
                     callback(false);
-                } else if (!value && otherDataInRow) {
+                } else if (!value){// && otherDataInRow) {
                     requiredModal();
                     callback(false);
                 } else {
@@ -943,16 +935,16 @@
                 }                
             };
             $scope.longValidator = function (value, callback) {
-                var row = this.row; var col = this.col;
-                var physicalIndex = untranslateRow(row);
-                var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
-                var otherDataInRow = false;
-                angular.forEach(dataAtRow, function (d, index) {
-                    //need the col too because right after removing req value, it's still in the .getDataAtRow..
-                    if (d !== null && d !== "" && index !== col)
-                        otherDataInRow = true;
-                });
-                if (((value < -130 || value > -55) || isNaN(value)) && otherDataInRow) {
+                //var row = this.row; var col = this.col;
+                //var physicalIndex = untranslateRow(row);
+                //var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
+                //var otherDataInRow = false;
+                //angular.forEach(dataAtRow, function (d, index) {
+                //    //need the col too because right after removing req value, it's still in the .getDataAtRow..
+                //    if (d !== null && d !== "" && index !== col)
+                //        otherDataInRow = true;
+                //});
+                if ((value < -130 || value > -55) || isNaN(value)){// && otherDataInRow) {
                     setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                     var longModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
@@ -968,7 +960,7 @@
                         size: 'sm'
                     });
                     callback(false);
-                } else if (!value && otherDataInRow) {
+                } else if (!value){// && otherDataInRow) {
                     requiredModal();
                     callback(false);
                 }
@@ -1189,7 +1181,7 @@
                             "remove_row": { name: "Remove this row" }
                         }
                 },
-                minSpareRows: 3, 
+                minSpareRows: 12, 
                 afterInit: function () {
                     $scope.hotInstance = this;                   
                 },

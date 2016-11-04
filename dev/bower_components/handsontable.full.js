@@ -5863,6 +5863,11 @@ Handsontable.Core = function Core(rootElement, userSettings) {
     }
     var i = instance.countRows() - 1;
     while (i >= 0) {
+        //added 11/3/16
+        if (instance.isEmptyRow(i)) {
+            i--;
+            continue;
+        }
       var j = instance.countCols() - 1;
       while (j >= 0) {
         waitingForValidator.addValidatorToQueue();
