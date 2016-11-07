@@ -25,10 +25,12 @@
 <div class="sigl-edit-form">
     <legend style="margin-bottom: 25px; margin-top: 0;">Sites:
         <div class="site-edit-mode-wrapper">
-            <label class="site-edit-mode-active" ng-model="radioModel" uib-btn-radio="'Single'">SINGLE SITE EDITING</label><!--
-            --><label class="site-edit-mode" ng-model="radioModel" uib-btn-radio="'Spreadsheet'">
-                <a ui-sref="projectEdit.site.multipleSite({id:thisProject.project_id})">SPREADSHEET MODE</a></label>
+            <label class="site-edit-mode-active" ng-model="radioModel" uib-btn-radio="'Single'">SINGLE SITE EDITING</label>
+            <label class="site-edit-mode" ng-model="radioModel" uib-btn-radio="'Spreadsheet'">
+                <a ui-sref="projectEdit.site.multipleSite({id:thisProject.project_id})">SPREADSHEET MODE</a>
+            </label>
         </div>
+        <a style="text-transform:none; font-size:medium;" ng-click="showHelp()">Help</a>  
     </legend>
 </div>
 <div>
