@@ -50,23 +50,22 @@
         <div class="btn-group site-edit-mode-wrapper">
             <label class="site-edit-mode" ng-model="radioModel" uib-btn-radio="'Single'">
                 <a ng-click="goToSSE()" >SINGLE SITE EDITING</a>
-            </label><!--
-            --><label class="site-edit-mode-active" ng-model="radioModel" uib-btn-radio="'Spreadsheet'">SPREADSHEET MODE</label>
-        </div>
-        <!--<div>                     ui-sref="projectEdit.site.siteList({id:thisProject.project_id})"
-            <a style="text-transform:none;font-size:medium" ui-sref="projectEdit.site.siteList({id:thisProject.project_id})">Return to Project</a>
-        </div>-->
+            </label>
+            <label class="site-edit-mode-active" ng-model="radioModel" uib-btn-radio="'Spreadsheet'">SPREADSHEET MODE</label>
+        </div>      
+        <a style="text-transform:none; font-size:medium;" ng-click="showHelp()">Help</a>  
     </legend>
+    
 </div>
 
-<div><i style="font-size:small;">Spreadsheet mode works much like Excel; each row is an individual site. You can highlight and copy multiple cells or rows,
+<!--<div><i style="font-size:small;">Spreadsheet mode works much like Excel; each row is an individual site. You can highlight and copy multiple cells or rows,
     or you can click and drag from the lower right cell corner to populate an entire column. You can also copy and paste directly from the Excel SiGL Site Worksheet.</i>
     <br/>
     <i style="font-size:small;">Right-click any cell to add or remove a row (site). Drag column headers to adjust column widths.</i>
     <br/>
     <i style="font-size:small;">Gray cells cannot be modified. Some cells have data validation applied and will turn red if the value entered does not meet
     the requirements. Red cells must be resolved before saving. The more sites, the longer the save will take. Please be patient.</i>
-</div>
+</div>-->
 <div class="col-md-12" style="padding:0;margin:0;height:600px;overflow:hidden">
     <hot-table datarows="projSites" settings="tableSettings" hot-id="tableinstance" class="dataTable">
         <hot-column data="SiteId" read-only title="'SiGL_ID'"></hot-column><!-- 0 -->
@@ -83,7 +82,6 @@
         <hot-column data="ResourceStrings" title="'Resources'" type="'dropdown'" validator="matchingResValue"></hot-column><!-- source="resourceArray" 10 -->
         <hot-column data="MediaStrings" title="'Media'" type="'dropdown'" validator="matchingMedValue"></hot-column><!-- 11 -->
         <hot-column data="FrequencyStrings" title="'Frequencies'" type="'dropdown'" validator="matchingFreqValue"></hot-column><!-- 12 -->
-        <!--        <hot-column data="StartDate" title="'Start Date'" type="'date'" date-format="'MM/DD/YYYY'" correct-format validator="dateValidator"></hot-column><!-- 13 -->
         <hot-column data="StartDate" title="'Start Date'" date-format="'MM/DD/YYYY'" correct-format type="'date'" validator="dateValidator"></hot-column>
         <hot-column data="EndDate" title="'End Date'" type="'date'" date-format="'MM/DD/YYYY'" validator="dateValidator"></hot-column><!-- 14 -->
         <hot-column data="SamplePlatform" title="'Sample Platform'"></hot-column><!-- 15 -->

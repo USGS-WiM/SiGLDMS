@@ -792,6 +792,36 @@
                 });
 
             }
+            //show "Help" modal
+            $scope.showHelp = function () {
+                var helpModal = $uibModal.open({
+                    template: '<div class="modal-header"><h3 class="modal-title">Help</h3></div>' +
+                        '<div class="modal-body">' +
+                            '<div><b>Single-site editing</b></div>' +
+                            '<p>Use single-site editing to modify one site at a time. Click on the icons at the left to edit, duplicate, or delete an individual site.</p>' +
+                            '<div><b>Spreadsheet mode</b></div>' +
+                            '<p>Select spreadsheet mode to edit multiple sites at a time (similar to Excel); each row is an individual site.</p>' +
+                            '<ul><li>You can highlight and copy multiple cells or rows, or you can click and drag from the lower right cell corner to populate an entire column.</li>' +
+                                '<li>You can also copy and paste directly from the Excel SiGL Site Worksheet.</li>' +
+                                '<li>Right-click any cell to add or remove a row (site).</li>' +
+                                '<li>Drag column headers to adjust column widths.</li>' +
+                                '<li>Gray cells cannot be modified.</li>' + 
+                                '<li>Some cells have data validation applied and will turn red if the value entered does not meet the requirements. Red cells must be resolved before saving.</li>' +
+                                '<li>The more sites you have, the longer the save will take. Please be patient.</li>' +
+                            '</ul>' +
+                        '</div>' +
+                        '<div class="modal-footer"><button class="btn btn-primary" ng-enter="ok()" ng-click="ok()">OK</button></div>',
+                    backdrop: 'static',
+                    keyboard: false,
+                    controller: function ($scope, $uibModalInstance) {
+                        $scope.ok = function () {
+                            $uibModalInstance.dismiss();
+                        };
+                    },
+                    size: 'lg'
+                });
+            };
+            
             //#region renderer and validators for handsontable
             var requiredModal = function () {
                 setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
@@ -862,16 +892,16 @@
             };
             $scope.requiredValidator = function (value, callback) {
                 //only care if there's other data in this row
-                //var row = this.row; var col = this.col;
-                //var physicalIndex = untranslateRow(row);
-                //var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
-                //var otherDataInRow = false;
-                //angular.forEach(dataAtRow, function (d, index) {
-                //    //need the col too because right after removing req value, it's still in the .getDataAtRow..
-                //    if (d !== null && d !== "" && index !== col)
-                //        otherDataInRow = true;
-                //});
-                if (!value){// && otherDataInRow) {
+                var row = this.row; var col = this.col;
+                var physicalIndex = untranslateRow(row);
+                var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
+                var otherDataInRow = false;
+                angular.forEach(dataAtRow, function (d, index) {
+                    //need the col too because right after removing req value, it's still in the .getDataAtRow..
+                    if (d !== null && d !== "" && index !== col)
+                        otherDataInRow = true;
+                });
+                if (!value && otherDataInRow) {
                     requiredModal();
                     callback(false);
                 } else {
@@ -900,18 +930,17 @@
                     callback(true);
                 }
             };
-            $scope.latValidator = function (value, callback) {
-                //number and > 0
-                //var row = this.row; var col = this.col;
-                //var physicalIndex = untranslateRow(row);
-                //var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
-                //var otherDataInRow = false;
-                //angular.forEach(dataAtRow, function (d, index) {
-                //    //need the col too because right after removing req value, it's still in the .getDataAtRow..
-                //    if (d !== null && d !== "" && index !== col)
-                //        otherDataInRow = true;
-                //});
-                if ((value < 22 || value > 55) || isNaN(value)){// && otherDataInRow) {
+            $scope.latValidator = function (value, callback) {                
+                var row = this.row; var col = this.col;
+                var physicalIndex = untranslateRow(row);
+                var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
+                var otherDataInRow = false;
+                angular.forEach(dataAtRow, function (d, index) {
+                    //need the col too because right after removing req value, it's still in the .getDataAtRow..
+                    if (d !== null && d !== "" && index !== col)
+                        otherDataInRow = true;
+                });
+                if (((value < 22 || value > 55) || isNaN(value)) && otherDataInRow) {
                     setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                     var latModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
@@ -927,7 +956,7 @@
                         size: 'sm'
                     });
                     callback(false);
-                } else if (!value){// && otherDataInRow) {
+                } else if (!value && otherDataInRow) {
                     requiredModal();
                     callback(false);
                 } else {
@@ -935,16 +964,16 @@
                 }                
             };
             $scope.longValidator = function (value, callback) {
-                //var row = this.row; var col = this.col;
-                //var physicalIndex = untranslateRow(row);
-                //var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
-                //var otherDataInRow = false;
-                //angular.forEach(dataAtRow, function (d, index) {
-                //    //need the col too because right after removing req value, it's still in the .getDataAtRow..
-                //    if (d !== null && d !== "" && index !== col)
-                //        otherDataInRow = true;
-                //});
-                if ((value < -130 || value > -55) || isNaN(value)){// && otherDataInRow) {
+                var row = this.row; var col = this.col;
+                var physicalIndex = untranslateRow(row);
+                var dataAtRow = $scope.hotInstance.getDataAtRow(physicalIndex);
+                var otherDataInRow = false;
+                angular.forEach(dataAtRow, function (d, index) {
+                    //need the col too because right after removing req value, it's still in the .getDataAtRow..
+                    if (d !== null && d !== "" && index !== col)
+                        otherDataInRow = true;
+                });
+                if (((value < -130 || value > -55) || isNaN(value)) && otherDataInRow) {
                     setTimeout(function () { $scope.hotInstance.deselectCell(); }, 100);
                     var longModal = $uibModal.open({
                         template: '<div class="modal-header"><h3 class="modal-title">Error</h3></div>' +
@@ -960,7 +989,7 @@
                         size: 'sm'
                     });
                     callback(false);
-                } else if (!value){// && otherDataInRow) {
+                } else if (!value && otherDataInRow) {
                     requiredModal();
                     callback(false);
                 }
