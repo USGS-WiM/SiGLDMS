@@ -5,8 +5,8 @@
 
 
 //org popup to add to org db
-    ModalControllers.controller('AddOrgModalCtrl', ['$scope', '$cookies', '$uibModalInstance', '$http', 'chosenParts', 'allOrgs', 'allDivs', 'allSecs', 'ORGANIZATION', 'DIVISION', 'SECTION',
-        function ($scope, $cookies, $uibModalInstance, $http, chosenParts, allOrgs, allDivs, allSecs, ORGANIZATION, DIVISION, SECTION) {
+    ModalControllers.controller('AddOrgModalCtrl', ['$scope', '$cookies', '$window', '$uibModalInstance', '$http', 'chosenParts', 'allOrgs', 'allDivs', 'allSecs', 'ORGANIZATION', 'DIVISION', 'SECTION',
+        function ($scope, $cookies, $window, $uibModalInstance, $http, chosenParts, allOrgs, allDivs, allSecs, ORGANIZATION, DIVISION, SECTION) {
             //globals
             $scope.OrgName = {}; //new org name input ng-model
             $scope.divisionName = {}; //new div name input ng-model
@@ -193,6 +193,12 @@
                 allLists.push($scope.orgList); allLists.push($scope.allDivList); allLists.push($scope.allSecList);
                 allLists.push($scope.selectedOrgID.id); allLists.push($scope.selectedDivID.id); allLists.push($scope.selectedSecID.id);
                 $uibModalInstance.close(allLists);
+            };
+
+            //want to email admin to remove/edit organization
+            $scope.sendMail = function (emailId, subject) {
+                //$window.open("mailto:" + emailId + "?subject=" + subject + "&body=" + message, "_blank");
+                $window.open("mailto:" + emailId + "?subject=" + subject, "_self");
             };
         }]);
 

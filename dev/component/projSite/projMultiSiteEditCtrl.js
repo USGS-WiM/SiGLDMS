@@ -801,7 +801,7 @@
                             '<p>Use single-site editing to modify one site at a time. Click on the icons at the left to edit, duplicate, or delete an individual site.</p>' +
                             '<div><b>Spreadsheet mode</b></div>' +
                             '<p>Select spreadsheet mode to edit multiple sites at a time (similar to Excel); each row is an individual site.</p>' +
-                            '<ul><li>You can highlight and copy multiple cells or rows, or you can click and drag from the lower right cell corner to populate an entire column.</li>' +
+                            '<ul style="font-size: 10pt;"><li>You can highlight and copy multiple cells or rows, or you can click and drag from the lower right cell corner to populate an entire column.</li>' +
                                 '<li>You can also copy and paste directly from the Excel SiGL Site Worksheet.</li>' +
                                 '<li>Right-click any cell to add or remove a row (site).</li>' +
                                 '<li>Drag column headers to adjust column widths.</li>' +
