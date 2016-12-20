@@ -128,7 +128,6 @@
                         <button class="sigl-btn btn-small" ng-click="addThisName(OrgName.value)">Add</button>
                         <button class="sigl-btn btn-small" ng-click="neverMind('org')">Cancel</button>
                     </div>
-
                 </div>
 
                 <div class="sigl-modal-form-group">
@@ -146,8 +145,6 @@
                     <button class="sigl-btn btn-small" ng-click="neverMind('div')">Cancel</button>
                 </div>
 
-
-
                 <div class="sigl-modal-form-group">
                     <label>Section</label>
                     <div ng-show="!showAddSECTIONinput">
@@ -159,14 +156,14 @@
                         <button class="sigl-btn btn-small" ng-click="addThisSection(sectionName.value, selectedDivID.id)">Add</button>
                         <button class="sigl-btn btn-small" ng-click="neverMind('sec')">Cancel</button>
                     </div>
-                </div>
-
+                </div>       
 
             </fieldset>
         </form>
+        <div style="margin-top:18px;font-size:smaller;font-style:italic;"><a ng-click="sendMail('sigl@usgs.gov', 'Organization Change Request')">Request</a> that an organization name be edited or deleted</div>
     </div>
 
-    <div class="modal-footer">
+    <div class="modal-footer" style="margin-top:0;">
         <button class="sigl-btn" ng-click="ok()">Close</button>
     </div>
 </script>

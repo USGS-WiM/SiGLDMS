@@ -80,7 +80,12 @@
 
                 <!-- Project Start Date -->
                 <div class="sigl-modal-form-group" ng-class="{'has-error':projectForm.Info.sd.$invalid && projectForm.Info.sd.$dirty}">
-                    <label for="start_date">Project Start Date:</label>
+                    <label for="start_date">
+                        Project Start Date:
+                        <button type="button" class="sigl-tooltip" tooltip-placement="right" uib-tooltip='If you do not know the month/day, please select Jan 1.'>
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </label>
                     <input class="input-calendar dateInputStyle" id="start_date" name="sd" type="date" uib-datepicker-popup="MM/dd/yyyy" is-open="datepickrs.sd"
                            show-weeks="false" ng-model-options="{ updateOn: 'blur' }" ng-change="compareDates('start')" ng-model="aProject.start_date" show-button-bar="false" />
                     <button type="button" class="btn-cal" ng-click="open($event, 'sd')">

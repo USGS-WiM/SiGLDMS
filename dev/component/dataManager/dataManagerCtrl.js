@@ -100,7 +100,7 @@
             
             //see if sorting order has already been set, preserve if so, otherwise set to 'lname'
             $scope.sortingOrder = $cookies.get('DMListSortOrder') !== undefined ? $cookies.get('DMListSortOrder') : 'lname';
-            $scope.reverse = $cookies.get('dml_reverse') !== undefined ? Boolean($cookies.get('dml_reverse')) : true;
+            $scope.reverse = $cookies.get('dml_reverse') !== undefined ? Boolean($cookies.get('dml_reverse')) : false;
             $scope.sort_by = function (newSortingOrder) {
                 $cookies.put('DMListSortOrder', newSortingOrder);
                 if ($scope.sortingOrder == newSortingOrder) {

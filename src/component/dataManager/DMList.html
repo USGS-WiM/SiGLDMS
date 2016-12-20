@@ -3,9 +3,7 @@
     <div ng-show="loggedInUser.Role == 'Admin'">
         <a ng-click="showDataManagerModal(0)"><i class="glyphicon glyphicon-plus"></i>Create New Data Manager</a>
     </div>
-    <script>
-        //var sortingOrder = 'lname';
-    </script>
+   
     <table class="table table-striped table-condensed">
         <thead>
             <tr>
@@ -57,12 +55,7 @@
 
                 <!-- Username*-->
                 <div class="col-md-12 form-group static required" ng-class="{'has-error':accountForm.username.$invalid && accountForm.username.$dirty}">
-                    <label class="col-md-3 control-label req" for="username">
-                        Username:
-                        <!--<span ng-show="DM.data_manager_id != undefined" class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
-            title="Usernames cannot be modified. If you need to request a different username, contact Jen Bruce at jlbruce@usgs.gov"
-            data-placement="right" tooltip></span>-->
-                    </label>
+                    <label class="col-md-3 control-label req" for="username">Username:</label>
                     <div class="col-md-5">
                         <input class="form-control" name="username" ng-model="DM.username" type="text" placeholder="User Name" required />
                     </div>
@@ -157,13 +150,16 @@
                     </div>
                 </div>
 
-                <!-- Role-->
+                <!-- Role (only admin can change a role)-->
                 <div class="col-md-12 form-group static required" ng-class="{'has-error':accountForm.role_id.$invalid && accountForm.role_id.$dirty}">
                     <label class="col-md-3 control-label req" for="role_id">Role:</label>
-                    <div class="col-md-5">
+                    <div class="col-md-5" ng-if="loggedInUser.Role == 'Admin'">
                         <select class="form-control" name="role_id" ng-model="DM.role_id" ng-options="r.role_id as r.role_name for r in RoleList | orderBy: 'role_name'" required>
                             <option value=""></option>
                         </select>
+                    </div>
+                    <div class="col-md-5" ng-if="loggedInUser.Role != 'Admin'" style="padding-top:10px">
+                        <span>{{DM.role_name}}</span>
                     </div>
                 </div>
 

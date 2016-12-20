@@ -73,7 +73,8 @@
                 $http.defaults.headers.common.Authorization = 'Basic ' + $cookies.get('siGLCreds');
                 $http.defaults.headers.common.Accept = 'application/json';
                 PROJECT.addProjContact({ id: thisProject.project_id }, $scope.newContact, function success(response) {
-                    $scope.ProjContacts = response; ProjParts_Service.setAllProjectContacts(response);
+                    $scope.ProjContacts = response;
+                    ProjParts_Service.setAllProjectContacts(response);
                     for (var pc = 0; pc < $scope.ProjContacts.length; pc++) {
                         var thisOrgSysRes = $scope.allOrgResources.filter(function (allOrgRe) { return allOrgRe.organization_system_id == $scope.ProjContacts[pc].organization_system_id; })[0];
                         $scope.ProjContacts[pc].OrgName = thisOrgSysRes.OrganizationName;
