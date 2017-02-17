@@ -160,25 +160,29 @@
                     controller: function ($scope, $uibModalInstance, allEntitiesList, chosenValues, whichEntities) {
                         //add selected prop to each resource
                         $scope.which = whichEntities;
-                        $scope.entityList = angular.copy(allEntitiesList);
+                        $scope.entityList = angular.copy(allEntitiesList); //holds array of entity objects (media, resources, or frequencies)
                         $scope.chosenValuesStringArray = [];
+                        //if some were chosen before they opened modal, push those into chosenValuesStringArray
                         if (chosenValues !== null) {
                             $scope.chosenStringsArray = angular.copy(chosenValues.split(","));
                             angular.forEach($scope.chosenStringsArray, function (crs) {                                
                                 $scope.chosenValuesStringArray.push(crs.trim());
                             });
                         }
-                        //add selected and select if in chosenValueStringArray
+                        //add selected and select (check) if in chosenValueStringArray
                         for (var i = 0; i < $scope.entityList.length; i++) {
                             for (var y = 0; y < $scope.chosenValuesStringArray.length; y++) {
+                                //if this chosen string == to resource_name media or freq name, add selected prop and break, else set selected prop to false
                                 if ($scope.chosenValuesStringArray[y] == $scope.entityList[i].resource_name || $scope.chosenValuesStringArray[y] == $scope.entityList[i].media || $scope.chosenValuesStringArray[y] == $scope.entityList[i].frequency) {
                                     $scope.entityList[i].selected = true;
-                                    y = $scope.chosenValuesStringArray.length;
+                                    y = $scope.chosenValuesStringArray.length; //break
                                 }
                                 else $scope.entityList[i].selected = false;
                             }
+                            //if none are chosen, set them all to false (selected prop)
                             if ($scope.chosenValuesStringArray.length === 0) $scope.entityList[i].selected = false;
                         }//end foreach resource                        
+
                         $scope.ok = function () {
                             //just grab the selected=true from $scope.resourceList, join the resource_names and send it back (gets rid of any incorrectly pasted ones)
                             var selectedOnes = [];
@@ -197,12 +201,14 @@
                                     }
                                 }//end if selected =true
                             });
+                            //send it back out as comma separated string for handsontable cell value
                             $uibModalInstance.close(selectedOnes.join(", "));
                         };
                     },
                     size: 'md'
                 });
                 aModal.result.then(function (newVal) {
+                    //notify that modal is closed now and set the value in the cell with the newVal
                     $scope.modalIsOpen = false;
                     $scope.hotInstance.setDataAtCell(row, col, newVal);
                 });

@@ -198,7 +198,7 @@
             //want to email admin to remove/edit organization
             $scope.sendMail = function (emailId, subject) {
                 //$window.open("mailto:" + emailId + "?subject=" + subject + "&body=" + message, "_blank");
-                $window.open("mailto:" + emailId + "?subject=" + subject, "_self");
+                $window.open("mailto:" + emailId + "?subject=" + subject, "_blank");
             };
         }]);
 
