@@ -7,10 +7,14 @@ Data Management System for the USGS Science in the Great Lakes (SiGL) mapper.
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+##### required software
+[node.js](http://nodejs.org)  
+[git](https://git-scm.com/)  
 
+Install global dependencies
 ```
-Give examples
+npm install -g bower
+npm install -g gulp
 ```
 
 ## Getting Started
@@ -19,36 +23,25 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
+https://help.github.com/articles/cloning-a-repository/
 
-Say what the step will be
-
+Inside of your project folder (after git fork and clone):
 ```
-Give the example
+npm install
+bower install
 ```
-
-And repeat
-
-```
-until finished
-```
-
 ## Building and testing
 
-Explain how to run the debugging 'watch' script for this repo, if applicable
-
-Explain how to run unit tests, if applicable
+To run the debugging 'watch' script for this repo, run 'gulp watch-dev'
 
 ## Deployment
-
-Add additional notes about how to deploy this on a live system. **Do not include any credentials, IP addresses, or other sensitive information**
+'gulp build-app-dev' will build a dev folder
+'gulp build-app-prod' will build a dist folder
 
 ## Built With
 
-* [Angular](https://angular.io/) - The main web framework used
-* [Clarity UI](https://vmware.github.io/clarity/) - Top-level UI framework if you have one 
+* [AngularJS](https://angularjs.org/) - The main web framework used
 * [NPM](https://www.npmjs.com/) - Dependency Management
-* [Others](https://www.npmjs.com/) - Any other high-level dependencies
 
 ## Contributing
 
@@ -89,3 +82,4 @@ In the spirit of open source, please cite any re-use of the source code stored i
 * This project authored by the [USGS WIM team](https://wim.usgs.gov)
 * WIM is a team of developers and technologists who build and manage tools, software, web services, and databases to support USGS science and other federal government cooperators.
 * WIM is a part of the [Upper Midwest Water Science Center](https://www.usgs.gov/centers/wisconsin-water-science-center).
+
