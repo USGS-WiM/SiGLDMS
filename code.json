@@ -4,7 +4,7 @@
     "organization": "U.S. Geological Survey",
     "description": "Data Management System for Science in the Great Lakes (SiGL)",
     "version": "v2.0.02",
-    "status": "Production"
+    "status": "Production",
 
     "permissions": {
       "usageType": "openSource",
