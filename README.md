@@ -60,7 +60,7 @@ To push tags to remote origin: `git push origin --tags`
 ## Authors
 
 * **[Erik Myers](https://www.usgs.gov/staff-profiles/erik-s-myers)**  - *Point of Contact* - [USGS Web Informatics & Mapping](https://wim.usgs.gov/)
-* **[Tonia Roddick](https://www.usgs.gov/staff-profiles/tonia-m-roddick)**  - *Developer* - [USGS Web Informatics & Mapping](https://wim.usgs.gov/)
+* **[Tonia Roddick](https://github.com/troddick)**  - *Developer*
 
 See also the list of [contributors](../../graphs/contributors) who participated in this project.
 
