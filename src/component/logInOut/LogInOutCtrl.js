@@ -5,8 +5,8 @@
 
 
     //login 
-    LogInOutController.controller('loginCtrl', ['$scope', '$state', '$http', '$rootScope', '$cookies', '$uibModal', '$location', 'LOGIN',
-        function ($scope, $state, $http, $rootScope, $cookies, $uibModal, $location, LOGIN) {
+    LogInOutController.controller('loginCtrl', ['$scope', '$window', '$state', '$http', '$rootScope', '$cookies', '$uibModal', '$location', 'LOGIN',
+        function ($scope, $window, $state, $http, $rootScope, $cookies, $uibModal, $location, LOGIN) {
             //#region CAP lock Check
             $('[type=password]').keypress(function (e) {
                 var $password = $(this),
@@ -132,6 +132,10 @@
                     }
                 );
             };
+            $scope.sendMail = function (emailId, subject) {
+                    //$window.open("mailto:" + emailId + "?subject=" + subject + "&body=" + message, "_blank");
+                    $window.open("mailto:" + emailId + "?subject=" + subject, "_blank");
+                };
         }]);
 
     //logOut
