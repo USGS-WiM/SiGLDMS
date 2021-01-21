@@ -2,17 +2,9 @@
   "name": "SiGLDMS",
   "version": "0.0.1",
   "homepage": "https://github.com/USGS-WiM/SiGLDMS",
-  "authors": [
-    "Tonia Roddick <troddick@usgs.gov>"
-  ],
+  "authors": ["Tonia Roddick <troddick@usgs.gov>"],
   "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
+  "ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"],
   "dependencies": {
     "angular": "1.4.7",
     "angular-bootstrap": "0.14.3",
@@ -50,21 +42,9 @@
     "angular-mocks": "^1.2.23",
     "bootstrap": "~3.3.6"
   },
-  "resolutions": {
-    "angular-bootstrap": ">=0.14.0",
-    "angular": "1.4.7",
-    "checklist-model": "~0.6.0",
-    "ngMask": "~3.0.16",
-    "angular-ui-mask": "~1.5.1",
-    "jquery": "~2.2.0",
-    "handsontable": "^0.28.4"
-  },
   "overrides": {
     "handsontable": {
-      "main": [
-        "dist/handsontable.full.css",
-        "dist/handsontable.full.js"
-      ]
+      "main": ["dist/handsontable.full.css", "dist/handsontable.full.js"]
     }
   }
 }
