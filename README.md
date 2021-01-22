@@ -1,6 +1,5 @@
 ![WiM](wimlogo.png)
 
-
 # SigL Data Management System
 
 Data Management System for the USGS Science in the Great Lakes (SiGL) mapper.
@@ -8,10 +7,12 @@ Data Management System for the USGS Science in the Great Lakes (SiGL) mapper.
 ### Prerequisites
 
 ##### required software
+
 [node.js](http://nodejs.org)  
-[git](https://git-scm.com/)  
+[git](https://git-scm.com/)
 
 Install global dependencies
+
 ```
 npm install -g bower
 npm install -g gulp
@@ -26,22 +27,42 @@ These instructions will get you a copy of the project up and running on your loc
 https://help.github.com/articles/cloning-a-repository/
 
 Inside of your project folder (after git fork and clone):
+
 ```
 npm install
 bower install
 ```
+
+## Troubleshooting dependencies
+
+updated for 2021: this project uses npm shrinkwrap to freeze dependencies of dependencies in the tree.
+the npm-shrinkwrap.json file shipped with this code will supercede the package.json. If the app fails to build try replacing the contents of the npm-shrinkwrap.json with the following
+
+```
+{
+  "dependencies": {
+    "graceful-fs": {
+        "version": "4.2.2"
+     }
+  }
+}
+```
+
+Then run `npm install`
+
 ## Building and testing
 
 To run the debugging 'watch' script for this repo, run 'gulp watch-dev'
 
 ## Deployment
+
 'gulp build-app-dev' will build a dev folder
 'gulp build-app-prod' will build a dist folder
 
 ## Built With
 
-* [AngularJS](https://angularjs.org/) - The main web framework used
-* [NPM](https://www.npmjs.com/) - Dependency Management
+- [AngularJS](https://angularjs.org/) - The main web framework used
+- [NPM](https://www.npmjs.com/) - Dependency Management
 
 ## Contributing
 
@@ -49,18 +70,18 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the process for su
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](../../tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](../../tags).
 
 Advance the version when adding features, fixing bugs or making minor enhancement. Follow semver principles. To add tag in git, type git tag v{major}.{minor}.{patch}. Example: git tag v2.0.5
 
 To push tags to remote origin: `git push origin --tags`
 
-*Note that your alias for the remote origin may differ.
+\*Note that your alias for the remote origin may differ.
 
 ## Authors
 
-* **[Erik Myers](https://www.usgs.gov/staff-profiles/erik-s-myers)**  - *Point of Contact* - [USGS Web Informatics & Mapping](https://wim.usgs.gov/)
-* **[Tonia Roddick](https://github.com/troddick)**  - *Developer*
+- **[Erik Myers](https://www.usgs.gov/staff-profiles/erik-s-myers)** - _Point of Contact_ - [USGS Web Informatics & Mapping](https://wim.usgs.gov/)
+- **[Tonia Roddick](https://github.com/troddick)** - _Developer_
 
 See also the list of [contributors](../../graphs/contributors) who participated in this project.
 
@@ -69,18 +90,18 @@ See also the list of [contributors](../../graphs/contributors) who participated 
 This project is licensed under the Creative Commons CC0 1.0 Universal License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Suggested Citation
+
 In the spirit of open source, please cite any re-use of the source code stored in this repository. Below is the suggested citation:
 
 `This project contains code produced by the Web Informatics and Mapping (WIM) team at the United States Geological Survey (USGS). As a work of the United States Government, this project is in the public domain within the United States. https://wim.usgs.gov`
 
-
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration Note 
+- Hat tip to anyone who's code was used
+- Inspiration Note
 
 ## About WIM
-* This project authored by the [USGS WIM team](https://wim.usgs.gov)
-* WIM is a team of developers and technologists who build and manage tools, software, web services, and databases to support USGS science and other federal government cooperators.
-* WIM is a part of the [Upper Midwest Water Science Center](https://www.usgs.gov/centers/wisconsin-water-science-center).
 
+- This project authored by the [USGS WIM team](https://wim.usgs.gov)
+- WIM is a team of developers and technologists who build and manage tools, software, web services, and databases to support USGS science and other federal government cooperators.
+- WIM is a part of the [Upper Midwest Water Science Center](https://www.usgs.gov/centers/wisconsin-water-science-center).
