@@ -56,7 +56,7 @@
     "open": "6.0.0",
     "protractor": "^1.1.1",
     "q": "^1.1.2",
-    "shelljs": "^0.2.6"
+    "shelljs": "^0.8.5"
   },
   "dependencies": {
     "checklist-model": "^0.9.0",
